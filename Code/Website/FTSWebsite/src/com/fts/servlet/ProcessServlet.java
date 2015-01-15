@@ -13,10 +13,8 @@ import java.io.IOException;
 @WebServlet(name = "ProcessServlet")
 public class ProcessServlet extends HttpServlet {
 
-    String action = request.getParameter("action");
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        String action = request.getParameter("action");
 
     }
 
