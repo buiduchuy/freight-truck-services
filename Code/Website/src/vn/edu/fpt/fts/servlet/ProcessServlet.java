@@ -1,4 +1,4 @@
-package com.fts.servlet;
+package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
