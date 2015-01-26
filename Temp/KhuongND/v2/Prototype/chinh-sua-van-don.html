@@ -115,15 +115,16 @@
                                 <div class="form-content">
                                     <div class="row">
                                         <div class="large-5 columns">
-                                            <label for="product_name"class="left"><i class="icon-shopping-cart"></i> Tên các loại hàng hóa <small class="validate">*</small></label>
+                                            <label for="product_name"class="left"><i class="icon-shopping-cart"></i> Tên loại hàng <small class="validate">*</small></label>
                                             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span><input type="text" placeholder="Nhập vào tên sản phẩm" maxlength="30" name="product[to_name]" id="product_to_name" class="input-preview" data-target="#preview-name-product"/>
                                             <label class="left"><i class="icon-won"></i> Tổng khối lượng (Tấn)<small class="validate">*</small></label>
                                             <input type="text" maxlength="6" placeholder="Tổng khối lượng của sản phẩm (Tấn)" name="product[weight]" id="product_weight" required="" class="input-preview" data-target="#preview-weight"/>
                                         </div>
                                         <div class="large-7 columns">
-                                            <label for="product_name" class="left" ><i class="icon-time"></i> Thời gian <small class="validate">*</small></label>
-                                            <div class="row">
-                                                 <div class="large-6 columns ">
+                                            <div class="large-12 columns ">
+                                                <label for="product_name" class="left"><i class="icon-time"></i> Thời gian <small class="validate">*</small></label>
+                                            </div>
+                                            <div class="large-6 columns ">
                                                 <div class="date-picker-wrap">
                                                     <input type="text" value="" name="from_date" placeholder="Từ ngày" class="date-picker input-preview" data-target="#preview-time-from">
                                                         <i class="icon-calendar"></i>
@@ -135,10 +136,10 @@
                                                         <i class="icon-calendar"></i>
                                                 </div>
                                             </div>
+                                            <div class="large-12 columns ">
+                                                <label for="product_description" data-tooltip="" data-selector="" title=""class="left" ><i class="icon-tag"></i> Ghi chú hàng hóa(<span class="max-string">250</span> ký tự)</label>
+                                                <textarea name="product[description]" maxlength="250" id="product_description" placeholder="" class="input-preview" data-target="#preview-note"></textarea>
                                             </div>
-                                           
-                                            <label for="product_description" data-tooltip="" data-selector="" title=""class="left" ><i class="icon-tag"></i> Ghi chú hàng hóa(<span class="max-string">250</span> ký tự)</label>
-                                            <textarea name="product[description]" maxlength="250" id="product_description" placeholder="" class="input-preview" data-target="#preview-note"></textarea>
                                             <script>
                                                 $('.date-picker').each(function () {
                                                     $(this).fdatepicker({
