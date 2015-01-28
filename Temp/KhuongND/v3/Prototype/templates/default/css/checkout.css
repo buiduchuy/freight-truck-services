@@ -1,0 +1,218 @@
+a {
+    text-decoration: none;
+}
+input[type=text], input[type=password], input.text, input.title, textarea, select { background-color:#fff; border:1px solid #d9d9d9; color:#666;}
+.clearfix:after { clear:both; content:"."; display:block; height:0; visibility:hidden; overflow: hidden; }
+.clearfix { display:inline-block; }
+* html .clearfix { height:1%; }
+.clearfix { display:block; }
+::-webkit-input-placeholder  { color:#999999; }
+input:-moz-placeholder { color:#999999; }
+textarea:-moz-placeholder { color:#999999; }
+.clear { clear:both; }
+.fl{float:left}
+.cl1{color:#dd0a0a}
+.fu{text-transform:uppercase}
+   
+/*popup checkout*/
+.display-content {display: none} .expand {cursor: pointer;}
+.iconCheckout{background:url(../images/iconCheckout.png) no-repeat;width:60px;display:block;float:left}
+.iconCheckout.icoNL{background-position:left top;height:50px}
+.iconCheckout.icoATM{background-position:left -72px;height:41px}
+.iconCheckout.icoVisa{background-position:left -145px;height:38px}
+.iconCheckout.icoOffice{background-position:left -221px;height:48px}
+.iconCheckout.icoMerchant{background-position:left -295px;height:48px}
+.payment{padding:0}
+.payment input[type='radio']{margin:5px 10px 0 0}
+ul.paygate li div.payCont{width:616px}
+
+ul.paygate li div.payCont div.innerHead{width:546px !important; }
+ul.listBank{padding-left:0 !important;border:0 !important}
+ul.paygate{list-style:none}
+ul.paygate li{padding:10px;border-bottom:1px solid #CCCCCC}
+ul.paygate li.last{border:none}
+ul.paygate li.select{background:#f9f7de !important}
+ul.paygate li div.icoPay{width:80px;float:left}
+ul.paygate li div.payCont{width:576px;float:left}
+ul.paygate li div.payCont p{font-size:12px;text-align:justify}
+ul.paygate li div.payCont div.innerHead{width:550px;float:left}
+div.loginNL{margin:10px 0 0 100px;border:1px #e1e1e1 solid;padding-bottom:10px;background:#fff;position:relative;}
+    div.loginNL .ttSign{background:transparent url('../images/bg1px.png') repeat-x;height:34px;line-height:34px}
+    div.loginNL .ttSign h5{font-size:14px;margin:0;font-weight:normal;padding-left:10px}
+    div.loginNL .labelSign{width:110px;float:left;text-align:right;line-height:22px}
+    div.loginNL .labelValue{width:200px;float:left;line-height:22px;padding-left:10px}
+    div.loginNL .inputSign{background:transparent url('../images/bg1px.png') repeat-x scroll left -34px;float:left;height:22px;border:1px #c9c9c9 solid;margin-left:15px;}
+    div.loginNL p{padding:6px 0 0 10px}
+    div.loginNL p.btLogin{margin:5px 0 5px 94px}
+    div.loginNL p.btLogin a{padding-left:15px;}
+    div.loginNL p.btLogin a span{padding-right:15px;}
+    div.loginNL p.logoNL{background:transparent url('../images/logo.png') no-repeat scroll left top;width:170px;height:46px;display:block;position:absolute;right:0;top:33px }
+div.noteNL{background:#fccac1;border:1px #eb5439 solid;margin:8px 10px 10px 10px;-moz-border-radius: 5px;border-radius: 5px;padding:10px;}
+    span.iconClose{background:transparent url('../images/icon.png') no-repeat scroll left -180px;width:31px;height:31px;float:left;margin-right:15px}
+div.btActionPay {
+    float: right;
+    margin: 10px 0;
+}
+ul.paygate li div.payCont p {
+    font-size: 12px;
+    text-align: justify;
+    line-height: 18px;
+}
+div.loginNL p.logoNL {
+    background: url("../images/logo.png") no-repeat scroll left top transparent;
+    display: block;
+    height: 46px;
+    position: absolute;
+    right: 0;
+    top: 33px;
+    width: 170px;
+}
+div.loginNL p {
+    padding: 2px 0 0 10px;
+}
+ul.listBank{list-style:none;border-bottom:1px #e1e1e1 solid;padding-top:10px}
+ul.listBank li{border:none;float:left;padding:10px}
+ul.listBank li a{display:block;-moz-box-shadow: 1px 1px 0 #A9A9A9;-webkit-box-shadow: 1px 1px 0 #A9A9A9;box-shadow: 1px 1px 0 #A9A9A9;border:1px #dcdcdc solid}
+ul.noteATM{list-style:none;padding-left:80px; display: none; border: 1px solid #CCC;}
+ul.noteATM li{list-style:square;border:none;padding:0;margin:10px 0}
+div.smsATM{
+     background: none repeat scroll 0 0 #FFE9AD;
+    border: 1px solid #FAB418;
+    border-radius: 5px 5px 5px 5px;
+    color: #DC001B;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    margin-top: 10px;
+    padding: 5px;
+    text-align: center;
+    width: 406px;
+}
+span.textsend{color:#000;font-size:12px}
+ul.contentPartner {
+    padding-bottom: 3px;
+    list-style: none;
+    font-size: 12px;
+}
+ul.contentPartner li {
+    background: url(../images/widget-li.png) no-repeat 6px 9px;
+    padding: 4px 4px 1px 20px;
+    border-bottom: none;
+}
+.subContentCheckout {
+    border: 1px solid #CCC;
+    margin-top:8px;
+}
+/*logo bank*/
+a.bankIcon{;background:transparent url('../images/bankIcon.png') no-repeat scroll 0 0;width:69px;height:30px;display:block; cursor: pointer;}
+/****/
+    a.ICB{ background-position:0px 0px !important;}
+    a.VCB{ background-position:0px -30px !important;}
+    a.VIB{ background-position:1px -60px !important;}
+    a.TCB{ background-position:0px -90px !important;}
+    a.MB{ background-position:0px -150px !important;}
+    a.HDB{ background-position:0px -180px !important;}
+    a.EXB{ background-position:0px -210px !important;}
+    a.DAB{ background-position:0px -240px !important;}
+    a.JCB{ background-position:0px -270px !important;}
+    a.ACB{ background-position:0px -300px !important;}
+    a.americanBank{ background-position:1px -330px !important;}
+    a.visa{ background-position:0px -360px !important;}
+    a.master{ background-position:-1px -390px !important;}
+    a.PGB{ background-position:0px -420px !important;}
+    a.TPB{ background-position:0px -450px !important;}
+    a.siaBank{ background-position:0px 480px !important;}
+    a.SHB{ background-position:1px -510px !important;}
+    a.SCB{ background-position:0px -540px !important;}
+    a.MSB{ background-position:0px -570px !important;}
+    a.AGB{ background-position:0px -600px !important;}
+    a.BIDV{ background-position:0px -630px !important;}
+    a.fasteBank{ background-position:0px -660px !important;}
+    a.visaTechBank{ background-position:0px -690px !important;}
+    /*hover*/
+    a.ICB:hover{ background-position:-69px 0px !important;}
+    a.VCB:hover{ background-position:-69px -30px !important;}
+    a.VIB:hover{ background-position:-69px -60px !important;}
+    a.TCB:hover{ background-position:-69px -90px !important;}
+    a.MB:hover{ background-position:-69px -150px !important;}
+    a.HDB:hover{ background-position:-68px -180px !important;}
+    a.EXB:hover{ background-position:-69px -210px !important;}
+    a.DAB:hover{ background-position:-69px -240px !important;}
+    a.JCB:hover{ background-position:-69px -270px !important;}
+    a.ACB:hover{ background-position:-69px -300px !important;}
+    a.americanBank:hover{ background-position:-69px -330px !important;}
+    a.visa:hover{ background-position:-68px -360px !important;}
+    a.master:hover{ background-position:-70px -390px !important;}
+    a.PGB:hover{ background-position:-69px -420px !important;}
+    a.TPB:hover{ background-position:-69px -450px !important;}
+    a.siaBank:hover{ background-position:-69px -480px !important;}
+    a.SHB:hover{ background-position:-68px -510px !important;}
+    a.SCB:hover{ background-position:-69px -540px !important;}
+    a.MSB:hover{ background-position:-69px -570px !important;}
+    a.AGB:hover{ background-position:-69px -600px !important;}
+    a.BIDV:hover{ background-position:-69px -630px !important;}
+    a.fasteBank:hover{ background-position:-69px -660px !important;}
+    a.visaTechBank:hover{ background-position:-69px -690px !important;}
+    /* active */
+    li.bank_active a.ICB{ background-position:-138px 0px !important;}
+    li.bank_active a.VCB{ background-position:-138px -30px !important;}
+    li.bank_active a.VIB{ background-position:-138px -60px !important;}
+    li.bank_active a.TCB{ background-position:-138px -90px !important;}
+    li.bank_active a.MB{ background-position:-138px -150px !important;}
+    li.bank_active a.HDB{ background-position:-138px -180px !important;}
+    li.bank_active a.EXB{ background-position:-138px -210px !important;}
+    li.bank_active a.DAB{ background-position:-138px -240px !important;}
+    li.bank_active a.JCB{ background-position:-138px -270px !important;}
+    li.bank_active a.ACB{ background-position:-138px -300px !important;}
+    li.bank_active a.americanBank{ background-position:-138px -330px !important;}
+    li.bank_active a.visa{ background-position:-137px -360px !important;}
+    li.bank_active a.master{ background-position:-136px -390px !important;}
+    li.bank_active a.PGB{ background-position:-138px -420px !important;}
+    li.bank_active a.TPB{ background-position:-138px -450px !important;}
+    li.bank_active a.siaBank{ background-position:-138px -480px !important;}
+    li.bank_active a.SHB{ background-position:-138px -510px !important;}
+    li.bank_active a.SCB{ background-position:-138px -540px !important;}
+    li.bank_active a.MSB{ background-position:-138px -570px !important;}
+    li.bank_active a.AGB{ background-position:-138px -600px !important;}
+    li.bank_active a.BIDV{ background-position:-138px -630px !important;}
+    li.bank_active a.fasteBank{ background-position:-138px -660px !important;}
+    li.bank_active a.visaTechBank{ background-position:-138px -690px !important;}
+
+.expand h5 {
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+.bank_note {
+    display: block;
+    padding: 6px;
+    border:1px solid #ccc;
+    text-align: center;
+}
+.bank_note span {
+    display: inline-block;
+}
+.bank_note label {
+    display: inline-block;
+    margin-right: 30px;
+    cursor: pointer;
+    text-align: center;
+}
+i.iconMethod {
+    width: 60px;
+    height: 50px;
+    background: url(../images/icon_lsst.png);
+    text-indent: -2000px;
+    overflow: hidden;
+    display: block;
+    margin-left: 35px;
+}
+i.iconATM {
+    background-position: -14px -178px;
+}
+i.iconBank {
+    background-position: 0px -235px;
+}
+i.iconOnline {
+    background-position: 0px -116px;
+}
+/* Select */
