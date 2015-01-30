@@ -5,7 +5,7 @@
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <title>Gợi ý hệ thống</title>
+    <title>Tạo hàng</title>
     <link rel="shortcut icon" type="image/x-icon" href="favicon.png"/>
     <script type="text/javascript" src="templates/libs/js/jquery.js" charset="UTF-8"></script>
     <link type="text/css" rel="stylesheet" href="templates/libs/css/foundation.css" media="screen" />
@@ -73,57 +73,92 @@
         </br>
         <section class="container">
             <center>
-                <div class="form-content" style="border: 1px solid #ccc;box-shadow: 1px 1px 2px 2px #CCC;margin-bottom: 50px;width: 800px;">
+                <div class="form-content" style="border: 1px solid #ccc;box-shadow: 1px 1px 2px 2px #CCC;margin-bottom: 50px;width: 700px;">
 
                     <div class="form-content">
                         <form action="#" method="post" accept-charset="utf-8" enctype="multipart/form-data" data-abide="" novalidate="novalidate">						
                             <div class="row">
                                 <div class="large-12 columns">
-                                    <h2 class="page-title"><font color="orange" >Gợi ý từ hệ thống</font></h2>
+                                    <h2 class="page-title"><font color="orange" >Tạo hàng</font></h2>
                                 </div>
                                 <div class="large-12 columns">
-                                    <div data-alert="" class="alert-box radius secondary">
-                                        <label class="left"><font color="white" size="+1">Danh sách tài xế phù hợp</font></label>
-                                        </br>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <button class="expand">
+                                               <i class="icon-ok"></i> Địa chỉ giao nhận hàng
+                                            </button>                                  
+                                        </div>
+                                        <div class="small-3 columns">
+                                            <button class="expand ">
+                                                Thông tin hàng hoá
+                                            </button>
+                                        </div>
+                                        <div class="small-2 columns">
+                                            <button class="expand secondary">
+                                                Chi phí
+                                            </button>
+                                        </div>
+                                        <div class="small-3 columns">
+                                            <button class="expand secondary">
+                                                Xác nhận
+                                            </button>
+                                        </div>
                                     </div>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th ><h4 ><font color="orange" >#</font></h4></th>
-                                                <th width="150"><h3 ><font color="orange" >Địa điểm bắt đầu</font></h3></th>
-                                                <th width="150"><h3 ><font color="orange" >Địa điểm kết thúc</font></h3></th>
-                                                <th width="150"><h3 ><font color="orange" >Gía (ngàn đồng)</font></h3></th>
-                                                <th width="150"><h3 ><font color="orange" >Điểm uy tín</font></h3></th>
 
-                                                <th ><a class="button success" href="danh-sach-de-nghi.html"> Các đề nghị </a></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>TP.HCM</td>
-                                                <td>Hà Nội</td>
-                                                <td>10.000.000</td>
-                                                <td>95 điểm</td>
+                                    <div class="large-12 columns">
+                                        <div class="row">
+                                            <div class="small-3 columns">
+                                                <label for="right-label" class="right inline"><small class="validate">*</small> Loại hàng: </label>                                        
+                                            </div>
+                                            <div class="small-6 columns">
+                                                <select class="left">
+                                                    <option selected="">May mặc</option>
+                                                    <option>Điện gia dụng</option>
+                                                    <option>Thực phẩm</option>
+                                                    <option>Hi-tech</option>
+                                                </select>
+                                            </div>
+                                            <div class="small-3 columns">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="small-3 columns">
+                                                <label for="right-label" class="right inline"><small class="validate">*</small> Khối lượng: </label>                                        
+                                            </div>
+                                            <div class="small-6 columns">
+                                                <input type="text" id="right-label" placeholder=""/>
+                                            </div>
+                                            <div class="small-3 columns">
+                                                <label for="right-label" class="left inline">Tấn</label>  
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="small-3 columns">
+                                                <label for="right-label" class="right inline">Ghi chú : </label>                                        
+                                            </div>
+                                            <div class="small-6 columns">
+                                                <textarea  maxlength="250" ></textarea>
+                                            </div>
+                                            <div class="small-3 columns">
+                                            </div>
+                                        </div>
 
-                                                <td><a class="button" href="chi-tiet-tai-xe.html"><i class="icon-ok"></i> Xem chi tiết</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>TP.HCM</td>
-                                                <td>Hà Nội</td>
-                                                <td>9.000.000</td>
-                                                <td>98 điểm</td>
 
-                                                <td><a class="button" href="chi-tiet-tai-xe.html"><i class="icon-ok"></i> Xem chi tiết</a></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
+                                    </div>
+                                    <div class="row">
+                                        <div class="large-12 columns">
+                                            <div class="submit-area right">
+                                                <a href="tao-hang-1.html" class="button secondary">
+                                                    <i class="icon-mail-reply"></i> Trở về
+                                                </a>
+                                                <a href="tao-hang-3.html" class="button ">
+                                                    <i class="icon-mail-forward"></i> Tiếp theo
+                                                </a>
+                                            </div>	
+                                            </br>
+                                        </div>
+                                    </div>
                                 </div>
-
-
-                            </div>
                         </form>
 
 
