@@ -18,7 +18,7 @@ import android.widget.ListView;
 
 
 public class MainActivity extends FragmentActivity implements TabListener {
-	//Khoi tao cac bien global
+	
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private ActionBar actionBar;
