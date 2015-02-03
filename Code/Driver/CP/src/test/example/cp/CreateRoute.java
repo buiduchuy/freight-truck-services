@@ -65,8 +65,12 @@ public class CreateRoute extends Fragment {
 	EditText startDate;
 	EditText endDate;
 	AutoCompleteTextView start;
+	AutoCompleteTextView p1;
+	AutoCompleteTextView p2;
 	AutoCompleteTextView end;
 	PlacesAutoCompleteAdapter startAdapter;
+	PlacesAutoCompleteAdapter p1Adapter;
+	PlacesAutoCompleteAdapter p2Adapter;
 	PlacesAutoCompleteAdapter endAdapter;
 	CheckBox check1;
 	CheckBox check2;
@@ -75,7 +79,6 @@ public class CreateRoute extends Fragment {
 	View v;
 	ArrayList<LatLng> locations;
 	Calendar cal = Calendar.getInstance();
-	boolean changed = false;
 
 	@Override
 	public void onPause() {
@@ -96,8 +99,6 @@ public class CreateRoute extends Fragment {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Intent intent = getActivity().getIntent();
-		locations = (ArrayList<LatLng>) intent
-				.getSerializableExtra("markerList");
 		getActivity().getSupportFragmentManager()
 				.findFragmentByTag("createRoute").getRetainInstance();
 	}
@@ -111,15 +112,25 @@ public class CreateRoute extends Fragment {
 		link = (TextView) v.findViewById(R.id.textView7);
 		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
 				R.layout.listview_item_row);
+		p1Adapter = new PlacesAutoCompleteAdapter(getActivity(),
+				R.layout.listview_item_row);
+		p2Adapter = new PlacesAutoCompleteAdapter(getActivity(),
+				R.layout.listview_item_row);
 		endAdapter = new PlacesAutoCompleteAdapter(getActivity(),
 				R.layout.listview_item_row);
 		start = (AutoCompleteTextView) v.findViewById(R.id.start);
+		p1 = (AutoCompleteTextView) v.findViewById(R.id.point1);
+		p2 = (AutoCompleteTextView) v.findViewById(R.id.point2);
 		end = (AutoCompleteTextView) v.findViewById(R.id.end);
 		start.setAdapter(startAdapter);
+		p1.setAdapter(p1Adapter);
+		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
 
 		start.addTextChangedListener(watcher);
 		end.addTextChangedListener(watcher2);
+		p1.addTextChangedListener(watcher3);
+		p2.addTextChangedListener(watcher4);
 
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -145,13 +156,12 @@ public class CreateRoute extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Intent intent = getActivity().getIntent();
-				if (locations != null && changed == false) {
-					intent.putExtra("markerList", locations);
-				} else {
-					intent.putExtra("start", start.getText().toString());
-					intent.putExtra("end", end.getText().toString());
-					intent.removeExtra("markerList");
-				}
+
+				intent.putExtra("start", start.getText().toString());
+				intent.putExtra("p1", p1.getText().toString());
+				intent.putExtra("p2", p2.getText().toString());
+				intent.putExtra("end", end.getText().toString());
+
 				intent.putExtra("sender", "createRoute");
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
@@ -189,7 +199,6 @@ public class CreateRoute extends Fragment {
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
 			startAdapter.getFilter().filter(s);
-			changed = true;
 		}
 
 		@Override
@@ -211,7 +220,48 @@ public class CreateRoute extends Fragment {
 		public void onTextChanged(CharSequence s, int start, int before,
 				int count) {
 			endAdapter.getFilter().filter(s);
-			changed = true;
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+	};
+
+	TextWatcher watcher3 = new TextWatcher() {
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			p1Adapter.getFilter().filter(s);
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+	};
+
+	TextWatcher watcher4 = new TextWatcher() {
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			p2Adapter.getFilter().filter(s);
 		}
 
 		@Override
