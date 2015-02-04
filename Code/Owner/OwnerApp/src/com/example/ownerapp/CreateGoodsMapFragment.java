@@ -51,7 +51,7 @@ public class CreateGoodsMapFragment extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_create_goods_fragment);
 
-		String address = getIntent().getStringExtra("address") + " viet nam";
+		String address = getIntent().getStringExtra("address");
 		
 		// khoi tao map
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
