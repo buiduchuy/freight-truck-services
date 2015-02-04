@@ -11,6 +11,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -50,7 +51,7 @@ public class CreateGoodsMapFragment extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_create_goods_fragment);
 
-		String address = getIntent().getStringExtra("address");
+		String address = getIntent().getStringExtra("address") + " viet nam";
 		
 		// khoi tao map
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -70,9 +71,11 @@ public class CreateGoodsMapFragment extends Activity {
 		MarkerOptions mMarker = new MarkerOptions();
 		point = new LatLng(mlat, mlong);
 		mMarker.position(point);
+		mMarker.draggable(true);
 		map.addMarker(mMarker);
 
-		
+		//zoom to marker	
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
 	}
 
 	@Override
