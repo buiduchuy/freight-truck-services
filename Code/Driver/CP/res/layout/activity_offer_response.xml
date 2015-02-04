@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="test.example.cp.OfferResponse" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Trả lời đề nghị"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="281dp"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="Địa điểm bắt đầu: A\nĐịa điểm kết thúc: B\nNgày bắt đầu: 5/5/2015\nKhối lượng: 5 tấn\nLoại hàng: Cá tôm\nPhí chuyên chở: 2000000đ "
+            android:textSize="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="139dp"
+                android:layout_height="wrap_content"
+                android:text="Chấp nhận" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Từ chối" />
+			
+        </LinearLayout>
+        
+        <Button
+                android:id="@+id/button3"
+                android:layout_width="139dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Đề nghị mới" />
+    </LinearLayout>
+
+</RelativeLayout>
