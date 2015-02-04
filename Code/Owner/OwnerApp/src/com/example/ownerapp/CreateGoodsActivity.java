@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import sample.tabsswipe.adapter.PlacesAutoCompleteAdapter;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -31,7 +34,8 @@ public class CreateGoodsActivity extends Activity {
 	private Spinner spinner;
 	private Calendar calendar;
 	private DatePickerDialog.OnDateSetListener date;
-	private EditText edittextDate, edittextTime, edittextPickupAddr, edittextDeliverAddr;
+	private EditText edittextDate, edittextTime;
+	private AutoCompleteTextView edittextPickupAddr, edittextDeliverAddr;
 	private ImageButton ibPickupMap, ibDeliverMap;
 	private int mHour, mMinute;
 
@@ -108,7 +112,8 @@ public class CreateGoodsActivity extends Activity {
 				}
 			}
 		});
-		edittextPickupAddr = (EditText) findViewById(R.id.edittext_pickup_address);
+		edittextPickupAddr = (AutoCompleteTextView)
+		findViewById(R.id.edittext_pickup_address);
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
 
@@ -117,10 +122,16 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						CreateGoodsMapFragment.class);
-				intent.putExtra("address", edittextPickupAddr.getText().toString());
+				intent.putExtra("address", edittextPickupAddr.getText()
+						.toString());
 				startActivity(intent);
 			}
 		});
+
+		// auto complete textview
+		AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.edittext_pickup_address);
+		autoCompleteTextView.setAdapter(new PlacesAutoCompleteAdapter(this,
+				R.layout.list_item_pickup));
 
 	}
 

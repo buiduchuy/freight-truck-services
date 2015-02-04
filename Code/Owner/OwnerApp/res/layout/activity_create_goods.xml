@@ -87,9 +87,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/edittext_pickup_address"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Địa điểm nhận hàng" />
 
@@ -104,9 +104,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/edittext_deliver_address"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Địa điểm giao hàng" />
 
