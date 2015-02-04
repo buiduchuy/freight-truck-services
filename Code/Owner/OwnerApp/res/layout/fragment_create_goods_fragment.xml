@@ -9,24 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.ownerapp.CreateGoodsMapFragment" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/edittext_address"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:hint="Địa chỉ" />
-
-        <Button
-            android:id="@+id/button_find"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Tìm" />
-    </LinearLayout>
+    
 
     <fragment
         android:id="@+id/map"
