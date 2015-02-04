@@ -22,6 +22,7 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
@@ -30,7 +31,8 @@ public class CreateGoodsActivity extends Activity {
 	private Spinner spinner;
 	private Calendar calendar;
 	private DatePickerDialog.OnDateSetListener date;
-	private EditText edittextDate, edittextTime, edittextPickupMap;
+	private EditText edittextDate, edittextTime, edittextPickupAddr, edittextDeliverAddr;
+	private ImageButton ibPickupMap, ibDeliverMap;
 	private int mHour, mMinute;
 
 	@Override
@@ -106,22 +108,19 @@ public class CreateGoodsActivity extends Activity {
 				}
 			}
 		});
+		edittextPickupAddr = (EditText) findViewById(R.id.edittext_pickup_address);
+		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
+		ibPickupMap.setOnClickListener(new View.OnClickListener() {
 
-		edittextPickupMap = (EditText) findViewById(R.id.edittext_pickup_location);
-		edittextPickupMap
-				.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						// TODO Auto-generated method stub
-						if (hasFocus) {
-							Intent intent = new Intent(
-									CreateGoodsActivity.this,
-									CreateGoodsMapFragment.class);
-							startActivity(intent);
-						}
-					}
-				});
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(CreateGoodsActivity.this,
+						CreateGoodsMapFragment.class);
+				intent.putExtra("address", edittextPickupAddr.getText().toString());
+				startActivity(intent);
+			}
+		});
 
 	}
 
