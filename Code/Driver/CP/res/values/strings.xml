@@ -6,7 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="color">red</string>
     <string name="customize"><u>Tùy chỉnh lộ trình</u></string>
-    <string name="createRoute">THÔNG TIN LỘ TRÌNH</string>
+    <string name="route"><b>LỘ TRÌNH</b></string>
     <string name="changeRoute">THAY ĐỔI LỘ TRÌNH</string>
     <string name="startPoint">Địa điểm bắt đầu</string>
     <string name="point1">Địa điểm đi qua 1</string>
@@ -15,11 +15,13 @@
     <string name="endPoint">Địa điểm kết thúc</string>
     <string name="endDate">Ngày kết thúc</string>
     <string name="payload">Khối lượng có thể chở</string>
-    <string name="cantLoad"><b>Các loại hàng không thể chở</b></string>
+    <string name="cantLoad"><u>Các loại hàng không thể chở</u></string>
     <string name="frozen">Hàng đông lạnh</string>
     <string name="easyToBreak">Hàng dễ vỡ</string>
     <string name="other">Loại hàng khác</string>
     <string name="create">Tạo mới</string>
+    <string name="time"><b>THỜI GIAN</b></string>
+    <string name="otherInfo"><b>HÀNG HÓA CHỞ</b></string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Danh sách lộ trình</item>

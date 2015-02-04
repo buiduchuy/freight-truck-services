@@ -224,8 +224,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			String endPoint = intent.getStringExtra("end");
 
 			LatLng start = new GetLatLng().execute(startPoint).get();
-			MarkerOptions startMarker = new MarkerOptions().draggable(true)
-					.snippet("1");
+			MarkerOptions startMarker = new MarkerOptions().snippet("1");
 			startMarker.position(start);
 			locations.add(start);
 			map.addMarker(startMarker);
@@ -248,8 +247,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			}
 
 			LatLng end = new GetLatLng().execute(endPoint).get();
-			MarkerOptions endMarker = new MarkerOptions().draggable(true)
-					.snippet("4");
+			MarkerOptions endMarker = new MarkerOptions().snippet("4");
 			endMarker.position(end);
 			locations.add(end);
 			map.addMarker(endMarker);
