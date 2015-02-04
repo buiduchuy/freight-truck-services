@@ -1,10 +1,13 @@
 package com.example.ownerapp;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 
 import sample.tabsswipe.adapter.PlacesAutoCompleteAdapter;
 
@@ -15,7 +18,14 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.style.UpdateLayout;
 import android.view.Menu;
@@ -31,7 +41,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 
-public class CreateGoodsActivity extends Activity {
+public class CreateGoodsActivity extends Activity{
 	private Spinner spinner;
 	private Calendar calendar;
 	private DatePickerDialog.OnDateSetListener date1, date2;
@@ -209,6 +219,8 @@ public class CreateGoodsActivity extends Activity {
 		edittextDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_deliver));
 
+		
+		
 	}
 
 	@Override
@@ -236,4 +248,6 @@ public class CreateGoodsActivity extends Activity {
 	 et.setText(sdf.format(calendar.getTime()));
 	 }
 
+	 
+	 
 }
