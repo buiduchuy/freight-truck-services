@@ -32,6 +32,11 @@ public class Controller extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		String action = request.getParameter("btnAction");
+	    if ("ws".equals(action)) {
+	    	RequestDispatcher rd = request.getRequestDispatcher("/rest/hello");
+	        rd.forward(request, response);
+	    }
 		
 	}
 
