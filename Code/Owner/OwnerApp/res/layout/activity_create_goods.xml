@@ -33,9 +33,12 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
+                    android:id="@+id/edittext_weight"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:hint="Khối lượng" />
+                    android:hint="Khối lượng"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal" />
             </TableRow>
 
             <TableRow
@@ -67,10 +70,11 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
+                    android:id="@+id/edittext_deliver_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ngày giao hàng"
-                    android:inputType="datetime" />
+                    android:editable="false"
+                    android:hint="Ngày giao hàng" />
             </TableRow>
 
             <TableRow
@@ -78,8 +82,10 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
+                    android:id="@+id/edittext_deliver_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:editable="false"
                     android:hint="Thời gian giao hàng" />
             </TableRow>
 
@@ -91,7 +97,9 @@
                     android:id="@+id/edittext_pickup_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Địa điểm nhận hàng" />
+                    android:hint="Địa điểm nhận hàng"
+                    android:imeOptions="actionDone" 
+                    android:singleLine="true"/>
 
                 <ImageButton
                     android:id="@+id/imagebtn_pickup_address"
@@ -108,7 +116,9 @@
                     android:id="@+id/edittext_deliver_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Địa điểm giao hàng" />
+                    android:hint="Địa điểm giao hàng" 
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"/>
 
                 <ImageButton
                     android:id="@+id/imagebtn_deliver_address"
@@ -122,9 +132,12 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
+                    android:id="@+id/edittext_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Giá tiền" />
+                    android:hint="Giá tiền" 
+                    android:inputType="numberDecimal"
+                    android:imeOptions="actionDone"/>
             </TableRow>
 
             <TableRow
@@ -132,13 +145,17 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
-                    android:layout_width="match_parent"
+                    android:id="@+id/edittext_note"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Ghi chú" />
+                    android:hint="Ghi chú" 
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"/>
             </TableRow>
         </TableLayout>
 
         <Button
+            android:id="@+id/btn_post"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
