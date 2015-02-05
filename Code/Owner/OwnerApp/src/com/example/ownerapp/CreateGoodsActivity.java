@@ -175,7 +175,7 @@ public class CreateGoodsActivity extends Activity{
 											etDeliverTime.setText(hourOfDay
 													+ " : " + minute);
 										}
-									}, mHour, mMinute, false);
+									}, mHour, mMinute, false);						
 							tpd.show();
 						}
 					}
