@@ -11,6 +11,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -39,13 +40,10 @@ import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class CreateGoodsMapFragment extends Activity {
-	Marker checkMarker = null;
+public class CreateGoodsMapFragment extends Activity {	
 	private double mlong, mlat;
 	private LatLng point;
-	private GoogleMap map;
-	private EditText etAddress;
-	private Button btFind;
+	private GoogleMap map;	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,54 +51,31 @@ public class CreateGoodsMapFragment extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_create_goods_fragment);
 
-		etAddress = (EditText) findViewById(R.id.edittext_address);
-		btFind = (Button) findViewById(R.id.button_find);
-
-		String address = "144/14/1 trần bình trọng phường 1 quận 1 gò vấp hồ chí minh";
-
+		String address = getIntent().getStringExtra("address");
+		
+		// khoi tao map
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map);
 		map = mapFragment.getMap();
+		
+		// tao marker tren map
+		Geocoder geocoder = new Geocoder(getBaseContext());
+		try {			
+			List<Address> list = geocoder.getFromLocationName(
+					address, 1);
+			mlong = list.get(0).getLongitude();
+			mlat = list.get(0).getLatitude();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		MarkerOptions mMarker = new MarkerOptions();
+		point = new LatLng(mlat, mlong);
+		mMarker.position(point);
+		mMarker.draggable(true);
+		map.addMarker(mMarker);
 
-		btFind.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Geocoder geocoder = new Geocoder(getBaseContext());
-				try {
-					String add = etAddress.getText().toString();
-					List<Address> list = geocoder.getFromLocationName(
-							add, 1);
-					mlong = list.get(0).getLongitude();
-					mlat = list.get(0).getLatitude();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-				MarkerOptions mMarker = new MarkerOptions();
-				point = new LatLng(mlat, mlong);
-				mMarker.position(point);
-				map.addMarker(mMarker);
-			}
-		});
-
-		map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-			@Override
-			public void onMapClick(LatLng arg0) {
-				// TODO Auto-generated method stub
-				MarkerOptions marker = new MarkerOptions();
-				marker.position(arg0);
-				if (checkMarker == null) {
-					checkMarker = map.addMarker(marker);
-				} else {
-					map.clear();
-					checkMarker = null;
-					checkMarker = map.addMarker(marker);
-				}
-
-			}
-		});
+		//zoom to marker	
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
 	}
 
 	@Override
@@ -122,24 +97,5 @@ public class CreateGoodsMapFragment extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void moveMapToMyLocation() {
-		LocationManager locMan = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		Criteria crit = new Criteria();
-
-		Location loc = locMan.getLastKnownLocation(locMan.getBestProvider(crit,
-				false));
-
-		CameraPosition camPos = new CameraPosition.Builder()
-
-		.target(new LatLng(loc.getLatitude(), loc.getLongitude()))
-
-		.zoom(12.8f)
-
-		.build();
-
-		CameraUpdate camUpdate = CameraUpdateFactory.newCameraPosition(camPos);
-
-		map.moveCamera(camUpdate);
-	}
+	
 }
