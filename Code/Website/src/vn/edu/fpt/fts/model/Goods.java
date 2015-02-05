@@ -29,8 +29,21 @@ public class Goods implements java.io.Serializable {
 	private int OwnerID;
 	private int GoodsCategoryID;
 	
-	public Goods() {
-		// TODO Auto-generated constructor stub
+
+	public Goods(String pickupTime, String pickupAddress, String deliveryTime,
+			String deliveryAddress) {
+		super();
+		PickupTime = pickupTime;
+		PickupAddress = pickupAddress;
+		DeliveryTime = deliveryTime;
+		DeliveryAddress = deliveryAddress;
+	}
+
+	public Goods(int weight, String notes, int goodsCategoryID) {
+		super();
+		Weight = weight;
+		Notes = notes;
+		GoodsCategoryID = goodsCategoryID;
 	}
 
 	public Goods(int goodsID, int weight, double price, String pickupTime,

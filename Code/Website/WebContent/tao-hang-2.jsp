@@ -7,81 +7,163 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Tạo hàng</title>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<jsp:include page="header.jsp"/>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<c:set var="categoryGoods" value="${sessionScope.categoryGoods }" />
+<jsp:include page="header.jsp" />
 <section class="container">
-    <center>
-        <div class="form-content" style="border: 1px solid #ccc;box-shadow: 1px 1px 2px 2px #CCC;margin-bottom: 50px;width: 800px;">
-            <div class="row"> </div>
-            <div class="large-12 columns">
-                <h1 class="page-title"><font color="orange" >Tạo hàng</font></h1>
-                <ul class="button-group even-4">
-                    <li><a href="tao-hang-1.jsp" class="button success"><i class="icon-ok"></i>Địa chỉ giao nhận hàng</a></li>
-                    <li><a href="#"class="button">Thông tin hàng hoá</a></li>
-                    <li><a class="button disabled">Chi phí</a></li>
-                    <li><a class="button disabled">Xác nhận</a></li>
-                </ul>
-            </div>
+	<center>
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
+			<jsp:include page="menu-tao-hang.jsp" />
 
-            <form action="Controller" method="post" accept-charset="utf-8" >
-                <div class="row">
-                    <div class="large-12 columns">
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="right-label" class="right inline"><small class="validate">*</small> Loại hàng: </label>                                        
-                            </div>
-                            <div class="small-6 columns">
-                                <select required data-errormessage-value-missing="Vui lòng chọn loại hàng !">
-                                    <option selected disabled value="">Chọn loại hàng</option>
-                                    <option >May mặc</option>
-                                    <option>Điện gia dụng</option>
-                                    <option>Thực phẩm</option>
-                                    <option>Hi-tech</option>
-                                </select>
-                            </div>
-                            <div class="small-3 columns">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="right-label" class="right inline"><small class="validate">*</small> Khối lượng: </label>                                        
-                            </div>
-                            <div class="small-6 columns">
-                                <input type="text" id="right-label" onkeypress="return keyPhone(event);"placeholder="Nhập khối lượng hàng"required=""data-errormessage-value-missing="Vui lòng điền khối lượng của hàng !"/>
-                            </div>
-                            <div class="small-3 columns">
-                                <label for="right-label" class="left inline">Kg</label>  
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="small-3 columns">
-                                <label for="right-label" class="right inline">Ghi chú : </label>                                        
-                            </div>
-                            <div class="small-6 columns">
-                                <textarea  maxlength="250" ></textarea>
-                            </div>
-                            <div class="small-3 columns">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="large-12 columns">
-                                <div class="submit-area right">
-                                    <a href="tao-hang-1.jsp" class="button secondary"><i class="icon-mail-reply"></i> Trở về</a>
-                                    <button class="success"name="btnAction" value="next2"><i class="icon-mail-forward"></i> Tiếp theo</button>
+			<form action="Controller" method="post" accept-charset="utf-8">
+				<c:choose>
+					<c:when test="${not empty good}">
+						<div class="row">
+							<div class="large-12 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<label for="right-label" class="right inline"><small
+											class="validate">*</small> Loại hàng: </label>
+									</div>
+									<div class="small-6 columns">
+										<select required
+											data-errormessage-value-missing="Vui lòng chọn loại hàng !"
+											name="ddlgoodsCategoryID">
+											<option value="0" disabled="disabled">Chọn loại hàng</option>
+											<c:forEach var="row" items="${categoryGoods }">
 
-                                </div>	
-                                </br>
-                            </div>
-                        </div>
-                             <div class="row"> </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+												<c:choose>
+													<c:when test="${row.goodsCategoryId==good.goodsCategoryID}">
+														<option value="${row.goodsCategoryId }"
+															selected="selected">${row.name }</option>
+													</c:when>
+													<c:otherwise>
+														<option value="${row.goodsCategoryId }">${row.name }</option>
+													</c:otherwise>
+												</c:choose>
+											</c:forEach>
+										</select>
+									</div>
+									<div class="small-3 columns"></div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<label for="right-label" class="right inline"><small
+											class="validate">*</small> Khối lượng: </label>
+									</div>
+									<div class="small-6 columns">
+										<input type="text" id="right-label" name="txtWeight"
+											onkeypress="return keyPhone(event);"
+											placeholder="Nhập khối lượng hàng" required=""
+											data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
+											maxlength="5" value="${good.weight}" />
+									</div>
+									<div class="small-3 columns">
+										<label for="right-label" class="left inline">Kg</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<label for="right-label" class="right inline">Ghi chú
+											: </label>
+									</div>
+									<div class="small-6 columns">
+										<textarea maxlength="250" name="txtNotes">${good.notes }</textarea>
+									</div>
+									<div class="small-3 columns"></div>
+								</div>
+								<div class="row">
+									<div class="large-12 columns">
+										<div class="submit-area right">
+											<a href="Controller?btnAction=viewCreate_1"
+												class="button secondary"><i class="icon-mail-reply"></i>
+												Trở về</a>
+											<button class="success" name="btnAction" value="next2">
+												<i class="icon-mail-forward"></i> Tiếp theo
+											</button>
+
+										</div>
+										</br>
+									</div>
+								</div>
+								<div class="row"></div>
+							</div>
+						</div>
+					</c:when>
+					<c:otherwise>
+						<div class="row">
+							<div class="large-12 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<label for="right-label" class="right inline"><small
+											class="validate">*</small> Loại hàng: </label>
+									</div>
+									<div class="small-6 columns">
+										<select required
+											data-errormessage-value-missing="Vui lòng chọn loại hàng !"
+											name="ddlgoodsCategoryID">
+											<option value="0" disabled="disabled" selected="selected">Chọn
+												loại hàng</option>
+											<c:forEach var="row" items="${categoryGoods }">
+												<option value="${row.goodsCategoryId }">${row.name }</option>
+											</c:forEach>
+										</select>
+									</div>
+									<div class="small-3 columns"></div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<label for="right-label" class="right inline"><small
+											class="validate">*</small> Khối lượng: </label>
+									</div>
+									<div class="small-6 columns">
+										<input type="text" id="right-label" name="txtWeight"
+											onkeypress="return keyPhone(event);"
+											placeholder="Nhập khối lượng hàng" required=""
+											data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
+											maxlength="5" />
+									</div>
+									<div class="small-3 columns">
+										<label for="right-label" class="left inline">Kg</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<label for="right-label" class="right inline">Ghi chú
+											: </label>
+									</div>
+									<div class="small-6 columns">
+										<textarea maxlength="250" name="txtNotes"></textarea>
+									</div>
+									<div class="small-3 columns"></div>
+								</div>
+								<div class="row">
+									<div class="large-12 columns">
+										<div class="submit-area right">
+											<a href="Controller?btnAction=viewCreate_1"
+												class="button secondary"><i class="icon-mail-reply"></i>
+												Trở về</a>
+											<button class="success" name="btnAction" value="next2">
+												<i class="icon-mail-forward"></i> Tiếp theo
+											</button>
+
+										</div>
+										</br>
+									</div>
+								</div>
+								<div class="row"></div>
+							</div>
+						</div>
+					</c:otherwise>
+				</c:choose>
+
+			</form>
+		</div>
 
 
 
-    </center>
+	</center>
 
 </section>
 <script>
@@ -107,4 +189,4 @@
     }
 
 </script>
-<jsp:include page="footer.jsp"/>
+<jsp:include page="footer.jsp" />

@@ -5,7 +5,12 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<c:set var="reqUrl" value="${pageContext.request.requestURI}"/>
+<c:set var="namePage" value="${fn:substringAfter(reqUrl, 'FTS/')}"
+    scope="session" />
 <!DOCTYPE html>
 <html class="no-js" xmlns="http://www.w3.org/1999/xhtml" lang="vi-VN"  >
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
