@@ -105,7 +105,7 @@
                                                 <table id="example1" class="display" cellspacing="0" width="100%">
                                                     <thead>
                                                        <tr>
-                                                            <th ><input type="checkbox" class="toggle-all" value="0"></th>
+                                                            <th width="125"><font color="orange" >STT</font></th>
                                                             <th width="125"><font color="orange" >LOẠI HÀNG</font></th>
                                                             <th width="225"><font color="orange" >THỜI GIAN GIAO HÀNG</font></th>
                                                             <th width="250"><font color="orange" >THỜI GIAN NHẬN HÀNG</font></th>
@@ -115,7 +115,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr>
-                                                            <td><input type="checkbox" class="toggle-all" value="0"></td>
+                                                            <td>1</td>
                                                             <td>May mặc</td>
                                                             <td>16h 15/1/2015</td>
                                                             <td>16h 15/2/2015</td>
@@ -123,7 +123,7 @@
                                                             <td><a class="button" href="chi-tiet-hang-dang-giao-dich.jsp"><i class="icon-ok"></i> Xem chi tiết</a></td>
                                                         </tr>
                                                         <tr>
-                                                            <td><input type="checkbox" class="toggle-all" value="0"></td>
+                                                            <td>2</td>
                                                             <td>Điện gia dụng</td>
                                                             <td>16h 15/1/2015</td>
                                                             <td>16h 15/2/2015</td>
