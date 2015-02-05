@@ -2,10 +2,14 @@ package vn.edu.fpt.fts.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.model.Goods;
 
 public class GoodsDAO {
 	
@@ -61,5 +65,50 @@ public class GoodsDAO {
 			}
 		}
 		return false;
+	}
+	
+	public List<Goods> loadAllGoods() {
+		Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+
+        try {
+            con = Common.makeConnection();
+            String sql = "SELECT * FROM Goods";
+            stm = con.prepareStatement(sql);
+            rs = stm.executeQuery();
+            List list = new ArrayList();
+
+            while (rs.next()) {
+                String code = rs.getString("Code");
+                String name = rs.getString("Name");
+                String description = rs.getString("Description");
+                float price = rs.getFloat("Price");
+                String category = rs.getString("Category");
+                Goods pr = new G
+                list.add(pr);
+            }
+
+            ProductDTO[] result = new ProductDTO[list.size()];
+            list.toArray(result);
+            return result;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stm != null) {
+                    stm.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
 	}
 }
