@@ -16,6 +16,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -151,6 +152,10 @@ public class CreateRoute extends Fragment {
 		// TODO Auto-generated method stub
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
 		startDate = (EditText) v.findViewById(R.id.editText2);
+		cal = Calendar.getInstance();
+		String date = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(cal.get(Calendar.MONTH) + 1)
+				+ "/" + String.valueOf(cal.get(Calendar.YEAR)));
+		startDate.setText(date);
 		endDate = (EditText) v.findViewById(R.id.editText4);
 		link = (TextView) v.findViewById(R.id.textView7);
 		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
@@ -165,7 +170,12 @@ public class CreateRoute extends Fragment {
 		p1 = (AutoCompleteTextView) v.findViewById(R.id.point1);
 		p2 = (AutoCompleteTextView) v.findViewById(R.id.point2);
 		end = (AutoCompleteTextView) v.findViewById(R.id.end);
-
+		
+		start.setAdapter(startAdapter);
+		p1.setAdapter(p1Adapter);
+		p2.setAdapter(p2Adapter);
+		end.setAdapter(endAdapter);
+		
 		locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
 		LocationListener locationListener = new LocationListener() {
@@ -199,7 +209,12 @@ public class CreateRoute extends Fragment {
 			public void onClick(View v) {
 				DatePickerDialog dialog = new DatePickerDialog(getActivity(),
 						startListener, cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONDAY), cal.get(Calendar.DATE));
+								.get(Calendar.MONTH), cal.get(Calendar.DATE));
+				DatePicker picker = dialog.getDatePicker();
+				Calendar calendar = Calendar.getInstance();
+				picker.setMinDate(calendar.getTimeInMillis() - 1000);
+				calendar.add(Calendar.MONTH, 1);
+				picker.setMaxDate(calendar.getTimeInMillis());
 				dialog.show();
 			}
 		});
@@ -209,7 +224,12 @@ public class CreateRoute extends Fragment {
 			public void onClick(View v) {
 				DatePickerDialog dialog = new DatePickerDialog(getActivity(),
 						endListener, cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONDAY), cal.get(Calendar.DATE));
+								.get(Calendar.MONTH), cal.get(Calendar.DATE));
+				DatePicker picker = dialog.getDatePicker();
+				Calendar calendar = Calendar.getInstance();
+				picker.setMinDate(calendar.getTimeInMillis() - 1000);
+				calendar.add(Calendar.MONTH, 1);
+				picker.setMaxDate(calendar.getTimeInMillis());
 				dialog.show();
 			}
 		});
