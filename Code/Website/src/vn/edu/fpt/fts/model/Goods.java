@@ -29,6 +29,12 @@ public class Goods implements java.io.Serializable {
 	private int OwnerID;
 	private int GoodsCategoryID;
 	
+	public Goods(int weight, String notes, int goodsCategoryID) {
+		super();
+		Weight = weight;
+		Notes = notes;
+		GoodsCategoryID = goodsCategoryID;
+	}
 
 	public Goods(String pickupTime, String pickupAddress, String deliveryTime,
 			String deliveryAddress) {
@@ -37,13 +43,6 @@ public class Goods implements java.io.Serializable {
 		PickupAddress = pickupAddress;
 		DeliveryTime = deliveryTime;
 		DeliveryAddress = deliveryAddress;
-	}
-
-	public Goods(int weight, String notes, int goodsCategoryID) {
-		super();
-		Weight = weight;
-		Notes = notes;
-		GoodsCategoryID = goodsCategoryID;
 	}
 
 	public Goods(int goodsID, int weight, double price, String pickupTime,
@@ -69,6 +68,10 @@ public class Goods implements java.io.Serializable {
 		Active = active;
 		OwnerID = ownerID;
 		GoodsCategoryID = goodsCategoryID;
+	}
+
+	public Goods() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public int getGoodsID() {
@@ -198,5 +201,5 @@ public class Goods implements java.io.Serializable {
 	public void setGoodsCategoryID(int goodsCategoryID) {
 		GoodsCategoryID = goodsCategoryID;
 	}
-
+	
 }

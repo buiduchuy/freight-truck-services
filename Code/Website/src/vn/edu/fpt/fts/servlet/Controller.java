@@ -103,7 +103,7 @@ public class Controller extends HttpServlet {
 		
 			
 			session.setAttribute("categoryGoods", ca);
-			Goods r= new Goods(pickupTime, pickupAddress, deliveryTime, deliveryAddress);
+			Goods r = new Goods(pickupTime, pickupAddress, deliveryTime, deliveryAddress);
 			session.setAttribute("router", r);
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-2.jsp");
