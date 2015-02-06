@@ -2,6 +2,10 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -13,8 +17,10 @@ import javax.servlet.http.HttpSession;
 
 import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
+import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.model.Driver;
 import vn.edu.fpt.fts.model.Goods;
 import vn.edu.fpt.fts.model.GoodsCategory;
@@ -75,6 +81,7 @@ public class Controller extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -89,7 +96,7 @@ public class Controller extends HttpServlet {
 			String password = request.getParameter("txtPassword");
 			session.removeAttribute("errorLogin");
 			session.removeAttribute("account");
-			if (acc.checkLoginAccount(email, password)!=null) {
+			if (acc.checkLoginAccount(email, password)==null) {
 				List<GoodsCategory> list= goodCa.getAllGoodsCategory();
 				GoodsCategory[] typeGoods= new GoodsCategory[list.size()];
 				list.toArray(typeGoods);
@@ -119,7 +126,7 @@ public class Controller extends HttpServlet {
 			String pickupTime = request.getParameter("txtpickupTime");
 			String deliveryAddress = request.getParameter("txtdeliveryAddress");
 			String deliveryTime = request.getParameter("txtdeliveryTime");
-			
+		
 
 			Goods r = new Goods(pickupTime, pickupAddress, deliveryTime,
 					deliveryAddress);
@@ -229,6 +236,10 @@ public class Controller extends HttpServlet {
 		}
 
 		if ("createGood".equals(action)) {
+			Common co= new Common();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String createTime=dateFormat.format(date);
 			String pickupAdress = ((Goods) session.getAttribute("router"))
 					.getPickupAddress();
 			String deliveryAddress = ((Goods) session.getAttribute("router"))
@@ -242,7 +253,14 @@ public class Controller extends HttpServlet {
 					.getGoodsCategoryID();
 			String notes = ((Goods) session.getAttribute("good")).getNotes();
 			int price = (int) session.getAttribute("price");
-
+			float a= Float.parseFloat("10");
+			Goods goo= new Goods(weight, price, co.changeFormatDate(pickupTime),  pickupAdress, co.changeFormatDate(deliveryTime),  deliveryAddress, a, a, a, a, notes, createTime, 1, 1, GoodsCategoryID);
+			GoodsDAO goodDao= new GoodsDAO();
+			if(goodDao.insertGoods(goo)==1){
+				System.out.println("OK");
+			}else{
+				System.out.println("ONO");
+			}
 		}
 
 	}
