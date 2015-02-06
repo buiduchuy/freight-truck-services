@@ -1,11 +1,16 @@
 package vn.edu.fpt.fts.service;
 
+import java.util.List;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.model.Goods;
 
 @Path("/CreateGoods")
 public class CreateGoods {
@@ -32,9 +37,11 @@ public class CreateGoods {
 	}
 	
 	@GET
+	@Path("get")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String JSON(@QueryParam("action") String name) {
-		return "<html> " + "<title>" + name + "</title>"
-				+ "<body><h1>" + name + "</body></h1>" + "</html> ";
+	public Goods JSON() {
+		GoodsDAO goodsDao = new GoodsDAO();
+		List l_goods = goodsDao.getAllGoods();
+		return (Goods) l_goods.get(0);
 	}
 }

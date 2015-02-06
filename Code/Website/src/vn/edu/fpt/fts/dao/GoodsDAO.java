@@ -4,58 +4,59 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Goods;
 
 public class GoodsDAO {
-	
-	public boolean insert(int weight, float price, Time pickupTime,
-			String pickupAddress, Time deliveryTime, String deliveryAddress,
-			String pickupMarkerLocation, String deliveryMarkerLocation,
-			String notes, Time createTime, Boolean isActive, int ownerID,
-			int goodsCategoryID) {
+
+	public int insertGoods(Goods bean) {
 		Connection con = null;
-		PreparedStatement stm = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
 
 		try {
-			con = Common.makeConnection();
+			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Goods([Weight], Price, PickupTime, "
-					+ "PickupAddress, DeliveryTime, DeliveryAddress, "
-					+ "PickupMarkerLocation, DeliveryMarkerLocation, Notes, "
-					+ "CreateTime, IsActive, OwnerID, GoodsCategoryID) "
-					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			stm = con.prepareStatement(sql);
-			stm.setInt(1, weight);
-			stm.setFloat(2, price);
-			stm.setTime(3, pickupTime);
-			stm.setString(4, pickupAddress);
-			stm.setTime(5, deliveryTime);
-			stm.setString(6, deliveryAddress);
-			stm.setString(7, pickupMarkerLocation);
-			stm.setString(8, deliveryMarkerLocation);
-			stm.setString(9, notes);
-			stm.setTime(10, createTime);
-			stm.setBoolean(11, isActive);
-			stm.setInt(12, ownerID);
-			stm.setInt(13, goodsCategoryID);
+			String sql = "INSERT INTO Goods ( " + "Weight," + "Price,"
+					+ "PickupTime," + "PickupAddress," + "DeliveryTime,"
+					+ "DeliveryAddress," + "PickupMarkerLongtitude,"
+					+ "PickupMarkerLatidute," + "DeliveryMarkerLongtitude,"
+					+ "DeliveryMarkerLatidute," + "Notes," + "CreateTime,"
+					+ "Active," + "OwnerID," + "GoodsCategoryID" + ") VALUES ("
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?)";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, bean.getWeight()); // Weight
+			stmt.setDouble(i++, bean.getPrice()); // Price
+			stmt.setTime(i++, bean.getPickupTime()); // PickupTime
+			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
+			stmt.setTime(i++, bean.getDeliveryTime()); // DeliveryTime
+			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
+			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
+			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
+			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
+			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
+			stmt.setString(i++, bean.getNotes()); // Notes
+			stmt.setTime(i++, bean.getCreateTime()); // CreateTime
+			stmt.setInt(i++, bean.getActive()); // Active
+			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
+			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
 
-			int row = stm.executeUpdate();
+			ret = stmt.executeUpdate();
 
-			if (row > 0) {
-				return true;
-			}
 		} catch (SQLException e) {
 			// TODO: handle exception
 			System.out.println("Cannot insert to Goods table");
+			ret = -1;
 		} finally {
 			try {
-				if (stm != null) {
-					stm.close();
+				if (stmt != null) {
+					stmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -64,51 +65,119 @@ public class GoodsDAO {
 				ex.printStackTrace();
 			}
 		}
-		return false;
+		return ret;
 	}
-	
-	public List<Goods> loadAllGoods() {
+
+	public static int updateGoods(Goods bean) {
 		Connection con = null;
-        PreparedStatement stm = null;
-        ResultSet rs = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Goods SET " + " Weight = ?," + " Price = ?,"
+					+ " PickupTime = ?," + " PickupAddress = ?,"
+					+ " DeliveryTime = ?," + " DeliveryAddress = ?,"
+					+ " PickupMarkerLongtitude = ?,"
+					+ " PickupMarkerLatidute = ?,"
+					+ " DeliveryMarkerLongtitude = ?,"
+					+ " DeliveryMarkerLatidute = ?," + " Notes = ?,"
+					+ " CreateTime = ?," + " Active = ?," + " OwnerID = ?,"
+					+ " GoodsCategoryID = ? " + " WHERE GoodsID = '"
+					+ bean.getGoodsID() + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, bean.getWeight()); // Weight
+			stmt.setDouble(i++, bean.getPrice()); // Price
+			stmt.setTime(i++, bean.getPickupTime()); // PickupTime
+			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
+			stmt.setTime(i++, bean.getDeliveryTime()); // DeliveryTime
+			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
+			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
+			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
+			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
+			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
+			stmt.setString(i++, bean.getNotes()); // Notes
+			stmt.setTime(i++, bean.getCreateTime()); // CreateTime
+			stmt.setInt(i++, bean.getActive()); // Active
+			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
+			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
 
-        try {
-            con = Common.makeConnection();
-            String sql = "SELECT * FROM Goods";
-            stm = con.prepareStatement(sql);
-            rs = stm.executeQuery();
-            List list = new ArrayList();
+			ret = stmt.executeUpdate();
 
-            while (rs.next()) {
-                String code = rs.getString("Code");
-                String name = rs.getString("Name");
-                String description = rs.getString("Description");
-                float price = rs.getFloat("Price");
-                String category = rs.getString("Category");
-                Goods pr = new G
-                list.add(pr);
-            }
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Cannot update to Goods table");
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return ret;
+	}
 
-            ProductDTO[] result = new ProductDTO[list.size()];
-            list.toArray(result);
-            return result;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (stm != null) {
-                    stm.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+	public static List<Goods> getAllGoods() {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Goods";
+			stm = con.prepareStatement(sql);
+			rs = stm.executeQuery();
+			List<Goods> list = new ArrayList<Goods>();
+			Goods goods;
+			while (rs.next()) {
+				goods = new Goods();
+				
+				goods.setGoodsID(rs.getInt("GoodsID"));
+				goods.setWeight(rs.getInt("Weight"));
+				goods.setPrice(rs.getDouble("Price"));
+				goods.setPickupTime(rs.getTime("PickupTime"));
+				goods.setPickupAddress(rs.getString("PickupAddress"));
+				goods.setDeliveryTime(rs.getTime("DeliveryTime"));
+				goods.setDeliveryAddress(rs.getString("DeliveryAddress"));
+				goods.setPickupMarkerLongtitude(rs
+						.getFloat("PickupMarkerLongtitude"));
+				goods.setPickupMarkerLatidute(rs
+						.getFloat("PickupMarkerLatidute"));
+				goods.setDeliveryMarkerLongtitude(rs
+						.getFloat("DeliveryMarkerLongtitude"));
+				goods.setDeliveryMarkerLatidute(rs
+						.getFloat("DeliveryMarkerLatidute"));
+				goods.setNotes(rs.getString("Notes"));
+				goods.setCreateTime(rs.getTime("CreateTime"));
+				goods.setActive(rs.getInt("Active"));
+				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+
+				list.add(goods);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }
