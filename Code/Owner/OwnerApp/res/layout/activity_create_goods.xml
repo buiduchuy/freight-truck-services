@@ -51,19 +51,7 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:hint="Ngày nhận hàng" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_pickup_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:hint="Thời gian nhận hàng" />
-            </TableRow>
+            </TableRow>     
 
             <TableRow
                 android:layout_width="match_parent"
@@ -75,19 +63,7 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:hint="Ngày giao hàng" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_deliver_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:hint="Thời gian giao hàng" />
-            </TableRow>
+            </TableRow>          
 
             <TableRow
                 android:layout_width="match_parent"
