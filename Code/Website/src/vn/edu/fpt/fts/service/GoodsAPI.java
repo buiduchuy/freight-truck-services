@@ -1,45 +1,24 @@
 package vn.edu.fpt.fts.service;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.model.Goods;
 
-@Path("/CreateGoods")
+@Path("/Create")
 public class GoodsAPI {
-	// This method is called if TEXT_PLAIN is request
-	@GET
-	@Produces(MediaType.TEXT_PLAIN)
-	public String PlainText(@PathParam("action") String name) {
-		return name;
-	}
-
-	// This method is called if XML is request
-	@GET
-	@Produces(MediaType.TEXT_XML)
-	public String XML() {
-		return "<?xml version=\"1.0\"?>" + "<hello> Hello" + "</hello>";
-	}
-
-	// This method is called if HTML is request
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String Html(@QueryParam("action") String name) {
-		return "<html> " + "<title>" + name + "</title>"
-				+ "<body><h1>" + name + "</body></h1>" + "</html> ";
+	public String Html() {
+		return "<html> " + "<title>" + "Web service" + "</title>"
+				+ "<body><h1>" + "WEB SERVICE IS ACTIVE" + "</body></h1>" + "</html> ";
 	}
 	
 	@GET
@@ -52,18 +31,24 @@ public class GoodsAPI {
 	}
 	
 	@POST
-	@Path("add")
+	@Path("Goods")
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	public String listGoodsJson(MultivaluedMap<String, String> goodsParams) {
 		GoodsDAO goodsDao = new GoodsDAO();
 		Goods goods = new Goods();
 	    
 		goods.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
-		goods.setPrice(Float.valueOf(goodsParams.getFirst("price")));
-		
+		goods.setPrice(Double.valueOf(goodsParams.getFirst("price")));
 		goods.setPickupTime(goodsParams.getFirst("pickupTime"));
+		goods.setPickupAddress(goodsParams.getFirst("pickupAddress"));
 		goods.setDeliveryTime(goodsParams.getFirst("deliveryTime"));
+		goods.setDeliveryAddress(goodsParams.getFirst("deliveryAddress"));
+		goods.setPickupMarkerLongtitude(Float.valueOf(goodsParams.getFirst("pickupMarkerLongtitude")));
+		goods.setPickupMarkerLatidute(Float.valueOf(goodsParams.getFirst("pickupMarkerLatidute")));
+		goods.setDeliveryMarkerLongtitude(Float.valueOf(goodsParams.getFirst("deliveryMarkerLongtitude")));
+		goods.setDeliveryMarkerLatidute(Float.valueOf(goodsParams.getFirst("deliveryMarkerLatidute")));
+		goods.setNotes(goodsParams.getFirst("notes"));
 		goods.setCreateTime(goodsParams.getFirst("createTime"));
 		goods.setActive(Integer.valueOf(goodsParams.getFirst("active")));
 		goods.setOwnerID(Integer.valueOf(goodsParams.getFirst("ownerID")));

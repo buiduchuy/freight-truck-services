@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +54,7 @@ public class GoodsDAO {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			System.out.println("Cannot insert to Goods table");
+			e.printStackTrace();
 			ret = -1;
 		} finally {
 			try {
