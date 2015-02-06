@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <title>Tạo hàng</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="categoryGoods" value="${sessionScope.categoryGoods }" />
+<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <jsp:include page="header.jsp" />
 <section class="container">
 	<center>
@@ -30,7 +30,7 @@
 										<select required
 											data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 											name="ddlgoodsCategoryID">
-											<c:forEach var="row" items="${categoryGoods }">
+											<c:forEach var="row" items="${typeGoods }">
 
 												<c:choose>
 													<c:when test="${row.goodsCategoryId==good.goodsCategoryID}">
@@ -106,7 +106,7 @@
 										<select required
 											data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 											name="ddlgoodsCategoryID">
-											<c:forEach var="row" items="${categoryGoods }">
+											<c:forEach var="row" items="${typeGoods }">
 												<c:choose>
 													<c:when test="${row.goodsCategoryId==1 }">
 														<option value="${row.goodsCategoryId }"
