@@ -49,13 +49,21 @@ public class Controller extends HttpServlet {
 			rd.forward(request, response);
 		}
 		if ("viewCreate_1".equals(action)) {
-			RequestDispatcher rd = request.getRequestDispatcher("tao-hang-1.jsp");
+			RequestDispatcher rd = request
+					.getRequestDispatcher("tao-hang-1.jsp");
 			rd.forward(request, response);
 		}
 		if ("viewCreate_2".equals(action)) {
-				RequestDispatcher rd = request.getRequestDispatcher("tao-hang-2.jsp");
-				rd.forward(request, response);
-			}
+			RequestDispatcher rd = request
+					.getRequestDispatcher("tao-hang-2.jsp");
+			rd.forward(request, response);
+		}
+		if ("viewCreate_3".equals(action)) {
+			session.setAttribute("priceSuggest", "20000000");
+			RequestDispatcher rd = request
+					.getRequestDispatcher("tao-hang-3.jsp");
+			rd.forward(request, response);
+		}
 	}
 
 	/**
@@ -81,42 +89,72 @@ public class Controller extends HttpServlet {
 				rd.forward(request, response);
 			} else {
 				session.setAttribute("errorLogin",
-						"Email hoặc là password sai. Vui lòng nhập lại");
+						"Email hoặc mật khẩu không đúng. Xin đăng nhập lại !");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("dang-nhap.jsp");
 				rd.forward(request, response);
 			}
-		}if ("next1".equals(action)) {
+		}
+		if ("next1".equals(action)) {
 			String pickupAddress = request.getParameter("txtpickupAddress");
 			String pickupTime = request.getParameter("txtpickupTime");
 			String deliveryAddress = request.getParameter("txtdeliveryAddress");
 			String deliveryTime = request.getParameter("txtdeliveryTime");
-			GoodsCategory a= new GoodsCategory(1,"Thực Phẩm");
-			GoodsCategory b= new GoodsCategory(2,"Gia Dụng");
-			GoodsCategory c= new GoodsCategory(3,"Điện tử");
-			GoodsCategory[] ca= new GoodsCategory[3];
-			ArrayList<GoodsCategory> list= new ArrayList<GoodsCategory>();
+			GoodsCategory a = new GoodsCategory(1, "Thực phẩm");
+			GoodsCategory b = new GoodsCategory(2, "Gia dụng");
+			GoodsCategory c = new GoodsCategory(3, "Điện tử");
+			GoodsCategory[] ca = new GoodsCategory[3];
+			ArrayList<GoodsCategory> list = new ArrayList<GoodsCategory>();
 			list.add(a);
 			list.add(b);
 			list.add(c);
 			list.toArray(ca);
-		
-			
+
 			session.setAttribute("categoryGoods", ca);
+
 			Goods r = new Goods(pickupTime, pickupAddress, deliveryTime, deliveryAddress);
+
 			session.setAttribute("router", r);
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-2.jsp");
 			rd.forward(request, response);
-			
+
+		}
+		if ("save1".equals(action)) {
+			String pickupAddress = request.getParameter("txtpickupAddress");
+			String pickupTime = request.getParameter("txtpickupTime");
+			String deliveryAddress = request.getParameter("txtdeliveryAddress");
+			String deliveryTime = request.getParameter("txtdeliveryTime");
+			GoodsCategory a = new GoodsCategory(1, "Thực phẩm");
+			GoodsCategory b = new GoodsCategory(2, "Gia dụng");
+			GoodsCategory c = new GoodsCategory(3, "Điện tử");
+			GoodsCategory[] ca = new GoodsCategory[3];
+			ArrayList<GoodsCategory> list = new ArrayList<GoodsCategory>();
+			list.add(a);
+			list.add(b);
+			list.add(c);
+			list.toArray(ca);
+
+			session.setAttribute("categoryGoods", ca);
+			Goods r = new Goods(pickupTime, pickupAddress, deliveryTime,
+					deliveryAddress);
+			session.setAttribute("router", r);
+			RequestDispatcher rd = request
+					.getRequestDispatcher("tao-hang-1.jsp");
+			rd.forward(request, response);
+
 		}
 		if ("next2".equals(action)) {
 			int goodsCategoryID = Integer.parseInt(request
 					.getParameter("ddlgoodsCategoryID"));
 			int weight = Integer.parseInt(request.getParameter("txtWeight"));
 			String notes = "";
-				notes = notes+request.getParameter("txtNotes");
-		
+			try{
+				notes = notes + request.getParameter("txtNotes");
+			}catch(Exception ex){
+				
+			}
+
 			Goods g = new Goods(weight, notes, goodsCategoryID);
 			session.setAttribute("good", g);
 			session.setAttribute("priceSuggest", "10000000");
@@ -124,106 +162,83 @@ public class Controller extends HttpServlet {
 					.getRequestDispatcher("tao-hang-3.jsp");
 			rd.forward(request, response);
 		}
-		if ("next3".equals(action)) {
-			double price=0;
-
-			int priceSystem =Integer.parseInt(request
-					.getParameter("txtPriceSystem"));
+		if ("save2".equals(action)) {
+			int goodsCategoryID = Integer.parseInt(request
+					.getParameter("ddlgoodsCategoryID"));
+			int weight = Integer.parseInt(request.getParameter("txtWeight"));
+			String notes = "";
 			try{
-				price =Integer.parseInt(request
-						.getParameter("txtPrice"));
-				
+				notes = notes + request.getParameter("txtNotes");
 			}catch(Exception ex){
-				price =(double) priceSystem;
+				
 			}
-			session.setAttribute("price", price);
-			RequestDispatcher rd = request
-					.getRequestDispatcher("tao-hang-4.jsp");
-			rd.forward(request, response);
-		}
-		
-		if ("nTaohang3".equals(action)) {
-			RequestDispatcher rd = request
-					.getRequestDispatcher("tao-hang-4.jsp");
-			rd.forward(request, response);
-		}
-		if ("pTaohang3".equals(action)) {
+			
+
+			Goods g = new Goods(weight, notes, goodsCategoryID);
+			session.setAttribute("good", g);
+			session.setAttribute("priceSuggest", "10000000");
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-2.jsp");
 			rd.forward(request, response);
 		}
-		if ("pTaohang4".equals(action)) {
+		if ("next3".equals(action)) {
+			int price = Integer.parseInt((String) session
+					.getAttribute("priceSuggest"));
+		
+			try {
+				price = Integer.parseInt(request.getParameter("txtPrice"));
+
+			} catch (Exception ex) {
+
+			}
+			int total=price+15000;
+			session.setAttribute("total", total);
+			session.setAttribute("price", price);
+			if (session.getAttribute("router") == null) {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-1.jsp");
+				rd.forward(request, response);
+			}
+			if (session.getAttribute("good") == null) {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-2.jsp");
+				rd.forward(request, response);
+			}
+			if (session.getAttribute("price") == null) {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-3.jsp");
+				rd.forward(request, response);
+			} else {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-4.jsp");
+				rd.forward(request, response);
+			}
+		}
+		if ("save3".equals(action)) {
+			int price = Integer.parseInt((String) session
+					.getAttribute("priceSuggest"));
+			try {
+				price = Integer.parseInt(request.getParameter("txtPrice"));
+
+			} catch (Exception ex) {
+
+			}
+			session.setAttribute("price", price);
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-3.jsp");
 			rd.forward(request, response);
 		}
-		if ("test".equals(action)) {
-			RequestDispatcher rd = request
-					.getRequestDispatcher("tao-hang-3.jsp");
-			rd.forward(request, response);
-		}
-		if ("Taohang".equals(action)) {
-			session.removeAttribute("errorTaohang");
-			// session.setAttribute("errorTaohang",
-			// "Hệ thống không thể thêm hàng hóa");
-			// Driver A = new Driver(1, "TpHCM", "11h 12/1/2015", "An Giang",
-			// "11h 13/1/2015", "20.000.000", "100", "11", "Cá, Rau");
-			// Driver B = new Driver(2, "TpHCM", "11h 12/1/2015", "Hà Nội",
-			// "11h 13/1/2015", "20.000.000", "99", "11", "Cá, Rau");
-			// Driver C = new Driver(3, "TpHCM", "11h 12/1/2015", "Hải Phòng",
-			// "11h 13/1/2015", "20.000.000", "98", "11", "Cá, Rau");
-			// Driver D = new Driver(4, "TpHCM", "11h 12/1/2015", "Đà Nẵng",
-			// "11h 13/1/2015", "20.000.000", "97", "11", "Cá, Rau");
-			// Driver E = new Driver(5, "TpHCM", "11h 12/1/2015", "Huế",
-			// "11h 13/1/2015", "20.000.000", "96", "11", "Cá, Rau");
-			// Driver F = new Driver(6, "TpHCM", "11h 12/1/2015", "Long An",
-			// "11h 13/1/2015", "20.000.000", "95", "11", "Cá, Rau");
-			// Driver H = new Driver(7, "TpHCM", "11h 12/1/2015", "Tây Ninh",
-			// "11h 13/1/2015", "20.000.000", "94", "11", "Cá, Rau");
-			// Driver G = new Driver(8, "TpHCM", "11h 12/1/2015", "Nha Trang",
-			// "11h 13/1/2015", "20.000.000", "93", "11", "Cá, Rau");
-			// Driver K = new Driver(9, "TpHCM", "11h 12/1/2015", "Đà Lạt",
-			// "11h 13/1/2015", "20.000.000", "92", "11", "Cá, Rau");
-			// Driver L = new Driver(10, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
-			// Driver M = new Driver(11, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
-			// Driver N = new Driver(12, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
-			// Driver O = new Driver(13, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
-			// Driver P = new Driver(14, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
-			// Driver Q = new Driver(15, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
-			// Driver R = new Driver(16, "TpHCM", "11h 12/1/2015", "Hội An",
-			// "11h 13/1/2015", "20.000.000", "91", "11", "Cá, Rau");
 
-			// list.add(A);
-			// list.add(B);
-			// list.add(C);
-			// list.add(D);
-			// list.add(E);
-			// list.add(F);
-			// list.add(H);
-			// list.add(G);
-			// list.add(K);
-			// list.add(L);
-			// list.add(M);
-			// list.add(N);
-			// list.add(O);
-			// list.add(P);
-			// list.add(Q);
-			// list.add(R);
-			RequestDispatcher rd = request
-					.getRequestDispatcher("goi-y-he-thong.jsp");
-			rd.forward(request, response);
-		}
-		if ("xemCT".equals(action)) {
-
-			RequestDispatcher rd = request
-					.getRequestDispatcher("chi-tiet-tai-xe.jsp");
-			rd.forward(request, response);
+		if ("createGood".equals(action)) {
+			String pickupAdress=((Goods)session.getAttribute("router")).getPickupAddress();
+			String deliveryAddress=((Goods)session.getAttribute("router")).getDeliveryAddress();
+			String pickupTime=((Goods)session.getAttribute("router")).getPickupTime();
+			String deliveryTime=((Goods)session.getAttribute("router")).getDeliveryTime();
+			int weight=((Goods)session.getAttribute("good")).getWeight();
+			int GoodsCategoryID=((Goods)session.getAttribute("good")).getGoodsCategoryID();
+			String notes=((Goods)session.getAttribute("good")).getNotes();
+			int price=(int) session.getAttribute("price");
+			
 		}
 
 	}

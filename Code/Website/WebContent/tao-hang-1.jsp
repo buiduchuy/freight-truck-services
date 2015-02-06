@@ -76,6 +76,7 @@
                             <div class="row">
                                 <div class="large-12 columns">
                                     <div class="submit-area right">
+                                    <button class=""name="btnAction" value="save1"><i class="icon-save"></i> Lưu thay đổi</button>
                                         <button class="success"name="btnAction" value="next1"><i class="icon-mail-forward"></i> Tiếp theo</button>
 
                                     </div>	

@@ -30,7 +30,6 @@
 										<select required
 											data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 											name="ddlgoodsCategoryID">
-											<option value="0" disabled="disabled">Chọn loại hàng</option>
 											<c:forEach var="row" items="${categoryGoods }">
 
 												<c:choose>
@@ -79,6 +78,9 @@
 											<a href="Controller?btnAction=viewCreate_1"
 												class="button secondary"><i class="icon-mail-reply"></i>
 												Trở về</a>
+											<button class="" name="btnAction" value="save2">
+												<i class="icon-save"></i> Lưu thay đổi
+											</button>
 											<button class="success" name="btnAction" value="next2">
 												<i class="icon-mail-forward"></i> Tiếp theo
 											</button>
@@ -100,15 +102,23 @@
 											class="validate">*</small> Loại hàng: </label>
 									</div>
 									<div class="small-6 columns">
+
 										<select required
 											data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 											name="ddlgoodsCategoryID">
-											<option value="0" disabled="disabled" selected="selected">Chọn
-												loại hàng</option>
 											<c:forEach var="row" items="${categoryGoods }">
-												<option value="${row.goodsCategoryId }">${row.name }</option>
+												<c:choose>
+													<c:when test="${row.goodsCategoryId==1 }">
+														<option value="${row.goodsCategoryId }"
+															selected="selected">${row.name }</option>
+													</c:when>
+													<c:otherwise>
+														<option value="${row.goodsCategoryId }">${row.name }</option>
+													</c:otherwise>
+												</c:choose>
 											</c:forEach>
 										</select>
+
 									</div>
 									<div class="small-3 columns"></div>
 								</div>
@@ -144,6 +154,7 @@
 											<a href="Controller?btnAction=viewCreate_1"
 												class="button secondary"><i class="icon-mail-reply"></i>
 												Trở về</a>
+
 											<button class="success" name="btnAction" value="next2">
 												<i class="icon-mail-forward"></i> Tiếp theo
 											</button>

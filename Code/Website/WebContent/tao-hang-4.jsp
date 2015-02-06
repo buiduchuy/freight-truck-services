@@ -16,50 +16,156 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
 			<jsp:include page="menu-tao-hang.jsp" />
-			<form action="Controller" method="get" accept-charset="utf-8">
+			<form action="Controller" method="post" accept-charset="utf-8">
 				<div class="row">
 					<div class="large-12 columns">
-						<div>
+						<div class="row">
 							<div class="extra-title">
 								<h3>Thông tin hàng</h3>
 							</div class="large-12 columns">
 							<div class="row">
 								<div class="small-6 columns">
-									<div class="small-6 columns">
-										<label for="right-label" class="right inline">Loại
-											hàng: </label>
+									<div class="row">
+										<div class="small-3 columns">
+											<label class="right inline">Loại hàng: </label>
+										</div>
+										<div class="small-9 columns">
+											<c:forEach var="row" items="${categoryGoods }">
+												<c:if test="${row.goodsCategoryId==good.goodsCategoryID }">
+													<input type="text" id="right-label" value="${row.name }"
+														name="txtWeight" readonly="" />
+												</c:if>
+											</c:forEach>
+										</div>
 									</div>
-									<div class="small-6 columns">
-										<input type="text" id="right-label" value="aaa"
-											name="txtWeight" readonly="" />
+									<div class="row">
+										<div class="small-3 columns">
+											<label for="right-label" class="right inline"> Khối
+												lượng: </label>
+										</div>
+										<div class="small-9 columns">
+											<input type="text" id="right-label"
+												value="${good.weight } Kg" name="txtWeight" readonly="" />
+										</div>
 									</div>
 								</div>
+
 								<div class="small-6 columns">
-									<div class="small-6 columns">
-										<label for="right-label" class="right inline"> Khối
-											lượng: </label>
+									<div class="row">
+										<div class="small-3 columns">
+											<label for="right-label" class="right inline">Ghi chú
+												: </label>
+										</div>
+										<div class="small-9 columns">
+											<textarea maxlength="250" name="txtNotes" rows="4"
+												readonly="">${good.notes } </textarea>
+										</div>
 									</div>
-									<div class="small-6 columns">
-										<input type="text" id="right-label" value="Kg"
-											name="txtWeight" readonly="" />
-									</div>
 								</div>
-<div class="row">
-								<div class="small-6 columns">
-									<label for="right-label" class="right inline">Ghi chú :
-									</label>
-								</div>
-								<div class="small-6 columns">
-									<textarea maxlength="250" name="txtNotes" readonly=""></textarea>
-								</div>
+
+
 
 							</div>
 
-
-
-							</div>
-							
 						</div>
+
+
+
+						<div class="row">
+							<div class="extra-title">
+								<h3>Địa chỉ giao nhận hàng</h3>
+							</div class="large-12 columns">
+							<div class="row">
+								<div class="small-7 columns">
+									<div class="row">
+										<div class="small-3 columns">
+											<label class="right inline">Địa chỉ giao: </label>
+										</div>
+										<div class="small-9 columns">
+											<input type="text" id="right-label"
+												value="${router.pickupAddress}" readonly="" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-3 columns">
+											<label class="right inline">Địa chỉ nhận: </label>
+										</div>
+										<div class="small-9 columns">
+											<input type="text" id="right-label"
+												value="${router.deliveryAddress}" readonly="" />
+										</div>
+									</div>
+								</div>
+
+								<div class="small-5 columns">
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Ngày giao: </label>
+										</div>
+										<div class="small-8 columns">
+											<input type="text" id="right-label"
+												value="${router.pickupTime}" readonly="" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Ngày nhận: </label>
+										</div>
+										<div class="small-8 columns">
+											<input type="text" id="right-label"
+												value="${router.deliveryTime}" readonly="" />
+										</div>
+									</div>
+								</div>
+
+
+
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="extra-title">
+								<h3>Chi phí</h3>
+							</div class="large-12 columns">
+							<div class="row">
+
+								<div class="row">
+									<div class="small-4 columns">
+										<label class="right inline">Chi phí tài xế: </label>
+									</div>
+									<div class="small-4 columns left">
+										<input type="text" id="right-label"
+											value="${price} (Ngàn đồng)" readonly="" />
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-4 columns">
+										<label class="right inline">Chi phí tạo hàng: </label>
+									</div>
+									<div class="small-4 columns left">
+										<input type="text" id="right-label"
+											value="15000 (Ngàn đồng)" readonly="" />
+									</div>
+								</div>
+								<c:set var="total" value="${sessionScope.total }"/>
+								<div class="row">
+									<div class="small-4 columns">
+										<label class="right inline">Tổng cộng: </label>
+									</div>
+									<div class="small-4 columns left">
+										<input type="text" id="right-label"
+											value="${total} (Ngàn đồng)" readonly="" />
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+
+
+
+
+
 
 
 
@@ -70,7 +176,7 @@
 										class="button secondary"><i class="icon-mail-reply"></i>
 										Trở về</a>
 									<button class="success" name="btnAction" value="createGood">
-										<i class="icon-mail-forward"></i> Tạo hàng
+										<i class="icon-ok"></i> Tạo hàng
 									</button>
 								</div>
 								</br>
