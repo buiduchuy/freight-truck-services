@@ -1,6 +1,8 @@
 package vn.edu.fpt.fts.model;
 
+import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,16 +15,16 @@ public class Goods implements java.io.Serializable {
 	private int GoodsID;
 	private int Weight;
 	private double Price;
-	private Time PickupTime;
+	private String PickupTime;
 	private String PickupAddress;
-	private Time DeliveryTime;
+	private String DeliveryTime;
 	private String DeliveryAddress;
 	private float PickupMarkerLongtitude;
 	private float PickupMarkerLatidute;
 	private float DeliveryMarkerLongtitude;
 	private float DeliveryMarkerLatidute;
 	private String Notes;
-	private Time CreateTime;
+	private String CreateTime;
 	private int Active;
 	private int OwnerID;
 	private int GoodsCategoryID;
@@ -31,11 +33,11 @@ public class Goods implements java.io.Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Goods(int goodsID, int weight, double price, Time pickupTime,
-			String pickupAddress, Time deliveryTime, String deliveryAddress,
+	public Goods(int goodsID, int weight, double price, String pickupTime,
+			String pickupAddress, String deliveryTime, String deliveryAddress,
 			float pickupMarkerLongtitude, float pickupMarkerLatidute,
 			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
-			String notes, Time createTime, int active, int ownerID,
+			String notes, String createTime, int active, int ownerID,
 			int goodsCategoryID) {
 		super();
 		GoodsID = goodsID;
@@ -80,11 +82,11 @@ public class Goods implements java.io.Serializable {
 		Price = price;
 	}
 
-	public Time getPickupTime() {
+	public String getPickupTime() {
 		return PickupTime;
 	}
 
-	public void setPickupTime(Time pickupTime) {
+	public void setPickupTime(String pickupTime) {
 		PickupTime = pickupTime;
 	}
 
@@ -96,11 +98,11 @@ public class Goods implements java.io.Serializable {
 		PickupAddress = pickupAddress;
 	}
 
-	public Time getDeliveryTime() {
+	public String getDeliveryTime() {
 		return DeliveryTime;
 	}
 
-	public void setDeliveryTime(Time deliveryTime) {
+	public void setDeliveryTime(String deliveryTime) {
 		DeliveryTime = deliveryTime;
 	}
 
@@ -152,11 +154,11 @@ public class Goods implements java.io.Serializable {
 		Notes = notes;
 	}
 
-	public Time getCreateTime() {
+	public String getCreateTime() {
 		return CreateTime;
 	}
 
-	public void setCreateTime(Time createTime) {
+	public void setCreateTime(String createTime) {
 		CreateTime = createTime;
 	}
 
@@ -183,5 +185,5 @@ public class Goods implements java.io.Serializable {
 	public void setGoodsCategoryID(int goodsCategoryID) {
 		GoodsCategoryID = goodsCategoryID;
 	}
-	
+
 }

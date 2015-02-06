@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,16 +36,16 @@ public class GoodsDAO {
 			int i = 1;
 			stmt.setInt(i++, bean.getWeight()); // Weight
 			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setTime(i++, bean.getPickupTime()); // PickupTime
+			stmt.setString(i++, bean.getPickupTime()); // PickupTime
 			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
-			stmt.setTime(i++, bean.getDeliveryTime()); // DeliveryTime
+			stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
 			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
 			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
 			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
 			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
 			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
 			stmt.setString(i++, bean.getNotes()); // Notes
-			stmt.setTime(i++, bean.getCreateTime()); // CreateTime
+			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getActive()); // Active
 			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
 			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
@@ -88,16 +91,16 @@ public class GoodsDAO {
 			int i = 1;
 			stmt.setInt(i++, bean.getWeight()); // Weight
 			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setTime(i++, bean.getPickupTime()); // PickupTime
+			stmt.setString(i++, bean.getPickupTime()); // PickupTime
 			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
-			stmt.setTime(i++, bean.getDeliveryTime()); // DeliveryTime
+			stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
 			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
 			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
 			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
 			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
 			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
 			stmt.setString(i++, bean.getNotes()); // Notes
-			stmt.setTime(i++, bean.getCreateTime()); // CreateTime
+			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getActive()); // Active
 			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
 			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
@@ -123,6 +126,8 @@ public class GoodsDAO {
 	}
 
 	public static List<Goods> getAllGoods() {
+		DateFormat format = new SimpleDateFormat("dd/mm/yyyy");
+
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -136,13 +141,14 @@ public class GoodsDAO {
 			Goods goods;
 			while (rs.next()) {
 				goods = new Goods();
-				
+
 				goods.setGoodsID(rs.getInt("GoodsID"));
 				goods.setWeight(rs.getInt("Weight"));
 				goods.setPrice(rs.getDouble("Price"));
-				goods.setPickupTime(rs.getTime("PickupTime"));
+				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());
 				goods.setPickupAddress(rs.getString("PickupAddress"));
-				goods.setDeliveryTime(rs.getTime("DeliveryTime"));
+				goods.setDeliveryTime(rs.getTimestamp("DeliveryTime")
+						.toString());
 				goods.setDeliveryAddress(rs.getString("DeliveryAddress"));
 				goods.setPickupMarkerLongtitude(rs
 						.getFloat("PickupMarkerLongtitude"));
@@ -153,7 +159,7 @@ public class GoodsDAO {
 				goods.setDeliveryMarkerLatidute(rs
 						.getFloat("DeliveryMarkerLatidute"));
 				goods.setNotes(rs.getString("Notes"));
-				goods.setCreateTime(rs.getTime("CreateTime"));
+				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
 				goods.setOwnerID(rs.getInt("OwnerID"));
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
