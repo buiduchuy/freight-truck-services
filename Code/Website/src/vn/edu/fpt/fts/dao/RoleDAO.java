@@ -10,34 +10,28 @@ import java.util.logging.Logger;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Account;
 
-public class AccountDAO {
-	public Account checkLoginAccount(String email, String password) {
+public class RoleDAO {
+
+	public String getRoleNameById(Account account) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Account WHERE Email=? AND Password=?";
+			String sql = "SELECT RoleName FROM Role WHERE RoleID=?";
 
 			stm = con.prepareStatement(sql);
 
-			stm.setString(1, email);
-			stm.setString(2, password);
+			stm.setInt(1, account.getRoleID());
 
 			rs = stm.executeQuery();
-			Account account = new Account();
-			account.setUserID(rs.getInt("AccountID"));
-			account.setEmail(rs.getString("Email"));
-			account.setPassword(rs.getString("Password"));
-			account.setRoleID(rs.getInt("RoleID"));
-
 			if (rs.next()) {
-				return account;
+				return rs.getString("RoleName");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE,
-					null, e);
+			Logger.getLogger(RoleDAO.class.getName())
+					.log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -51,11 +45,10 @@ public class AccountDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE,
+				Logger.getLogger(RoleDAO.class.getName()).log(Level.SEVERE,
 						null, e);
 			}
 		}
 		return null;
 	}
-
 }

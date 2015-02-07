@@ -5,6 +5,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Route implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7515339075887353188L;
 	private int RouteID;
 	private String StartingAddress;
 	private String Marker1;

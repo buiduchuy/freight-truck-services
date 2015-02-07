@@ -1,51 +1,61 @@
 package vn.edu.fpt.fts.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Account implements java.io.Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	private int UserID;
-	private String Email;
-	private String Password;
-	private int RoleID;
-	
+	private static final long serialVersionUID = 8903802688006955800L;
+	private int userID;
+	private String email;
+	private String password;
+	private int roleID;
+
 	public Account() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Account(int userID, String email, String password, int roleID) {
-		super();
-		UserID = userID;
-		Email = email;
-		Password = password;
-		RoleID = roleID;
-	}
-
 
 	public int getUserID() {
-		return UserID;
+		return userID;
 	}
+
 	public void setUserID(int userID) {
-		UserID = userID;
+		this.userID = userID;
 	}
+
 	public String getEmail() {
-		return Email;
+		return email;
 	}
+
 	public void setEmail(String email) {
-		Email = email;
+		this.email = email;
 	}
+
 	public String getPassword() {
-		return Password;
+		return password;
 	}
+
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
+
 	public int getRoleID() {
-		return RoleID;
+		return roleID;
 	}
+
 	public void setRoleID(int roleID) {
-		RoleID = roleID;
+		this.roleID = roleID;
 	}
+
+	public Account(int userID, String email, String password, int roleID) {
+		super();
+		this.userID = userID;
+		this.email = email;
+		this.password = password;
+		this.roleID = roleID;
+	}
+
 }

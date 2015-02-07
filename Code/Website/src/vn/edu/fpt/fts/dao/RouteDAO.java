@@ -89,8 +89,7 @@ public class RouteDAO {
 
 				route.setRouteID(rs.getInt("RouteID"));
 				route.setStartingAddress(rs.getString("StartingAddress"));
-				route.setMarker1(rs.getString("Marker1"));
-				route.setMarker2(rs.getString("Marker2"));
+				route.setMarker1(rs.getString("MarkerID"));
 				route.setDestinationAddress(rs.getString("DestinationAddress"));
 				route.setStartTime(rs.getTimestamp("StartTime").toString());
 				route.setFinishTime(rs.getTimestamp("FinishTime").toString());

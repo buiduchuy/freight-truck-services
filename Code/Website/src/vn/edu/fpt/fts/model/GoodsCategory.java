@@ -9,7 +9,7 @@ public class GoodsCategory implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1836064745456550995L;
 	private int goodsCategoryId;
 	private String Name;
 	
