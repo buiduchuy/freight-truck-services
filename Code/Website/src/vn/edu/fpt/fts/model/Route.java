@@ -1,117 +1,174 @@
 package vn.edu.fpt.fts.model;
 
+import java.util.List;
+
+
+
+/**
+ * @author Huy
+ *
+ */
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Route implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7515339075887353188L;
 	private int RouteID;
-	private String StartingAddress;
-	private String Marker1;
-	private String Marker2;
-	private String DestinationAddress;
-	private String StartTime;
-	private String FinishTime;
-	private String Notes;
-	private String CreateTime;
-	private int Active;
-	private int VehicleID;
-	private int DriverID;
-	
+	private String startingAddress;
+	private String destinationAddress;
+	private String startTime;
+	private String finishTime;
+	private String notes;
+	private int weight;
+	private String createTime;
+	private int active;
+	private int driverID;
+	private List<RouteMarker> routeMarkers;
+	private List<Vehicle> vehicles;
+
 	public Route() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Route(int routeID, String startingAddress, String marker1,
-			String marker2, String destinationAddress, String startTime,
-			String finishTime, String notes, String createTime, int active,
-			int vehicleID, int driverID) {
+
+	public Route(String startingAddress, String destinationAddress,
+			String startTime, String finishTime, String notes, int weight,
+			String createTime, int active, int driverID,
+			List<RouteMarker> routeMarkers, List<Vehicle> vehicles) {
+		super();
+		this.startingAddress = startingAddress;
+		this.destinationAddress = destinationAddress;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.notes = notes;
+		this.weight = weight;
+		this.createTime = createTime;
+		this.active = active;
+		this.driverID = driverID;
+		this.routeMarkers = routeMarkers;
+		this.vehicles = vehicles;
+	}
+
+
+
+	public Route(int routeID, String startingAddress,
+			String destinationAddress, String startTime, String finishTime,
+			String notes, int weight, String createTime, int active,
+			int driverID, List<RouteMarker> routeMarkers, List<Vehicle> vehicles) {
 		super();
 		RouteID = routeID;
-		StartingAddress = startingAddress;
-		Marker1 = marker1;
-		Marker2 = marker2;
-		DestinationAddress = destinationAddress;
-		StartTime = startTime;
-		FinishTime = finishTime;
-		Notes = notes;
-		CreateTime = createTime;
-		Active = active;
-		VehicleID = vehicleID;
-		DriverID = driverID;
+		this.startingAddress = startingAddress;
+		this.destinationAddress = destinationAddress;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.notes = notes;
+		this.weight = weight;
+		this.createTime = createTime;
+		this.active = active;
+		this.driverID = driverID;
+		this.routeMarkers = routeMarkers;
+		this.vehicles = vehicles;
 	}
+
+
 
 	public int getRouteID() {
 		return RouteID;
 	}
+
 	public void setRouteID(int routeID) {
 		RouteID = routeID;
 	}
+
 	public String getStartingAddress() {
-		return StartingAddress;
+		return startingAddress;
 	}
+
 	public void setStartingAddress(String startingAddress) {
-		StartingAddress = startingAddress;
+		this.startingAddress = startingAddress;
 	}
-	public String getMarker1() {
-		return Marker1;
-	}
-	public void setMarker1(String marker1) {
-		Marker1 = marker1;
-	}
-	public String getMarker2() {
-		return Marker2;
-	}
-	public void setMarker2(String marker2) {
-		Marker2 = marker2;
-	}
+
 	public String getDestinationAddress() {
-		return DestinationAddress;
+		return destinationAddress;
 	}
+
 	public void setDestinationAddress(String destinationAddress) {
-		DestinationAddress = destinationAddress;
+		this.destinationAddress = destinationAddress;
 	}
+
 	public String getStartTime() {
-		return StartTime;
+		return startTime;
 	}
+
 	public void setStartTime(String startTime) {
-		StartTime = startTime;
+		this.startTime = startTime;
 	}
+
 	public String getFinishTime() {
-		return FinishTime;
+		return finishTime;
 	}
+
 	public void setFinishTime(String finishTime) {
-		FinishTime = finishTime;
+		this.finishTime = finishTime;
 	}
+
 	public String getNotes() {
-		return Notes;
+		return notes;
 	}
+
 	public void setNotes(String notes) {
-		Notes = notes;
+		this.notes = notes;
 	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+
 	public String getCreateTime() {
-		return CreateTime;
+		return createTime;
 	}
+
 	public void setCreateTime(String createTime) {
-		CreateTime = createTime;
+		this.createTime = createTime;
 	}
+
 	public int getActive() {
-		return Active;
+		return active;
 	}
+
 	public void setActive(int active) {
-		Active = active;
+		this.active = active;
 	}
-	public int getVehicleID() {
-		return VehicleID;
-	}
-	public void setVehicleID(int vehicleID) {
-		VehicleID = vehicleID;
-	}
+
 	public int getDriverID() {
-		return DriverID;
+		return driverID;
 	}
+
 	public void setDriverID(int driverID) {
-		DriverID = driverID;
+		this.driverID = driverID;
 	}
-	
+
+	public List<RouteMarker> getRouteMarkers() {
+		return routeMarkers;
+	}
+
+	public void setRouteMarkers(List<RouteMarker> routeMarkers) {
+		this.routeMarkers = routeMarkers;
+	}
+
+	public List<Vehicle> getVehicles() {
+		return vehicles;
+	}
+
+	public void setVehicles(List<Vehicle> vehicles) {
+		this.vehicles = vehicles;
+	}
+
 }

@@ -52,7 +52,7 @@
 									</div>
 									<div class="small-6 columns">
 										<input type="text" id="right-label" name="txtPrice"
-											value="${pricePre }" />
+											value="${pricePre }" onkeypress="return keyPhone(event);" maxlength="10"/>
 									</div>
 									<div class="small-2 columns">
 										<label for="right-label" class="left inline">(Ngàn
@@ -118,7 +118,7 @@
 											người dùng đưa ra: </label>
 									</div>
 									<div class="small-6 columns">
-										<input type="text" id="right-label" name="txtPrice" />
+										<input type="text" id="right-label" name="txtPrice" maxlength="10"onkeypress="return keyPhone(event);"/>
 									</div>
 									<div class="small-2 columns">
 										<label for="right-label" class="left inline">(Ngàn
@@ -156,4 +156,27 @@
 	</center>
 
 </section>
+<script>
+    function keyPhone(e)
+    {
+        var keyword = null;
+        if (window.event)
+        {
+            keyword = window.event.keyCode;
+        } else
+        {
+            keyword = e.which; //NON IE;
+        }
+
+        if (keyword < 48 || keyword > 57)
+        {
+            if (keyword == 48 || keyword == 127)
+            {
+                return;
+            }
+            return false;
+        }
+    }
+
+</script>
 <jsp:include page="footer.jsp" />
