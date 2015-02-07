@@ -19,6 +19,7 @@ import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
+import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
@@ -98,6 +99,7 @@ public class Controller extends HttpServlet {
 		AccountDAO acc = new AccountDAO();
 		RouteDAO rou= new RouteDAO();
 		OwnerDAO ow= new OwnerDAO();
+		DriverDAO dri= new DriverDAO();
 		if ("login".equals(action)) {
 			String email = request.getParameter("txtEmail");
 			String password = request.getParameter("txtPassword");
@@ -285,8 +287,12 @@ public class Controller extends HttpServlet {
 			List<Route> list= rou.getAllRoute();
 			Route[] listRou= new Route[list.size()];
 			list.toArray(listRou);
+			List<Driver> listDriver= dri.getAllDriver();
+			Driver[] listDri= new Driver[listDriver.size()];
+			listDriver.toArray(listDri);
 			if(goodDao.insertGoods(goo)==1){
 				session.setAttribute("listRouter", listRou);
+				session.setAttribute("listDriver", listDri);
 				session.setAttribute("messageCreateGood", "Tạo hàng thành công");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("goi-y-he-thong.jsp");

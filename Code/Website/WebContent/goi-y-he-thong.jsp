@@ -9,6 +9,7 @@
 <title>Gợi ý hệ thống</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="message" value="${sessionScope.messageCreateGood }" />
+<c:set var="dri" value="${sessionScope.listDriver}" />
 <jsp:include page="header.jsp" />
 <section class="container">
 	<center>
@@ -66,7 +67,18 @@
 												<td>${rows.startingAddress}</td>
 												<td>${rows.destinationAddress}</td>
 												<td>1</td>
-												<td>2</td>
+												<c:if test="${not empty dri }">
+													<c:forEach var="driver" items="${dri }">
+														<c:if test="${driver.driverID==rows.driverID }">
+															<td>${driver.point }</td>
+														</c:if>
+													</c:forEach>
+												</c:if>
+
+
+
+
+
 
 												<td><a class="button"
 													href="Controller?btAction=viewDetailRouter&idRouter=${rows.routeID }">
