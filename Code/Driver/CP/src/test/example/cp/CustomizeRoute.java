@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.drive.internal.ar;
 import com.google.android.gms.internal.ge;
 import com.google.android.gms.internal.lt;
 import com.google.android.gms.maps.CameraUpdate;
@@ -61,6 +62,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	ArrayList<LatLng> locations = new ArrayList<LatLng>();
@@ -80,18 +82,18 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		mapFragment.getMapAsync(this);
 		map = mapFragment.getMap();
 		map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-			
+
 			@Override
 			public void onMarkerDragStart(Marker arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onMarkerDragEnd(Marker mrk) {
 				// TODO Auto-generated method stub
 				int id = Integer.parseInt(mrk.getSnippet());
-				locations.set(id-1, mrk.getPosition());
+				locations.set(id - 1, mrk.getPosition());
 				helper.RemovePolylines();
 				for (int i = 0; i < locations.size() - 1; i++) {
 					LatLng s = locations.get(i);
@@ -99,7 +101,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 					String url = helper.makeURL(s.latitude, s.longitude,
 							e.latitude, e.longitude);
 					try {
-						String result = new connectAsyncTask().execute(url).get();
+						String result = new connectAsyncTask().execute(url)
+								.get();
 						helper.drawPath(result, map);
 					} catch (Exception ex) {
 						ex.printStackTrace();
@@ -112,16 +115,57 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 						b.include(marker.getPosition());
 					}
 					LatLngBounds bounds = b.build();
-					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
-							20);
+					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
+							bounds, 20);
 					map.animateCamera(cu);
 				}
 			}
-			
+
 			@Override
 			public void onMarkerDrag(Marker arg0) {
 				// TODO Auto-generated method stub
-				
+
+			}
+		});
+		map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+			@Override
+			public void onMapClick(LatLng arg0) {
+				if (locations.size() >= 4) {
+					Toast.makeText(getActivity(),
+							"Chỉ thêm được tối đa 2 địa điểm đi qua", 3).show();
+				} else {
+					for (int i = 0; i < locations.size() - 1; i++) {
+						LatLng s = locations.get(i);
+						LatLng e = locations.get(i + 1);
+						if ((s.latitude > arg0.latitude && arg0.latitude > e.latitude)
+								|| (s.latitude < arg0.latitude && arg0.latitude < e.latitude)) {
+							locations.add(i + 1, arg0);
+						}
+					}
+					map.clear();
+					for (int i = 0; i < locations.size() - 1; i++) {
+						map.addMarker(new MarkerOptions().position(locations.get(i)).draggable(true)
+								.snippet(String.valueOf(i)));
+						if (i == locations.size() - 2) {
+							map.addMarker(new MarkerOptions().position(locations.get(i+1)).draggable(true)
+									.snippet(String.valueOf(i + 1)));
+						}
+					}
+					for (int i = 0; i < locations.size() - 1; i++) {
+						LatLng s = locations.get(i);
+						LatLng e = locations.get(i + 1);
+						String url = helper.makeURL(s.latitude, s.longitude,
+								e.latitude, e.longitude);
+						try {
+							String result = new connectAsyncTask().execute(url)
+									.get();
+							helper.drawPath(result, map);
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					}
+				}
 			}
 		});
 		button = (Button) v.findViewById(R.id.save);
@@ -224,7 +268,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			String endPoint = intent.getStringExtra("end");
 
 			LatLng start = new GetLatLng().execute(startPoint).get();
-			MarkerOptions startMarker = new MarkerOptions().snippet("1");
+			MarkerOptions startMarker = new MarkerOptions().draggable(true)
+					.snippet("1");
 			startMarker.position(start);
 			locations.add(start);
 			map.addMarker(startMarker);
@@ -247,7 +292,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			}
 
 			LatLng end = new GetLatLng().execute(endPoint).get();
-			MarkerOptions endMarker = new MarkerOptions().snippet("4");
+			MarkerOptions endMarker = new MarkerOptions().draggable(true)
+					.snippet("4");
 			endMarker.position(end);
 			locations.add(end);
 			map.addMarker(endMarker);

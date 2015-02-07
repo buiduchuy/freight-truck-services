@@ -12,6 +12,7 @@
     <string name="point1">Địa điểm đi qua 1</string>
     <string name="point2">Địa điểm đi qua 2</string>
     <string name="startDate">Ngày bắt đầu</string>
+    <string name="startHour">Giờ bắt đầu</string>
     <string name="endPoint">Địa điểm kết thúc</string>
     <string name="endDate">Ngày kết thúc</string>
     <string name="payload">Khối lượng có thể chở</string>
@@ -19,6 +20,7 @@
     <string name="frozen">Hàng đông lạnh</string>
     <string name="easyToBreak">Hàng dễ vỡ</string>
     <string name="other">Loại hàng khác</string>
+    <string name="flamable">Hàng dễ cháy nổ</string>
     <string name="create">Tạo mới</string>
     <string name="time"><b>THỜI GIAN</b></string>
     <string name="otherInfo"><b>HÀNG HÓA CHỞ</b></string>

@@ -40,6 +40,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -74,11 +75,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class CreateRoute extends Fragment {
 
 	EditText startDate;
+	EditText startHour;
 	EditText endDate;
 	AutoCompleteTextView start;
 	AutoCompleteTextView p1;
@@ -152,6 +155,7 @@ public class CreateRoute extends Fragment {
 		// TODO Auto-generated method stub
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
 		startDate = (EditText) v.findViewById(R.id.editText2);
+		startHour = (EditText) v.findViewById(R.id.editText3);
 		cal = Calendar.getInstance();
 		String date = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(cal.get(Calendar.MONTH) + 1)
 				+ "/" + String.valueOf(cal.get(Calendar.YEAR)));
@@ -218,6 +222,14 @@ public class CreateRoute extends Fragment {
 				dialog.show();
 			}
 		});
+		
+		startHour.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				TimePickerDialog dialog = new TimePickerDialog(getActivity(), startHourListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE) , true);
+				dialog.show();
+			}
+		});
 
 		endDate.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -273,6 +285,14 @@ public class CreateRoute extends Fragment {
 				int dayOfMonth) {
 			startDate
 					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+		}
+	};
+	
+	private TimePickerDialog.OnTimeSetListener startHourListener = new TimePickerDialog.OnTimeSetListener() {
+
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			startHour.setText(hourOfDay + ":" + minute);
 		}
 	};
 
@@ -385,24 +405,9 @@ public class CreateRoute extends Fragment {
 				JSONArray results = (JSONArray) googleMapResponse
 						.get("results");
 				JSONObject result = results.getJSONObject(0);
-				JSONArray component = result.getJSONArray("address_components");
-				String city = "";
-				String country = "";
-				for (int i = 0; i < component.length(); i++) {
-					JSONObject obj = component.getJSONObject(i);
-					JSONArray type = obj.getJSONArray("types");
-					for (int j = 0; j < type.length(); j++) {
-						if (type.getString(j).equals(
-								"administrative_area_level_1")) {
-							city = obj.getString("long_name");
-						}
-						if (type.getString(j).equals("country")) {
-							country = obj.getString("long_name");
-						}
-					}
-				}
+				String address = result.getString("formatted_address");
 				ANDROID_HTTP_CLIENT.close();
-				return city + ", " + country;
+				return address;
 			} catch (Exception ignored) {
 				ignored.printStackTrace();
 			}
