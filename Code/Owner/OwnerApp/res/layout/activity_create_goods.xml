@@ -38,7 +38,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Khối lượng"
                     android:imeOptions="actionDone"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal" 
+                    />
             </TableRow>
 
             <TableRow

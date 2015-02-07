@@ -1,6 +1,12 @@
 package com.example.ownerapp;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,6 +18,7 @@ import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import sample.tabsswipe.adapter.PlacesAutoCompleteAdapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
@@ -27,6 +34,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.style.UpdateLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +42,7 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -41,14 +50,15 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TimePicker;
 
-public class CreateGoodsActivity extends Activity{
+public class CreateGoodsActivity extends Activity {
 	private Spinner spinner;
 	private Calendar calendar;
 	private DatePickerDialog.OnDateSetListener date1, date2;
-	private EditText etPickupDate, etPickupTime, etDeliverDate, etDeliverTime;
+	private EditText etPickupDate, etDeliverDate;
 	private AutoCompleteTextView edittextPickupAddr, edittextDeliverAddr;
 	private ImageButton ibPickupMap, ibDeliverMap;
 	private int mHour, mMinute;
+	private Button btnPost;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,59 +138,6 @@ public class CreateGoodsActivity extends Activity{
 					}
 				});
 
-		// time picker : pickup time
-		etPickupTime = (EditText) findViewById(R.id.edittext_pickup_time);
-		etPickupTime.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if (hasFocus) {
-					mHour = calendar.get(Calendar.HOUR);
-					mMinute = calendar.get(Calendar.MINUTE);
-					TimePickerDialog tpd = new TimePickerDialog(
-							CreateGoodsActivity.this,
-							new TimePickerDialog.OnTimeSetListener() {
-								@Override
-								public void onTimeSet(TimePicker view,
-										int hourOfDay, int minute) {
-									// TODO Auto-generated method stub
-									etPickupTime.setText(hourOfDay + " : "
-											+ minute);
-								}
-							}, mHour, mMinute, false);
-					tpd.show();
-				}
-			}
-		});
-
-		// time picker : deliver time
-		etDeliverTime = (EditText) findViewById(R.id.edittext_deliver_time);
-		etDeliverTime
-				.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-					@Override
-					public void onFocusChange(View v, boolean hasFocus) {
-						// TODO Auto-generated method stub
-						if (hasFocus) {
-							mHour = calendar.get(Calendar.HOUR);
-							mMinute = calendar.get(Calendar.MINUTE);
-							TimePickerDialog tpd = new TimePickerDialog(
-									CreateGoodsActivity.this,
-									new TimePickerDialog.OnTimeSetListener() {
-										@Override
-										public void onTimeSet(TimePicker view,
-												int hourOfDay, int minute) {
-											// TODO Auto-generated method stub
-											etDeliverTime.setText(hourOfDay
-													+ " : " + minute);
-										}
-									}, mHour, mMinute, false);						
-							tpd.show();
-						}
-					}
-				});
-
 		// pickup address and map button
 		edittextPickupAddr = (AutoCompleteTextView) findViewById(R.id.edittext_pickup_address);
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
@@ -219,7 +176,39 @@ public class CreateGoodsActivity extends Activity{
 		edittextDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_deliver));
 
-		
+		// button
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+	    StrictMode.setThreadPolicy(policy);
+		btnPost = (Button)findViewById(R.id.btn_post);
+		btnPost.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				try {
+					String url = "jdbc:jtds:sqlserver://localhost:1433;instance=SQL2008NEW;DatabaseName=FTS";
+					Class.forName("net.sourceforge.jtds.jdbc.Driver");
+					Connection con = DriverManager.getConnection(url, "sa", "123");
+					String sql = "insert into Goods (Weight,Price,PickupTime,PickupAddress," +
+							"DeliveryTime,DeliveryAddress,CreateTime,Active,OwnerID,GoodsCategoryID)" +
+							"values (10,12.1,2015/02/01,'HCM',2015/02/05,'Ha Noi',2015/02/01,1,1,1)";
+					Statement stm = con.prepareStatement(sql);
+					ResultSet rs = stm.executeQuery(sql);
+					if (rs.next()) {
+						System.out.println("Success");
+					}
+					con.close();
+				} catch (ClassNotFoundException ex) {
+					// TODO: handle exception
+					ex.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+		});
 		
 	}
 
@@ -242,12 +231,10 @@ public class CreateGoodsActivity extends Activity{
 		return super.onOptionsItemSelected(item);
 	}
 
-	 private void updateLabel(EditText et) {
-	 String format = "MM/dd/yy";
-	 SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-	 et.setText(sdf.format(calendar.getTime()));
-	 }
+	private void updateLabel(EditText et) {
+		String format = "MM/dd/yy";
+		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+		et.setText(sdf.format(calendar.getTime()));
+	}
 
-	 
-	 
 }
