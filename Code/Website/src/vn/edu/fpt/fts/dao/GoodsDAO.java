@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.dao;
 
+/**
+ * @author Huy
+ *
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,7 +64,7 @@ public class GoodsDAO {
 			e.printStackTrace();
 			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
 					e);
-			
+
 		} finally {
 			try {
 				if (stmt != null) {
@@ -71,8 +75,8 @@ public class GoodsDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-						e);
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
+						null, e);
 			}
 		}
 		return ret;
@@ -130,8 +134,8 @@ public class GoodsDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-						e);
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
+						null, e);
 			}
 		}
 		return ret;
@@ -197,8 +201,8 @@ public class GoodsDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-						e);
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
+						null, e);
 			}
 		}
 		return null;

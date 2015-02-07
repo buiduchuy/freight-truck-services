@@ -36,8 +36,8 @@ public class RouteAPI {
 		Route route = new Route();
 		try {
 			route.setStartingAddress(goodsParams.getFirst("startingAddress"));
-			route.setMarker1(goodsParams.getFirst("marker1"));
-			route.setMarker2(goodsParams.getFirst("marker2"));
+			route.setRouteMarkerID(Integer.valueOf(goodsParams
+					.getFirst("routeMarkerID")));
 			route.setDestinationAddress(goodsParams
 					.getFirst("destinationAddress"));
 			route.setStartTime(goodsParams.getFirst("startTime"));
@@ -48,7 +48,7 @@ public class RouteAPI {
 			route.setVehicleID(Integer.valueOf(goodsParams
 					.getFirst("vehicleID")));
 			route.setDriverID(Integer.valueOf(goodsParams.getFirst("driverID")));
-			
+
 			int ret = routeDao.insertRoute(route);
 
 			if (ret <= 0) {
@@ -62,5 +62,4 @@ public class RouteAPI {
 		}
 		return "Success";
 	}
-
 }

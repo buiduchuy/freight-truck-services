@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.dao;
 
+/**
+ * @author Huy
+ *
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +29,7 @@ public class RouteDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO Route ( " + "StartingAddress,"
-					+ "Marker1," + "Marker2," + "DestinationAddress,"
+					+ "RouteMarkerID," + "DestinationAddress,"
 					+ "StartTime," + "FinishTime," + "Notes," + "CreateTime,"
 					+ "Active," + "VehicleID," + "DriverID" + ") VALUES ("
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
@@ -33,8 +37,7 @@ public class RouteDAO {
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 			stmt.setString(i++, bean.getStartingAddress()); // StartingAddress
-			stmt.setString(i++, bean.getMarker1()); // Marker1
-			stmt.setString(i++, bean.getMarker2()); // Marker2
+			stmt.setInt(i++, bean.getRouteMarkerID()); // Marker1
 			stmt.setString(i++, bean.getDestinationAddress()); // DestinationAddress
 			stmt.setString(i++, bean.getStartTime()); // StartTime
 			stmt.setString(i++, bean.getFinishTime()); // FinishTime
@@ -89,7 +92,7 @@ public class RouteDAO {
 
 				route.setRouteID(rs.getInt("RouteID"));
 				route.setStartingAddress(rs.getString("StartingAddress"));
-				route.setMarker1(rs.getString("MarkerID"));
+				route.setRouteMarkerID(rs.getInt("RouteMarkerID"));
 				route.setDestinationAddress(rs.getString("DestinationAddress"));
 				route.setStartTime(rs.getTimestamp("StartTime").toString());
 				route.setFinishTime(rs.getTimestamp("FinishTime").toString());

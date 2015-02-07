@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.dao;
 
+/**
+ * @author Huy
+ *
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +30,7 @@ public class AccountDAO {
 
 			rs = stm.executeQuery();
 			Account account = new Account();
-			account.setUserID(rs.getInt("AccountID"));
+			account.setAccountID(rs.getInt("AccountID"));
 			account.setEmail(rs.getString("Email"));
 			account.setPassword(rs.getString("Password"));
 			account.setRoleID(rs.getInt("RoleID"));

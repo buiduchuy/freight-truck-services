@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.model;
 
+/**
+ * @author Huy
+ *
+ */
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -9,113 +13,126 @@ public class Route implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -7515339075887353188L;
-	private int RouteID;
-	private String StartingAddress;
-	private String Marker1;
-	private String Marker2;
-	private String DestinationAddress;
-	private String StartTime;
-	private String FinishTime;
-	private String Notes;
-	private String CreateTime;
-	private int Active;
-	private int VehicleID;
-	private int DriverID;
-	
+	private int routeID;
+	private String startingAddress;
+	private int routeMarkerID;
+	private String destinationAddress;
+	private String startTime;
+	private String finishTime;
+	private String notes;
+	private String createTime;
+	private int active;
+	private int vehicleID;
+	private int driverID;
+
 	public Route() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	public Route(int routeID, String startingAddress, String marker1,
-			String marker2, String destinationAddress, String startTime,
-			String finishTime, String notes, String createTime, int active,
-			int vehicleID, int driverID) {
+
+	public Route(int routeID, String startingAddress, int routeMarkerID,
+			String destinationAddress, String startTime, String finishTime,
+			String notes, String createTime, int active, int vehicleID,
+			int driverID) {
 		super();
-		RouteID = routeID;
-		StartingAddress = startingAddress;
-		Marker1 = marker1;
-		Marker2 = marker2;
-		DestinationAddress = destinationAddress;
-		StartTime = startTime;
-		FinishTime = finishTime;
-		Notes = notes;
-		CreateTime = createTime;
-		Active = active;
-		VehicleID = vehicleID;
-		DriverID = driverID;
+		this.routeID = routeID;
+		this.startingAddress = startingAddress;
+		this.routeMarkerID = routeMarkerID;
+		this.destinationAddress = destinationAddress;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.active = active;
+		this.vehicleID = vehicleID;
+		this.driverID = driverID;
 	}
 
 	public int getRouteID() {
-		return RouteID;
+		return routeID;
 	}
+
 	public void setRouteID(int routeID) {
-		RouteID = routeID;
+		this.routeID = routeID;
 	}
+
 	public String getStartingAddress() {
-		return StartingAddress;
+		return startingAddress;
 	}
+
 	public void setStartingAddress(String startingAddress) {
-		StartingAddress = startingAddress;
+		this.startingAddress = startingAddress;
 	}
-	public String getMarker1() {
-		return Marker1;
+
+	public int getRouteMarkerID() {
+		return routeMarkerID;
 	}
-	public void setMarker1(String marker1) {
-		Marker1 = marker1;
+
+	public void setRouteMarkerID(int routeMarkerID) {
+		this.routeMarkerID = routeMarkerID;
 	}
-	public String getMarker2() {
-		return Marker2;
-	}
-	public void setMarker2(String marker2) {
-		Marker2 = marker2;
-	}
+
 	public String getDestinationAddress() {
-		return DestinationAddress;
+		return destinationAddress;
 	}
+
 	public void setDestinationAddress(String destinationAddress) {
-		DestinationAddress = destinationAddress;
+		this.destinationAddress = destinationAddress;
 	}
+
 	public String getStartTime() {
-		return StartTime;
+		return startTime;
 	}
+
 	public void setStartTime(String startTime) {
-		StartTime = startTime;
+		this.startTime = startTime;
 	}
+
 	public String getFinishTime() {
-		return FinishTime;
+		return finishTime;
 	}
+
 	public void setFinishTime(String finishTime) {
-		FinishTime = finishTime;
+		this.finishTime = finishTime;
 	}
+
 	public String getNotes() {
-		return Notes;
+		return notes;
 	}
+
 	public void setNotes(String notes) {
-		Notes = notes;
+		this.notes = notes;
 	}
+
 	public String getCreateTime() {
-		return CreateTime;
+		return createTime;
 	}
+
 	public void setCreateTime(String createTime) {
-		CreateTime = createTime;
+		this.createTime = createTime;
 	}
+
 	public int getActive() {
-		return Active;
+		return active;
 	}
+
 	public void setActive(int active) {
-		Active = active;
+		this.active = active;
 	}
+
 	public int getVehicleID() {
-		return VehicleID;
+		return vehicleID;
 	}
+
 	public void setVehicleID(int vehicleID) {
-		VehicleID = vehicleID;
+		this.vehicleID = vehicleID;
 	}
+
 	public int getDriverID() {
-		return DriverID;
+		return driverID;
 	}
+
 	public void setDriverID(int driverID) {
-		DriverID = driverID;
+		this.driverID = driverID;
 	}
-	
+
 }

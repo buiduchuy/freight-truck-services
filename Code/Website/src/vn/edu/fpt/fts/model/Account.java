@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.model;
 
+/**
+ * @author Huy
+ *
+ */
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -9,7 +13,7 @@ public class Account implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8903802688006955800L;
-	private int userID;
+	private int accountID;
 	private String email;
 	private String password;
 	private int roleID;
@@ -18,12 +22,12 @@ public class Account implements java.io.Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getUserID() {
-		return userID;
+	public int getAccountID() {
+		return accountID;
 	}
 
-	public void setUserID(int userID) {
-		this.userID = userID;
+	public void setAccountID(int accountID) {
+		this.accountID = accountID;
 	}
 
 	public String getEmail() {
@@ -50,9 +54,9 @@ public class Account implements java.io.Serializable {
 		this.roleID = roleID;
 	}
 
-	public Account(int userID, String email, String password, int roleID) {
+	public Account(int accountID, String email, String password, int roleID) {
 		super();
-		this.userID = userID;
+		this.accountID = accountID;
 		this.email = email;
 		this.password = password;
 		this.roleID = roleID;
