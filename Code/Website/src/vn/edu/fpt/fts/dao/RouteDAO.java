@@ -130,5 +130,58 @@ public class RouteDAO {
 		return null;
 	}
 	
-	
+	public Route getRouteById(int Id) {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Route where RouteID=?";
+			stm = con.prepareStatement(sql);
+			stm.setInt(1, Id);
+			rs = stm.executeQuery();
+			Route route;
+			while (rs.next()) {
+				route = new Route();
+
+				route.setRouteID(rs.getInt("RouteID"));
+				route.setStartingAddress(rs.getString("StartingAddress"));
+				route.setDestinationAddress(rs.getString("DestinationAddress"));
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
+				route.setNotes(rs.getString("Notes"));
+				route.setWeight(Integer.valueOf(rs.getString("Weight")));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(Integer.valueOf(rs.getString("Active")));
+				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
+				return route;
+			}
+		
+		} catch (SQLException e) {
+			System.out.println("Can't load data from Route table");
+			e.printStackTrace();
+			Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null,
+					e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Route table");
+				Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE,
+						null, e);
+			}
+		}
+		return null;
+	}
 }

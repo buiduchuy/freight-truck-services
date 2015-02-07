@@ -80,6 +80,9 @@ public class Controller extends HttpServlet {
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-3.jsp");
 			rd.forward(request, response);
+		}if("viewDetailRouter".equals(action)){
+		int idRouter=Integer.parseInt(request.getParameter("idRouter"));
+		
 		}
 	}
 
