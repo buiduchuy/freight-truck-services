@@ -29,7 +29,7 @@
                         <c:when test="${not empty account}">
                             <ul id="nav" class="nav navbar-nav navbar-right">
                                 <li>
-                                    <a href="#"><i class="icon-user"></i> Xin chào, KhuongNguyen!</a>
+                                    <a href="#"><i class="icon-user"></i> Xin chào, ${account }!</a>
                                   
                                 </li>                            
                             </ul> 

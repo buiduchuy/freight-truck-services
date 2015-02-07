@@ -83,8 +83,6 @@ public class OwnerDAO {
 			int i = 1;
 			stmt.setString(i++, account.getEmail());
 
-			System.out.println(account.getEmail());
-
 			rs = stmt.executeQuery();
 
 			while (rs.next()) {
