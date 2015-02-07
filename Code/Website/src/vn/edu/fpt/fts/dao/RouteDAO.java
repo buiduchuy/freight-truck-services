@@ -82,6 +82,7 @@ public class RouteDAO {
 			rs = stm.executeQuery();
 			List<Route> list = new ArrayList<Route>();
 			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
+			VehicleDAO vehicleDAO = new VehicleDAO();
 			Route route;
 			while (rs.next()) {
 				route = new Route();
@@ -96,8 +97,10 @@ public class RouteDAO {
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(Integer.valueOf(rs.getString("Active")));
 				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
-				route.setRouteMarker(routeMarkderDAO
+				route.setRouteMarkers(routeMarkderDAO
 						.getAllRouteMarkerByRouteID(route.getRouteID()));
+				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
+						.getRouteID()));
 				list.add(route);
 			}
 			return list;

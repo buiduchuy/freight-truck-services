@@ -27,16 +27,37 @@ public class Route implements java.io.Serializable {
 	private String createTime;
 	private int active;
 	private int driverID;
-	private List<RouteMarker> routeMarker;
+	private List<RouteMarker> routeMarkers;
+	private List<Vehicle> vehicles;
 
 	public Route() {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Route(String startingAddress, String destinationAddress,
+			String startTime, String finishTime, String notes, int weight,
+			String createTime, int active, int driverID,
+			List<RouteMarker> routeMarkers, List<Vehicle> vehicles) {
+		super();
+		this.startingAddress = startingAddress;
+		this.destinationAddress = destinationAddress;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.notes = notes;
+		this.weight = weight;
+		this.createTime = createTime;
+		this.active = active;
+		this.driverID = driverID;
+		this.routeMarkers = routeMarkers;
+		this.vehicles = vehicles;
+	}
+
+
+
 	public Route(int routeID, String startingAddress,
 			String destinationAddress, String startTime, String finishTime,
 			String notes, int weight, String createTime, int active,
-			int driverID, List<RouteMarker> routeMarker) {
+			int driverID, List<RouteMarker> routeMarkers, List<Vehicle> vehicles) {
 		super();
 		RouteID = routeID;
 		this.startingAddress = startingAddress;
@@ -48,25 +69,11 @@ public class Route implements java.io.Serializable {
 		this.createTime = createTime;
 		this.active = active;
 		this.driverID = driverID;
-		this.routeMarker = routeMarker;
+		this.routeMarkers = routeMarkers;
+		this.vehicles = vehicles;
 	}
 
-	public Route(String startingAddress, String destinationAddress,
-			String startTime, String finishTime, String notes, int weight,
-			String createTime, int active, int driverID,
-			List<RouteMarker> routeMarker) {
-		super();
-		this.startingAddress = startingAddress;
-		this.destinationAddress = destinationAddress;
-		this.startTime = startTime;
-		this.finishTime = finishTime;
-		this.notes = notes;
-		this.weight = weight;
-		this.createTime = createTime;
-		this.active = active;
-		this.driverID = driverID;
-		this.routeMarker = routeMarker;
-	}
+
 
 	public int getRouteID() {
 		return RouteID;
@@ -148,12 +155,20 @@ public class Route implements java.io.Serializable {
 		this.driverID = driverID;
 	}
 
-	public List<RouteMarker> getRouteMarker() {
-		return routeMarker;
+	public List<RouteMarker> getRouteMarkers() {
+		return routeMarkers;
 	}
 
-	public void setRouteMarker(List<RouteMarker> routeMarker) {
-		this.routeMarker = routeMarker;
+	public void setRouteMarkers(List<RouteMarker> routeMarkers) {
+		this.routeMarkers = routeMarkers;
 	}
-	
+
+	public List<Vehicle> getVehicles() {
+		return vehicles;
+	}
+
+	public void setVehicles(List<Vehicle> vehicles) {
+		this.vehicles = vehicles;
+	}
+
 }
