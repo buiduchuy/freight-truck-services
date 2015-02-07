@@ -21,9 +21,11 @@ import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.model.Driver;
 import vn.edu.fpt.fts.model.Goods;
 import vn.edu.fpt.fts.model.GoodsCategory;
+import vn.edu.fpt.fts.model.Owner;
 
 /**
  * Servlet implementation class Controller
@@ -97,11 +99,13 @@ public class Controller extends HttpServlet {
 			session.removeAttribute("errorLogin");
 			session.removeAttribute("account");
 			if (acc.checkLoginAccount(email, password)!=null) {
+				OwnerDAO ow= new OwnerDAO();
+				Owner owner= ow.getOwnerByEmail(acc.checkLoginAccount(email, password));
 				List<GoodsCategory> list= goodCa.getAllGoodsCategory();
 				GoodsCategory[] typeGoods= new GoodsCategory[list.size()];
 				list.toArray(typeGoods);
 				session.setAttribute("typeGoods", typeGoods);
-				session.setAttribute("account", "KHUONGNGUYEN");
+				session.setAttribute("account", owner.getLastName());
 				if(session.getAttribute("namePage")!=null){
 					String prePage = (String) session.getAttribute("namePage");
 						RequestDispatcher rd = request
@@ -257,9 +261,12 @@ public class Controller extends HttpServlet {
 			Goods goo= new Goods(weight, price, co.changeFormatDate(pickupTime),  pickupAdress, co.changeFormatDate(deliveryTime),  deliveryAddress, a, a, a, a, notes, createTime, 1, 1, GoodsCategoryID);
 			GoodsDAO goodDao= new GoodsDAO();
 			if(goodDao.insertGoods(goo)==1){
-				System.out.println("OK");
+				session.setAttribute("messageCreateGood", "Tạo hàng thành công");
 			}else{
-				System.out.println("ONO");
+				session.setAttribute("errorCreateGood", "Có lỗi khi tạo hàng. Vui lòng thử lại");
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-4.jsp");
+				rd.forward(request, response);
 			}
 		}
 
