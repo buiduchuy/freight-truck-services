@@ -14,6 +14,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -191,6 +192,7 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				JSONObject json = new JSONObject();
 				JSONObject json1 = new JSONObject();
+				JSONArray ja = new JSONArray();
 				try {
 					json.put("active", "1");
 					json.put("createTime", "2015-05-04 00:00:00.0");
@@ -207,17 +209,18 @@ public class CreateGoodsActivity extends Activity {
 					json.put("pickupTime", "2015-05-04 00:00:00.0");
 					json.put("price", "3000");
 					json.put("weight", "1000");
-					json1.put("goods", json);
+					ja.put(json);
+					json1.put("goods", ja);
 					
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				HttpClient httpClient = new DefaultHttpClient();
-				HttpPost request = new HttpPost("http://192.168.1.4:8080/FTS/api/Goods/create");
+				HttpPost request = new HttpPost("http://192.168.1.4:8080/FTS/api/Goods/Create");
 				try {
 					StringEntity param = new StringEntity(json1.toString());
-					request.addHeader("content-type", "application/x-www-form-urlencoded");
+					request.addHeader("content-type", "application/json");
 					request.setEntity(param);
 					httpClient.execute(request);
 				} catch (UnsupportedEncodingException e) {
