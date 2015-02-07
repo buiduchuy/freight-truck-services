@@ -8,11 +8,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="namePage" value="${sessionScope.Category}"/>
-<c:forEach var="row" items="${namePage }">
-${row.goodsCategoryId }
-${row.name }
-</c:forEach>
+<c:set var="namePage" value="${sessionScope.account}"/>
+<c:if test="${not empty namePage }">
+${namePage }
+</c:if>
 
 
 </html>

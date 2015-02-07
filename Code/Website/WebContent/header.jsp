@@ -81,7 +81,7 @@
                                             <li>
                                                 <a href="#"><i class="icon-user"></i> Xin chào, ${account}!</a>
                                                 <ul class="sub-topbar">
-                                                    <li><a href="quan-ly-hang.jsp"><i class="icon-desktop"></i>Quản lý vận đơn</a></li>
+                                                    <li><a href="Controller?btnAction=manageGoods"><i class="icon-desktop"></i>Quản lý hàng</a></li>
                                                     <li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu hình tài khoản</a></li>
                                                     <li><a href="lich-su-hang.jsp"><i class="icon-bar-chart"></i>Lịch sử giao dịch</a></li>
                                                     <li><a href="Controller?btnAction=offAccount"><i class="icon-off"></i>Đăng xuất</a></li>
@@ -109,7 +109,7 @@
                                 <li >
                                     <a href="tao-hang-1.jsp"><i class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a>
                                 </li>
-                                <li><a href="quan-ly-hang.jsp"><i class="icon-desktop"></i> Quản lý hàng</a></li>
+                                <li><a href="Controller?btnAction=manageGoods"><i class="icon-desktop"></i> Quản lý hàng</a></li>
                                 <li><a href="lich-su-hang.jsp"><i class="icon-bar-chart"></i> Lịch sử hàng</a></li>
                             </ul>
                         </nav>
