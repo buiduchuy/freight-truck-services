@@ -1,9 +1,5 @@
 package vn.edu.fpt.fts.model;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -12,6 +8,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Goods implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int GoodsID;
 	private int Weight;
 	private double Price;
