@@ -25,7 +25,7 @@ public class Goods implements java.io.Serializable {
 	private int Active;
 	private int OwnerID;
 	private int GoodsCategoryID;
-	
+
 	public Goods(int weight, String notes, int goodsCategoryID) {
 		super();
 		Weight = weight;
@@ -40,6 +40,30 @@ public class Goods implements java.io.Serializable {
 		PickupAddress = pickupAddress;
 		DeliveryTime = deliveryTime;
 		DeliveryAddress = deliveryAddress;
+	}
+
+	public Goods(int weight, double price, String pickupTime,
+			String pickupAddress, String deliveryTime, String deliveryAddress,
+			float pickupMarkerLongtitude, float pickupMarkerLatidute,
+			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			String notes, String createTime, int active, int ownerID,
+			int goodsCategoryID) {
+		super();
+		Weight = weight;
+		Price = price;
+		PickupTime = pickupTime;
+		PickupAddress = pickupAddress;
+		DeliveryTime = deliveryTime;
+		DeliveryAddress = deliveryAddress;
+		PickupMarkerLongtitude = pickupMarkerLongtitude;
+		PickupMarkerLatidute = pickupMarkerLatidute;
+		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		DeliveryMarkerLatidute = deliveryMarkerLatidute;
+		Notes = notes;
+		CreateTime = createTime;
+		Active = active;
+		OwnerID = ownerID;
+		GoodsCategoryID = goodsCategoryID;
 	}
 
 	public Goods(int goodsID, int weight, double price, String pickupTime,
@@ -198,5 +222,5 @@ public class Goods implements java.io.Serializable {
 	public void setGoodsCategoryID(int goodsCategoryID) {
 		GoodsCategoryID = goodsCategoryID;
 	}
-	
+
 }
