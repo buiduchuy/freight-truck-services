@@ -30,7 +30,7 @@
 											<label class="right inline">Loại hàng: </label>
 										</div>
 										<div class="small-9 columns">
-											<c:forEach var="row" items="${categoryGoods }">
+											<c:forEach var="row" items="${typeGoods }">
 												<c:if test="${row.goodsCategoryId==good.goodsCategoryID }">
 													<input type="text" id="right-label" value="${row.name }"
 														name="txtWeight" readonly="" />
