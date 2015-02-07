@@ -81,7 +81,7 @@
 
 
 												<td><a class="button"
-													href="Controller?btAction=viewDetailRouter&idRouter=${rows.routeID }">
+													href="Controller?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
 														<i class="icon-ok"></i> Xem chi tiết
 												</a></td>
 											</tr>

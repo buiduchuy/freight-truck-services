@@ -55,6 +55,7 @@ public class Controller extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html;charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
+		RouteDAO rou= new RouteDAO();
 		String action = request.getParameter("btnAction");
 		HttpSession session = request.getSession(true);
 		if ("offAccount".equals(action)) {
@@ -82,7 +83,11 @@ public class Controller extends HttpServlet {
 			rd.forward(request, response);
 		}if("viewDetailRouter".equals(action)){
 		int idRouter=Integer.parseInt(request.getParameter("idRouter"));
-		
+		Route router= rou.getRouteById(idRouter);
+		session.setAttribute("viewDetailRoute", router);
+		RequestDispatcher rd = request
+				.getRequestDispatcher("chi-tiet-route.jsp");
+		rd.forward(request, response);
 		}
 	}
 
