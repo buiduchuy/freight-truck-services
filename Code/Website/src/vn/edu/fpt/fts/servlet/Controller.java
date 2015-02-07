@@ -96,7 +96,7 @@ public class Controller extends HttpServlet {
 			String password = request.getParameter("txtPassword");
 			session.removeAttribute("errorLogin");
 			session.removeAttribute("account");
-			if (acc.checkLoginAccount(email, password)==null) {
+			if (acc.checkLoginAccount(email, password)!=null) {
 				List<GoodsCategory> list= goodCa.getAllGoodsCategory();
 				GoodsCategory[] typeGoods= new GoodsCategory[list.size()];
 				list.toArray(typeGoods);
