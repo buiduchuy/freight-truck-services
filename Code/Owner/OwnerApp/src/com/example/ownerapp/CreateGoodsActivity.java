@@ -1,17 +1,21 @@
 package com.example.ownerapp;
 
+import java.io.Closeable;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 
@@ -185,27 +189,49 @@ public class CreateGoodsActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				JSONObject json = new JSONObject();
+				JSONObject json1 = new JSONObject();
 				try {
-					String url = "jdbc:jtds:sqlserver://localhost:1433;instance=SQL2008NEW;DatabaseName=FTS";
-					Class.forName("net.sourceforge.jtds.jdbc.Driver");
-					Connection con = DriverManager.getConnection(url, "sa", "123");
-					String sql = "insert into Goods (Weight,Price,PickupTime,PickupAddress," +
-							"DeliveryTime,DeliveryAddress,CreateTime,Active,OwnerID,GoodsCategoryID)" +
-							"values (10,12.1,2015/02/01,'HCM',2015/02/05,'Ha Noi',2015/02/01,1,1,1)";
-					Statement stm = con.prepareStatement(sql);
-					ResultSet rs = stm.executeQuery(sql);
-					if (rs.next()) {
-						System.out.println("Success");
-					}
-					con.close();
-				} catch (ClassNotFoundException ex) {
-					// TODO: handle exception
-					ex.printStackTrace();
-				} catch (SQLException e) {
+					json.put("active", "1");
+					json.put("createTime", "2015-05-04 00:00:00.0");
+					json.put("deliveryAddress", "Vung Tau");
+					json.put("deliveryMarkerLatidute", "0.0");
+					json.put("deliveryMarkerLongtitude", "0.0");
+					json.put("deliveryTime", "2015-05-24 00:00:00.0");
+					json.put("goodsCategoryID", "1");
+					json.put("notes", "12345");
+					json.put("ownerID", "1");
+					json.put("pickupAddress", "Ca Mau");
+					json.put("pickupMarkerLatidute", "0.0");
+					json.put("pickupMarkerLongtitude", "0.0");
+					json.put("pickupTime", "2015-05-04 00:00:00.0");
+					json.put("price", "3000");
+					json.put("weight", "1000");
+					json1.put("goods", json);
+					
+				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				HttpClient httpClient = new DefaultHttpClient();
+				HttpPost request = new HttpPost("http://192.168.1.4:8080/FTS/api/Goods/create");
+				try {
+					StringEntity param = new StringEntity(json1.toString());
+					request.addHeader("content-type", "application/x-www-form-urlencoded");
+					request.setEntity(param);
+					httpClient.execute(request);
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					httpClient.getConnectionManager().shutdown();
+				}
 				
 			}
 		});
