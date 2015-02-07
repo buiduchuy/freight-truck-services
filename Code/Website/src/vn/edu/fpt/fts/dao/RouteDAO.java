@@ -27,22 +27,20 @@ public class RouteDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO Route ( " + "StartingAddress,"
-					+ "RouteMarkerID," + "DestinationAddress," + "StartTime,"
-					+ "FinishTime," + "Notes," + "CreateTime," + "Active,"
-					+ "VehicleID," + "DriverID" + ") VALUES (" + "?, " + "?, "
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?, " + "?)";
+					+ "DestinationAddress," + "StartTime," + "FinishTime,"
+					+ "Notes," + "Weight," + "CreateTime," + "Active,"
+					+ "DriverID" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
+					+ "?, " + "?, " + "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 			stmt.setString(i++, bean.getStartingAddress()); // StartingAddress
-			stmt.setInt(i++, bean.getRouteMarkerID()); // StartingAddress
 			stmt.setString(i++, bean.getDestinationAddress()); // DestinationAddress
 			stmt.setString(i++, bean.getStartTime()); // StartTime
 			stmt.setString(i++, bean.getFinishTime()); // FinishTime
 			stmt.setString(i++, bean.getNotes()); // Notes
+			stmt.setInt(i++, bean.getWeight()); // Weight
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getActive()); // Active
-			stmt.setInt(i++, bean.getVehicleID()); // VehicleID
 			stmt.setInt(i++, bean.getDriverID()); // DriverID
 
 			ret = stmt.executeUpdate();
@@ -90,15 +88,14 @@ public class RouteDAO {
 
 				route.setRouteID(rs.getInt("RouteID"));
 				route.setStartingAddress(rs.getString("StartingAddress"));
-				route.setRouteMarkerID(rs.getInt("RouteMarkerID"));
 				route.setDestinationAddress(rs.getString("DestinationAddress"));
-				route.setStartTime(rs.getTimestamp("StartTime").toString());
-				route.setFinishTime(rs.getTimestamp("FinishTime").toString());
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
 				route.setNotes(rs.getString("Notes"));
-				route.setCreateTime(rs.getTimestamp("CreateTime").toString());
-				route.setActive(rs.getInt("Active"));
-				route.setVehicleID(rs.getInt("VehicleID"));
-				route.setDriverID(rs.getInt("DriverID"));
+				route.setWeight(Integer.valueOf(rs.getString("Weight")));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(Integer.valueOf(rs.getString("Active")));
+				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
 				route.setRouteMarker(routeMarkderDAO
 						.getAllRouteMarkerByRouteID(route.getRouteID()));
 				list.add(route);

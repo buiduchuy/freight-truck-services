@@ -35,18 +35,16 @@ public class RouteAPI {
 
 		Route route = new Route();
 		try {
+
 			route.setStartingAddress(goodsParams.getFirst("startingAddress"));
-			route.setRouteMarkerID(Integer.valueOf(goodsParams
-					.getFirst("routeMarkerID")));
 			route.setDestinationAddress(goodsParams
 					.getFirst("destinationAddress"));
 			route.setStartTime(goodsParams.getFirst("startTime"));
 			route.setFinishTime(goodsParams.getFirst("finishTime"));
 			route.setNotes(goodsParams.getFirst("notes"));
+			route.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
 			route.setCreateTime(goodsParams.getFirst("createTime"));
 			route.setActive(Integer.valueOf(goodsParams.getFirst("active")));
-			route.setVehicleID(Integer.valueOf(goodsParams
-					.getFirst("vehicleID")));
 			route.setDriverID(Integer.valueOf(goodsParams.getFirst("driverID")));
 
 			int ret = routeDao.insertRoute(route);

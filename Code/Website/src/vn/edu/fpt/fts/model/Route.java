@@ -2,6 +2,8 @@ package vn.edu.fpt.fts.model;
 
 import java.util.List;
 
+
+
 /**
  * @author Huy
  *
@@ -15,16 +17,15 @@ public class Route implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -7515339075887353188L;
-	private int routeID;
+	private int RouteID;
 	private String startingAddress;
-	private int routeMarkerID;
 	private String destinationAddress;
 	private String startTime;
 	private String finishTime;
 	private String notes;
+	private int weight;
 	private String createTime;
 	private int active;
-	private int vehicleID;
 	private int driverID;
 	private List<RouteMarker> routeMarker;
 
@@ -32,30 +33,47 @@ public class Route implements java.io.Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Route(int routeID, String startingAddress, int routeMarkerID,
+	public Route(int routeID, String startingAddress,
 			String destinationAddress, String startTime, String finishTime,
-			String notes, String createTime, int active, int vehicleID,
-			int driverID) {
+			String notes, int weight, String createTime, int active,
+			int driverID, List<RouteMarker> routeMarker) {
 		super();
-		this.routeID = routeID;
+		RouteID = routeID;
 		this.startingAddress = startingAddress;
-		this.routeMarkerID = routeMarkerID;
 		this.destinationAddress = destinationAddress;
 		this.startTime = startTime;
 		this.finishTime = finishTime;
 		this.notes = notes;
+		this.weight = weight;
 		this.createTime = createTime;
 		this.active = active;
-		this.vehicleID = vehicleID;
 		this.driverID = driverID;
+		this.routeMarker = routeMarker;
+	}
+
+	public Route(String startingAddress, String destinationAddress,
+			String startTime, String finishTime, String notes, int weight,
+			String createTime, int active, int driverID,
+			List<RouteMarker> routeMarker) {
+		super();
+		this.startingAddress = startingAddress;
+		this.destinationAddress = destinationAddress;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.notes = notes;
+		this.weight = weight;
+		this.createTime = createTime;
+		this.active = active;
+		this.driverID = driverID;
+		this.routeMarker = routeMarker;
 	}
 
 	public int getRouteID() {
-		return routeID;
+		return RouteID;
 	}
 
 	public void setRouteID(int routeID) {
-		this.routeID = routeID;
+		RouteID = routeID;
 	}
 
 	public String getStartingAddress() {
@@ -64,14 +82,6 @@ public class Route implements java.io.Serializable {
 
 	public void setStartingAddress(String startingAddress) {
 		this.startingAddress = startingAddress;
-	}
-
-	public int getRouteMarkerID() {
-		return routeMarkerID;
-	}
-
-	public void setRouteMarkerID(int routeMarkerID) {
-		this.routeMarkerID = routeMarkerID;
 	}
 
 	public String getDestinationAddress() {
@@ -106,6 +116,14 @@ public class Route implements java.io.Serializable {
 		this.notes = notes;
 	}
 
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
+
 	public String getCreateTime() {
 		return createTime;
 	}
@@ -120,14 +138,6 @@ public class Route implements java.io.Serializable {
 
 	public void setActive(int active) {
 		this.active = active;
-	}
-
-	public int getVehicleID() {
-		return vehicleID;
-	}
-
-	public void setVehicleID(int vehicleID) {
-		this.vehicleID = vehicleID;
 	}
 
 	public int getDriverID() {
@@ -145,4 +155,5 @@ public class Route implements java.io.Serializable {
 	public void setRouteMarker(List<RouteMarker> routeMarker) {
 		this.routeMarker = routeMarker;
 	}
+	
 }
