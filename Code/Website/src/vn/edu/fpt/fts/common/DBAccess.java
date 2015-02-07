@@ -3,6 +3,8 @@ package vn.edu.fpt.fts.common;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DBAccess {
 
@@ -15,8 +17,12 @@ public class DBAccess {
 			return con;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		} catch (SQLException sqle) {
-			sqle.printStackTrace();
+			Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null,
+					e);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null,
+					e);
 		}
 		return null;
 	}

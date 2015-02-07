@@ -8,6 +8,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Goods;
@@ -53,9 +55,12 @@ public class GoodsDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Cannot insert to Goods table");
-			e.printStackTrace();
 			ret = -1;
+			System.out.println("Can't insert to Goods table");
+			e.printStackTrace();
+			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+					e);
+			
 		} finally {
 			try {
 				if (stmt != null) {
@@ -64,8 +69,10 @@ public class GoodsDAO {
 				if (con != null) {
 					con.close();
 				}
-			} catch (SQLException ex) {
-				ex.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+						e);
 			}
 		}
 		return ret;
@@ -109,7 +116,10 @@ public class GoodsDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Cannot update to Goods table");
+			System.out.println("Can't update to Goods table");
+			e.printStackTrace();
+			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+					e);
 		} finally {
 			try {
 				if (stmt != null) {
@@ -118,14 +128,16 @@ public class GoodsDAO {
 				if (con != null) {
 					con.close();
 				}
-			} catch (SQLException ex) {
-				ex.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+						e);
 			}
 		}
 		return ret;
 	}
 
-	public static List<Goods> getAllGoods() {
+	public List<Goods> getAllGoods() {
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy");
 
 		Connection con = null;
@@ -169,6 +181,8 @@ public class GoodsDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+					e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -182,6 +196,9 @@ public class GoodsDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+				System.out.println("Can't load data from Goods table");
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+						e);
 			}
 		}
 		return null;

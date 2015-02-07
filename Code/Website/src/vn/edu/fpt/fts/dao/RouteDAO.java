@@ -8,6 +8,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Route;
@@ -41,14 +43,16 @@ public class RouteDAO {
 			stmt.setInt(i++, bean.getActive()); // Active
 			stmt.setInt(i++, bean.getVehicleID()); // VehicleID
 			stmt.setInt(i++, bean.getDriverID()); // DriverID
-			
+
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			e.printStackTrace();
-			System.out.println("Can't insert to Route table");
 			ret = -1;
+			System.out.println("Can't insert to Route table");
+			e.printStackTrace();
+			Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null,
+					e);
 		} finally {
 			try {
 				if (stmt != null) {
@@ -57,14 +61,16 @@ public class RouteDAO {
 				if (con != null) {
 					con.close();
 				}
-			} catch (SQLException ex) {
-				ex.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE,
+						null, e);
 			}
 		}
 		return ret;
 	}
 
-	public static List<Route> getAllRoute() {
+	public List<Route> getAllRoute() {
 		DateFormat format = new SimpleDateFormat("dd/mm/yyyy");
 
 		Connection con = null;
@@ -98,7 +104,10 @@ public class RouteDAO {
 			}
 			return list;
 		} catch (SQLException e) {
+			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
+			Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null,
+					e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -113,6 +122,8 @@ public class RouteDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Route table");
+				Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE,
+						null, e);
 			}
 		}
 		return null;
