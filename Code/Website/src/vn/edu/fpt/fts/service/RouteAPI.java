@@ -24,9 +24,6 @@ public class RouteAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Route> JSON() {
 		List<Route> l_routes = routeDao.getAllRoute();
-		for (int i=0; i<= l_routes.size(); i++){
-			
-		}
 		return l_routes;
 	}
 
