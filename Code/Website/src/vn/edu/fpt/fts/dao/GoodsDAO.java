@@ -8,8 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -142,7 +140,6 @@ public class GoodsDAO {
 	}
 
 	public List<Goods> getAllGoods() {
-		DateFormat format = new SimpleDateFormat("dd/mm/yyyy");
 
 		Connection con = null;
 		PreparedStatement stm = null;

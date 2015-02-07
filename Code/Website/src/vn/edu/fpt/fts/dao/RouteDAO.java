@@ -8,8 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,15 +27,15 @@ public class RouteDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO Route ( " + "StartingAddress,"
-					+ "RouteMarkerID," + "DestinationAddress,"
-					+ "StartTime," + "FinishTime," + "Notes," + "CreateTime,"
-					+ "Active," + "VehicleID," + "DriverID" + ") VALUES ("
+					+ "RouteMarkerID," + "DestinationAddress," + "StartTime,"
+					+ "FinishTime," + "Notes," + "CreateTime," + "Active,"
+					+ "VehicleID," + "DriverID" + ") VALUES (" + "?, " + "?, "
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?, " + "?, " + "?, " + "?)";
+					+ "?, " + "?)";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 			stmt.setString(i++, bean.getStartingAddress()); // StartingAddress
-			stmt.setInt(i++, bean.getRouteMarkerID()); // Marker1
+			stmt.setInt(i++, bean.getRouteMarkerID()); // StartingAddress
 			stmt.setString(i++, bean.getDestinationAddress()); // DestinationAddress
 			stmt.setString(i++, bean.getStartTime()); // StartTime
 			stmt.setString(i++, bean.getFinishTime()); // FinishTime
@@ -74,7 +72,6 @@ public class RouteDAO {
 	}
 
 	public List<Route> getAllRoute() {
-		DateFormat format = new SimpleDateFormat("dd/mm/yyyy");
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -86,6 +83,7 @@ public class RouteDAO {
 			stm = con.prepareStatement(sql);
 			rs = stm.executeQuery();
 			List<Route> list = new ArrayList<Route>();
+			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
 			Route route;
 			while (rs.next()) {
 				route = new Route();
@@ -101,7 +99,8 @@ public class RouteDAO {
 				route.setActive(rs.getInt("Active"));
 				route.setVehicleID(rs.getInt("VehicleID"));
 				route.setDriverID(rs.getInt("DriverID"));
-
+				route.setRouteMarker(routeMarkderDAO
+						.getAllRouteMarkerByRouteID(route.getRouteID()));
 				list.add(route);
 			}
 			return list;

@@ -1,5 +1,7 @@
 package vn.edu.fpt.fts.model;
 
+import java.util.List;
+
 /**
  * @author Huy
  *
@@ -24,6 +26,7 @@ public class Route implements java.io.Serializable {
 	private int active;
 	private int vehicleID;
 	private int driverID;
+	private List<RouteMarker> routeMarker;
 
 	public Route() {
 		// TODO Auto-generated constructor stub
@@ -135,4 +138,11 @@ public class Route implements java.io.Serializable {
 		this.driverID = driverID;
 	}
 
+	public List<RouteMarker> getRouteMarker() {
+		return routeMarker;
+	}
+
+	public void setRouteMarker(List<RouteMarker> routeMarker) {
+		this.routeMarker = routeMarker;
+	}
 }
