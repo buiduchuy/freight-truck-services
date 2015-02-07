@@ -5,8 +5,8 @@ package vn.edu.fpt.fts.dao;
 
 import java.util.List;
 
-import vn.edu.fpt.fts.model.Goods;
-import vn.edu.fpt.fts.model.Owner;
+import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.Owner;
 
 /**
  * @author Huy

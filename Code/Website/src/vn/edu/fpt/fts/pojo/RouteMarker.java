@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.edu.fpt.fts.model;
+package vn.edu.fpt.fts.pojo;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

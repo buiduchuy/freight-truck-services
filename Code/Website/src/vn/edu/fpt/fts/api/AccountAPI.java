@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.edu.fpt.fts.service;
+package vn.edu.fpt.fts.api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -12,7 +12,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.RoleDAO;
-import vn.edu.fpt.fts.model.Account;
+import vn.edu.fpt.fts.pojo.Account;
 
 /**
  * @author Huy

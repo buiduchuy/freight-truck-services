@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.service;
+package vn.edu.fpt.fts.api;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -13,8 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
-import vn.edu.fpt.fts.model.Goods;
-import vn.edu.fpt.fts.model.GoodsCategory;
+import vn.edu.fpt.fts.pojo.GoodsCategory;
 
 @Path("/GoodsCategory")
 public class GoodsCategoryAPI {
