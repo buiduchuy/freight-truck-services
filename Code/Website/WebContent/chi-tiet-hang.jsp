@@ -19,7 +19,7 @@
 					style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 700px;">
 
 					<div class="form-content">
-						<form action="#" method="get" accept-charset="utf-8">
+						<form action="Controller" method="post" accept-charset="utf-8">
 							<div class="row">
 								<div class="large-12 columns">
 									<h2 class="page-title">
@@ -27,6 +27,13 @@
 									</h2>
 
 								</div>
+								<c:set var="message" value="${sessionScope.messageUpdateGood }" />
+								<c:if test="${not empty message}">
+							<font color="green">${message}</font>
+						</c:if>
+						<%
+							request.getSession().removeAttribute("messageUpdateGood");
+						%>
 								<div class="large-12 columns">
 									<div class="extra-title">
 										<h3>Thông tin hàng hoá</h3>
@@ -166,8 +173,8 @@
 												<label class="right inline">Chi phí tài xế: </label>
 											</div>
 											<div class="small-4 columns left">
-												<input type="text" id="right-label"
-													value="${detailGood1.price} (Ngàn đồng)" readonly="" />
+												<input type="text" id="right-label" name="txtPrice"
+													value="${detailGood1.price}" />
 											</div>
 										</div>
 										<div class="row">
@@ -195,10 +202,10 @@
 											<a href="Controller?btnAction=manageGoods" class="button secondary"> <i
 												class="icon-mail-reply"></i> Trở về trước
 											</a>
-												<button class="button ">
+												<button class="button " name="btnAction" value="updateGood">
 													<i class="icon-ok"></i> Cập nhật hàng
 												</button>
-												<button class="button  alert" id="delete">
+												<button class="button  alert" name="btnAction" value="deleteGood">
 													<i class="icon-remove"> Xoá hàng</i>
 												</button>
 
