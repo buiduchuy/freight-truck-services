@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Goods;
+import vn.edu.fpt.fts.model.Owner;
 
 public class GoodsDAO {
 
@@ -205,7 +206,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public List<Goods> getListGoodsByAccountID() {
+	public List<Goods> getListGoodsByOwnerID(Owner owner) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -215,6 +216,10 @@ public class GoodsDAO {
 			con = DBAccess.makeConnection();
 			String sql = "SELECT * FROM Goods WHERE OwnerID=?";
 			stm = con.prepareStatement(sql);
+
+			int i = 1;
+			stm.setInt(i++, owner.getOwnerID());
+
 			rs = stm.executeQuery();
 			List<Goods> list = new ArrayList<Goods>();
 			Goods goods;

@@ -29,8 +29,8 @@ public class RouteAPI {
 
 	@POST
 	@Path("Create")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public String createRoute(MultivaluedMap<String, String> goodsParams) {
 
 		Route route = new Route();
