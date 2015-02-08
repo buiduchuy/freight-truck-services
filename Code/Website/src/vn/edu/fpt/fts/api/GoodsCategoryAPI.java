@@ -13,7 +13,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
-import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 
 @Path("/GoodsCategory")
