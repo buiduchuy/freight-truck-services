@@ -168,10 +168,7 @@ public class Controller extends HttpServlet {
 		if ("viewSuggest".equals(action)) {
 			List<Deal> dealByOwner = new ArrayList<Deal>();
 			List<Deal> dealByDriver = new ArrayList<Deal>();
-
-			Owner owner = (Owner) session.getAttribute("owner");
-			List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
-			Goods goolast = listGood.get(listGood.size() - 1);
+			Goods goolast = (Goods) session.getAttribute("newGood");
 			List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
 					.getGoodsID());
 			for (int i = 0; i < listDealByIdGood.size(); i++) {
@@ -210,10 +207,7 @@ public class Controller extends HttpServlet {
 			if (dea.updateDeal(deleteDeal) == 1) {
 				List<Deal> dealByOwner = new ArrayList<Deal>();
 				List<Deal> dealByDriver = new ArrayList<Deal>();
-
-				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
-				Goods goolast = listGood.get(listGood.size() - 1);
+				Goods goolast = (Goods) session.getAttribute("newGood");
 				List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
 						.getGoodsID());
 				for (int i = 0; i < listDealByIdGood.size(); i++) {
@@ -476,8 +470,8 @@ public class Controller extends HttpServlet {
 			float a = Float.parseFloat("10");
 			Owner owner = (Owner) session.getAttribute("owner");
 			Goods goo = new Goods(weight, price,
-					co.changeFormatDate(pickupTime), pickupAdress,
-					co.changeFormatDate(deliveryTime), deliveryAddress, a, a,
+					co.changeFormatDate(pickupTime,"dd-MM-yyyy","MM-dd-yyyy"), pickupAdress,
+					co.changeFormatDate(deliveryTime,"dd-MM-yyyy","MM-dd-yyyy"), deliveryAddress, a, a,
 					a, a, notes, createTime, 1, owner.getOwnerID(),
 					GoodsCategoryID);
 
@@ -597,11 +591,14 @@ public class Controller extends HttpServlet {
 								dealFromDriver.getDealID(),
 								orderDao.insertOrder(order));
 						if (dealOrderDao.insertDealOrder(dealOrder) != -1) {
-							Goods goodChangeOrder= goodDao.getGoodsByID(dealFromDriver.getGoodsID());
+							Goods goodChangeOrder = goodDao
+									.getGoodsByID(dealFromDriver.getGoodsID());
 							goodChangeOrder.setActive(2);
-							if(goodDao.updateGoods(goodChangeOrder)!= -1){
-								Owner owner = (Owner) session.getAttribute("owner");
-								List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner);
+							if (goodDao.updateGoods(goodChangeOrder) != -1) {
+								Owner owner = (Owner) session
+										.getAttribute("owner");
+								List<Goods> manageGood = goodDao
+										.getListGoodsByOwnerID(owner);
 								List<Goods> manageGood1 = new ArrayList<Goods>();
 								List<Goods> manageGood2 = new ArrayList<Goods>();
 								for (int i = 0; i < manageGood.size(); i++) {
@@ -635,10 +632,61 @@ public class Controller extends HttpServlet {
 			if (dea.updateDeal(dealFromDriver) == 1) {
 				List<Deal> dealByOwner = new ArrayList<Deal>();
 				List<Deal> dealByDriver = new ArrayList<Deal>();
+				Goods goolast = (Goods) session.getAttribute("newGood");
+				List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
+						.getGoodsID());
+				for (int i = 0; i < listDealByIdGood.size(); i++) {
+					if (listDealByIdGood.get(i).getActive() == 1) {
+						if (listDealByIdGood.get(i).getSender().equals("Owner")) {
+							dealByOwner.add(listDealByIdGood.get(i));
+						}
+						if (listDealByIdGood.get(i).getSender()
+								.equals("Driver")
+								&& listDealByIdGood.get(i).getDealStatusID() == 2) {
+							dealByDriver.add(listDealByIdGood.get(i));
+						}
+					}
+				}
+				Deal[] list1 = new Deal[dealByOwner.size()];
+				dealByOwner.toArray(list1);
+				Deal[] list2 = new Deal[dealByDriver.size()];
+				dealByDriver.toArray(list2);
+				List<Route> list = rou.getAllRoute();
+				Route[] listRou = new Route[list.size()];
+				list.toArray(listRou);
+				List<Driver> listDriver = dri.getAllDriver();
+				Driver[] listDri = new Driver[listDriver.size()];
+				listDriver.toArray(listDri);
+				session.setAttribute("listRouteSuggest", listRou);
+				session.setAttribute("dealByOwner", list1);
+				session.setAttribute("dealByDriver", list2);
+				session.setAttribute("listDriver", listDri);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("danh-sach-de-nghi.jsp");
+				rd.forward(request, response);
+			}
+		}
+		if ("sendOffer".equals(action)) {
+			Deal dealFromDriver = (Deal) session.getAttribute("dealFromDriver");
+			int price = Integer.parseInt(request.getParameter("txtPrice"));
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String createTime = dateFormat.format(date);
+			String notes = "";
+			try {
+				notes = notes + request.getParameter("txtNotes");
+			} catch (Exception ex) {
 
-				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
-				Goods goolast = listGood.get(listGood.size() - 1);
+			}
+			dealFromDriver.setDealStatusID(1);
+			dealFromDriver.setPrice(price);
+			dealFromDriver.setNotes(notes);
+			dealFromDriver.setCreateTime(createTime);
+			dealFromDriver.setSender("Owner");;
+			if(dea.insertDeal(dealFromDriver)!= -1){
+				List<Deal> dealByOwner = new ArrayList<Deal>();
+				List<Deal> dealByDriver = new ArrayList<Deal>();
+				Goods goolast = (Goods) session.getAttribute("newGood");
 				List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
 						.getGoodsID());
 				for (int i = 0; i < listDealByIdGood.size(); i++) {

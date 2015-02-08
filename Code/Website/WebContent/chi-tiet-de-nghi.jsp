@@ -28,7 +28,8 @@
 								<label class="left"><font color="white" size="+1">Lịch
 										sử đề nghị</font></label> </br>
 							</div>
-							<table>
+							<table id="example" class="display" cellspacing="0"
+											width="100%">
 								<thead>
 									<tr>
 										<th><h3>
@@ -93,7 +94,7 @@
 							<div class="small-6 columns">
 								<input onkeypress="return keyPhone(event);" type="text"
 									id="right-label" placeholder="" required=""
-									data-errormessage-value-missing="Vui lòng nhập giá thương lượng !" />
+									data-errormessage-value-missing="Vui lòng nhập giá thương lượng !" name="txtPrice"/>
 							</div>
 							<div class="small-3 columns">
 								<label for="right-label" class="left inline">Ngàn đồng</label>
@@ -105,13 +106,13 @@
 								</label>
 							</div>
 							<div class="small-6 columns">
-								<textarea maxlength="250"></textarea>
+								<textarea maxlength="250" name="txtNotes"></textarea>
 							</div>
 							<div class="small-3 columns"></div>
 							<div class="submit-area">
 								<div class="submit-area right">
 
-									<button
+									<button name="btnAction" value="sendOffer"
 										onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 										<i class="icon-mail-forward"></i> Gửi
 									</button>

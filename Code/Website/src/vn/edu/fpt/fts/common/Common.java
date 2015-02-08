@@ -18,11 +18,11 @@ public final class Common {
 	public static final String usernamedb = "sa";
 	public static final String passworddb = "123456";
 	
-	public String changeFormatDate(String dateInput){
+	public String changeFormatDate(String dateInput, String oldFormat, String newFormat){
 		try {
-            SimpleDateFormat sdfSource = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat sdfSource = new SimpleDateFormat(oldFormat);
             Date date = sdfSource.parse(dateInput);
-            SimpleDateFormat sdfDestination = new SimpleDateFormat("MM-dd-yyyy");
+            SimpleDateFormat sdfDestination = new SimpleDateFormat(newFormat);
             dateInput = sdfDestination.format(date);
             return dateInput.toString();
 
