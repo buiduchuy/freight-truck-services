@@ -21,12 +21,14 @@ import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
+import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 
@@ -253,7 +255,7 @@ public class Controller extends HttpServlet {
 						.getRouteID());
 				for (int i = 0; i < list.size(); i++) {
 					if (list.get(i).getGoodsID() == changeDealStatus
-									.getGoodsID()) {
+							.getGoodsID()) {
 						listHistory.add(list.get(i));
 					}
 				}
@@ -287,6 +289,7 @@ public class Controller extends HttpServlet {
 		OwnerDAO ow = new OwnerDAO();
 		DealDAO dea = new DealDAO();
 		DriverDAO dri = new DriverDAO();
+		OrderDAO orderDao = new OrderDAO();
 		if ("login".equals(action)) {
 			String email = request.getParameter("txtEmail");
 			String password = request.getParameter("txtPassword");
@@ -523,7 +526,7 @@ public class Controller extends HttpServlet {
 					pickupAddress, deliveryTime, deliveryAddress, a, a, a, a,
 					notes, go.getCreateTime().toString(), 1, go.getOwnerID(),
 					goodsCategoryID);
-		
+
 			if (goodDao.updateGoods(good) == 1) {
 				session.setAttribute("messageUpdateGood", "Cập nhật thành công");
 				RequestDispatcher rd = request
@@ -576,16 +579,24 @@ public class Controller extends HttpServlet {
 			}
 		}
 		if ("confirmDeal".equals(action)) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			String createTime = dateFormat.format(date);
 			Deal dealFromDriver = (Deal) session
-					.getAttribute("changeDealStatus");
+					.getAttribute("dealFromDriver");
 			dealFromDriver.setDealStatusID(3);
 			if (dea.updateDeal(dealFromDriver) == 1) {
+				Order order = new Order(dealFromDriver.getPrice(), false,
+						false, false, createTime, 1);
+				try {
+					System.out.println(orderDao.insertOrder(order));
+				} catch (Exception ex) {
 
+				}
 			}
 		}
 		if ("denyDeal".equals(action)) {
-			Deal dealFromDriver = (Deal) session
-					.getAttribute("dealFromDriver");
+			Deal dealFromDriver = (Deal) session.getAttribute("dealFromDriver");
 			dealFromDriver.setDealStatusID(4);
 			if (dea.updateDeal(dealFromDriver) == 1) {
 				List<Deal> dealByOwner = new ArrayList<Deal>();
@@ -601,7 +612,8 @@ public class Controller extends HttpServlet {
 						if (listDealByIdGood.get(i).getSender().equals("Owner")) {
 							dealByOwner.add(listDealByIdGood.get(i));
 						}
-						if (listDealByIdGood.get(i).getSender().equals("Driver")
+						if (listDealByIdGood.get(i).getSender()
+								.equals("Driver")
 								&& listDealByIdGood.get(i).getDealStatusID() == 2) {
 							dealByDriver.add(listDealByIdGood.get(i));
 						}
