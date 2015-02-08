@@ -55,7 +55,7 @@ public class Controller extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		RouteDAO rou = new RouteDAO();
 		DealDAO dea = new DealDAO();
-		GoodsDAO goodDao= new GoodsDAO();
+		GoodsDAO goodDao = new GoodsDAO();
 		String action = request.getParameter("btnAction");
 		HttpSession session = request.getSession(true);
 		if ("offAccount".equals(action)) {
@@ -113,26 +113,38 @@ public class Controller extends HttpServlet {
 			}
 		}
 		if ("manageGoods".equals(action)) {
-			Owner owner=(Owner) session.getAttribute("owner");
-			List<Goods> manageGood=goodDao.getListGoodsByOwnerID(owner);
-			List<Goods> manageGood1= new ArrayList<Goods>();
-			List<Goods> manageGood2= new ArrayList<Goods>();
-			for(int i=0;i<manageGood.size();i++){
-				if(manageGood.get(i).getActive()==1){
+			Owner owner = (Owner) session.getAttribute("owner");
+			List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner);
+			List<Goods> manageGood1 = new ArrayList<Goods>();
+			List<Goods> manageGood2 = new ArrayList<Goods>();
+			for (int i = 0; i < manageGood.size(); i++) {
+				if (manageGood.get(i).getActive() == 1) {
 					manageGood1.add(manageGood.get(i));
-				}else{
+				} else {
 					manageGood2.add(manageGood.get(i));
 				}
 			}
-			Goods[] list1= new Goods[manageGood1.size()];
+			Goods[] list1 = new Goods[manageGood1.size()];
 			manageGood1.toArray(list1);
-			Goods[] list2= new Goods[manageGood2.size()];
+			Goods[] list2 = new Goods[manageGood2.size()];
 			manageGood2.toArray(list2);
 			session.setAttribute("listGood1", list1);
 			session.setAttribute("listGood2", list2);
 			RequestDispatcher rd = request
 					.getRequestDispatcher("quan-ly-hang.jsp");
 			rd.forward(request, response);
+		}
+		if ("viewDetailGood1".equals(action)) {
+			try {
+				int idGood = Integer.parseInt(request.getParameter("idGood"));
+				Goods good= goodDao.getGoodsByID(idGood);
+				session.setAttribute("detailGood1", good);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("chi-tiet-hang.jsp");
+				rd.forward(request, response);
+			} catch (Exception ex) {
+
+			}
 		}
 	}
 
@@ -350,6 +362,9 @@ public class Controller extends HttpServlet {
 			if (goodDao.insertGoods(goo) == 1) {
 				List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
 				Goods goolast = listGood.get(listGood.size() - 1);
+				session.removeAttribute("router");
+				session.removeAttribute("good");
+				session.removeAttribute("price");
 				session.setAttribute("newGood", goolast);
 				session.setAttribute("listRouter", listRou);
 				session.setAttribute("listDriver", listDri);
@@ -369,4 +384,3 @@ public class Controller extends HttpServlet {
 	}
 
 }
-
