@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -99,7 +100,23 @@ public class Controller extends HttpServlet {
 				String createTime = dateFormat.format(date);
 				Route route = (Route) session.getAttribute("viewDetailRoute");
 				Goods good = (Goods) session.getAttribute("newGood");
-			
+				Deal newDeal= new Deal(good.getPrice(), good.getNotes(), createTime, "Owner", route.getRouteID(), good.getGoodsID(), 1, 1);
+				if(dea.insertDeal(newDeal)==1){
+					Route[] listRouter=(Route[])session.getAttribute("listRouter");
+					List<Route> list = new ArrayList<Route>(Arrays.asList(listRouter));
+					for(int i=0;i<list.size();i++){
+						if(list.get(i).getRouteID()==route.getRouteID()){
+							list.remove(i);
+						}
+					}
+					Route[] listRou = new Route[list.size()];
+					list.toArray(listRou);
+					session.setAttribute("listRouter",listRou);
+					session.setAttribute("messageCreateGood", "Gửi deal thành công");
+					RequestDispatcher rd = request
+							.getRequestDispatcher("goi-y-he-thong.jsp");
+					rd.forward(request, response);
+				}
 				
 
 			}
