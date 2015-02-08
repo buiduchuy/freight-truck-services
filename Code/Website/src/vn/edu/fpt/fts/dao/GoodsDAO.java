@@ -420,7 +420,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public Goods getGoodsByID(int goodsId) {
+	public Goods getGoodsByID(int id) {
 
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -428,18 +428,18 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM [Goods] WHERE GoodsID = " + "?";
+			String sql = "SELECT * FROM Goods WHERE GoodsID=?";
 
 			stmt = con.prepareStatement(sql);
 			int i = 1;
-			stmt.setInt(i++, goodsId);
+			stmt.setInt(i++, id);
 
 			rs = stmt.executeQuery();
 
-			if (rs != null) {
+			while (rs.next()) {
 				Goods goods = new Goods();
 
-				goods.setGoodsID(rs.getInt("GoodsID"));
+				goods.setGoodsID(id);
 				goods.setWeight(rs.getInt("Weight"));
 				goods.setPrice(rs.getDouble("Price"));
 				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());

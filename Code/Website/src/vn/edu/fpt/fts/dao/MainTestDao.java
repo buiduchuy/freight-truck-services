@@ -3,10 +3,8 @@
  */
 package vn.edu.fpt.fts.dao;
 
-import java.util.List;
 
 import vn.edu.fpt.fts.pojo.Goods;
-import vn.edu.fpt.fts.pojo.Owner;
 
 /**
  * @author Huy
