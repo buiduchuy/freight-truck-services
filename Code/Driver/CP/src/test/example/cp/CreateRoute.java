@@ -13,6 +13,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +41,7 @@ import com.google.android.gms.internal.lt;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import android.R.bool;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -69,6 +75,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -95,11 +102,19 @@ public class CreateRoute extends Fragment {
 	CheckBox check2;
 	CheckBox check3;
 	TextView link;
+	CheckBox frozen;
+	CheckBox broken;
+	CheckBox flammable;
+	CheckBox others;
+	EditText payload;
 	View v;
 	ArrayList<LatLng> locations;
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
+	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
+	private static final String user = "sa";
+	private static final String pass = "123456";
 
 	@Override
 	public void onPause() {
@@ -156,12 +171,20 @@ public class CreateRoute extends Fragment {
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
 		startDate = (EditText) v.findViewById(R.id.editText2);
 		startHour = (EditText) v.findViewById(R.id.editText3);
+		payload = (EditText) v.findViewById(R.id.editText8);
 		cal = Calendar.getInstance();
-		String date = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) + "/" + String.valueOf(cal.get(Calendar.MONTH) + 1)
-				+ "/" + String.valueOf(cal.get(Calendar.YEAR)));
+		String date = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) + "/"
+				+ String.valueOf(cal.get(Calendar.MONTH) + 1) + "/"
+				+ String.valueOf(cal.get(Calendar.YEAR)));
 		startDate.setText(date);
 		endDate = (EditText) v.findViewById(R.id.editText4);
 		link = (TextView) v.findViewById(R.id.textView7);
+
+		frozen = (CheckBox) v.findViewById(R.id.checkBox1);
+		broken = (CheckBox) v.findViewById(R.id.checkBox2);
+		flammable = (CheckBox) v.findViewById(R.id.checkBox3);
+		others = (CheckBox) v.findViewById(R.id.checkBox4);
+
 		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
 				R.layout.listview_item_row);
 		p1Adapter = new PlacesAutoCompleteAdapter(getActivity(),
@@ -174,23 +197,91 @@ public class CreateRoute extends Fragment {
 		p1 = (AutoCompleteTextView) v.findViewById(R.id.point1);
 		p2 = (AutoCompleteTextView) v.findViewById(R.id.point2);
 		end = (AutoCompleteTextView) v.findViewById(R.id.end);
-		
+
 		start.setAdapter(startAdapter);
 		p1.setAdapter(p1Adapter);
 		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
-		
-		locationManager = (LocationManager) getActivity()
-				.getSystemService(Context.LOCATION_SERVICE);
-		LocationListener locationListener = new LocationListener() {
-		    public void onLocationChanged(Location location) {
-		    	String current;
+
+		Button button = (Button) v.findViewById(R.id.button1);
+		button.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
 				try {
-					current = new GetAddress().execute(
-							location.getLatitude(),
-							location.getLongitude()).get();
-					start.setText(current);
-					locationManager.removeUpdates(this);
+					String startPoint = start.getText().toString();
+					String Point1 = p1.getText().toString();
+					String Point2 = p2.getText().toString();
+					String endPoint = end.getText().toString();
+					String startD = startDate.getText().toString() + " "
+							+ startHour.getText().toString();
+					String endD = endDate.getText().toString();
+					String frz = String.valueOf(frozen.isChecked());
+					String brk = String.valueOf(broken.isChecked());
+					String flm = String.valueOf(flammable.isChecked());
+					String oth = String.valueOf(others.isChecked());
+					String load = payload.getText().toString();
+
+					if (startPoint.equals("")) {
+						Toast.makeText(getActivity(),
+								"Điểm bắt đầu không được để trống.",
+								Toast.LENGTH_SHORT).show();
+					} else if (startPoint.length() > 100) {
+						Toast.makeText(
+								getActivity(),
+								"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								Toast.LENGTH_SHORT).show();
+					} else if (Point1.length() > 100) {
+						Toast.makeText(
+								getActivity(),
+								"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								Toast.LENGTH_SHORT);
+					} else if (Point2.length() > 100) {
+						Toast.makeText(
+								getActivity(),
+								"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								Toast.LENGTH_SHORT).show();
+					} else if (endPoint.equals("")) {
+						Toast.makeText(getActivity(),
+								"Điểm kết thúc không được để trống.",
+								Toast.LENGTH_SHORT).show();
+					} else if (endPoint.length() > 100) {
+						Toast.makeText(
+								getActivity(),
+								"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								Toast.LENGTH_SHORT).show();
+					} else if (startD.equals("")) {
+						Toast.makeText(getActivity(),
+								"Ngày bắt đầu không được để trống.",
+								Toast.LENGTH_SHORT).show();
+					} else if (endD.equals("")) {
+						Toast.makeText(getActivity(),
+								"Ngày kết thúc không được để trống.",
+								Toast.LENGTH_SHORT).show();
+					} else if (Date.parse(startD) > Date.parse(endD)) {
+						Toast.makeText(getActivity(),
+								"Ngày bắt đầu phải sớm hơn ngày kết thúc.",
+								Toast.LENGTH_SHORT).show();
+					} else if (payload.equals("")) {
+						Toast.makeText(getActivity(),
+								"Khối lượng chở không được để trống.",
+								Toast.LENGTH_SHORT).show();
+					} else if (Integer.parseInt(load) > 20) {
+						Toast.makeText(getActivity(),
+								"Khối lượng chở không vượt quá 20 tấn",
+								Toast.LENGTH_SHORT).show();
+					} else {
+						Boolean result = new CreateNewRoute().execute(
+								startPoint, Point1, Point2, endPoint, startD,
+								endD, load, frz, brk, flm, oth).get();
+						if (result) {
+							Toast.makeText(getActivity(), "Tạo mới thành công",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(getActivity(), "Tạo mới thất bại",
+									Toast.LENGTH_SHORT).show();
+						}
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -198,16 +289,43 @@ public class CreateRoute extends Fragment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-		    }
+			}
+		});
 
-		    public void onStatusChanged(String provider, int status, Bundle extras) {}
+		if (start.getText().toString().equals("")) {
+			locationManager = (LocationManager) getActivity().getSystemService(
+					Context.LOCATION_SERVICE);
+			LocationListener locationListener = new LocationListener() {
+				public void onLocationChanged(Location location) {
+					String current;
+					try {
+						current = new GetAddress()
+								.execute(location.getLatitude(),
+										location.getLongitude()).get();
+						start.setText(current);
+						locationManager.removeUpdates(this);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 
-		    public void onProviderEnabled(String provider) {}
+				public void onStatusChanged(String provider, int status,
+						Bundle extras) {
+				}
 
-		    public void onProviderDisabled(String provider) {}
-		  };
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+				public void onProviderEnabled(String provider) {
+				}
 
+				public void onProviderDisabled(String provider) {
+				}
+			};
+			locationManager.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		}
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -222,11 +340,13 @@ public class CreateRoute extends Fragment {
 				dialog.show();
 			}
 		});
-		
+
 		startHour.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				TimePickerDialog dialog = new TimePickerDialog(getActivity(), startHourListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE) , true);
+				TimePickerDialog dialog = new TimePickerDialog(getActivity(),
+						startHourListener, cal.get(Calendar.HOUR_OF_DAY), cal
+								.get(Calendar.MINUTE), true);
 				dialog.show();
 			}
 		});
@@ -287,7 +407,7 @@ public class CreateRoute extends Fragment {
 					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
 		}
 	};
-	
+
 	private TimePickerDialog.OnTimeSetListener startHourListener = new TimePickerDialog.OnTimeSetListener() {
 
 		@Override
@@ -419,6 +539,64 @@ public class CreateRoute extends Fragment {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			ANDROID_HTTP_CLIENT.close();
+		}
+	}
+
+	private class CreateNewRoute extends AsyncTask<String, Void, Boolean> {
+		@Override
+		protected Boolean doInBackground(String... params) {
+			android.os.Debug.waitForDebugger();
+			String response = "";
+
+			try {
+				Class.forName("net.sourceforge.jtds.jdbc.Driver");
+
+				Connection con = DriverManager.getConnection(url, user, pass);
+
+				String result = "Database connection success\n";
+				String sql = "INSERT INTO dbo.Route VALUES (" + "N'"
+						+ params[0] + "', " + "N'" + params[3] + "', " + "CONVERT(datetime, '"
+						+ params[4] + "', 103), " + "CONVERT(datetime, '" + params[5] + "', 103), " + null
+						+ ", " + "" + params[6] + ", " + "CONVERT(datetime, '"
+						+ cal.get(Calendar.DATE) + "/"
+						+ (cal.get(Calendar.MONTH) + 1) + "/"
+						+ cal.get(Calendar.YEAR) + "', 103), " + "1, 1" + " )";
+				PreparedStatement st = con.prepareStatement(sql,
+						Statement.RETURN_GENERATED_KEYS);
+
+				st.executeUpdate();
+
+				ResultSet generatedKeys = st.getGeneratedKeys();
+				long id = 0;
+				if (generatedKeys.next()) {
+					id = generatedKeys.getLong(1);
+				}
+
+				if (!params[1].equals("")) {
+					sql = "INSERT INTO dbo.RouteMarker VALUES (" + "N'"
+							+ params[1] + "', " + id + " )";
+					st = con.prepareStatement(sql);
+					st.executeUpdate();
+				}
+				
+				if (!params[2].equals("")) {
+					sql = "INSERT INTO dbo.RouteMarker VALUES (" + "N'"
+							+ params[2] + "', " + id + " )";
+					st = con.prepareStatement(sql);
+					st.executeUpdate();
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				// tv.setText(e.toString());
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+
 		}
 	}
 }

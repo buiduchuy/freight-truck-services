@@ -133,7 +133,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			public void onMapClick(LatLng arg0) {
 				if (locations.size() >= 4) {
 					Toast.makeText(getActivity(),
-							"Chỉ thêm được tối đa 2 địa điểm đi qua", 3).show();
+							"Chỉ thêm được tối đa 2 địa điểm đi qua", Toast.LENGTH_SHORT).show();
 				} else {
 					for (int i = 0; i < locations.size() - 1; i++) {
 						LatLng s = locations.get(i);
@@ -146,10 +146,10 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 					map.clear();
 					for (int i = 0; i < locations.size() - 1; i++) {
 						map.addMarker(new MarkerOptions().position(locations.get(i)).draggable(true)
-								.snippet(String.valueOf(i)));
+								.snippet(String.valueOf(i+1)));
 						if (i == locations.size() - 2) {
 							map.addMarker(new MarkerOptions().position(locations.get(i+1)).draggable(true)
-									.snippet(String.valueOf(i + 1)));
+									.snippet(String.valueOf(i + 2)));
 						}
 					}
 					for (int i = 0; i < locations.size() - 1; i++) {
