@@ -14,13 +14,14 @@ import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Driver;
-import vn.edu.fpt.fts.model.Goods;
 
 /**
  * @author Huy
  *
  */
 public class DriverDAO {
+	private final static String TAG = "DriverDAO";
+
 	public Driver getDriverById(int Id) {
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -38,9 +39,9 @@ public class DriverDAO {
 				String email = rs.getString("Email");
 				String firstName = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
-				int sex = rs.getInt("Sex");
+				int gender = rs.getInt("Gender");
 				String phone = rs.getString("Phone");
-				boolean isActive = rs.getBoolean("IsActive");
+				int Active = rs.getInt("Active");
 				String createBy = rs.getString("CreateBy");
 				String createTime = rs.getString("CreateTime");
 				String updateBy = rs.getString("UpdateBy");
@@ -49,19 +50,18 @@ public class DriverDAO {
 				String image = rs.getString("Image");
 				int point = rs.getInt("Point");
 				Driver driver = new Driver(driverID, email, firstName,
-						lastName, sex, phone, isActive, createBy, createTime,
+						lastName, gender, phone, Active, createBy, createTime,
 						updateBy, updateTime, age, image, point);
 				return driver;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE, null,
+			Logger.getLogger(DriverDAO.class.getName()).log(Level.SEVERE, null,
 					e);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			System.out.println("Columns with Integer type are null");
-			Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -75,12 +75,12 @@ public class DriverDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
 	}
+
 	public List<Driver> getAllDriver() {
 
 		Connection con = null;
@@ -98,9 +98,9 @@ public class DriverDAO {
 				String email = rs.getString("Email");
 				String firstName = rs.getString("FirstName");
 				String lastName = rs.getString("LastName");
-				int sex = rs.getInt("Sex");
+				int gender = rs.getInt("Gender");
 				String phone = rs.getString("Phone");
-				boolean isActive = rs.getBoolean("IsActive");
+				int active = rs.getInt("Active");
 				String createBy = rs.getString("CreateBy");
 				String createTime = rs.getString("CreateTime");
 				String updateBy = rs.getString("UpdateBy");
@@ -109,7 +109,7 @@ public class DriverDAO {
 				String image = rs.getString("Image");
 				int point = rs.getInt("Point");
 				Driver driver = new Driver(driverID, email, firstName,
-						lastName, sex, phone, isActive, createBy, createTime,
+						lastName, gender, phone, active, createBy, createTime,
 						updateBy, updateTime, age, image, point);
 
 				list.add(driver);
@@ -117,8 +117,7 @@ public class DriverDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -132,9 +131,8 @@ public class DriverDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				System.out.println("Can't load data from Driver table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;

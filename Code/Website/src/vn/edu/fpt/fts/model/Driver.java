@@ -3,131 +3,170 @@
  */
 package vn.edu.fpt.fts.model;
 
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Huy
  *
  */
-public class Driver {
-	private int DriverID;
-	private String Email;
-	private String FirstName;
-	private String LastName;
-	private int Sex;
-	private String Phone;
-	private boolean IsActive;
-	private String CreateBy;
-	private String CreateTime;
-	private String UpdateBy;
-	private String UpdateTime;
-	private int Age;
-	private String Image;
-	private int Point;
+@XmlRootElement
+public class Driver implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7998487520937277147L;
+	private int driverID;
+	private String email;
+	private String firstName;
+	private String lastName;
+	private int gender;
+	private String phone;
+	private int active;
+	private String createBy;
+	private String createTime;
+	private String updateBy;
+	private String updateTime;
+	private int age;
+	private String image;
+	private int point;
+
 	public Driver() {
-		super();
+		// TODO Auto-generated constructor stub
 	}
+
 	public Driver(int driverID, String email, String firstName,
-			String lastName, int sex, String phone, boolean isActive,
+			String lastName, int gender, String phone, int active,
 			String createBy, String createTime, String updateBy,
 			String updateTime, int age, String image, int point) {
 		super();
-		DriverID = driverID;
-		Email = email;
-		FirstName = firstName;
-		LastName = lastName;
-		Sex = sex;
-		Phone = phone;
-		IsActive = isActive;
-		CreateBy = createBy;
-		CreateTime = createTime;
-		UpdateBy = updateBy;
-		UpdateTime = updateTime;
-		Age = age;
-		Image = image;
-		Point = point;
+		this.driverID = driverID;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.gender = gender;
+		this.phone = phone;
+		this.active = active;
+		this.createBy = createBy;
+		this.createTime = createTime;
+		this.updateBy = updateBy;
+		this.updateTime = updateTime;
+		this.age = age;
+		this.image = image;
+		this.point = point;
 	}
+
 	public int getDriverID() {
-		return DriverID;
+		return driverID;
 	}
+
 	public void setDriverID(int driverID) {
-		DriverID = driverID;
+		this.driverID = driverID;
 	}
+
 	public String getEmail() {
-		return Email;
+		return email;
 	}
+
 	public void setEmail(String email) {
-		Email = email;
+		this.email = email;
 	}
+
 	public String getFirstName() {
-		return FirstName;
+		return firstName;
 	}
+
 	public void setFirstName(String firstName) {
-		FirstName = firstName;
+		this.firstName = firstName;
 	}
+
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
+
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
 	}
-	public int getSex() {
-		return Sex;
+
+	public int getGender() {
+		return gender;
 	}
-	public void setSex(int sex) {
-		Sex = sex;
+
+	public void setGender(int gender) {
+		this.gender = gender;
 	}
+
 	public String getPhone() {
-		return Phone;
+		return phone;
 	}
+
 	public void setPhone(String phone) {
-		Phone = phone;
+		this.phone = phone;
 	}
-	public boolean isIsActive() {
-		return IsActive;
+
+	public int getActive() {
+		return active;
 	}
-	public void setIsActive(boolean isActive) {
-		IsActive = isActive;
+
+	public void setActive(int active) {
+		this.active = active;
 	}
+
 	public String getCreateBy() {
-		return CreateBy;
+		return createBy;
 	}
+
 	public void setCreateBy(String createBy) {
-		CreateBy = createBy;
+		this.createBy = createBy;
 	}
+
 	public String getCreateTime() {
-		return CreateTime;
+		return createTime;
 	}
+
 	public void setCreateTime(String createTime) {
-		CreateTime = createTime;
+		this.createTime = createTime;
 	}
+
 	public String getUpdateBy() {
-		return UpdateBy;
+		return updateBy;
 	}
+
 	public void setUpdateBy(String updateBy) {
-		UpdateBy = updateBy;
+		this.updateBy = updateBy;
 	}
+
 	public String getUpdateTime() {
-		return UpdateTime;
+		return updateTime;
 	}
+
 	public void setUpdateTime(String updateTime) {
-		UpdateTime = updateTime;
+		this.updateTime = updateTime;
 	}
+
 	public int getAge() {
-		return Age;
+		return age;
 	}
+
 	public void setAge(int age) {
-		Age = age;
+		this.age = age;
 	}
+
 	public String getImage() {
-		return Image;
+		return image;
 	}
+
 	public void setImage(String image) {
-		Image = image;
+		this.image = image;
 	}
+
 	public int getPoint() {
-		return Point;
+		return point;
 	}
+
 	public void setPoint(int point) {
-		Point = point;
+		this.point = point;
 	}
 
 }
