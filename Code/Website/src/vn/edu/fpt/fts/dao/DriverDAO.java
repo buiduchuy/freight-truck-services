@@ -137,4 +137,63 @@ public class DriverDAO {
 		}
 		return null;
 	}
+
+	public Driver getDriverByEmail(String s_email) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT * FROM [Driver] WHERE Email=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, s_email);
+			rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				int driverID = rs.getInt("DriverID");
+				String email = rs.getString("Email");
+				String firstName = rs.getString("FirstName");
+				String lastName = rs.getString("LastName");
+				int gender = rs.getInt("Gender");
+				String phone = rs.getString("Phone");
+				int Active = rs.getInt("Active");
+				String createBy = rs.getString("CreateBy");
+				String createTime = rs.getString("CreateTime");
+				String updateBy = rs.getString("UpdateBy");
+				String updateTime = rs.getString("UpdateTime");
+				int age = rs.getInt("Age");
+				String image = rs.getString("Image");
+				int point = rs.getInt("Point");
+				Driver driver = new Driver(driverID, email, firstName,
+						lastName, gender, phone, Active, createBy, createTime,
+						updateBy, updateTime, age, image, point);
+				return driver;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(DriverDAO.class.getName()).log(Level.SEVERE, null,
+					e);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			System.out.println("Columns with Integer type are null");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
 }
