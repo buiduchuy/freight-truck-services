@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.DealDAO;
+import vn.edu.fpt.fts.dao.DealOrderDAO;
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
@@ -25,6 +26,7 @@ import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
+import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
@@ -106,7 +108,7 @@ public class Controller extends HttpServlet {
 				Deal newDeal = new Deal(good.getPrice(), good.getNotes(),
 						createTime, "Owner", route.getRouteID(),
 						good.getGoodsID(), 1, 1);
-				if (dea.insertDeal(newDeal) == 1) {
+				if (dea.insertDeal(newDeal) != -1) {
 					Route[] listRouter = (Route[]) session
 							.getAttribute("listRouter");
 					List<Route> list = new ArrayList<Route>(
@@ -289,6 +291,7 @@ public class Controller extends HttpServlet {
 		OwnerDAO ow = new OwnerDAO();
 		DealDAO dea = new DealDAO();
 		DriverDAO dri = new DriverDAO();
+		DealOrderDAO dealOrderDao = new DealOrderDAO();
 		OrderDAO orderDao = new OrderDAO();
 		if ("login".equals(action)) {
 			String email = request.getParameter("txtEmail");
@@ -484,13 +487,13 @@ public class Controller extends HttpServlet {
 			List<Driver> listDriver = dri.getAllDriver();
 			Driver[] listDri = new Driver[listDriver.size()];
 			listDriver.toArray(listDri);
-			if (goodDao.insertGoods(goo) == 1) {
-				List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
-				Goods goolast = listGood.get(listGood.size() - 1);
+			int idnewGood = goodDao.insertGoods(goo);
+			if (idnewGood != -1) {
+				System.out.println(idnewGood);
 				session.removeAttribute("router");
 				session.removeAttribute("good");
 				session.removeAttribute("price");
-				session.setAttribute("newGood", goolast);
+				session.setAttribute("newGood", goodDao.getGoodsByID(idnewGood));
 				session.setAttribute("listRouter", listRou);
 				session.setAttribute("listDriver", listDri);
 				session.setAttribute("messageCreateGood", "Tạo hàng thành công");
@@ -528,6 +531,7 @@ public class Controller extends HttpServlet {
 					goodsCategoryID);
 
 			if (goodDao.updateGoods(good) == 1) {
+
 				session.setAttribute("messageUpdateGood", "Cập nhật thành công");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("Controller?btnAction=viewDetailGood1&idGood="
@@ -582,14 +586,44 @@ public class Controller extends HttpServlet {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			String createTime = dateFormat.format(date);
-			Deal dealFromDriver = (Deal) session
-					.getAttribute("dealFromDriver");
+			Deal dealFromDriver = (Deal) session.getAttribute("dealFromDriver");
 			dealFromDriver.setDealStatusID(3);
 			if (dea.updateDeal(dealFromDriver) == 1) {
 				Order order = new Order(dealFromDriver.getPrice(), false,
 						false, false, createTime, 1);
 				try {
-					System.out.println(orderDao.insertOrder(order));
+					if (orderDao.insertOrder(order) != -1) {
+						DealOrder dealOrder = new DealOrder(
+								dealFromDriver.getDealID(),
+								orderDao.insertOrder(order));
+						if (dealOrderDao.insertDealOrder(dealOrder) != -1) {
+							Goods goodChangeOrder= goodDao.getGoodsByID(dealFromDriver.getGoodsID());
+							goodChangeOrder.setActive(2);
+							if(goodDao.updateGoods(goodChangeOrder)!= -1){
+								Owner owner = (Owner) session.getAttribute("owner");
+								List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner);
+								List<Goods> manageGood1 = new ArrayList<Goods>();
+								List<Goods> manageGood2 = new ArrayList<Goods>();
+								for (int i = 0; i < manageGood.size(); i++) {
+									if (manageGood.get(i).getActive() == 1) {
+										manageGood1.add(manageGood.get(i));
+									}
+									if (manageGood.get(i).getActive() == 2) {
+										manageGood2.add(manageGood.get(i));
+									}
+								}
+								Goods[] list1 = new Goods[manageGood1.size()];
+								manageGood1.toArray(list1);
+								Goods[] list2 = new Goods[manageGood2.size()];
+								manageGood2.toArray(list2);
+								session.setAttribute("listGood1", list1);
+								session.setAttribute("listGood2", list2);
+								RequestDispatcher rd = request
+										.getRequestDispatcher("quan-ly-hang.jsp");
+								rd.forward(request, response);
+							}
+						}
+					}
 				} catch (Exception ex) {
 
 				}
