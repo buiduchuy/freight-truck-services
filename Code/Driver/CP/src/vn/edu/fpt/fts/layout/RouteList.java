@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 import test.example.cp.R;
+import vn.edu.fpt.fts.classes.Constant;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -31,9 +32,6 @@ public class RouteList extends Fragment {
 	
 	Calendar cal = Calendar.getInstance();
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
-	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
-	private static final String user = "sa";
-	private static final String pass = "123456";
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -78,7 +76,7 @@ public class RouteList extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(url, user, pass);
+				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
 
 				String result = "Database connection success\n";
 				String sql = "SELECT * FROM dbo.Route WHERE Active = 1";

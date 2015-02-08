@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import test.example.cp.R;
+import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
@@ -114,9 +115,6 @@ public class CreateRoute extends Fragment {
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
-	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
-	private static final String user = "sa";
-	private static final String pass = "123456";
 
 	@Override
 	public void onPause() {
@@ -226,31 +224,31 @@ public class CreateRoute extends Fragment {
 
 					if (startPoint.equals("")) {
 						Toast.makeText(getActivity(),
-								"�?iểm bắt đầu không được để trống.",
+								"Điểm bắt đầu không được để trống.",
 								Toast.LENGTH_SHORT).show();
 					} else if (startPoint.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT).show();
 					} else if (Point1.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT);
 					} else if (Point2.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT).show();
 					} else if (endPoint.equals("")) {
 						Toast.makeText(getActivity(),
-								"�?iểm kết thúc không được để trống.",
+								"Điểm kết thúc không được để trống.",
 								Toast.LENGTH_SHORT).show();
 					} else if (endPoint.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT).show();
 					} else if (startD.equals("")) {
 						Toast.makeText(getActivity(),
@@ -552,7 +550,7 @@ public class CreateRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(url, user, pass);
+				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
 
 				String result = "Database connection success\n";
 				String sql = "INSERT INTO dbo.Route VALUES (" + "N'"

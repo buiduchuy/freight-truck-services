@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import test.example.cp.R;
+import vn.edu.fpt.fts.classes.Constant;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
@@ -27,9 +28,6 @@ import android.widget.Toast;
 
 public class CurrentRoute extends Fragment {
 
-	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
-	private static final String user = "sa";
-	private static final String pass = "123456";
 	TextView contentView;
 	String id;
 
@@ -75,7 +73,7 @@ public class CurrentRoute extends Fragment {
 	    		try {
 					boolean result = new DeleteRoute().execute().get();
 					if(result) {
-						Toast.makeText(getActivity(), "�?ã hủy lộ trình thành công", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), "Đã hủy lộ trình thành công", Toast.LENGTH_SHORT).show();
 					}
 					else {
 						Toast.makeText(getActivity(), "Hủy lộ trình thất bại", Toast.LENGTH_SHORT).show();
@@ -100,7 +98,7 @@ public class CurrentRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(url, user, pass);
+				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
 
 				String result = "Database connection success\n";
 				String sql = "SELECT * FROM dbo.Route WHERE RouteID = "
@@ -122,14 +120,14 @@ public class CurrentRoute extends Fragment {
 				ResultSet rs3 = st.executeQuery();
 				
 				while (rs.next()) {
-					String content = "�?ịa điểm bắt đầu: "
+					String content = "Địa điểm bắt đầu: "
 							+ rs.getString("StartingAddress") + "\n";
 					int i = 1;
 					while (rs2.next()) {
-						content += "�?ịa điểm đi qua " + i + ": " + rs2.getString("RouteMarkerLocation") + "\n";
+						content += "Địa điểm đi qua " + i + ": " + rs2.getString("RouteMarkerLocation") + "\n";
 						i++;
 					};
-					content += "�?ịa điểm kết thúc: " + rs.getString("DestinationAddress")
+					content += "Địa điểm kết thúc: " + rs.getString("DestinationAddress")
 							+ "\nNgày bắt đầu: " + rs.getString("StartTime")
 							+ "\nNgày kết thúc: " + rs.getString("FinishTime")
 							+ "\nKhối lượng có thể chở: " + rs.getString("Weight") + " tấn\nHàng không chở: ";
@@ -178,7 +176,7 @@ public class CurrentRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(url, user, pass);
+				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
 				
 				String sql = "UPDATE dbo.Route SET Active = 0 WHERE RouteID = " + id;
 				PreparedStatement st = con.prepareStatement(sql);

@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.classes.Constant;
+
 import android.content.Context;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -68,8 +70,6 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
 	private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
 	private static final String OUT_JSON = "/json";
 
-	private static final String API_KEY = "AIzaSyBNUIX7BTt5ibvMPFY5AsPW4Va0XcQckqg";
-
 	public ArrayList<String> autocomplete(String input) {
 	    ArrayList<String> resultList = null;
 
@@ -77,7 +77,7 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
 	    StringBuilder jsonResults = new StringBuilder();
 	    try {
 	        StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
-	        sb.append("?key=" + API_KEY);
+	        sb.append("?key=" + Constant.API_KEY);
 	        sb.append("&components=country:vn");
 	        sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 
