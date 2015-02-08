@@ -21,14 +21,17 @@ public class MainTestDao {
 		// TODO Auto-generated method stub
 		GoodsDAO goodsDao = new GoodsDAO();
 
-		Owner owner = new Owner();
-
-		owner.setOwnerID(1);
-
-		List<Goods> goodsList = goodsDao.getListGoodsByOwnerID(owner);
+//		Owner owner = new Owner();
+//
+//		owner.setOwnerID(1);
+//
+//		List<Goods> goodsList = goodsDao.getListGoodsByOwnerID(owner);
 		
+		Goods goods = goodsDao.getGoodsByID("11");
 		
-		System.out.println(goodsList.get(0).getDeliveryAddress());
+//		System.out.println(goodsList.get(0).getDeliveryAddress());
+		
+		System.out.println(goods.getDeliveryAddress());
 	}
 
 }
