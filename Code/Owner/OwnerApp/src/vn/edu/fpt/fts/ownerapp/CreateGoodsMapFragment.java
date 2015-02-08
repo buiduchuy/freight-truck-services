@@ -1,8 +1,9 @@
-package com.example.ownerapp;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.IOException;
 import java.util.List;
 
+import com.example.ownerapp.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

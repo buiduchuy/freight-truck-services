@@ -1,6 +1,8 @@
-package com.example.ownerapp;
+package vn.edu.fpt.fts.ownerapp;
 
-import sample.tabsswipe.adapter.TabsPagerAdapter;
+import com.example.ownerapp.R;
+
+import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
