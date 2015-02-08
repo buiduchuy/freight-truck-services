@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="test.example.cp.HistoryDetail" >
+    tools:context="vn.edu.fpt.fts.layout.HistoryDetail" >
 
     <LinearLayout
         android:id="@+id/linearLayout1"

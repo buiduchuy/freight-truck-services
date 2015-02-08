@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="test.example.cp.CurrentRoute" >
+    tools:context="vn.edu.fpt.fts.layout.CurrentRoute" >
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -14,16 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-            android:text="LỘ TRÌNH: TPHCM - CÀ MAU"
-            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/textView3"
@@ -42,8 +32,7 @@
                 android:id="@+id/button1"
                 android:layout_width="139dp"
                 android:layout_height="wrap_content"
-                android:text="Thay đổi"
-                android:onClick="ChangeRoute" />
+                android:text="Thay đổi"/>
 
             <Button
                 android:id="@+id/button2"

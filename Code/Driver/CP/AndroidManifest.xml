@@ -33,7 +33,7 @@
             android:value="AIzaSyD7ZkmtCuR7hNEdT2qTX1LjgRmjFmqKH4A" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="vn.edu.fpt.fts.layout.MainActivity"
             android:configChanges="screenSize|orientation"
             android:label="@string/app_name" >
             <intent-filter>
@@ -43,86 +43,86 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CurrentRoute"
+            android:name="vn.edu.fpt.fts.layout.CurrentRoute"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_current_route" >
         </activity>
         <activity
-            android:name=".CreateRoute"
+            android:name="vn.edu.fpt.fts.layout.CreateRoute"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_create_route" >
         </activity>
         <activity
-            android:name=".ChangeRoute"
+            android:name="vn.edu.fpt.fts.layout.ChangeRoute"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_change_route" >
         </activity>
         <activity
-            android:name=".DealView"
+            android:name="vn.edu.fpt.fts.layout.DealView"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_deal_view" >
         </activity>
         <activity
-            android:name=".Deals"
+            android:name="vn.edu.fpt.fts.layout.Deals"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_deals" >
         </activity>
         <activity
-            android:name=".Settings"
+            android:name="vn.edu.fpt.fts.layout.Settings"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".History"
+            android:name="vn.edu.fpt.fts.layout.History"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_history" >
         </activity>
         <activity
-            android:name=".HistoryDetail"
+            android:name="vn.edu.fpt.fts.layout.HistoryDetail"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_history_detail" >
         </activity>
         <activity
-            android:name=".OfferResponse"
+            android:name="vn.edu.fpt.fts.layout.OfferResponse"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_offer_response" >
         </activity>
         <activity
-            android:name=".SendOffer"
+            android:name="vn.edu.fpt.fts.layout.SendOffer"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_send_offer" >
         </activity>
         <activity
-            android:name=".SystemSuggest"
+            android:name="vn.edu.fpt.fts.layout.SystemSuggest"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_system_suggest" >
         </activity>
         <activity
-            android:name=".TabDeals"
+            android:name="vn.edu.fpt.fts.layout.TabDeals"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_tab_deals" >
         </activity>
         <activity
-            android:name=".Deals2"
+            android:name="vn.edu.fpt.fts.layout.Deals2"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_deals2" >
         </activity>
         <activity
-            android:name=".RouteList"
+            android:name="vn.edu.fpt.fts.layout.RouteList"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_route_list" >
         </activity>
         <activity
-            android:name=".CustomizeRoute"
+            android:name="vn.edu.fpt.fts.layout.CustomizeRoute"
             android:configChanges="screenSize|orientation"
             android:label="@string/title_activity_customize_route" >
         </activity>
         <activity
-            android:name=".SuggestList"
+            android:name="vn.edu.fpt.fts.layout.SuggestList"
             android:label="@string/title_activity_suggest_list" >
         </activity>
         <activity
-            android:name=".CancelOffer"
+            android:name="vn.edu.fpt.fts.layout.CancelOffer"
             android:label="@string/title_activity_cancel_offer" >
         </activity>
     </application>
