@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
+import vn.edu.fpt.fts.model.Goods;
 import vn.edu.fpt.fts.model.GoodsCategory;
 
 public class GoodsCategoryDAO {
@@ -65,5 +66,68 @@ public class GoodsCategoryDAO {
 		}
 		return null;
 	}
+	
+	public int insertGoods(Goods bean) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "INSERT INTO Goods ( " + "Weight," + "Price,"
+					+ "PickupTime," + "PickupAddress," + "DeliveryTime,"
+					+ "DeliveryAddress," + "PickupMarkerLongtitude,"
+					+ "PickupMarkerLatidute," + "DeliveryMarkerLongtitude,"
+					+ "DeliveryMarkerLatidute," + "Notes," + "CreateTime,"
+					+ "Active," + "OwnerID," + "GoodsCategoryID" + ") VALUES ("
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?)";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, bean.getWeight()); // Weight
+			stmt.setDouble(i++, bean.getPrice()); // Price
+			stmt.setString(i++, bean.getPickupTime()); // PickupTime
+			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
+			stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
+			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
+			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
+			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
+			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
+			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
+			stmt.setString(i++, bean.getNotes()); // Notes
+			stmt.setString(i++, bean.getCreateTime()); // CreateTime
+			stmt.setInt(i++, bean.getActive()); // Active
+			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
+			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			ret = -1;
+			System.out.println("Can't insert to Goods table");
+			e.printStackTrace();
+			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
+					e);
+
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
+						null, e);
+			}
+		}
+		return ret;
+	}
+
 
 }

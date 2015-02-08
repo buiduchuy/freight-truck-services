@@ -17,6 +17,7 @@ import vn.edu.fpt.fts.model.Goods;
 
 @Path("/Goods")
 public class GoodsAPI {
+	private final static String TAG = "GoodsAPI";
 	GoodsDAO goodsDao = new GoodsDAO();
 
 	@GET
@@ -70,13 +71,11 @@ public class GoodsAPI {
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Logger.getLogger(GoodsAPI.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} catch (NullPointerException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Logger.getLogger(GoodsAPI.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return "Success";
 	}

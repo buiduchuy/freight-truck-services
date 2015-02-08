@@ -16,7 +16,7 @@ import vn.edu.fpt.fts.model.Account;
 
 public class RoleDAO {
 
-	public String getRoleNameById(Account account) {
+	public String getRoleNameById(int accountId) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -26,7 +26,7 @@ public class RoleDAO {
 
 			stm = con.prepareStatement(sql);
 
-			stm.setInt(1, account.getRoleID());
+			stm.setInt(1, accountId);
 
 			rs = stm.executeQuery();
 			if (rs.next()) {

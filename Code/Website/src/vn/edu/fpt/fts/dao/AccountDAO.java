@@ -15,6 +15,9 @@ import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.model.Account;
 
 public class AccountDAO {
+
+	private final static String TAG = "AccountDAO";
+
 	public Account checkLoginAccount(String email, String password) {
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -30,9 +33,9 @@ public class AccountDAO {
 			stmt.setString(i++, email);
 			stmt.setString(i++, password);
 			rs = stmt.executeQuery();
-			
+
 			Account account = new Account();
-			
+
 			if (rs.next()) {
 				account.setAccountID(rs.getInt("AccountID"));
 				account.setEmail(rs.getString("Email"));
@@ -42,8 +45,7 @@ public class AccountDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE,
-					null, e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -57,8 +59,7 @@ public class AccountDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;

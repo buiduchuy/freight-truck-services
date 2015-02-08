@@ -1,13 +1,19 @@
 package vn.edu.fpt.fts.service;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
+import vn.edu.fpt.fts.model.Goods;
 import vn.edu.fpt.fts.model.GoodsCategory;
 
 @Path("/GoodsCate")
@@ -29,4 +35,50 @@ public class GoodsCategoryAPI {
 		List<GoodsCategory> categories = categoryDAO.getAllGoodsCategory();
 		return categories;
 	}
+	
+	@POST
+	@Path("Create")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String createGoodsCategory(MultivaluedMap<String, String> goodsParams) {
+		GoodsCategory goodsCategory = new GoodsCategory();
+//		try {
+//			goods.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
+//			goods.setPrice(Double.valueOf(goodsParams.getFirst("price")));
+//			goods.setPickupTime(goodsParams.getFirst("pickupTime"));
+//			goods.setPickupAddress(goodsParams.getFirst("pickupAddress"));
+//			goods.setDeliveryTime(goodsParams.getFirst("deliveryTime"));
+//			goods.setDeliveryAddress(goodsParams.getFirst("deliveryAddress"));
+//			goods.setPickupMarkerLongtitude(Float.valueOf(goodsParams
+//					.getFirst("pickupMarkerLongtitude")));
+//			goods.setPickupMarkerLatidute(Float.valueOf(goodsParams
+//					.getFirst("pickupMarkerLatidute")));
+//			goods.setDeliveryMarkerLongtitude(Float.valueOf(goodsParams
+//					.getFirst("deliveryMarkerLongtitude")));
+//			goods.setDeliveryMarkerLatidute(Float.valueOf(goodsParams
+//					.getFirst("deliveryMarkerLatidute")));
+//			goods.setNotes(goodsParams.getFirst("notes"));
+//			goods.setCreateTime(goodsParams.getFirst("createTime"));
+//			goods.setActive(Integer.valueOf(goodsParams.getFirst("active")));
+//			goods.setOwnerID(Integer.valueOf(goodsParams.getFirst("ownerID")));
+//			goods.setGoodsCategoryID(Integer.valueOf(goodsParams
+//					.getFirst("goodsCategoryID")));
+//
+//			int ret = goodsDao.insertGoods(goods);
+//			if (ret <= 0) {
+//				return "Fail";
+//			}
+//		} catch (NumberFormatException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+//		} catch (NullPointerException e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+//		}
+		return "Success";
+	}
+	
+	
 }

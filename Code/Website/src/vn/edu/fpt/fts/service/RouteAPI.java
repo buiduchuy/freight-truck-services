@@ -17,6 +17,7 @@ import vn.edu.fpt.fts.model.Route;
 
 @Path("/Route")
 public class RouteAPI {
+	private final static String TAG = "RouteAPI";
 	RouteDAO routeDao = new RouteDAO();
 
 	@GET
@@ -55,7 +56,7 @@ public class RouteAPI {
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Logger.getLogger(RouteAPI.class.getName()).log(Level.SEVERE, null,
+			Logger.getLogger(TAG).log(Level.SEVERE, null,
 					e);
 		}
 		return "Success";
