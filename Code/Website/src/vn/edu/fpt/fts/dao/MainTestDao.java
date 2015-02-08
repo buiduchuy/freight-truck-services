@@ -27,7 +27,7 @@ public class MainTestDao {
 //
 //		List<Goods> goodsList = goodsDao.getListGoodsByOwnerID(owner);
 		
-		Goods goods = goodsDao.getGoodsByID("11");
+		Goods goods = goodsDao.getGoodsByID(11);
 		
 //		System.out.println(goodsList.get(0).getDeliveryAddress());
 		

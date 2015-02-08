@@ -420,7 +420,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public Goods getGoodsByID(String goodsId) {
+	public Goods getGoodsByID(int goodsId) {
 
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -428,11 +428,11 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM [Goods] WHERE GoodsID=?";
+			String sql = "SELECT * FROM [Goods] WHERE GoodsID = " + "?";
 
 			stmt = con.prepareStatement(sql);
-
-			stmt.setString(1, goodsId);
+			int i = 1;
+			stmt.setInt(i++, goodsId);
 
 			rs = stmt.executeQuery();
 
