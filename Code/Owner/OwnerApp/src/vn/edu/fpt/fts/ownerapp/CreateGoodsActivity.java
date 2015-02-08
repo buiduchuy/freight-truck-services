@@ -1,4 +1,4 @@
-package com.example.ownerapp;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -29,9 +29,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.example.ownerapp.R;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 
-import sample.tabsswipe.adapter.PlacesAutoCompleteAdapter;
+import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -72,7 +73,7 @@ import android.widget.TimePicker;
 
 public class CreateGoodsActivity extends Activity {
 
-	private static final String SERVICE_URL = "http://192.168.1.16:8080/FTS/api/Goods/Create";
+	private static final String SERVICE_URL = "http://192.168.1.6:8080/FTS/api/Goods/Create";
 
 	private static final String TAG = "CreateGoodsActivity";
 
@@ -257,6 +258,8 @@ public class CreateGoodsActivity extends Activity {
 				// } finally {
 				// httpClient.getConnectionManager().shutdown();
 				// }
+				
+				//Chi viec goi ham postData
 				postData(v);
 			}
 		});
@@ -292,6 +295,8 @@ public class CreateGoodsActivity extends Activity {
 
 	public void postData(View vw) {
 
+		// Code sample lay cac gia tri tu edittext tren man hinh, lam tuong tu
+
 		// EditText edFirstName = (EditText) findViewById(R.id.first_name);
 		// EditText edLastName = (EditText) findViewById(R.id.last_name);
 		// EditText edEmail = (EditText) findViewById(R.id.email);
@@ -308,8 +313,8 @@ public class CreateGoodsActivity extends Activity {
 		// }
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
-				"Posting data...");
-
+				"Đang xử lý...");
+		// Cac cap gia tri gui ve server
 		wst.addNameValuePair("active", "1");
 		wst.addNameValuePair("createTime", "2015-05-04 00:00:00.0");
 		wst.addNameValuePair("deliveryAddress", "Vung Tau");
@@ -332,7 +337,7 @@ public class CreateGoodsActivity extends Activity {
 	}
 
 	// public void handleResponse(String response) {
-	//
+	// Ham xu li du lieu khi web server response
 	// EditText edFirstName = (EditText) findViewById(R.id.first_name);
 	// EditText edLastName = (EditText) findViewById(R.id.last_name);
 	// EditText edEmail = (EditText) findViewById(R.id.email);
@@ -452,7 +457,7 @@ public class CreateGoodsActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String response) {
-
+			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
 

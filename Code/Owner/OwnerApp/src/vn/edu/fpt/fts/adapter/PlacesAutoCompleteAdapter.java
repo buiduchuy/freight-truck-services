@@ -1,4 +1,4 @@
-package sample.tabsswipe.adapter;
+package vn.edu.fpt.fts.adapter;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
