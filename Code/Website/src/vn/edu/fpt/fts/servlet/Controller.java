@@ -56,7 +56,7 @@ public class Controller extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		RouteDAO rou = new RouteDAO();
 		DealDAO dea = new DealDAO();
-		DriverDAO dri= new DriverDAO();
+		DriverDAO dri = new DriverDAO();
 		GoodsDAO goodDao = new GoodsDAO();
 		String action = request.getParameter("btnAction");
 		HttpSession session = request.getSession(true);
@@ -165,15 +165,20 @@ public class Controller extends HttpServlet {
 			List<Deal> dealByOwner = new ArrayList<Deal>();
 			List<Deal> dealByDriver = new ArrayList<Deal>();
 
-			Owner owner=(Owner) session.getAttribute("owner");
+			Owner owner = (Owner) session.getAttribute("owner");
 			List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
 			Goods goolast = listGood.get(listGood.size() - 1);
-			List<Deal> listDealByIdGood=dea.getDealByGoodsID(goolast.getGoodsID());
-			for(int i= 0;i<listDealByIdGood.size();i++){
-				if(listDealByIdGood.get(i).getSender().equals("Owner")){
-					dealByOwner.add(listDealByIdGood.get(i));
-				}else{
-					dealByDriver.add(listDealByIdGood.get(i));
+			List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
+					.getGoodsID());
+			for (int i = 0; i < listDealByIdGood.size(); i++) {
+				if (listDealByIdGood.get(i).getActive() == 1) {
+					if (listDealByIdGood.get(i).getSender().equals("Owner")) {
+						dealByOwner.add(listDealByIdGood.get(i));
+					}
+					if (listDealByIdGood.get(i).getSender().equals("Driver")
+							&& listDealByIdGood.get(i).getDealStatusID() == 2) {
+						dealByDriver.add(listDealByIdGood.get(i));
+					}
 				}
 			}
 			Deal[] list1 = new Deal[dealByOwner.size()];
@@ -194,6 +199,73 @@ public class Controller extends HttpServlet {
 					.getRequestDispatcher("danh-sach-de-nghi.jsp");
 			rd.forward(request, response);
 		}
+		if ("deleteDealSent".equals(action)) {
+			int idDeal = Integer.parseInt(request.getParameter("idDeal"));
+			Deal deleteDeal = dea.getDealByID(idDeal);
+			deleteDeal.setActive(0);
+			if (dea.updateDeal(deleteDeal) == 1) {
+				List<Deal> dealByOwner = new ArrayList<Deal>();
+				List<Deal> dealByDriver = new ArrayList<Deal>();
+
+				Owner owner = (Owner) session.getAttribute("owner");
+				List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
+				Goods goolast = listGood.get(listGood.size() - 1);
+				List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
+						.getGoodsID());
+				for (int i = 0; i < listDealByIdGood.size(); i++) {
+					if (listDealByIdGood.get(i).getActive() == 1) {
+						if (listDealByIdGood.get(i).getSender().equals("Owner")) {
+							dealByOwner.add(listDealByIdGood.get(i));
+						}
+						if (listDealByIdGood.get(i).getSender()
+								.equals("Driver")
+								&& listDealByIdGood.get(i).getDealStatusID() == 2) {
+							dealByDriver.add(listDealByIdGood.get(i));
+						}
+					}
+				}
+				Deal[] list1 = new Deal[dealByOwner.size()];
+				dealByOwner.toArray(list1);
+				Deal[] list2 = new Deal[dealByDriver.size()];
+				dealByDriver.toArray(list2);
+				List<Route> list = rou.getAllRoute();
+				Route[] listRou = new Route[list.size()];
+				list.toArray(listRou);
+				List<Driver> listDriver = dri.getAllDriver();
+				Driver[] listDri = new Driver[listDriver.size()];
+				listDriver.toArray(listDri);
+				session.setAttribute("listRouteSuggest", listRou);
+				session.setAttribute("dealByOwner", list1);
+				session.setAttribute("dealByDriver", list2);
+				session.setAttribute("listDriver", listDri);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("danh-sach-de-nghi.jsp");
+				rd.forward(request, response);
+			}
+		}
+		if ("viewDetailDeal".equals(action)) {
+			int idDeal = Integer.parseInt(request.getParameter("idDeal"));
+			Deal changeDealStatus = dea.getDealByID(idDeal);
+
+			List<Deal> listHistory = new ArrayList<Deal>();
+			if (dea.updateDeal(changeDealStatus) == 1) {
+				List<Deal> list = dea.getDealByRouteID(changeDealStatus
+						.getRouteID());
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).getGoodsID() == changeDealStatus
+									.getGoodsID()) {
+						listHistory.add(list.get(i));
+					}
+				}
+				Deal[] historyDeal = new Deal[listHistory.size()];
+				listHistory.toArray(historyDeal);
+				session.setAttribute("historyDeal", historyDeal);
+				session.setAttribute("dealFromDriver", changeDealStatus);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("chi-tiet-de-nghi.jsp");
+				rd.forward(request, response);
+			}
+		}
 	}
 
 	/**
@@ -211,7 +283,9 @@ public class Controller extends HttpServlet {
 		GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
 		AccountDAO acc = new AccountDAO();
 		RouteDAO rou = new RouteDAO();
+		GoodsDAO goodDao = new GoodsDAO();
 		OwnerDAO ow = new OwnerDAO();
+		DealDAO dea = new DealDAO();
 		DriverDAO dri = new DriverDAO();
 		if ("login".equals(action)) {
 			String email = request.getParameter("txtEmail");
@@ -400,7 +474,7 @@ public class Controller extends HttpServlet {
 					co.changeFormatDate(deliveryTime), deliveryAddress, a, a,
 					a, a, notes, createTime, 1, owner.getOwnerID(),
 					GoodsCategoryID);
-			GoodsDAO goodDao = new GoodsDAO();
+
 			List<Route> list = rou.getAllRoute();
 			Route[] listRou = new Route[list.size()];
 			list.toArray(listRou);
@@ -449,7 +523,7 @@ public class Controller extends HttpServlet {
 					pickupAddress, deliveryTime, deliveryAddress, a, a, a, a,
 					notes, go.getCreateTime().toString(), 1, go.getOwnerID(),
 					goodsCategoryID);
-			GoodsDAO goodDao = new GoodsDAO();
+		
 			if (goodDao.updateGoods(good) == 1) {
 				session.setAttribute("messageUpdateGood", "Cập nhật thành công");
 				RequestDispatcher rd = request
@@ -463,7 +537,6 @@ public class Controller extends HttpServlet {
 		if ("deleteGood".equals(action)) {
 			Goods go = (Goods) session.getAttribute("detailGood1");
 			go.setActive(0);
-			GoodsDAO goodDao = new GoodsDAO();
 			if (goodDao.updateGoods(go) == 1) {
 				Owner owner = (Owner) session.getAttribute("owner");
 				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner);
@@ -492,7 +565,6 @@ public class Controller extends HttpServlet {
 		}
 		if ("viewDetailGood1".equals(action)) {
 			try {
-				GoodsDAO goodDao = new GoodsDAO();
 				int idGood = Integer.parseInt(request.getParameter("idGood"));
 				Goods good = goodDao.getGoodsByID(idGood);
 				session.setAttribute("detailGood1", good);
@@ -501,6 +573,57 @@ public class Controller extends HttpServlet {
 				rd.forward(request, response);
 			} catch (Exception ex) {
 
+			}
+		}
+		if ("confirmDeal".equals(action)) {
+			Deal dealFromDriver = (Deal) session
+					.getAttribute("changeDealStatus");
+			dealFromDriver.setDealStatusID(3);
+			if (dea.updateDeal(dealFromDriver) == 1) {
+
+			}
+		}
+		if ("denyDeal".equals(action)) {
+			Deal dealFromDriver = (Deal) session
+					.getAttribute("dealFromDriver");
+			dealFromDriver.setDealStatusID(4);
+			if (dea.updateDeal(dealFromDriver) == 1) {
+				List<Deal> dealByOwner = new ArrayList<Deal>();
+				List<Deal> dealByDriver = new ArrayList<Deal>();
+
+				Owner owner = (Owner) session.getAttribute("owner");
+				List<Goods> listGood = goodDao.getListGoodsByOwnerID(owner);
+				Goods goolast = listGood.get(listGood.size() - 1);
+				List<Deal> listDealByIdGood = dea.getDealByGoodsID(goolast
+						.getGoodsID());
+				for (int i = 0; i < listDealByIdGood.size(); i++) {
+					if (listDealByIdGood.get(i).getActive() == 1) {
+						if (listDealByIdGood.get(i).getSender().equals("Owner")) {
+							dealByOwner.add(listDealByIdGood.get(i));
+						}
+						if (listDealByIdGood.get(i).getSender().equals("Driver")
+								&& listDealByIdGood.get(i).getDealStatusID() == 2) {
+							dealByDriver.add(listDealByIdGood.get(i));
+						}
+					}
+				}
+				Deal[] list1 = new Deal[dealByOwner.size()];
+				dealByOwner.toArray(list1);
+				Deal[] list2 = new Deal[dealByDriver.size()];
+				dealByDriver.toArray(list2);
+				List<Route> list = rou.getAllRoute();
+				Route[] listRou = new Route[list.size()];
+				list.toArray(listRou);
+				List<Driver> listDriver = dri.getAllDriver();
+				Driver[] listDri = new Driver[listDriver.size()];
+				listDriver.toArray(listDri);
+				session.setAttribute("listRouteSuggest", listRou);
+				session.setAttribute("dealByOwner", list1);
+				session.setAttribute("dealByDriver", list2);
+				session.setAttribute("listDriver", listDri);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("danh-sach-de-nghi.jsp");
+				rd.forward(request, response);
 			}
 		}
 	}
