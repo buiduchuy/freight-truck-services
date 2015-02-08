@@ -17,25 +17,27 @@ import vn.edu.fpt.fts.model.Account;
 public class AccountDAO {
 	public Account checkLoginAccount(String email, String password) {
 		Connection con = null;
-		PreparedStatement stm = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Account WHERE Email=? AND Password=?";
+			String sql = "SELECT * FROM Account WHERE Email=" + "? "
+					+ "AND Password=" + "?";
 
-			stm = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql);
 
-			stm.setString(1, email);
-			stm.setString(2, password);
-
-			rs = stm.executeQuery();
+			int i = 1;
+			stmt.setString(i++, email);
+			stmt.setString(i++, password);
+			rs = stmt.executeQuery();
+			
 			Account account = new Account();
-			account.setAccountID(rs.getInt("AccountID"));
-			account.setEmail(rs.getString("Email"));
-			account.setPassword(rs.getString("Password"));
-			account.setRoleID(rs.getInt("RoleID"));
-
+			
 			if (rs.next()) {
+				account.setAccountID(rs.getInt("AccountID"));
+				account.setEmail(rs.getString("Email"));
+				account.setPassword(rs.getString("Password"));
+				account.setRoleID(rs.getInt("RoleID"));
 				return account;
 			}
 		} catch (SQLException e) {
@@ -47,8 +49,8 @@ public class AccountDAO {
 				if (rs != null) {
 					rs.close();
 				}
-				if (stm != null) {
-					stm.close();
+				if (stmt != null) {
+					stmt.close();
 				}
 				if (con != null) {
 					con.close();

@@ -31,7 +31,7 @@
             android:value="AIzaSyBrDEbsx0CEHEF6XdhQ4-WONJJxyHmxITc" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="vn.edu.fpt.fts.ownerapp.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,43 +40,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GoodsFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.GoodsFragment"
             android:label="@string/title_activity_goods_fragment" >
         </activity>
         <activity
-            android:name=".TrackFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.TrackFragment"
             android:label="@string/title_activity_track_fragment" >
         </activity>
         <activity
-            android:name=".GoodsDetailActivity"
+            android:name="vn.edu.fpt.fts.ownerapp.GoodsDetailActivity"
             android:label="@string/title_activity_goods_detail" >
         </activity>
         <activity
-            android:name=".CreateGoodsActivity"
+            android:name="vn.edu.fpt.fts.ownerapp.CreateGoodsActivity"
             android:label="@string/title_activity_create_goods" >
         </activity>
         <activity
-            android:name=".InformationFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.InformationFragment"
             android:label="@string/title_activity_information_fragment" >
         </activity>
         <activity
-            android:name=".DealFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.DealFragment"
             android:label="@string/title_activity_deal_fragment" >
         </activity>
         <activity
-            android:name=".SuggestActivity"
+            android:name="vn.edu.fpt.fts.ownerapp.SuggestActivity"
             android:label="@string/title_activity_suggest" >
         </activity>
         <activity
-            android:name=".SuggestListFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.SuggestListFragment"
             android:label="@string/title_activity_suggest_list_fragment" >
         </activity>
         <activity
-            android:name=".SuggestDetailFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.SuggestDetailFragment"
             android:label="@string/title_activity_suggest_detail_fragment" >
         </activity>
         <activity
-            android:name=".CreateGoodsMapFragment"
+            android:name="vn.edu.fpt.fts.ownerapp.CreateGoodsMapFragment"
             android:label="@string/title_activity_create_goods_map_fragment" >
         </activity>
     </application>

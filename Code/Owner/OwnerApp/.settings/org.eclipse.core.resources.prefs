@@ -1,9 +1,9 @@
 eclipse.preferences.version=1
-encoding//src/com/example/ownerapp/CreateGoodsActivity.java=UTF-8
-encoding//src/com/example/ownerapp/CreateGoodsMapFragment.java=UTF-8
-encoding//src/com/example/ownerapp/DealFragment.java=UTF-8
-encoding//src/com/example/ownerapp/GoodsDetailActivity.java=UTF-8
-encoding//src/com/example/ownerapp/GoodsFragment.java=UTF-8
-encoding//src/com/example/ownerapp/MainActivity.java=UTF-8
-encoding//src/com/example/ownerapp/TrackFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/CreateGoodsActivity.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/CreateGoodsMapFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/DealFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/GoodsDetailActivity.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/GoodsFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/MainActivity.java=UTF-8
+encoding//src/vn/edu/fpt/fts/ownerapp/TrackFragment.java=UTF-8
 encoding/<project>=UTF-8

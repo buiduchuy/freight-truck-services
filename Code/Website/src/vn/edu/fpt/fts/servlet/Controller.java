@@ -19,11 +19,17 @@ import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
+import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.OwnerDAO;
+import vn.edu.fpt.fts.dao.RouteDAO;
+import vn.edu.fpt.fts.model.Account;
 import vn.edu.fpt.fts.model.Driver;
 import vn.edu.fpt.fts.model.Goods;
 import vn.edu.fpt.fts.model.GoodsCategory;
+import vn.edu.fpt.fts.model.Owner;
+import vn.edu.fpt.fts.model.Route;
 
 /**
  * Servlet implementation class Controller
@@ -49,6 +55,7 @@ public class Controller extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html;charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
+		RouteDAO rou= new RouteDAO();
 		String action = request.getParameter("btnAction");
 		HttpSession session = request.getSession(true);
 		if ("offAccount".equals(action)) {
@@ -74,6 +81,13 @@ public class Controller extends HttpServlet {
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-3.jsp");
 			rd.forward(request, response);
+		}if("viewDetailRouter".equals(action)){
+		int idRouter=Integer.parseInt(request.getParameter("idRouter"));
+		Route router= rou.getRouteById(idRouter);
+		session.setAttribute("viewDetailRoute", router);
+		RequestDispatcher rd = request
+				.getRequestDispatcher("chi-tiet-route.jsp");
+		rd.forward(request, response);
 		}
 	}
 
@@ -91,17 +105,23 @@ public class Controller extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
 		AccountDAO acc = new AccountDAO();
+		RouteDAO rou= new RouteDAO();
+		OwnerDAO ow= new OwnerDAO();
+		DriverDAO dri= new DriverDAO();
 		if ("login".equals(action)) {
 			String email = request.getParameter("txtEmail");
 			String password = request.getParameter("txtPassword");
 			session.removeAttribute("errorLogin");
 			session.removeAttribute("account");
-			if (acc.checkLoginAccount(email, password)==null) {
+			if (acc.checkLoginAccount(email, password)!=null) {
+				
+				Owner owner= ow.getOwnerByEmail(acc.checkLoginAccount(email, password));
 				List<GoodsCategory> list= goodCa.getAllGoodsCategory();
 				GoodsCategory[] typeGoods= new GoodsCategory[list.size()];
 				list.toArray(typeGoods);
 				session.setAttribute("typeGoods", typeGoods);
-				session.setAttribute("account", "KHUONGNGUYEN");
+				session.setAttribute("owner", owner);
+				session.setAttribute("account", owner.getLastName());
 				if(session.getAttribute("namePage")!=null){
 					String prePage = (String) session.getAttribute("namePage");
 						RequestDispatcher rd = request
@@ -236,6 +256,21 @@ public class Controller extends HttpServlet {
 		}
 
 		if ("createGood".equals(action)) {
+			if (session.getAttribute("router") == null) {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-1.jsp");
+				rd.forward(request, response);
+			}
+			if (session.getAttribute("good") == null) {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-2.jsp");
+				rd.forward(request, response);
+			}
+			if (session.getAttribute("price") == null) {
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-3.jsp");
+				rd.forward(request, response);
+			} 
 			Common co= new Common();
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
@@ -254,12 +289,27 @@ public class Controller extends HttpServlet {
 			String notes = ((Goods) session.getAttribute("good")).getNotes();
 			int price = (int) session.getAttribute("price");
 			float a= Float.parseFloat("10");
-			Goods goo= new Goods(weight, price, co.changeFormatDate(pickupTime),  pickupAdress, co.changeFormatDate(deliveryTime),  deliveryAddress, a, a, a, a, notes, createTime, 1, 1, GoodsCategoryID);
+			Owner owner= (Owner) session.getAttribute("owner");
+			Goods goo= new Goods(weight, price, co.changeFormatDate(pickupTime),  pickupAdress, co.changeFormatDate(deliveryTime),  deliveryAddress, a, a, a, a, notes, createTime, 1, owner.getOwnerID(), GoodsCategoryID);
 			GoodsDAO goodDao= new GoodsDAO();
+			List<Route> list= rou.getAllRoute();
+			Route[] listRou= new Route[list.size()];
+			list.toArray(listRou);
+			List<Driver> listDriver= dri.getAllDriver();
+			Driver[] listDri= new Driver[listDriver.size()];
+			listDriver.toArray(listDri);
 			if(goodDao.insertGoods(goo)==1){
-				System.out.println("OK");
+				session.setAttribute("listRouter", listRou);
+				session.setAttribute("listDriver", listDri);
+				session.setAttribute("messageCreateGood", "Tạo hàng thành công");
+				RequestDispatcher rd = request
+						.getRequestDispatcher("goi-y-he-thong.jsp");
+				rd.forward(request, response);
 			}else{
-				System.out.println("ONO");
+				session.setAttribute("errorCreateGood", "Có lỗi khi tạo hàng. Vui lòng thử lại");
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-4.jsp");
+				rd.forward(request, response);
 			}
 		}
 

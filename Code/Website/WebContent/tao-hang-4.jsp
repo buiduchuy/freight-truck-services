@@ -9,6 +9,7 @@
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <title>Tạo hàng</title>
+<c:set var="error" value="${sessionScope.errorCreateGood }"/>
 <jsp:include page="header.jsp" />
 
 <section class="container">
@@ -16,6 +17,9 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
 			<jsp:include page="menu-tao-hang.jsp" />
+			<c:if test="${not empty error}">
+							<font color="red">${error}</font>
+						</c:if>
 			<form action="Controller" method="post" accept-charset="utf-8">
 				<div class="row">
 					<div class="large-12 columns">
@@ -30,7 +34,7 @@
 											<label class="right inline">Loại hàng: </label>
 										</div>
 										<div class="small-9 columns">
-											<c:forEach var="row" items="${categoryGoods }">
+											<c:forEach var="row" items="${typeGoods }">
 												<c:if test="${row.goodsCategoryId==good.goodsCategoryID }">
 													<input type="text" id="right-label" value="${row.name }"
 														name="txtWeight" readonly="" />

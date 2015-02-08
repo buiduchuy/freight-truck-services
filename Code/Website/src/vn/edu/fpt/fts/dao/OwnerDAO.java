@@ -70,33 +70,34 @@ public class OwnerDAO {
 
 	public Owner getOwnerByEmail(Account account) {
 		Connection con = null;
-		PreparedStatement stm = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		Owner owner = new Owner();
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Owner WHERE Email=?";
 
-			stm = con.prepareStatement(sql);
+			String sql = "SELECT * FROM [Owner] WHERE Email=" + "?";
 
-			stm.setString(1, account.getEmail());
+			stmt = con.prepareStatement(sql);
 
-			rs = stm.executeQuery();
-			Owner owner = new Owner();
-			owner.setOwnerID(Integer.valueOf(rs.getString("OwnerID")));
-			owner.setEmail(rs.getString("Email"));
-			owner.setFirstName(rs.getString("FirstName"));
-			owner.setLastName(rs.getString("LastName"));
-			owner.setGender(Integer.valueOf(rs.getString("Gender")));
-			owner.setPhone(rs.getString("Phone"));
-			owner.setAddress(rs.getString("Address"));
-			owner.setActive(Integer.valueOf(rs.getString("Active")));
-			owner.setCreateBy(rs.getString("CreateBy"));
-			owner.setCreateTime(rs.getString("CreateTime"));
-			owner.setUpdateBy(rs.getString("UpdateBy"));
-			owner.setUpdateTime(rs.getString("UpdateTime"));
+			int i = 1;
+			stmt.setString(i++, account.getEmail());
 
-			if (rs.next()) {
-				return owner;
+			rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				owner.setOwnerID(Integer.valueOf(rs.getString("OwnerID")));
+				owner.setEmail(rs.getString("Email"));
+				owner.setFirstName(rs.getString("FirstName"));
+				owner.setLastName(rs.getString("LastName"));
+				owner.setGender(Integer.valueOf(rs.getString("Gender")));
+				owner.setPhone(rs.getString("Phone"));
+				owner.setAddress(rs.getString("Address"));
+				owner.setActive(Integer.valueOf(rs.getString("Active")));
+				owner.setCreateBy(rs.getString("CreateBy"));
+				owner.setCreateTime(rs.getString("CreateTime"));
+				owner.setUpdateBy(rs.getString("UpdateBy"));
+				owner.setUpdateTime(rs.getString("UpdateTime"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -104,6 +105,7 @@ public class OwnerDAO {
 					e);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
+			System.out.println("Columns with Integer type are null");
 			Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE, null,
 					e);
 		} finally {
@@ -111,8 +113,8 @@ public class OwnerDAO {
 				if (rs != null) {
 					rs.close();
 				}
-				if (stm != null) {
-					stm.close();
+				if (stmt != null) {
+					stmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -123,6 +125,6 @@ public class OwnerDAO {
 						null, e);
 			}
 		}
-		return null;
+		return owner;
 	}
 }
