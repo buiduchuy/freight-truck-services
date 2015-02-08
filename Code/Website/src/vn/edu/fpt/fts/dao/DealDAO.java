@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.model.Deal;
+import vn.edu.fpt.fts.pojo.Deal;
 
 /**
  * @author Huy

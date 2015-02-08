@@ -1,60 +1,68 @@
-package vn.edu.fpt.fts.model;
+/**
+ * 
+ */
+package vn.edu.fpt.fts.pojo;
+
+import java.io.Serializable;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Huy
  *
  */
-import javax.xml.bind.annotation.XmlRootElement;
-
 @XmlRootElement
-public class Owner implements java.io.Serializable {
-
+public class Driver implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2019159454117177612L;
-	private int ownerID;
+	private static final long serialVersionUID = 7998487520937277147L;
+	private int driverID;
 	private String email;
 	private String firstName;
 	private String lastName;
 	private int gender;
 	private String phone;
-	private String address;
 	private int active;
 	private String createBy;
 	private String createTime;
 	private String updateBy;
 	private String updateTime;
-	
-	public Owner() {
+	private int age;
+	private String image;
+	private int point;
+
+	public Driver() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Owner(int ownerID, String email, String firstName, String lastName,
-			int gender, String phone, String address, int active,
+	public Driver(int driverID, String email, String firstName,
+			String lastName, int gender, String phone, int active,
 			String createBy, String createTime, String updateBy,
-			String updateTime) {
+			String updateTime, int age, String image, int point) {
 		super();
-		this.ownerID = ownerID;
+		this.driverID = driverID;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
 		this.phone = phone;
-		this.address = address;
 		this.active = active;
 		this.createBy = createBy;
 		this.createTime = createTime;
 		this.updateBy = updateBy;
 		this.updateTime = updateTime;
+		this.age = age;
+		this.image = image;
+		this.point = point;
 	}
 
-	public int getOwnerID() {
-		return ownerID;
+	public int getDriverID() {
+		return driverID;
 	}
 
-	public void setOwnerID(int ownerID) {
-		this.ownerID = ownerID;
+	public void setDriverID(int driverID) {
+		this.driverID = driverID;
 	}
 
 	public String getEmail() {
@@ -97,14 +105,6 @@ public class Owner implements java.io.Serializable {
 		this.phone = phone;
 	}
 
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
 	public int getActive() {
 		return active;
 	}
@@ -144,5 +144,29 @@ public class Owner implements java.io.Serializable {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+
+	public void setPoint(int point) {
+		this.point = point;
+	}
+
 }

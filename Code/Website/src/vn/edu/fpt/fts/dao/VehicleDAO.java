@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.model.Vehicle;
+import vn.edu.fpt.fts.pojo.Vehicle;
 
 /**
  * @author Huy

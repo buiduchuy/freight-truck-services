@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,12 +26,12 @@ import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
-import vn.edu.fpt.fts.model.Account;
-import vn.edu.fpt.fts.model.Driver;
-import vn.edu.fpt.fts.model.Goods;
-import vn.edu.fpt.fts.model.GoodsCategory;
-import vn.edu.fpt.fts.model.Owner;
-import vn.edu.fpt.fts.model.Route;
+import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.Driver;
+import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.GoodsCategory;
+import vn.edu.fpt.fts.pojo.Owner;
+import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * Servlet implementation class Controller
@@ -53,6 +55,7 @@ public class Controller extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, "abc");
 		response.setContentType("text/html;charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
 		RouteDAO rou= new RouteDAO();
@@ -98,6 +101,7 @@ public class Controller extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, new RuntimeException());
 		// TODO Auto-generated method stub
 		response.setContentType("text/html;charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");

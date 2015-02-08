@@ -14,8 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.model.Goods;
-import vn.edu.fpt.fts.model.Owner;
+import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.Owner;
 
 public class GoodsDAO {
 
