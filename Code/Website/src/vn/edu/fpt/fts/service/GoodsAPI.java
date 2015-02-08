@@ -37,8 +37,8 @@ public class GoodsAPI {
 
 	@POST
 	@Path("Create")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
 	public String createGoods(MultivaluedMap<String, String> goodsParams) {
 		Goods goods = new Goods();
 		try {
