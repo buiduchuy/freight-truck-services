@@ -164,6 +164,17 @@ public class Controller extends HttpServlet {
 			} catch (Exception ex) {
 
 			}
+		}if ("viewDetailGood2".equals(action)) {
+			try {
+				int idGood = Integer.parseInt(request.getParameter("idGood"));
+				Goods good = goodDao.getGoodsByID(idGood);
+				session.setAttribute("detailGood2", good);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("chi-tiet-order.jsp");
+				rd.forward(request, response);
+			} catch (Exception ex) {
+
+			}
 		}
 		if ("viewSuggest".equals(action)) {
 			List<Deal> dealByOwner = new ArrayList<Deal>();
@@ -287,6 +298,7 @@ public class Controller extends HttpServlet {
 		DriverDAO dri = new DriverDAO();
 		DealOrderDAO dealOrderDao = new DealOrderDAO();
 		OrderDAO orderDao = new OrderDAO();
+		Common common= new Common();
 		if ("login".equals(action)) {
 			String email = request.getParameter("txtEmail");
 			String password = request.getParameter("txtPassword");
@@ -450,7 +462,7 @@ public class Controller extends HttpServlet {
 						.getRequestDispatcher("tao-hang-3.jsp");
 				rd.forward(request, response);
 			}
-			Common co = new Common();
+
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
 			String createTime = dateFormat.format(date);
@@ -470,8 +482,8 @@ public class Controller extends HttpServlet {
 			float a = Float.parseFloat("10");
 			Owner owner = (Owner) session.getAttribute("owner");
 			Goods goo = new Goods(weight, price,
-					co.changeFormatDate(pickupTime,"dd-MM-yyyy","MM-dd-yyyy"), pickupAdress,
-					co.changeFormatDate(deliveryTime,"dd-MM-yyyy","MM-dd-yyyy"), deliveryAddress, a, a,
+					common.changeFormatDate(pickupTime,"dd-MM-yyyy","MM-dd-yyyy"), pickupAdress,
+					common.changeFormatDate(deliveryTime,"dd-MM-yyyy","MM-dd-yyyy"), deliveryAddress, a, a,
 					a, a, notes, createTime, 1, owner.getOwnerID(),
 					GoodsCategoryID);
 
@@ -483,7 +495,6 @@ public class Controller extends HttpServlet {
 			listDriver.toArray(listDri);
 			int idnewGood = goodDao.insertGoods(goo);
 			if (idnewGood != -1) {
-				System.out.println(idnewGood);
 				session.removeAttribute("router");
 				session.removeAttribute("good");
 				session.removeAttribute("price");
@@ -501,6 +512,23 @@ public class Controller extends HttpServlet {
 						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);
 			}
+		}if("suggestFromSystem".equals(action)){
+			int IdGood=Integer.parseInt(request.getParameter("txtIdGood"));
+			List<Route> list = rou.getAllRoute();
+			Route[] listRou = new Route[list.size()];
+			list.toArray(listRou);
+			List<Driver> listDriver = dri.getAllDriver();
+			Driver[] listDri = new Driver[listDriver.size()];
+			listDriver.toArray(listDri);
+			session.removeAttribute("router");
+			session.removeAttribute("good");
+			session.removeAttribute("price");
+			session.setAttribute("newGood", goodDao.getGoodsByID(IdGood));
+			session.setAttribute("listRouter", listRou);
+			session.setAttribute("listDriver", listDri);
+			RequestDispatcher rd = request
+					.getRequestDispatcher("goi-y-he-thong.jsp");
+			rd.forward(request, response);
 		}
 		if ("updateGood".equals(action)) {
 			Goods go = (Goods) session.getAttribute("detailGood1");

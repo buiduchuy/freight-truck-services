@@ -165,7 +165,7 @@
 																</c:forEach>
 															<td>${good2.pickupTime }</td>
 															<td>${good2.deliveryTime }</td>
-															<td><a class="button" href="Controller?btnAction=viewDetailGood2&idGood=${good1.goodsID }">Xem chi tiết</a></td>
+															<td><a class="button" href="Controller?btnAction=viewDetailGood2&idGood=${good2.goodsID }">Xem chi tiết</a></td>
 														</tr>
 													</c:forEach>
 

@@ -25,7 +25,10 @@
 								<h2 class="page-title">
 									<font color="orange">Chi tiết hàng</font>
 								</h2>
-
+							<div class="row">
+						<button class="right" name="btnAction" value="suggestFromSystem">Gợi ý từ hệ thống</button>
+						<input type="hidden" name="txtIdGood" value="${detailGood1.goodsID }"/>
+						</div>
 							</div>
 							<c:set var="message" value="${sessionScope.messageUpdateGood }" />
 							<c:if test="${not empty message}">
