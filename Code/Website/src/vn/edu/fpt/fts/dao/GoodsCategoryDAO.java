@@ -14,10 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.model.Goods;
 import vn.edu.fpt.fts.model.GoodsCategory;
 
 public class GoodsCategoryDAO {
+	private final static String TAG = "GoodsCategoryDAO";
 
 	public List<GoodsCategory> getAllGoodsCategory() {
 
@@ -44,7 +44,7 @@ public class GoodsCategoryDAO {
 		} catch (SQLException e) {
 			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
-			Logger.getLogger(GoodsCategoryDAO.class.getName()).log(
+			Logger.getLogger(TAG).log(
 					Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -60,14 +60,14 @@ public class GoodsCategoryDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Route table");
-				Logger.getLogger(GoodsCategoryDAO.class.getName()).log(
+				Logger.getLogger(TAG).log(
 						Level.SEVERE, null, e);
 			}
 		}
 		return null;
 	}
-	
-	public int insertGoods(Goods bean) {
+
+	public int insertGoodsCategory(GoodsCategory bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -75,42 +75,19 @@ public class GoodsCategoryDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Goods ( " + "Weight," + "Price,"
-					+ "PickupTime," + "PickupAddress," + "DeliveryTime,"
-					+ "DeliveryAddress," + "PickupMarkerLongtitude,"
-					+ "PickupMarkerLatidute," + "DeliveryMarkerLongtitude,"
-					+ "DeliveryMarkerLatidute," + "Notes," + "CreateTime,"
-					+ "Active," + "OwnerID," + "GoodsCategoryID" + ") VALUES ("
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+			String sql = "INSERT INTO GoodsCategory ( " + "Name" + ") VALUES ("
 					+ "?)";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
-			stmt.setInt(i++, bean.getWeight()); // Weight
-			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setString(i++, bean.getPickupTime()); // PickupTime
-			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
-			stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
-			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
-			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
-			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
-			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
-			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
-			stmt.setString(i++, bean.getNotes()); // Notes
-			stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			stmt.setInt(i++, bean.getActive()); // Active
-			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
-			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
-
+			stmt.setString(i++, bean.getName()); // Name
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
-			System.out.println("Can't insert to Goods table");
+			System.out.println("Can't insert to GoodsCategory table");
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
 			try {
@@ -122,12 +99,10 @@ public class GoodsCategoryDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return ret;
 	}
-
 
 }
