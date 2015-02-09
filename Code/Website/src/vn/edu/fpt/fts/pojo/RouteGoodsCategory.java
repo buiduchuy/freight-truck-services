@@ -17,18 +17,18 @@ public class RouteGoodsCategory implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8486213753223506260L;
-	private String routeID;
+	private int routeID;
 	private int goodsCategoryID;
 
 	public RouteGoodsCategory() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getRouteID() {
+	public int getRouteID() {
 		return routeID;
 	}
 
-	public void setRouteID(String routeID) {
+	public void setRouteID(int routeID) {
 		this.routeID = routeID;
 	}
 
@@ -40,7 +40,7 @@ public class RouteGoodsCategory implements Serializable {
 		this.goodsCategoryID = goodsCategoryID;
 	}
 
-	public RouteGoodsCategory(String routeID, int goodsCategoryID) {
+	public RouteGoodsCategory(int routeID, int goodsCategoryID) {
 		super();
 		this.routeID = routeID;
 		this.goodsCategoryID = goodsCategoryID;

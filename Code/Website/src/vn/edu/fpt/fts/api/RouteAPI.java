@@ -13,7 +13,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.RouteDAO;
+import vn.edu.fpt.fts.dao.RouteGoodsCategoryDAO;
+import vn.edu.fpt.fts.dao.RouteMarkerDAO;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
+import vn.edu.fpt.fts.pojo.RouteMarker;
 
 @Path("/Route")
 public class RouteAPI {
@@ -32,25 +36,67 @@ public class RouteAPI {
 	@Path("Create")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createRoute(MultivaluedMap<String, String> goodsParams) {
+	public String createRoute(MultivaluedMap<String, String> params) {
 
 		Route route = new Route();
+
 		try {
 
-			route.setStartingAddress(goodsParams.getFirst("startingAddress"));
-			route.setDestinationAddress(goodsParams
-					.getFirst("destinationAddress"));
-			route.setStartTime(goodsParams.getFirst("startTime"));
-			route.setFinishTime(goodsParams.getFirst("finishTime"));
-			route.setNotes(goodsParams.getFirst("notes"));
-			route.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
-			route.setCreateTime(goodsParams.getFirst("createTime"));
-			route.setActive(Integer.valueOf(goodsParams.getFirst("active")));
-			route.setDriverID(Integer.valueOf(goodsParams.getFirst("driverID")));
+			route.setStartingAddress(params.getFirst("startingAddress"));
+			route.setDestinationAddress(params.getFirst("destinationAddress"));
+			route.setStartTime(params.getFirst("startTime"));
+			route.setFinishTime(params.getFirst("finishTime"));
+			route.setNotes(params.getFirst("notes"));
+			route.setWeight(Integer.valueOf(params.getFirst("weight")));
+			route.setCreateTime(params.getFirst("createTime"));
+			route.setActive(Integer.valueOf(params.getFirst("active")));
+			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
 
 			int ret = routeDao.insertRoute(route);
-			
-			
+
+			// ------------------------------------------------------------------
+			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+			RouteMarker routeMarker = new RouteMarker();
+			routeMarker.setRouteID(ret);
+			routeMarker.setRouteMarkerLocation(params
+					.getFirst("routeMarkerLocation1"));
+
+			routeMarkerDao.insertRouteMarker(routeMarker);
+
+			routeMarker.setRouteMarkerLocation(params
+					.getFirst("routeMarkerLocation2"));
+
+			routeMarkerDao.insertRouteMarker(routeMarker);
+
+			// ------------------------------------------------------------------
+			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+			RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
+
+			routeGoodsCategory.setRouteID(ret);
+			routeGoodsCategory.setGoodsCategoryID(Integer.valueOf(params
+					.getFirst("")));
+
+			// Get params category true/false
+			if (Boolean.parseBoolean(params.getFirst("Food"))) {
+				routeGoodsCategory.setGoodsCategoryID(1);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
+				routeGoodsCategory.setGoodsCategoryID(2);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
+				routeGoodsCategory.setGoodsCategoryID(3);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
+				routeGoodsCategory.setGoodsCategoryID(4);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
 
 			if (ret <= 0) {
 				return "Fail";
@@ -58,9 +104,9 @@ public class RouteAPI {
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
+
 		return "Success";
 	}
 }

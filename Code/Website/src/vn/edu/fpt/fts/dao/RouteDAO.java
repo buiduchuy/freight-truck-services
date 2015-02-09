@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,7 +34,7 @@ public class RouteDAO {
 					+ "Notes," + "Weight," + "CreateTime," + "Active,"
 					+ "DriverID" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
 					+ "?, " + "?, " + "?, " + "?, " + "?)";
-			stmt = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setString(i++, bean.getStartingAddress()); // StartingAddress
 			stmt.setString(i++, bean.getDestinationAddress()); // DestinationAddress
@@ -46,6 +47,11 @@ public class RouteDAO {
 			stmt.setInt(i++, bean.getDriverID()); // DriverID
 
 			ret = stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
 
 		} catch (SQLException e) {
 			// TODO: handle exception
