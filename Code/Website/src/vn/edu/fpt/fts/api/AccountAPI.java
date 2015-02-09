@@ -49,7 +49,7 @@ public class AccountAPI {
 	@Path("DriverLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public int checkDriverLogin(MultivaluedMap<String, String> goodsParams) {
+	public String checkDriverLogin(MultivaluedMap<String, String> goodsParams) {
 		AccountDAO accountDao = new AccountDAO();
 		DriverDAO driverDao = new DriverDAO();
 
@@ -61,16 +61,16 @@ public class AccountAPI {
 
 		if (account != null) {
 			driver = driverDao.getDriverByEmail(account.getEmail());
-			return driver.getDriverID();
+			return String.valueOf(driver.getDriverID());
 		}
-		return 0;
+		return "0";
 	}
 
 	@POST
 	@Path("OwnerLogin")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public int checkOwnerLogin(MultivaluedMap<String, String> goodsParams) {
+	public String checkOwnerLogin(MultivaluedMap<String, String> goodsParams) {
 		AccountDAO accountDao = new AccountDAO();
 		OwnerDAO ownerDao = new OwnerDAO();
 
@@ -82,9 +82,9 @@ public class AccountAPI {
 
 		if (account != null) {
 			owner = ownerDao.getOwnerByEmail(account);
-			return owner.getOwnerID();
+			return String.valueOf(owner.getOwnerID());
 		}
-		return 0;
+		return "0";
 	}
 
 }
