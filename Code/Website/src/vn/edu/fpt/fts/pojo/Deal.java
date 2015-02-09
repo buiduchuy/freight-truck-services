@@ -4,6 +4,7 @@
 package vn.edu.fpt.fts.pojo;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,57 +22,95 @@ public class Deal implements Serializable {
 	private double price;
 	private String notes;
 	private String createTime;
-	private int orderID;
 	private String sender;
 	private int routeID;
 	private int goodsID;
 	private int dealStatusID;
 	private int active;
-	
-	public Deal() {
-		// TODO Auto-generated constructor stub
-	}
 
-	public Deal(double price, String notes, String createTime, int orderID,
-			String sender, int routeID, int goodsID, int dealStatusID,
-			int active) {
-		super();
-		this.price = price;
-		this.notes = notes;
-		this.createTime = createTime;
-		this.orderID = orderID;
-		this.sender = sender;
-		this.routeID = routeID;
-		this.goodsID = goodsID;
-		this.dealStatusID = dealStatusID;
-		this.active = active;
-	}
+	private List<Goods> listGoods;
+	private List<Route> listRoute;
+	private List<DealStatus> listDealStatus;
 
 	public Deal(int dealID, double price, String notes, String createTime,
-			int orderID, String sender, int routeID, int goodsID,
-			int dealStatusID, int active) {
+			String sender, int routeID, int goodsID, int dealStatusID,
+			int active, List<Goods> listGoods, List<Route> listRoute,
+			List<DealStatus> listDealStatus) {
 		super();
 		this.dealID = dealID;
 		this.price = price;
 		this.notes = notes;
 		this.createTime = createTime;
-		this.orderID = orderID;
 		this.sender = sender;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
 		this.dealStatusID = dealStatusID;
 		this.active = active;
+		this.listGoods = listGoods;
+		this.listRoute = listRoute;
+		this.listDealStatus = listDealStatus;
 	}
 
-	public int getDealStatusID() {
-		return dealStatusID;
+	public List<DealStatus> getListDealStatus() {
+		return listDealStatus;
 	}
 
+	public void setListDealStatus(List<DealStatus> listDealStatus) {
+		this.listDealStatus = listDealStatus;
+	}
 
-	public void setDealStatusID(int dealStatusID) {
+	public Deal(int dealID, double price, String notes, String createTime,
+			String sender, int routeID, int goodsID, int dealStatusID,
+			int active, List<Goods> listGoods, List<Route> listRoute) {
+		super();
+		this.dealID = dealID;
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.sender = sender;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
 		this.dealStatusID = dealStatusID;
+		this.active = active;
+		this.listGoods = listGoods;
+		this.listRoute = listRoute;
 	}
 
+	public Deal(double price, String notes, String createTime, String sender,
+			int routeID, int goodsID, int dealStatusID, int active,
+			List<Goods> listGoods, List<Route> listRoute) {
+		super();
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.sender = sender;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
+		this.active = active;
+		this.listGoods = listGoods;
+		this.listRoute = listRoute;
+	}
+
+	public List<Goods> getListGoods() {
+		return listGoods;
+	}
+
+	public void setListGoods(List<Goods> listGoods) {
+		this.listGoods = listGoods;
+	}
+
+	public List<Route> getListRoute() {
+		return listRoute;
+	}
+
+	public void setListRoute(List<Route> listRoute) {
+		this.listRoute = listRoute;
+	}
+
+	public Deal() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public int getDealID() {
 		return dealID;
@@ -105,14 +144,6 @@ public class Deal implements Serializable {
 		this.createTime = createTime;
 	}
 
-	public int getOrderID() {
-		return orderID;
-	}
-
-	public void setOrderID(int orderID) {
-		this.orderID = orderID;
-	}
-
 	public String getSender() {
 		return sender;
 	}
@@ -137,11 +168,47 @@ public class Deal implements Serializable {
 		this.goodsID = goodsID;
 	}
 
+	public int getDealStatusID() {
+		return dealStatusID;
+	}
+
+	public void setDealStatusID(int dealStatusID) {
+		this.dealStatusID = dealStatusID;
+	}
+
 	public int getActive() {
 		return active;
 	}
 
 	public void setActive(int active) {
+		this.active = active;
+	}
+
+	public Deal(double price, String notes, String createTime, String sender,
+			int routeID, int goodsID, int dealStatusID, int active) {
+		super();
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.sender = sender;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
+		this.active = active;
+	}
+
+	public Deal(int dealID, double price, String notes, String createTime,
+			String sender, int routeID, int goodsID, int dealStatusID,
+			int active) {
+		super();
+		this.dealID = dealID;
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.sender = sender;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
 		this.active = active;
 	}
 

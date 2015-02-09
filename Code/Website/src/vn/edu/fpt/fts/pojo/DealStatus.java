@@ -4,7 +4,6 @@
 package vn.edu.fpt.fts.pojo;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,18 +20,8 @@ public class DealStatus implements Serializable {
 	private int dealStatusID;
 	private String dealStatusName;
 
-	private List<Deal> listDeal;
-
 	public DealStatus() {
 		// TODO Auto-generated constructor stub
-	}
-
-	public DealStatus(int dealStatusID, String dealStatusName,
-			List<Deal> listDeal) {
-		super();
-		this.dealStatusID = dealStatusID;
-		this.dealStatusName = dealStatusName;
-		this.listDeal = listDeal;
 	}
 
 	public DealStatus(int dealStatusID, String dealStatusName) {
@@ -55,14 +44,6 @@ public class DealStatus implements Serializable {
 
 	public void setDealStatusName(String dealStatusName) {
 		this.dealStatusName = dealStatusName;
-	}
-
-	public List<Deal> getListDeal() {
-		return listDeal;
-	}
-
-	public void setListDeal(List<Deal> listDeal) {
-		this.listDeal = listDeal;
 	}
 
 }
