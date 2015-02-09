@@ -5,7 +5,9 @@ package vn.edu.fpt.fts.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +34,7 @@ public class OrderDAO {
 					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID"
 					+ ") VALUES (" + "?, " + "?, " + "?, " + "?, " + "?, "
 					+ "?)";
-			stmt = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setDouble(i++, bean.getPrice()); // Price
 			stmt.setBoolean(i++, bean.isStaffDeliveryStatus()); // StaffDeliveryStatus
@@ -40,7 +42,13 @@ public class OrderDAO {
 			stmt.setBoolean(i++, bean.isOwnerDeliveryStatus()); // OwnerDeliveryStatus
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
-			ret = stmt.executeUpdate();
+
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
 
 		} catch (SQLException e) {
 			// TODO: handle exception

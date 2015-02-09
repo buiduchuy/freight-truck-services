@@ -88,12 +88,12 @@ public class RouteAPI {
 						.insertRouteGoodsCategory(routeGoodsCategory);
 			}
 			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
-				routeGoodsCategory.setGoodsCategoryID(3);
+				routeGoodsCategory.setGoodsCategoryID(4);
 				routeGoodsCategoryDao
 						.insertRouteGoodsCategory(routeGoodsCategory);
 			}
 			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
-				routeGoodsCategory.setGoodsCategoryID(4);
+				routeGoodsCategory.setGoodsCategoryID(5);
 				routeGoodsCategoryDao
 						.insertRouteGoodsCategory(routeGoodsCategory);
 			}
