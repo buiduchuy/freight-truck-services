@@ -43,6 +43,10 @@ public class MainTestDao {
 		order.setCreateTime("2015-04-03");
 		order.setOrderStatusID(1);
 		System.out.println(orderDao.insertOrder(order));
+		
+		order = orderDao.getOrderByID(3);
+		
+		System.out.println(order.isDriverDeliveryStatus());
 	}
 
 }

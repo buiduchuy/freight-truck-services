@@ -63,7 +63,7 @@ public class MatchingProcess {
 //		return result;
 //	}
 
-	private double maxAllowDistance = 2000.0; // meters
+	private double maxAllowDistance = 1000.0; // meters
 
 	// / <summary>
 	// / Check whether the distance from the goods position to the stage connect
