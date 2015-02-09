@@ -28,10 +28,11 @@ public class RouteGoodsCategoryDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO RouteGoodsCategory ( "
-					+ "GoodsCategoryID" + ") VALUES (" + "?)";
+					+ "GoodsCategoryID" + ") VALUES (" + "?," + "?" + ")";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 			stmt.setInt(i++, bean.getGoodsCategoryID()); // DealID
+			stmt.setInt(i++, bean.getRouteID());// RouteID
 
 			ret = stmt.executeUpdate();
 

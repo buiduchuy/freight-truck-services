@@ -17,7 +17,6 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * @author Huy
@@ -47,31 +46,68 @@ public class DealAPI {
 		return l_deals;
 	}
 
+	@GET
+	@Path("get")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Deal> getAllDeal() {
+		List<Deal> l_deals = dealDao.getAllDeal();
+		return l_deals;
+	}
+
 	@POST
 	@Path("Create")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createRoute(MultivaluedMap<String, String> params) {
-
-		Route route = new Route();
+	public String createDeal(MultivaluedMap<String, String> params) {
+		Deal deal;
 		try {
+			deal = new Deal();
+			deal.setPrice(Double.valueOf(params.getFirst("price")));
+			deal.setNotes(params.getFirst("notes"));
+			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setSender(params.getFirst("sender"));
+			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
+			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+			deal.setDealStatusID(Integer.valueOf(params
+					.getFirst("dealStatusID")));
+			deal.setActive(Integer.valueOf(params.getFirst("active")));
 
-			// route.setStartingAddress(goodsParams.getFirst("startingAddress"));
-			// route.setDestinationAddress(goodsParams
-			// .getFirst("destinationAddress"));
-			// route.setStartTime(goodsParams.getFirst("startTime"));
-			// route.setFinishTime(goodsParams.getFirst("finishTime"));
-			// route.setNotes(goodsParams.getFirst("notes"));
-			// route.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
-			// route.setCreateTime(goodsParams.getFirst("createTime"));
-			// route.setActive(Integer.valueOf(goodsParams.getFirst("active")));
-			// route.setDriverID(Integer.valueOf(goodsParams.getFirst("driverID")));
-			//
-			// int ret = routeDao.insertRoute(route);
-			//
-			// if (ret <= 0) {
-			// return "Fail";
-			// }
+			int ret = dealDao.insertDeal(deal);
+			if (ret <= 0) {
+				return "Fail";
+			}
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return "Success";
+	}
+
+	@POST
+	@Path("Update")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateDeal(MultivaluedMap<String, String> params) {
+		Deal deal;
+		try {
+			deal = new Deal();
+			deal.setPrice(Double.valueOf(params.getFirst("price")));
+			deal.setNotes(params.getFirst("notes"));
+			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setSender(params.getFirst("sender"));
+			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
+			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+			deal.setDealStatusID(Integer.valueOf(params
+					.getFirst("dealStatusID")));
+			deal.setActive(Integer.valueOf(params.getFirst("active")));
+
+			int ret = dealDao.updateDeal(deal);
+
+			if (ret <= 0) {
+				return "Fail";
+			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();

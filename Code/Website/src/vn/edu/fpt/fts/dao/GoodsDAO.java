@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,7 +38,7 @@ public class GoodsDAO {
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
 					+ "?)";
-			stmt = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setInt(i++, bean.getWeight()); // Weight
 			stmt.setDouble(i++, bean.getPrice()); // Price
@@ -55,8 +56,12 @@ public class GoodsDAO {
 			stmt.setInt(i++, bean.getOwnerID()); // OwnerID
 			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
 
-			ret = stmt.executeUpdate();
+			stmt.executeUpdate();
 
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
@@ -284,77 +289,6 @@ public class GoodsDAO {
 			int i = 1;
 			stm.setInt(i++, ownerid);
 			stm.setString(i++, createTime);
-
-			rs = stm.executeQuery();
-			List<Goods> list = new ArrayList<Goods>();
-			Goods goods;
-			while (rs.next()) {
-				goods = new Goods();
-
-				goods.setGoodsID(rs.getInt("GoodsID"));
-				goods.setWeight(rs.getInt("Weight"));
-				goods.setPrice(rs.getDouble("Price"));
-				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());
-				goods.setPickupAddress(rs.getString("PickupAddress"));
-				goods.setDeliveryTime(rs.getTimestamp("DeliveryTime")
-						.toString());
-				goods.setDeliveryAddress(rs.getString("DeliveryAddress"));
-				goods.setPickupMarkerLongtitude(rs
-						.getFloat("PickupMarkerLongtitude"));
-				goods.setPickupMarkerLatidute(rs
-						.getFloat("PickupMarkerLatidute"));
-				goods.setDeliveryMarkerLongtitude(rs
-						.getFloat("DeliveryMarkerLongtitude"));
-				goods.setDeliveryMarkerLatidute(rs
-						.getFloat("DeliveryMarkerLatidute"));
-				goods.setNotes(rs.getString("Notes"));
-				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
-				goods.setActive(rs.getInt("Active"));
-				goods.setOwnerID(rs.getInt("OwnerID"));
-				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
-
-				list.add(goods);
-			}
-			return list;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-			}
-		}
-		return null;
-	}
-
-	public List<Goods> search(int goodCategoryId, String pickupTime,
-			String deliveryTime) {
-
-		Connection con = null;
-		PreparedStatement stm = null;
-		ResultSet rs = null;
-
-		try {
-			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods WHERE GoodsCategoryID=? AND PickupTime=? AND DeliveryTime=?";
-			stm = con.prepareStatement(sql);
-
-			int i = 1;
-			stm.setInt(i++, goodCategoryId);
-			stm.setString(i++, pickupTime);
-			stm.setString(i++, deliveryTime);
 
 			rs = stm.executeQuery();
 			List<Goods> list = new ArrayList<Goods>();

@@ -63,6 +63,7 @@ public class GoodsAPI {
 			goods.setOwnerID(Integer.valueOf(goodsParams.getFirst("ownerID")));
 			goods.setGoodsCategoryID(Integer.valueOf(goodsParams
 					.getFirst("goodsCategoryID")));
+			System.out.println(goodsParams.getFirst("deliveryAddress"));
 
 			int ret = goodsDao.insertGoods(goods);
 			if (ret <= 0) {

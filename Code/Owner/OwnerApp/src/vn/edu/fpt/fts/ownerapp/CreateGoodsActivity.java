@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -21,6 +22,10 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
@@ -47,61 +52,61 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class CreateGoodsActivity extends Activity {
-	
-
-	private static final String TAG = "CreateGoodsActivity";
 
 	private Spinner spinner;
-	private Calendar calendar;
+	private Calendar calendar1, calendar2;
 	private DatePickerDialog.OnDateSetListener date1, date2;
-	private EditText etPickupDate, etDeliverDate;
-	private AutoCompleteTextView edittextPickupAddr, edittextDeliverAddr;
+	private EditText etPickupDate, etDeliverDate, etNotes, etPrice, etWeight;
+	private AutoCompleteTextView actPickupAddr, actDeliverAddr;
 	private ImageButton ibPickupMap, ibDeliverMap;
-	private int mHour, mMinute;
 	private Button btnPost;
+	private List<String> cateList = new ArrayList<String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_goods);
+		etNotes = (EditText) findViewById(R.id.edittext_note);
+		etPrice = (EditText) findViewById(R.id.edittext_price);
+		etWeight = (EditText) findViewById(R.id.edittext_weight);
 
 		// drop down list
+		WebServiceTask2 task2 = new WebServiceTask2(WebServiceTask2.GET_TASK,
+				this, "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_GoodsCategory_Get;
+		task2.execute(new String[] { url });
+		
 		spinner = (Spinner) findViewById(R.id.spinner_goods_type);
-		List<String> list = new ArrayList<String>();
-		list.add("Thức ăn");
-		list.add("Bàn ghế");
-		list.add("Gia dụng");
-		list.add("Sắt thép");
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_dropdown_item, list);
-		dataAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				android.R.layout.simple_spinner_dropdown_item, cateList);		
+		dataAdapter.notifyDataSetChanged();
 		spinner.setAdapter(dataAdapter);
 
 		// date picker listener
-		calendar = Calendar.getInstance();
+		calendar1 = Calendar.getInstance();
 		date1 = new DatePickerDialog.OnDateSetListener() {
 
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
 				// TODO Auto-generated method stub
-				calendar.set(Calendar.YEAR, year);
-				calendar.set(Calendar.MONTH, monthOfYear);
-				calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel(etPickupDate);
+				calendar1.set(Calendar.YEAR, year);
+				calendar1.set(Calendar.MONTH, monthOfYear);
+				calendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+				updateLabel(etPickupDate, calendar1);
 			}
 		};
+		calendar2 = Calendar.getInstance();
 		date2 = new DatePickerDialog.OnDateSetListener() {
 
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
 				// TODO Auto-generated method stub
-				calendar.set(Calendar.YEAR, year);
-				calendar.set(Calendar.MONTH, monthOfYear);
-				calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel(etDeliverDate);
+				calendar2.set(Calendar.YEAR, year);
+				calendar2.set(Calendar.MONTH, monthOfYear);
+				calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+				updateLabel(etDeliverDate, calendar2);
 			}
 		};
 
@@ -114,8 +119,8 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				if (hasFocus) {
 					new DatePickerDialog(CreateGoodsActivity.this, date1,
-							calendar.get(Calendar.YEAR), calendar
-									.get(Calendar.MONTH), calendar
+							calendar1.get(Calendar.YEAR), calendar1
+									.get(Calendar.MONTH), calendar1
 									.get(Calendar.DAY_OF_MONTH)).show();
 				}
 			}
@@ -131,15 +136,15 @@ public class CreateGoodsActivity extends Activity {
 						// TODO Auto-generated method stub
 						if (hasFocus) {
 							new DatePickerDialog(CreateGoodsActivity.this,
-									date2, calendar.get(Calendar.YEAR),
-									calendar.get(Calendar.MONTH), calendar
+									date2, calendar2.get(Calendar.YEAR),
+									calendar2.get(Calendar.MONTH), calendar2
 											.get(Calendar.DAY_OF_MONTH)).show();
 						}
 					}
 				});
 
 		// pickup address and map button
-		edittextPickupAddr = (AutoCompleteTextView) findViewById(R.id.edittext_pickup_address);
+		actPickupAddr = (AutoCompleteTextView) findViewById(R.id.edittext_pickup_address);
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
 
@@ -148,14 +153,13 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						CreateGoodsMapFragment.class);
-				intent.putExtra("address", edittextPickupAddr.getText()
-						.toString());
+				intent.putExtra("address", actPickupAddr.getText().toString());
 				startActivity(intent);
 			}
 		});
 
 		// deliver address and map button
-		edittextDeliverAddr = (AutoCompleteTextView) findViewById(R.id.edittext_deliver_address);
+		actDeliverAddr = (AutoCompleteTextView) findViewById(R.id.edittext_deliver_address);
 		ibDeliverMap = (ImageButton) findViewById(R.id.imagebtn_deliver_address);
 		ibDeliverMap.setOnClickListener(new View.OnClickListener() {
 
@@ -164,16 +168,15 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						CreateGoodsMapFragment.class);
-				intent.putExtra("address", edittextDeliverAddr.getText()
-						.toString());
+				intent.putExtra("address", actDeliverAddr.getText().toString());
 				startActivity(intent);
 			}
 		});
 
 		// auto complete textview
-		edittextPickupAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
+		actPickupAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_pickup));
-		edittextDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
+		actDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_deliver));
 
 		// button
@@ -185,55 +188,7 @@ public class CreateGoodsActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// JSONObject json = new JSONObject();
-				// JSONObject json1 = new JSONObject();
-				// JSONArray ja = new JSONArray();
-				// try {
-				// json.put("active", "1");
-				// json.put("createTime", "2015-05-04 00:00:00.0");
-				// json.put("deliveryAddress", "Vung Tau");
-				// json.put("deliveryMarkerLatidute", "0.0");
-				// json.put("deliveryMarkerLongtitude", "0.0");
-				// json.put("deliveryTime", "2015-05-24 00:00:00.0");
-				// json.put("goodsCategoryID", "1");
-				// json.put("notes", "12345");
-				// json.put("ownerID", "1");
-				// json.put("pickupAddress", "Ca Mau");
-				// json.put("pickupMarkerLatidute", "0.0");
-				// json.put("pickupMarkerLongtitude", "0.0");
-				// json.put("pickupTime", "2015-05-04 00:00:00.0");
-				// json.put("price", "3000");
-				// json.put("weight", "1000");
-				// ja.put(json);
-				// json1.put("goods", ja);
-				//
-				// } catch (JSONException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				// HttpClient httpClient = new DefaultHttpClient();
-				// HttpPost request = new HttpPost(
-				// "http://192.168.1.16:8080/FTS/api/Goods/Create");
-				// try {
-				// StringEntity param = new StringEntity(json1.toString());
-				// request.addHeader("content-type", "application/json");
-				// request.setEntity(param);
-				// httpClient.execute(request);
-				// } catch (UnsupportedEncodingException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// } catch (ClientProtocolException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// } catch (IOException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// } finally {
-				// httpClient.getConnectionManager().shutdown();
-				// }
-				
-				//Chi viec goi ham postData
+				// Chi viec goi ham postData
 				postData(v);
 			}
 		});
@@ -259,10 +214,16 @@ public class CreateGoodsActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void updateLabel(EditText et) {
+	private void updateLabel(EditText et, Calendar calendar) {
 		String format = "MM/dd/yy";
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		et.setText(sdf.format(calendar.getTime()));
+	}
+	
+	private String formatDate(Calendar calendar) {
+		String format = "yyyy-MM-dd HH:mm:ss";
+		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
+		return sdf.format(calendar.getTime());
 	}
 
 	// ------------------------------------------------------------------------------
@@ -289,21 +250,24 @@ public class CreateGoodsActivity extends Activity {
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		// Cac cap gia tri gui ve server
+		String test = actDeliverAddr.getText().toString();
 		wst.addNameValuePair("active", "1");
 		wst.addNameValuePair("createTime", "2015-05-04 00:00:00.0");
-		wst.addNameValuePair("deliveryAddress", "Vung Tau");
+		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
+				.toString());
 		wst.addNameValuePair("deliveryMarkerLatidute", "0.0");
 		wst.addNameValuePair("deliveryMarkerLongtitude", "0.0");
-		wst.addNameValuePair("deliveryTime", "2015-05-24 00:00:00.0");
+		wst.addNameValuePair("deliveryTime", formatDate(calendar2));
 		wst.addNameValuePair("goodsCategoryID", "1");
-		wst.addNameValuePair("notes", "12345");
+		wst.addNameValuePair("notes", etNotes.getText().toString());
 		wst.addNameValuePair("ownerID", "1");
-		wst.addNameValuePair("pickupAddress", "Ca Mau");
+		wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
+				.toString());
 		wst.addNameValuePair("pickupMarkerLatidute", "0.0");
 		wst.addNameValuePair("pickupMarkerLongtitude", "0.0");
-		wst.addNameValuePair("pickupTime", "2015-05-04 00:00:00.0");
-		wst.addNameValuePair("price", "3000");
-		wst.addNameValuePair("weight", "1000");
+		wst.addNameValuePair("pickupTime", formatDate(calendar1));
+		wst.addNameValuePair("price", etPrice.getText().toString());
+		wst.addNameValuePair("weight", etWeight.getText().toString());
 
 		// the passed String is the URL we will POST to
 		String url = Common.IP_URL + Common.Service_Goods_Create;
@@ -339,15 +303,7 @@ public class CreateGoodsActivity extends Activity {
 	//
 	// }
 
-	private void hideKeyboard() {
-
-		InputMethodManager inputManager = (InputMethodManager) CreateGoodsActivity.this
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-		inputManager.hideSoftInputFromWindow(CreateGoodsActivity.this
-				.getCurrentFocus().getWindowToken(),
-				InputMethodManager.HIDE_NOT_ALWAYS);
-	}
+	
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -397,7 +353,7 @@ public class CreateGoodsActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 
-			hideKeyboard();
+			
 			showProgressDialog();
 
 		}
@@ -435,9 +391,178 @@ public class CreateGoodsActivity extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			if (response.equals("Success")) {
-				
+				Toast.makeText(CreateGoodsActivity.this, "Hàng tạo thành công", Toast.LENGTH_LONG)
+				.show();
 			} else {
-				Toast.makeText(CreateGoodsActivity.this, "", Toast.LENGTH_LONG).show();
+				Toast.makeText(CreateGoodsActivity.this, "Hàng chưa được tạo", Toast.LENGTH_LONG)
+						.show();
+			}
+			pDlg.dismiss();
+
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+
+	private class WebServiceTask2 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask2";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask2(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			try {
+				android.os.Debug.waitForDebugger();
+				JSONObject jsonObject = new JSONObject(response);
+				JSONArray array = jsonObject.getJSONArray("goodsCategory");
+				for (int i = 0; i < array.length(); i++) {
+					JSONObject jsonObject2 = array.getJSONObject(i);
+					cateList.add(jsonObject2.getString("name"));
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, e.getLocalizedMessage());
 			}
 			pDlg.dismiss();
 
@@ -508,5 +633,4 @@ public class CreateGoodsActivity extends Activity {
 		}
 
 	}
-
 }

@@ -184,7 +184,7 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			android.os.Debug.waitForDebugger();
+			
 			if (response.equals("Driver")) {
 				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 				startActivity(intent);

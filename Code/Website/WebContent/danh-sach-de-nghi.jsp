@@ -33,10 +33,10 @@
 											<th><h4>
 													<font color="orange">#</font>
 												</h4></th>
-											<th width="200"><h3>
+											<th width="175"><h3>
 													<font color="orange">Địa điểm bắt đầu</font>
 												</h3></th>
-											<th width="200"><h3>
+											<th width="175"><h3>
 													<font color="orange">Địa điểm kết thúc</font>
 												</h3></th>
 
@@ -92,10 +92,10 @@
 											<th><h4>
 													<font color="orange">#</font>
 												</h4></th>
-											<th width="200"><h3>
+											<th width="175"><h3>
 													<font color="orange">Địa điểm bắt đầu</font>
 												</h3></th>
-											<th width="200"><h3>
+											<th width="175"><h3>
 													<font color="orange">Địa điểm kết thúc</font>
 												</h3></th>
 
@@ -132,8 +132,8 @@
 															</c:if>
 															<td><a class="button "
 																
-																href="Controller?btnAction=deleteDealSent&idDeal=${dealOwner.dealID }"><i
-																	class="icon-remove"></i> Xem Chi Tiết</a></td>
+																href="Controller?btnAction=viewDetailDeal&idDeal=${dealDriver.dealID }"><i
+																	class="icon-bullseye"></i> Xem Chi Tiết</a></td>
 														</tr>
 													</c:if>
 												</c:forEach>

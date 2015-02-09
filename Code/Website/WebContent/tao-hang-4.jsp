@@ -179,7 +179,7 @@
 									<a href="Controller?btnAction=viewCreate_3"
 										class="button secondary"><i class="icon-mail-reply"></i>
 										Trở về</a>
-									<button class="success" name="btnAction" value="createGood">
+									<button class="success" onclick="return confirm('Bạn có muốn tạo hàng không?')"name="btnAction" value="createGood">
 										<i class="icon-ok"></i> Tạo hàng
 									</button>
 								</div>
