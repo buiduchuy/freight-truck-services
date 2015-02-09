@@ -11,7 +11,7 @@ import vn.edu.fpt.fts.pojo.Order;
  * @author Huy
  *
  */
-public class MainTestDao {
+public class MAIN_DAO {
 
 	/**
 	 * @param args

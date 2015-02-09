@@ -1,5 +1,6 @@
 package vn.edu.fpt.fts.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,5 +80,23 @@ public class GoodsAPI {
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return "Success";
+	}
+
+	@POST
+	@Path("getListGoodsByOwnerID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Goods> getListGoodsByOwnerID(
+			MultivaluedMap<String, String> params) {
+		List<Goods> l_goods = new ArrayList<Goods>();
+		try {
+			l_goods = goodsDao.getListGoodsByOwnerID(Integer.valueOf(params
+					.getFirst("ownerID")));
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return l_goods;
 	}
 }

@@ -206,7 +206,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public List<Goods> getListGoodsByOwnerID(Owner owner) {
+	public List<Goods> getListGoodsByOwnerID(int ownerId) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -218,7 +218,7 @@ public class GoodsDAO {
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
-			stm.setInt(i++, owner.getOwnerID());
+			stm.setInt(i++, ownerId);
 
 			rs = stm.executeQuery();
 			List<Goods> list = new ArrayList<Goods>();
