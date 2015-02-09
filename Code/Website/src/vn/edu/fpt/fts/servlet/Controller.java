@@ -132,7 +132,7 @@ public class Controller extends HttpServlet {
 		}
 		if ("manageGoods".equals(action)) {
 			Owner owner = (Owner) session.getAttribute("owner");
-			List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner);
+			List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
 			List<Goods> manageGood1 = new ArrayList<Goods>();
 			List<Goods> manageGood2 = new ArrayList<Goods>();
 			for (int i = 0; i < manageGood.size(); i++) {
@@ -307,7 +307,7 @@ public class Controller extends HttpServlet {
 			if (acc.checkLoginAccount(email, password) != null) {
 
 				Owner owner = ow.getOwnerByEmail(acc.checkLoginAccount(email,
-						password));
+						password).getEmail());
 				List<GoodsCategory> list = goodCa.getAllGoodsCategory();
 
 				GoodsCategory[] typeGoods = new GoodsCategory[list.size()];
@@ -568,7 +568,7 @@ public class Controller extends HttpServlet {
 			go.setActive(0);
 			if (goodDao.updateGoods(go) == 1) {
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner);
+				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
 				List<Goods> manageGood1 = new ArrayList<Goods>();
 				List<Goods> manageGood2 = new ArrayList<Goods>();
 				for (int i = 0; i < manageGood.size(); i++) {
@@ -626,7 +626,7 @@ public class Controller extends HttpServlet {
 								Owner owner = (Owner) session
 										.getAttribute("owner");
 								List<Goods> manageGood = goodDao
-										.getListGoodsByOwnerID(owner);
+										.getListGoodsByOwnerID(owner.getOwnerID());
 								List<Goods> manageGood1 = new ArrayList<Goods>();
 								List<Goods> manageGood2 = new ArrayList<Goods>();
 								for (int i = 0; i < manageGood.size(); i++) {
