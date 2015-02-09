@@ -73,8 +73,6 @@ public class RouteAPI {
 			RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
 
 			routeGoodsCategory.setRouteID(ret);
-			routeGoodsCategory.setGoodsCategoryID(Integer.valueOf(params
-					.getFirst("")));
 
 			// Get params category true/false
 			if (Boolean.parseBoolean(params.getFirst("Food"))) {
