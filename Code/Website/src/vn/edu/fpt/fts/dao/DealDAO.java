@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,7 +36,7 @@ public class DealDAO {
 					+ "CreateTime," + "Sender," + "RouteID," + "GoodsID,"
 					+ "DealStatusID," + "Active" + ") VALUES (" + "?, " + "?, "
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?)";
-			stmt = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 
 			stmt.setDouble(i++, bean.getPrice()); // Price
@@ -47,8 +48,11 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
 
-			ret = stmt.executeUpdate();
-
+			stmt.executeUpdate();
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
@@ -188,7 +192,7 @@ public class DealDAO {
 		return null;
 	}
 
-	public static int updateDeal(Deal bean) {
+	public int updateDeal(Deal bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -263,6 +267,60 @@ public class DealDAO {
 				deal.setActive(rs.getInt("Active"));
 				return deal;
 			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Deal table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public List<Deal> getAllDeal() {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT * FROM Deal";
+
+			stm = con.prepareStatement(sql);
+
+			rs = stm.executeQuery();
+			List<Deal> list = new ArrayList<Deal>();
+			while (rs.next()) {
+				Deal deal = new Deal();
+
+				deal.setDealID(rs.getInt("DealID"));
+				deal.setPrice(rs.getDouble("Price"));
+				deal.setNotes(rs.getString("Notes"));
+				deal.setCreateTime(rs.getString("CreateTime"));
+				deal.setSender(rs.getString("Sender"));
+				deal.setRouteID(rs.getInt("RouteID"));
+				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setDealStatusID(rs.getInt("DealStatusID"));
+				deal.setActive(rs.getInt("Active"));
+
+				list.add(deal);
+
+			}
+			return list;
 
 		} catch (SQLException e) {
 			e.printStackTrace();

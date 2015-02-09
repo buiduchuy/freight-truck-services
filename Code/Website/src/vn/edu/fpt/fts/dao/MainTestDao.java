@@ -42,7 +42,7 @@ public class MainTestDao {
 		order.setOwnerDeliveryStatus(false);
 		order.setCreateTime("2015-04-03");
 		order.setOrderStatusID(1);
-		orderDao.insertOrder(order);
+		System.out.println(orderDao.insertOrder(order));
 	}
 
 }
