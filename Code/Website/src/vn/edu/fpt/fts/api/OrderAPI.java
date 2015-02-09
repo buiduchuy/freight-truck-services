@@ -50,16 +50,16 @@ public class OrderAPI {
 		try {
 			order = new Order();
 
-			order.setPrice(Double.valueOf(params.getFirst("Price")));
+			order.setPrice(Double.valueOf(params.getFirst("price")));
 			order.setStaffDeliveryStatus(Boolean.valueOf(params
-					.getFirst("StaffDeliveryStatus")));
+					.getFirst("staffDeliveryStatus")));
 			order.setDriverDeliveryStatus(Boolean.valueOf(params
-					.getFirst("DriverDeliveryStatus")));
+					.getFirst("driverDeliveryStatus")));
 			order.setOwnerDeliveryStatus(Boolean.valueOf(params
-					.getFirst("OwnerDeliveryStatus")));
-			order.setCreateTime(params.getFirst("CreateTime"));
+					.getFirst("ownerDeliveryStatus")));
+			order.setCreateTime(params.getFirst("createTime"));
 			order.setOrderStatusID(Integer.valueOf(params
-					.getFirst("OrderStatusID")));
+					.getFirst("orderStatusID")));
 
 			int ret = orderDao.updateOrder(order);
 			if (ret <= 0) {
