@@ -233,7 +233,7 @@ public class DealDAO {
 		return ret;
 	}
 
-	public List<Deal> getDealByID(int dealId) {
+	public Deal getDealByID(int dealId) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -248,11 +248,9 @@ public class DealDAO {
 			stm.setInt(i++, dealId);
 
 			rs = stm.executeQuery();
-			List<Deal> list = new ArrayList<Deal>();
-			Deal deal;
 
 			while (rs.next()) {
-				deal = new Deal();
+				Deal deal = new Deal();
 
 				deal.setDealID(rs.getInt("DealID"));
 				deal.setPrice(rs.getDouble("Price"));
@@ -263,10 +261,8 @@ public class DealDAO {
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
-
-				list.add(deal);
+				return deal;
 			}
-			return list;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
