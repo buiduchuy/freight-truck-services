@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.edu.fpt.fts.service;
+package vn.edu.fpt.fts.api;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.DriverDAO;
-import vn.edu.fpt.fts.model.Driver;
+import vn.edu.fpt.fts.pojo.Driver;
 
 /**
  * @author Huy

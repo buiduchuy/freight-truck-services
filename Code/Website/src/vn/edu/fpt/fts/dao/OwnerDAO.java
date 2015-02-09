@@ -8,10 +8,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.model.Account;
-import vn.edu.fpt.fts.model.Owner;
+import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.Owner;
 
 public class OwnerDAO {
+	private final static String TAG = "OwnerDAO";
 
 	public int insertOwner(Owner bean) {
 		Connection con = null;
@@ -48,8 +49,7 @@ public class OwnerDAO {
 			ret = -1;
 			System.out.println("Can't insert to Owner table");
 			e.printStackTrace();
-			Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
 			try {
@@ -61,8 +61,7 @@ public class OwnerDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return ret;
@@ -101,13 +100,11 @@ public class OwnerDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			System.out.println("Columns with Integer type are null");
-			Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -121,8 +118,7 @@ public class OwnerDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(OwnerDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return owner;

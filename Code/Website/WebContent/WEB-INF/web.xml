@@ -24,22 +24,12 @@
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>vn.edu.fpt.fts.service</param-value>
+      <param-value>vn.edu.fpt.fts.api</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/api/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>abc</display-name>
-    <servlet-name>abc</servlet-name>
-    <servlet-class>vn.edu.fpt.fts.servlet.abc</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>abc</servlet-name>
-    <url-pattern>/abc</url-pattern>
   </servlet-mapping>
 </web-app>

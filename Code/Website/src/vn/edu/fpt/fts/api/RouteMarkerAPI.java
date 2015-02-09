@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.edu.fpt.fts.service;
+package vn.edu.fpt.fts.api;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.RouteMarkerDAO;
-import vn.edu.fpt.fts.model.RouteMarker;
+import vn.edu.fpt.fts.pojo.RouteMarker;
 
 /**
  * @author Huy

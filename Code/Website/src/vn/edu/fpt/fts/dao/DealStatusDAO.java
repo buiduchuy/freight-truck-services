@@ -7,50 +7,47 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.pojo.Vehicle;
+import vn.edu.fpt.fts.pojo.DealStatus;
 
 /**
  * @author Huy
  *
  */
-public class VehicleDAO {
+public class DealStatusDAO {
+	private final static String TAG = "DealStatusDAO";
 
-	public List<Vehicle> getAllVehicleByRouteID(int routeID) {
+	public DealStatus getDealStatusByID(int dealId) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Vehicle WHERE RouteID=?";
+			String sql = "SELECT * FROM DealStatus WHERE DealStatusID=?";
 			stm = con.prepareStatement(sql);
 
-			stm.setInt(1, routeID);
+			stm.setInt(1, dealId);
 
 			rs = stm.executeQuery();
-			List<Vehicle> list = new ArrayList<Vehicle>();
-			Vehicle vehicle;
+
+			DealStatus dealStatus;
 			while (rs.next()) {
-				vehicle = new Vehicle();
+				dealStatus = new DealStatus();
 
-				vehicle.setVehicleID(rs.getInt("VehicleID"));
-				vehicle.setIdentNumber(rs.getString("IdentNumber"));
-				vehicle.setType(rs.getString("Type"));
+				dealStatus.setDealStatusID(dealId);
+				dealStatus.setDealStatusName(rs.getString("DealStatusName"));
 
-				list.add(vehicle);
+				return dealStatus;
 			}
-			return list;
+
 		} catch (SQLException e) {
 			System.out.println("Can't load data from Vehicle table");
 			e.printStackTrace();
-			Logger.getLogger(VehicleDAO.class.getName()).log(Level.SEVERE,
-					null, e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -64,11 +61,11 @@ public class VehicleDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Vehicle table");
-				Logger.getLogger(VehicleDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				System.out.println("Can't load data from DealStatus table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
 	}
+
 }

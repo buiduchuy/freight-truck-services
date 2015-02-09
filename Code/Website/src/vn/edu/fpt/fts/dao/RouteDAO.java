@@ -8,15 +8,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.model.Route;
+import vn.edu.fpt.fts.pojo.Route;
 
 public class RouteDAO {
+
+	private final static String TAG = "RouteDAO";
 
 	public int insertRoute(Route bean) {
 		Connection con = null;
@@ -31,7 +34,7 @@ public class RouteDAO {
 					+ "Notes," + "Weight," + "CreateTime," + "Active,"
 					+ "DriverID" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
 					+ "?, " + "?, " + "?, " + "?, " + "?)";
-			stmt = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setString(i++, bean.getStartingAddress()); // StartingAddress
 			stmt.setString(i++, bean.getDestinationAddress()); // DestinationAddress
@@ -45,13 +48,17 @@ public class RouteDAO {
 
 			ret = stmt.executeUpdate();
 
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
+
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
 			System.out.println("Can't insert to Route table");
 			e.printStackTrace();
-			Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (stmt != null) {
@@ -62,8 +69,7 @@ public class RouteDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return ret;
@@ -107,8 +113,7 @@ public class RouteDAO {
 		} catch (SQLException e) {
 			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
-			Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -123,13 +128,12 @@ public class RouteDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Route table");
-				Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
 	}
-	
+
 	public Route getRouteById(int Id) {
 
 		Connection con = null;
@@ -158,12 +162,11 @@ public class RouteDAO {
 				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
 				return route;
 			}
-		
+
 		} catch (SQLException e) {
 			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
-			Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -178,8 +181,7 @@ public class RouteDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Route table");
-				Logger.getLogger(RouteDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;

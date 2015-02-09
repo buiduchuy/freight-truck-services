@@ -49,7 +49,7 @@
 												đồng)</font></th>
 										<th width="150"><font color="orange">Điểm uy tín</font></th>
 										<th width="150"><a class="button success expand"
-											href="danh-sach-de-nghi.jsp"> Các đề nghị </a></th>
+											href="Controller?btnAction=viewSuggest"> Các đề nghị </a></th>
 									</tr>
 
 								</thead>

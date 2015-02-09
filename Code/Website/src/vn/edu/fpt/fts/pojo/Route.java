@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.model;
+package vn.edu.fpt.fts.pojo;
 
 import java.util.List;
 

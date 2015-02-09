@@ -1,11 +1,8 @@
 package vn.edu.fpt.fts.ownerapp;
 
-import com.example.ownerapp.R;
-
 import vn.edu.fpt.fts.adapter.GoodsDetailPagerAdapter;
-import android.app.ActionBar.Tab;
 import android.app.ActionBar;
-import android.app.Activity;
+import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -14,8 +11,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 public class GoodsDetailActivity extends FragmentActivity implements
 		TabListener {
