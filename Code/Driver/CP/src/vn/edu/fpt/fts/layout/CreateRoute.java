@@ -93,9 +93,9 @@ public class CreateRoute extends Fragment {
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
-	private static final String SERVICE_URL = "http://192.168.1.12:8080/FTS/api/Route/Create";
-	String formattedStartDate = "";
-	String formattedEndDate = "";
+	private static final String SERVICE_URL = "http://192.168.1.64:8080/FTS/api/Route/Create";
+	private static final String SERVICE_URL_2 = "http://192.168.1.64:8080/FTS/api/Route/Create";
+
 
 	@Override
 	public void onPause() {
@@ -189,27 +189,15 @@ public class CreateRoute extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				Common common = new Common();
 				String startPoint = start.getText().toString();
 				String Point1 = p1.getText().toString();
 				String Point2 = p2.getText().toString();
 				String endPoint = end.getText().toString();
-				String startD = startDate.getText().toString();
-				String endD = endDate.getText().toString();
-				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-	            Date startDate = new Date();
-				try {
-					startDate = sdf.parse(startD);
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-	            Date endDate = new Date();
-				try {
-					endDate = sdf.parse(endD);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				String startD = startDate.getText().toString().replace("/", "-");
+				startD = common.changeFormatDate(startD) + " " + startHour.getText().toString();
+				String endD = endDate.getText().toString().replace("/", "-");
+				endD = common.changeFormatDate(endD);
 				String frz = String.valueOf(frozen.isChecked());
 				String brk = String.valueOf(broken.isChecked());
 				String flm = String.valueOf(flammable.isChecked());
@@ -217,9 +205,8 @@ public class CreateRoute extends Fragment {
 				String load = payload.getText().toString();
 				Calendar calendar = Calendar.getInstance();
 				String current = String.valueOf(calendar.get(Calendar.YEAR))
-						+ "-" + String.valueOf(calendar.get(Calendar.MONTH))
-						+ String.valueOf(calendar.get(Calendar.DATE)) + "-"
-						+ String.valueOf(calendar.get(Calendar.YEAR)) + " "
+						+ "-" + String.valueOf(calendar.get(Calendar.MONTH)+1) + "-"
+						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + " "
 						+ String.valueOf(calendar.get(Calendar.HOUR)) + ":"
 						+ String.valueOf(calendar.get(Calendar.MINUTE)) + ":"
 						+ String.valueOf(calendar.get(Calendar.SECOND));
@@ -259,12 +246,6 @@ public class CreateRoute extends Fragment {
 					Toast.makeText(getActivity(),
 							"Ngày kết thúc không được để trống.",
 							Toast.LENGTH_SHORT).show();
-				} else
-
-				if (startDate.after(endDate)) {
-					Toast.makeText(getActivity(),
-							"Ngày bắt đầu phải sớm hơn ngày kết thúc.",
-							Toast.LENGTH_SHORT).show();
 				} else if (payload.equals("")) {
 					Toast.makeText(getActivity(),
 							"Khối lượng chở không được để trống.",
@@ -274,18 +255,23 @@ public class CreateRoute extends Fragment {
 							"Khối lượng chở không vượt quá 20 tấn",
 							Toast.LENGTH_SHORT).show();
 				} else {
-					Common common = new Common();
 					WebService ws = new WebService(WebService.POST_TASK,
 							getActivity(), "Đang xử lý ...");
 					ws.addNameValuePair("startingAddress", startPoint);
 					ws.addNameValuePair("destinationAddress", endPoint);
-					ws.addNameValuePair("startTime", common.changeFormatDate(startD) + "" + startHour.getText().toString());
-					ws.addNameValuePair("finishTime", common.changeFormatDate(endD));
+					ws.addNameValuePair("routeMarkerLocation1", Point1);
+					ws.addNameValuePair("routeMarkerLocation2", Point2);
+					ws.addNameValuePair("startTime", startD);
+					ws.addNameValuePair("finishTime", endD);
 					ws.addNameValuePair("notes", null);
 					ws.addNameValuePair("weight", load);
 					ws.addNameValuePair("createTime", current);
 					ws.addNameValuePair("active", "1");
 					ws.addNameValuePair("driverID", "1");
+					ws.addNameValuePair("Food", oth);
+					ws.addNameValuePair("Freeze", frz);
+					ws.addNameValuePair("Broken", brk);
+					ws.addNameValuePair("Flame", flm);
 					ws.execute(new String[] { SERVICE_URL });
 				}
 
@@ -404,8 +390,7 @@ public class CreateRoute extends Fragment {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			startDate
-					.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
+					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
 		}
 	};
 
@@ -422,7 +407,7 @@ public class CreateRoute extends Fragment {
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			endDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
 		}
 	};
 
@@ -623,6 +608,154 @@ public class CreateRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+	
+	private class WebService2 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebService2(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response.getEntity() == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			pDlg.dismiss();
 
 			if (response.equals("Success")) {
 				Toast.makeText(getActivity().getBaseContext(),
@@ -698,5 +831,6 @@ public class CreateRoute extends Fragment {
 		}
 
 	}
+
 
 }

@@ -32,7 +32,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Login extends Activity {
-	private static final String SERVICE_URL = "http://10.82.135.109:8080/FTS/api/Account/Login";
+	private static final String SERVICE_URL = "http://192.168.1.64:8080/FTS/api/Account/Login";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
