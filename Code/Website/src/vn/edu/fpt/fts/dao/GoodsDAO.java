@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Goods;
-import vn.edu.fpt.fts.pojo.Owner;
 
 public class GoodsDAO {
 	private final static String TAG = "GoodsDAO";

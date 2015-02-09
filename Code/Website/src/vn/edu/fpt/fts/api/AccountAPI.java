@@ -81,7 +81,7 @@ public class AccountAPI {
 						goodsParams.getFirst("password"));
 
 		if (account != null) {
-			owner = ownerDao.getOwnerByEmail(account);
+			owner = ownerDao.getOwnerByEmail(account.getEmail());
 			return String.valueOf(owner.getOwnerID());
 		}
 		return "0";

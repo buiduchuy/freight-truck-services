@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.pojo.Account;
 import vn.edu.fpt.fts.pojo.Owner;
 
 public class OwnerDAO {
@@ -67,7 +66,7 @@ public class OwnerDAO {
 		return ret;
 	}
 
-	public Owner getOwnerByEmail(Account account) {
+	public Owner getOwnerByEmail(String email) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -80,7 +79,7 @@ public class OwnerDAO {
 			stmt = con.prepareStatement(sql);
 
 			int i = 1;
-			stmt.setString(i++, account.getEmail());
+			stmt.setString(i++, email);
 
 			rs = stmt.executeQuery();
 
@@ -122,5 +121,59 @@ public class OwnerDAO {
 			}
 		}
 		return owner;
+	}
+
+	public Owner getOwnerById(int Id) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT * FROM [Owner] WHERE OwnerID=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, Id);
+			rs = stmt.executeQuery();
+			Owner owner;
+			while (rs.next()) {
+				owner = new Owner();
+				owner.setOwnerID(Integer.valueOf(rs.getString("OwnerID")));
+				owner.setEmail(rs.getString("Email"));
+				owner.setFirstName(rs.getString("FirstName"));
+				owner.setLastName(rs.getString("LastName"));
+				owner.setGender(Integer.valueOf(rs.getString("Gender")));
+				owner.setPhone(rs.getString("Phone"));
+				owner.setAddress(rs.getString("Address"));
+				owner.setActive(Integer.valueOf(rs.getString("Active")));
+				owner.setCreateBy(rs.getString("CreateBy"));
+				owner.setCreateTime(rs.getString("CreateTime"));
+				owner.setUpdateBy(rs.getString("UpdateBy"));
+				owner.setUpdateTime(rs.getString("UpdateTime"));
+				return owner;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			System.out.println("Columns with Integer type are null");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
 	}
 }

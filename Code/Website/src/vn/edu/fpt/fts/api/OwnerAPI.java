@@ -14,40 +14,40 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import vn.edu.fpt.fts.dao.DriverDAO;
-import vn.edu.fpt.fts.pojo.Driver;
+import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.Owner;
 
 /**
  * @author Huy
  *
  */
-@Path("Driver")
-public class DriverAPI {
-	private final static String TAG = "DriverAPI";
-	DriverDAO driverDao = new DriverDAO();
+@Path("Owner")
+public class OwnerAPI {
+	private final static String TAG = "OwnerAPI";
+	OwnerDAO ownerDao = new OwnerDAO();
 
 	@POST
-	@Path("getDriverByEmail")
+	@Path("getOwnerByEmail")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Driver getDriverByEmail(MultivaluedMap<String, String> params) {
+	public Owner getDriverByEmail(MultivaluedMap<String, String> params) {
 
-		Driver driver = driverDao.getDriverByEmail(params.getFirst("email"));
+		Owner owner = ownerDao.getOwnerByEmail(params.getFirst("email"));
 
-		return driver;
+		return owner;
 	}
 
 	@POST
-	@Path("getDriverByID")
+	@Path("getOwnerByID")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Driver getDriverByID(MultivaluedMap<String, String> params) {
-		Driver driver;
+	public Owner getDriverByID(MultivaluedMap<String, String> params) {
+		Owner owner;
 		try {
-			driver = driverDao.getDriverById(Integer.valueOf(params
+			owner = ownerDao.getOwnerById(Integer.valueOf(params
 					.getFirst("driverID")));
-			return driver;
+			return owner;
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class DriverAPI {
 	}
 
 	@POST
-	@Path("getSuggestionGoods")
+	@Path("getSuggestionRoute")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Goods> getSuggestionGoods(MultivaluedMap<String, String> params) {
