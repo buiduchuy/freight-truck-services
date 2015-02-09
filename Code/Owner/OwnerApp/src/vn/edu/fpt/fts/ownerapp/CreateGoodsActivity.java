@@ -1,11 +1,9 @@
 package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,52 +12,30 @@ import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.example.ownerapp.R;
-import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
-
+import vn.edu.fpt.fts.common.Common;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.text.style.UpdateLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -68,12 +44,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class CreateGoodsActivity extends Activity {
-
-	private static final String SERVICE_URL = "http://192.168.1.6:8080/FTS/api/Goods/Create";
+	
 
 	private static final String TAG = "CreateGoodsActivity";
 
@@ -332,7 +306,8 @@ public class CreateGoodsActivity extends Activity {
 		wst.addNameValuePair("weight", "1000");
 
 		// the passed String is the URL we will POST to
-		wst.execute(new String[] { SERVICE_URL });
+		String url = Common.IP_URL + Common.Service_Goods_Create;
+		wst.execute(new String[] { url });
 
 	}
 
@@ -459,6 +434,11 @@ public class CreateGoodsActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
+			if (response.equals("Success")) {
+				
+			} else {
+				Toast.makeText(CreateGoodsActivity.this, "", Toast.LENGTH_LONG).show();
+			}
 			pDlg.dismiss();
 
 		}

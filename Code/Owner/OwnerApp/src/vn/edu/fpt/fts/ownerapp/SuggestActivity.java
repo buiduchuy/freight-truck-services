@@ -1,7 +1,5 @@
 package vn.edu.fpt.fts.ownerapp;
 
-import com.example.ownerapp.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;

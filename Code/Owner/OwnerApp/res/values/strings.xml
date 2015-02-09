@@ -18,5 +18,6 @@
     <string name="title_activity_suggest_list_fragment">SuggestListFragment</string>
     <string name="title_activity_suggest_detail_fragment">SuggestDetailFragment</string>
     <string name="title_activity_create_goods_map_fragment">CreateGoodsMapFragment</string>
+    <string name="title_activity_login">Login</string>
 
 </resources>
