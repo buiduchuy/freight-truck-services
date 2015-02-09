@@ -1,6 +1,7 @@
 package vn.edu.fpt.fts.drawer;
 import java.util.ArrayList;
 
+import vn.edu.fpt.fts.layout.R;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -40,12 +41,12 @@ public class NavDrawerAdapter extends BaseAdapter {
 		if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(test.example.cp.R.layout.list_item, null);
+            convertView = mInflater.inflate(R.layout.list_item, null);
         }
          
-        ImageView imgIcon = (ImageView) convertView.findViewById(test.example.cp.R.id.icon);
-        TextView txtTitle = (TextView) convertView.findViewById(test.example.cp.R.id.title);
-        TextView txtCount = (TextView) convertView.findViewById(test.example.cp.R.id.counter);
+        ImageView imgIcon = (ImageView) convertView.findViewById(R.id.icon);
+        TextView txtTitle = (TextView) convertView.findViewById(R.id.title);
+        TextView txtCount = (TextView) convertView.findViewById(R.id.counter);
          
         imgIcon.setImageResource(navDrawerItems.get(position).getIcon());        
         txtTitle.setText(navDrawerItems.get(position).getTitle());

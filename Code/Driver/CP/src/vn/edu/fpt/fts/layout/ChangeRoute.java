@@ -1,43 +1,21 @@
 package vn.edu.fpt.fts.layout;
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import test.example.cp.R;
-import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
-
-import com.google.android.gms.internal.br;
-import com.google.android.gms.maps.model.LatLng;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -48,14 +26,14 @@ import android.location.LocationManager;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -64,6 +42,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class ChangeRoute extends Fragment {
 
@@ -92,6 +72,9 @@ public class ChangeRoute extends Fragment {
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
+	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
+	private static final String user = "sa";
+	private static final String pass = "123456";
 	String id;
 
 	public void onPause() {
@@ -202,31 +185,31 @@ public class ChangeRoute extends Fragment {
 
 					if (startPoint.equals("")) {
 						Toast.makeText(getActivity(),
-								"�?iểm bắt đầu không được để trống.",
+								"Điểm bắt đầu không được để trống.",
 								Toast.LENGTH_SHORT).show();
 					} else if (startPoint.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT).show();
 					} else if (Point1.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT);
 					} else if (Point2.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT).show();
 					} else if (endPoint.equals("")) {
 						Toast.makeText(getActivity(),
-								"�?iểm kết thúc không được để trống.",
+								"Điểm kết thúc không được để trống.",
 								Toast.LENGTH_SHORT).show();
 					} else if (endPoint.length() > 100) {
 						Toast.makeText(
 								getActivity(),
-								"�?iểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+								"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 								Toast.LENGTH_SHORT).show();
 					} else if (startD.equals("")) {
 						Toast.makeText(getActivity(),
@@ -253,8 +236,9 @@ public class ChangeRoute extends Fragment {
 								Point1, Point2, endPoint, startD, endD, load,
 								frz, brk, flm, oth).get();
 						if (result) {
-							Toast.makeText(getActivity(), "Cập nhật thành công",
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(getActivity(),
+									"Cập nhật thành công", Toast.LENGTH_SHORT)
+									.show();
 						} else {
 							Toast.makeText(getActivity(), "Cập nhật thất bại",
 									Toast.LENGTH_SHORT).show();
@@ -539,7 +523,7 @@ public class ChangeRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
+				Connection con = DriverManager.getConnection(url, user, pass);
 
 				String result = "Database connection success\n";
 				String sql = "UPDATE dbo.Route SET " + "StartingAddress=N'"
@@ -661,7 +645,8 @@ public class ChangeRoute extends Fragment {
 						st.executeUpdate();
 					}
 				}
-				sql = "UPDATE dbo.Deal SET Active = false WHERE RouteID = " + id;
+				sql = "UPDATE dbo.Deal SET Active = false WHERE RouteID = "
+						+ id;
 				st = con.prepareStatement(sql);
 				st.executeUpdate();
 			} catch (Exception e) {
@@ -686,7 +671,7 @@ public class ChangeRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
+				Connection con = DriverManager.getConnection(url, user, pass);
 
 				String result = "Database connection success\n";
 				String sql = "SELECT * FROM dbo.Route WHERE RouteID = "

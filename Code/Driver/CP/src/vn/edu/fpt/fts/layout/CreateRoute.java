@@ -1,92 +1,70 @@
 package vn.edu.fpt.fts.layout;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import test.example.cp.R;
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.helper.GeocoderHelper;
+import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.internal.lt;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
-
-import android.R.bool;
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class CreateRoute extends Fragment {
 
@@ -115,6 +93,9 @@ public class CreateRoute extends Fragment {
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
+	private static final String SERVICE_URL = "http://192.168.1.12:8080/FTS/api/Route/Create";
+	String formattedStartDate = "";
+	String formattedEndDate = "";
 
 	@Override
 	public void onPause() {
@@ -208,87 +189,106 @@ public class CreateRoute extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				String startPoint = start.getText().toString();
+				String Point1 = p1.getText().toString();
+				String Point2 = p2.getText().toString();
+				String endPoint = end.getText().toString();
+				String startD = startDate.getText().toString();
+				String endD = endDate.getText().toString();
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+	            Date startDate = new Date();
 				try {
-					String startPoint = start.getText().toString();
-					String Point1 = p1.getText().toString();
-					String Point2 = p2.getText().toString();
-					String endPoint = end.getText().toString();
-					String startD = startDate.getText().toString() + " "
-							+ startHour.getText().toString();
-					String endD = endDate.getText().toString();
-					String frz = String.valueOf(frozen.isChecked());
-					String brk = String.valueOf(broken.isChecked());
-					String flm = String.valueOf(flammable.isChecked());
-					String oth = String.valueOf(others.isChecked());
-					String load = payload.getText().toString();
-
-					if (startPoint.equals("")) {
-						Toast.makeText(getActivity(),
-								"Điểm bắt đầu không được để trống.",
-								Toast.LENGTH_SHORT).show();
-					} else if (startPoint.length() > 100) {
-						Toast.makeText(
-								getActivity(),
-								"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-								Toast.LENGTH_SHORT).show();
-					} else if (Point1.length() > 100) {
-						Toast.makeText(
-								getActivity(),
-								"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-								Toast.LENGTH_SHORT);
-					} else if (Point2.length() > 100) {
-						Toast.makeText(
-								getActivity(),
-								"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-								Toast.LENGTH_SHORT).show();
-					} else if (endPoint.equals("")) {
-						Toast.makeText(getActivity(),
-								"Điểm kết thúc không được để trống.",
-								Toast.LENGTH_SHORT).show();
-					} else if (endPoint.length() > 100) {
-						Toast.makeText(
-								getActivity(),
-								"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-								Toast.LENGTH_SHORT).show();
-					} else if (startD.equals("")) {
-						Toast.makeText(getActivity(),
-								"Ngày bắt đầu không được để trống.",
-								Toast.LENGTH_SHORT).show();
-					} else if (endD.equals("")) {
-						Toast.makeText(getActivity(),
-								"Ngày kết thúc không được để trống.",
-								Toast.LENGTH_SHORT).show();
-					} else if (Date.parse(startD) > Date.parse(endD)) {
-						Toast.makeText(getActivity(),
-								"Ngày bắt đầu phải sớm hơn ngày kết thúc.",
-								Toast.LENGTH_SHORT).show();
-					} else if (payload.equals("")) {
-						Toast.makeText(getActivity(),
-								"Khối lượng chở không được để trống.",
-								Toast.LENGTH_SHORT).show();
-					} else if (Integer.parseInt(load) > 20) {
-						Toast.makeText(getActivity(),
-								"Khối lượng chở không vượt quá 20 tấn",
-								Toast.LENGTH_SHORT).show();
-					} else {
-						Boolean result = new CreateNewRoute().execute(
-								startPoint, Point1, Point2, endPoint, startD,
-								endD, load, frz, brk, flm, oth).get();
-						if (result) {
-							Toast.makeText(getActivity(), "Tạo mới thành công",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Toast.makeText(getActivity(), "Tạo mới thất bại",
-									Toast.LENGTH_SHORT).show();
-						}
-					}
-				} catch (InterruptedException e) {
+					startDate = sdf.parse(startD);
+				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
+					e1.printStackTrace();
+				}
+	            Date endDate = new Date();
+				try {
+					endDate = sdf.parse(endD);
+				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				String frz = String.valueOf(frozen.isChecked());
+				String brk = String.valueOf(broken.isChecked());
+				String flm = String.valueOf(flammable.isChecked());
+				String oth = String.valueOf(others.isChecked());
+				String load = payload.getText().toString();
+				Calendar calendar = Calendar.getInstance();
+				String current = String.valueOf(calendar.get(Calendar.YEAR))
+						+ "-" + String.valueOf(calendar.get(Calendar.MONTH))
+						+ String.valueOf(calendar.get(Calendar.DATE)) + "-"
+						+ String.valueOf(calendar.get(Calendar.YEAR)) + " "
+						+ String.valueOf(calendar.get(Calendar.HOUR)) + ":"
+						+ String.valueOf(calendar.get(Calendar.MINUTE)) + ":"
+						+ String.valueOf(calendar.get(Calendar.SECOND));
+				if (startPoint.equals("")) {
+					Toast.makeText(getActivity(),
+							"Điểm bắt đầu không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else if (startPoint.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT).show();
+				} else if (Point1.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT);
+				} else if (Point2.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT).show();
+				} else if (endPoint.equals("")) {
+					Toast.makeText(getActivity(),
+							"Điểm kết thúc không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else if (endPoint.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT).show();
+				} else if (startD.equals("")) {
+					Toast.makeText(getActivity(),
+							"Ngày bắt đầu không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else if (endD.equals("")) {
+					Toast.makeText(getActivity(),
+							"Ngày kết thúc không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else
+
+				if (startDate.after(endDate)) {
+					Toast.makeText(getActivity(),
+							"Ngày bắt đầu phải sớm hơn ngày kết thúc.",
+							Toast.LENGTH_SHORT).show();
+				} else if (payload.equals("")) {
+					Toast.makeText(getActivity(),
+							"Khối lượng chở không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else if (Integer.parseInt(load) > 20) {
+					Toast.makeText(getActivity(),
+							"Khối lượng chở không vượt quá 20 tấn",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Common common = new Common();
+					WebService ws = new WebService(WebService.POST_TASK,
+							getActivity(), "Đang xử lý ...");
+					ws.addNameValuePair("startingAddress", startPoint);
+					ws.addNameValuePair("destinationAddress", endPoint);
+					ws.addNameValuePair("startTime", common.changeFormatDate(startD) + "" + startHour.getText().toString());
+					ws.addNameValuePair("finishTime", common.changeFormatDate(endD));
+					ws.addNameValuePair("notes", null);
+					ws.addNameValuePair("weight", load);
+					ws.addNameValuePair("createTime", current);
+					ws.addNameValuePair("active", "1");
+					ws.addNameValuePair("driverID", "1");
+					ws.execute(new String[] { SERVICE_URL });
+				}
+
 			}
 		});
 
@@ -404,7 +404,8 @@ public class CreateRoute extends Fragment {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			startDate
-					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+					.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
 		}
 	};
 
@@ -421,7 +422,7 @@ public class CreateRoute extends Fragment {
 		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+			endDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
 		}
 	};
 
@@ -542,87 +543,160 @@ public class CreateRoute extends Fragment {
 		}
 	}
 
-	private class CreateNewRoute extends AsyncTask<String, Void, Boolean> {
+	private class WebService extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebService(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
 		@Override
-		protected Boolean doInBackground(String... params) {
-			String response = "";
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response.getEntity() == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			pDlg.dismiss();
+
+			if (response.equals("Success")) {
+				Toast.makeText(getActivity().getBaseContext(),
+						"Tạo mới thành công", Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getActivity().getBaseContext(),
+						"Tạo mới thất bại", Toast.LENGTH_SHORT).show();
+			}
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
 
 			try {
-				Class.forName("net.sourceforge.jtds.jdbc.Driver");
+				switch (taskType) {
 
-				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
 
-				String result = "Database connection success\n";
-				String sql = "INSERT INTO dbo.Route VALUES (" + "N'"
-						+ params[0] + "', " + "N'" + params[3] + "', " + "CONVERT(datetime, '"
-						+ params[4] + "', 103), " + "CONVERT(datetime, '" + params[5] + "', 103), " + null
-						+ ", " + "" + params[6] + ", " + "CONVERT(datetime, '"
-						+ cal.get(Calendar.DATE) + "/"
-						+ (cal.get(Calendar.MONTH) + 1) + "/"
-						+ cal.get(Calendar.YEAR) + "', 103), " + "1, 1" + " )";
-				PreparedStatement st = con.prepareStatement(sql,
-						Statement.RETURN_GENERATED_KEYS);
-
-				st.executeUpdate();
-
-				ResultSet generatedKeys = st.getGeneratedKeys();
-				long id = 0;
-				if (generatedKeys.next()) {
-					id = generatedKeys.getLong(1);
-				}
-
-				if (!params[1].equals("")) {
-					sql = "INSERT INTO dbo.RouteMarker VALUES (" + "N'"
-							+ params[1] + "', " + id + " )";
-					st = con.prepareStatement(sql);
-					st.executeUpdate();
-				}
-				
-				if (!params[2].equals("")) {
-					sql = "INSERT INTO dbo.RouteMarker VALUES (" + "N'"
-							+ params[2] + "', " + id + " )";
-					st = con.prepareStatement(sql);
-					st.executeUpdate();
-				}
-				
-				if (params[7].equals("true")) {
-					sql = "INSERT INTO dbo.RouteGoodsCategory VALUES ("
-							+ id + ", 1)";
-					st = con.prepareStatement(sql);
-					st.executeUpdate();
-				}
-				
-				if (params[8].equals("true")) {
-					sql = "INSERT INTO dbo.RouteGoodsCategory VALUES ("
-							+ id + ", 2)";
-					st = con.prepareStatement(sql);
-					st.executeUpdate();
-				}
-				
-				if (params[9].equals("true")) {
-					sql = "INSERT INTO dbo.RouteGoodsCategory VALUES ("
-							+ id + ", 3)";
-					st = con.prepareStatement(sql);
-					st.executeUpdate();
-				}
-				
-				if (params[10].equals("true")) {
-					sql = "INSERT INTO dbo.RouteGoodsCategory VALUES ("
-							+ id + ", 4)";
-					st = con.prepareStatement(sql);
-					st.executeUpdate();
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				// tv.setText(e.toString());
-				return false;
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
 			}
-			return true;
+
+			return response;
 		}
 
-		@Override
-		protected void onPostExecute(Boolean result) {
+		private String inputStreamToString(InputStream is) {
 
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
+
 	}
+
 }

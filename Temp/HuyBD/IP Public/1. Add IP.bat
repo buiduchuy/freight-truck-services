@@ -1,3 +1,3 @@
-netsh http add urlacl url=http://192.168.1.16:8080/ user=everyone
+netsh http add urlacl url=http://10.82.135.109:8080/ user=everyone
 
 pause

@@ -4,24 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-import test.example.cp.R;
-import vn.edu.fpt.fts.classes.Constant;
-
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -32,6 +25,9 @@ public class RouteList extends Fragment {
 	
 	Calendar cal = Calendar.getInstance();
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
+	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
+	private static final String user = "sa";
+	private static final String pass = "123456";
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -76,7 +72,7 @@ public class RouteList extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
+				Connection con = DriverManager.getConnection(url, user, pass);
 
 				String result = "Database connection success\n";
 				String sql = "SELECT * FROM dbo.Route WHERE Active = 1";

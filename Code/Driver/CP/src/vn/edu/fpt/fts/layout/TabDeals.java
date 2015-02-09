@@ -1,13 +1,9 @@
 package vn.edu.fpt.fts.layout;
 
-import test.example.cp.R;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,9 +17,9 @@ public class TabDeals extends Fragment {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.activity_main);
 
-        mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("�?�? nghị đã gửi"),
+        mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("�?�? nghị đã gửi"),
                 Deals.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("�?�? nghị đang ch�?"),
+        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("�?�? nghị đang ch�?"),
                 Deals2.class, null);
 
         return mTabHost;

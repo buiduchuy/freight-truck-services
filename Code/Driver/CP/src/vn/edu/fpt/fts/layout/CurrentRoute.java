@@ -7,19 +7,12 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import test.example.cp.R;
-import vn.edu.fpt.fts.classes.Constant;
-
-import android.app.Activity;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,6 +21,9 @@ import android.widget.Toast;
 
 public class CurrentRoute extends Fragment {
 
+	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
+	private static final String user = "sa";
+	private static final String pass = "123456";
 	TextView contentView;
 	String id;
 
@@ -98,7 +94,7 @@ public class CurrentRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
+				Connection con = DriverManager.getConnection(url, user, pass);
 
 				String result = "Database connection success\n";
 				String sql = "SELECT * FROM dbo.Route WHERE RouteID = "
@@ -176,7 +172,7 @@ public class CurrentRoute extends Fragment {
 			try {
 				Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
-				Connection con = DriverManager.getConnection(Constant.url, Constant.user, Constant.pass);
+				Connection con = DriverManager.getConnection(url, user, pass);
 				
 				String sql = "UPDATE dbo.Route SET Active = 0 WHERE RouteID = " + id;
 				PreparedStatement st = con.prepareStatement(sql);
