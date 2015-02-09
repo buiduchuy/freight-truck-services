@@ -28,6 +28,31 @@ public class DealAPI {
 	private final static String TAG = "DealAPI";
 	DealDAO dealDao = new DealDAO();
 
+	@GET
+	@Path("get")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Deal> getAllDeal() {
+		List<Deal> l_deals = dealDao.getAllDeal();
+		return l_deals;
+	}
+
+	@POST
+	@Path("getDealByGoodsID")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Deal getDealByID(MultivaluedMap<String, String> params) {
+		Deal deal = new Deal();
+		try {
+			deal = dealDao.getDealByID(Integer.valueOf(params
+					.getFirst("dealID")));
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return deal;
+	}
+
 	@POST
 	@Path("getDealByRouteID")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -37,20 +62,12 @@ public class DealAPI {
 		return l_deals;
 	}
 
-	@GET
+	@POST
 	@Path("getDealByGoodsID")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Deal> getDealByGoodsID(MultivaluedMap<String, String> params) {
 		List<Deal> l_deals = dealDao.getDealByGoodsID(Integer.valueOf(params
 				.getFirst("gouteID")));
-		return l_deals;
-	}
-
-	@GET
-	@Path("get")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Deal> getAllDeal() {
-		List<Deal> l_deals = dealDao.getAllDeal();
 		return l_deals;
 	}
 

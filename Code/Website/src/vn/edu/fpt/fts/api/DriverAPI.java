@@ -24,11 +24,10 @@ public class DriverAPI {
 	@Path("getDriverByEmail")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Driver getDriverByEmail(MultivaluedMap<String, String> goodsParams) {
+	public Driver getDriverByEmail(MultivaluedMap<String, String> params) {
 		DriverDAO driverDao = new DriverDAO();
 
-		Driver driver = driverDao.getDriverByEmail(goodsParams
-				.getFirst("email"));
+		Driver driver = driverDao.getDriverByEmail(params.getFirst("email"));
 
 		return driver;
 	}

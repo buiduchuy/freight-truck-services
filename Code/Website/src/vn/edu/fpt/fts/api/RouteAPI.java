@@ -107,4 +107,22 @@ public class RouteAPI {
 
 		return "Success";
 	}
+
+	@POST
+	@Path("getRouteByID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Route getRouteByID(MultivaluedMap<String, String> params) {
+		Route route = new Route();
+		try {
+			route = routeDao.getRouteById(Integer.valueOf(params
+					.getFirst("routeID")));
+			return route;
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return null;
+	}
 }
