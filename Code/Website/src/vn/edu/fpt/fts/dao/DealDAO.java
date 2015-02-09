@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.Goods;
 
 /**
  * @author Huy
@@ -232,5 +231,63 @@ public class DealDAO {
 			}
 		}
 		return ret;
+	}
+
+	public List<Deal> getDealByID(int dealId) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT * FROM Deal WHERE DealID=?";
+
+			stm = con.prepareStatement(sql);
+
+			int i = 1;
+			stm.setInt(i++, dealId);
+
+			rs = stm.executeQuery();
+			List<Deal> list = new ArrayList<Deal>();
+			Deal deal;
+
+			while (rs.next()) {
+				deal = new Deal();
+
+				deal.setDealID(rs.getInt("DealID"));
+				deal.setPrice(rs.getDouble("Price"));
+				deal.setNotes(rs.getString("Notes"));
+				deal.setCreateTime(rs.getString("CreateTime"));
+				deal.setSender(rs.getString("Sender"));
+				deal.setRouteID(rs.getInt("RouteID"));
+				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setDealStatusID(rs.getInt("DealStatusID"));
+				deal.setActive(rs.getInt("Active"));
+
+				list.add(deal);
+			}
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Deal table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
 	}
 }

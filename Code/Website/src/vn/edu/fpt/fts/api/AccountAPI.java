@@ -11,8 +11,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.AccountDAO;
+import vn.edu.fpt.fts.dao.DriverDAO;
+import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RoleDAO;
 import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.Driver;
+import vn.edu.fpt.fts.pojo.Owner;
 
 /**
  * @author Huy
@@ -39,6 +43,48 @@ public class AccountAPI {
 			return roleName;
 		}
 		return null;
+	}
+
+	@POST
+	@Path("DriverLogin")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public int checkDriverLogin(MultivaluedMap<String, String> goodsParams) {
+		AccountDAO accountDao = new AccountDAO();
+		DriverDAO driverDao = new DriverDAO();
+
+		Driver driver = new Driver();
+
+		Account account = accountDao
+				.checkLoginAccount(goodsParams.getFirst("email"),
+						goodsParams.getFirst("password"));
+
+		if (account != null) {
+			driver = driverDao.getDriverByEmail(account.getEmail());
+			return driver.getDriverID();
+		}
+		return 0;
+	}
+
+	@POST
+	@Path("OwnerLogin")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public int checkOwnerLogin(MultivaluedMap<String, String> goodsParams) {
+		AccountDAO accountDao = new AccountDAO();
+		OwnerDAO ownerDao = new OwnerDAO();
+
+		Owner owner = new Owner();
+
+		Account account = accountDao
+				.checkLoginAccount(goodsParams.getFirst("email"),
+						goodsParams.getFirst("password"));
+
+		if (account != null) {
+			owner = ownerDao.getOwnerByEmail(account);
+			return owner.getOwnerID();
+		}
+		return 0;
 	}
 
 }

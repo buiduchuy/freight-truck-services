@@ -13,6 +13,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class Order implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3733670181329818420L;
 	private int orderID;
 	private double price;
 	private boolean staffDeliveryStatus;

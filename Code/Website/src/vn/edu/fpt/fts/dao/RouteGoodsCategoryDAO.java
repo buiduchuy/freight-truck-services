@@ -10,16 +10,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 
 /**
  * @author Huy
  *
  */
-public class OrderDAO {
-	private final static String TAG = "OrderDAO";
+public class RouteGoodsCategoryDAO {
+	private final static String TAG = "RouteGoodsCategory";
 
-	public int insertOrder(Order bean) {
+	public int insertRouteGoodsCategory(RouteGoodsCategory bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -27,25 +27,18 @@ public class OrderDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Order ( " + "Price,"
-					+ "StaffDeliveryStatus," + "DriverDeliveryStatus,"
-					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID"
-					+ ") VALUES (" + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?)";
+			String sql = "INSERT INTO RouteGoodsCategory ( "
+					+ "GoodsCategoryID" + ") VALUES (" + "?)";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
-			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setBoolean(i++, bean.isStaffDeliveryStatus()); // StaffDeliveryStatus
-			stmt.setBoolean(i++, bean.isDriverDeliveryStatus()); // DriverDeliveryStatus
-			stmt.setBoolean(i++, bean.isOwnerDeliveryStatus()); // OwnerDeliveryStatus
-			stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
+			stmt.setInt(i++, bean.getGoodsCategoryID()); // DealID
+
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
-			System.out.println("Can't insert to Order table");
+			System.out.println("Can't insert to RouteGoodsCategory table");
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
