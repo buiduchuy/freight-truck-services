@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.ownerapp;
 
+import java.util.ArrayList;
+
+import vn.edu.fpt.fts.adapter.Model;
+import vn.edu.fpt.fts.adapter.ModelAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,10 +18,25 @@ public class SuggestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
 		
+//		ListView listView = (ListView) findViewById(R.id.listview_suggest);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+//        		(this, android.R.layout.simple_list_item_1,drivers);     
+//        listView.setAdapter(adapter);
+		
+		ModelAdapter adapter = new ModelAdapter(this, generateData());
 		ListView listView = (ListView) findViewById(R.id.listview_suggest);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
-        		(this, android.R.layout.simple_list_item_1,drivers);     
-        listView.setAdapter(adapter);
+		listView.setAdapter(adapter);
+	}
+
+	private ArrayList<Model> generateData() {
+		// TODO Auto-generated method stub
+		ArrayList<Model> models = new ArrayList<Model>();
+        
+        models.add(new Model("Menu Item 1","1"));
+        models.add(new Model("Menu Item 2","2"));
+        models.add(new Model("Menu Item 3","12"));
+ 
+        return models;
 	}
 
 	@Override

@@ -42,6 +42,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -54,13 +55,15 @@ import android.widget.Toast;
 public class CreateGoodsActivity extends Activity {
 
 	private Spinner spinner;
-	private Calendar calendar1, calendar2;
+	private ArrayAdapter<String> dataAdapter;
+	private Calendar calendar1, calendar2, currentTime;
 	private DatePickerDialog.OnDateSetListener date1, date2;
 	private EditText etPickupDate, etDeliverDate, etNotes, etPrice, etWeight;
 	private AutoCompleteTextView actPickupAddr, actDeliverAddr;
 	private ImageButton ibPickupMap, ibDeliverMap;
 	private Button btnPost;
 	private List<String> cateList = new ArrayList<String>();
+	private int cateId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +80,34 @@ public class CreateGoodsActivity extends Activity {
 		task2.execute(new String[] { url });
 		
 		spinner = (Spinner) findViewById(R.id.spinner_goods_type);
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_dropdown_item, cateList);		
-		dataAdapter.notifyDataSetChanged();
+		dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, cateList);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
 		spinner.setAdapter(dataAdapter);
+		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				String selected = parent.getItemAtPosition(position).toString();
+				if (selected.equals("Hàng thực phẩm")) {
+					cateId = 1;
+				} else if (selected.equals("Hàng đông lạnh")) {
+					cateId = 2;
+				} else if (selected.equals("Hàng dễ vỡ")) {
+					cateId = 4;
+				} else if (selected.equals("Hàng dễ cháy nổ")) {
+					cateId = 5;
+				}
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 
 		// date picker listener
 		calendar1 = Calendar.getInstance();
@@ -250,9 +277,9 @@ public class CreateGoodsActivity extends Activity {
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		// Cac cap gia tri gui ve server
-		String test = actDeliverAddr.getText().toString();
+		currentTime = Calendar.getInstance();		
 		wst.addNameValuePair("active", "1");
-		wst.addNameValuePair("createTime", "2015-05-04 00:00:00.0");
+		wst.addNameValuePair("createTime", formatDate(currentTime));
 		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
 				.toString());
 		wst.addNameValuePair("deliveryMarkerLatidute", "0.0");
@@ -393,6 +420,8 @@ public class CreateGoodsActivity extends Activity {
 			if (response.equals("Success")) {
 				Toast.makeText(CreateGoodsActivity.this, "Hàng tạo thành công", Toast.LENGTH_LONG)
 				.show();
+				Intent intent = new Intent(CreateGoodsActivity.this, SuggestActivity.class);
+				startActivity(intent);
 			} else {
 				Toast.makeText(CreateGoodsActivity.this, "Hàng chưa được tạo", Toast.LENGTH_LONG)
 						.show();
@@ -552,14 +581,14 @@ public class CreateGoodsActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {
-				android.os.Debug.waitForDebugger();
+			try {				
 				JSONObject jsonObject = new JSONObject(response);
 				JSONArray array = jsonObject.getJSONArray("goodsCategory");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject jsonObject2 = array.getJSONObject(i);
 					cateList.add(jsonObject2.getString("name"));
 				}
+				dataAdapter.notifyDataSetChanged();
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getLocalizedMessage());
