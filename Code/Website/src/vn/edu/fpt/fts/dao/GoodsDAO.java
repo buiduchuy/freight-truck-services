@@ -18,6 +18,7 @@ import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 
 public class GoodsDAO {
+	private final static String TAG = "GoodsDAO";
 
 	public int insertGoods(Goods bean) {
 		Connection con = null;
@@ -61,8 +62,7 @@ public class GoodsDAO {
 			ret = -1;
 			System.out.println("Can't insert to Goods table");
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
 			try {
@@ -74,8 +74,7 @@ public class GoodsDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return ret;
@@ -121,8 +120,7 @@ public class GoodsDAO {
 			// TODO: handle exception
 			System.out.println("Can't update to Goods table");
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (stmt != null) {
@@ -133,8 +131,7 @@ public class GoodsDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return ret;
@@ -183,8 +180,7 @@ public class GoodsDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -199,8 +195,7 @@ public class GoodsDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
@@ -253,8 +248,7 @@ public class GoodsDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -324,8 +318,7 @@ public class GoodsDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -340,8 +333,7 @@ public class GoodsDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
@@ -397,8 +389,7 @@ public class GoodsDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -413,8 +404,7 @@ public class GoodsDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
@@ -464,8 +454,7 @@ public class GoodsDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -480,8 +469,7 @@ public class GoodsDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				System.out.println("Can't load data from Goods table");
-				Logger.getLogger(GoodsDAO.class.getName()).log(Level.SEVERE,
-						null, e);
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;

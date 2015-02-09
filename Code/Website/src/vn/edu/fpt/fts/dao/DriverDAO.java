@@ -56,8 +56,7 @@ public class DriverDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(DriverDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			System.out.println("Columns with Integer type are null");
@@ -172,8 +171,7 @@ public class DriverDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(DriverDAO.class.getName()).log(Level.SEVERE, null,
-					e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			System.out.println("Columns with Integer type are null");

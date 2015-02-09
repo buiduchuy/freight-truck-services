@@ -25,14 +25,31 @@ public class Deal implements Serializable {
 	private String sender;
 	private int routeID;
 	private int goodsID;
+	private int dealStatusID;
 	private int active;
-
+	
 	public Deal() {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Deal(double price, String notes, String createTime, int orderID,
+			String sender, int routeID, int goodsID, int dealStatusID,
+			int active) {
+		super();
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.orderID = orderID;
+		this.sender = sender;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
+		this.active = active;
+	}
+
 	public Deal(int dealID, double price, String notes, String createTime,
-			int orderID, String sender, int routeID, int goodsID, int active) {
+			int orderID, String sender, int routeID, int goodsID,
+			int dealStatusID, int active) {
 		super();
 		this.dealID = dealID;
 		this.price = price;
@@ -42,21 +59,19 @@ public class Deal implements Serializable {
 		this.sender = sender;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
 		this.active = active;
 	}
 
-	public Deal(double price, String notes, String createTime, int orderID,
-			String sender, int routeID, int goodsID, int active) {
-		super();
-		this.price = price;
-		this.notes = notes;
-		this.createTime = createTime;
-		this.orderID = orderID;
-		this.sender = sender;
-		this.routeID = routeID;
-		this.goodsID = goodsID;
-		this.active = active;
+	public int getDealStatusID() {
+		return dealStatusID;
 	}
+
+
+	public void setDealStatusID(int dealStatusID) {
+		this.dealStatusID = dealStatusID;
+	}
+
 
 	public int getDealID() {
 		return dealID;

@@ -30,8 +30,9 @@ public class DealDAO {
 
 			String sql = "INSERT INTO Deal ( " + "Price," + "Notes,"
 					+ "CreateTime," + "OrderID," + "Sender," + "RouteID,"
-					+ "GoodsID," + "Active" + ") VALUES (" + "?, " + "?, "
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?)";
+					+ "GoodsID," + "DealStatusID," + "Active" + ") VALUES ("
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?, " + "?)";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
@@ -42,6 +43,7 @@ public class DealDAO {
 			stmt.setString(i++, bean.getSender()); // Sender
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
+			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			ret = stmt.executeUpdate();
@@ -49,7 +51,7 @@ public class DealDAO {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
-			System.out.println("Can't insert to Goods table");
+			System.out.println("Can't insert to Deal table");
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
