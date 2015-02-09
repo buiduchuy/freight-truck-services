@@ -29,7 +29,7 @@ public class OrderDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Order ( " + "Price,"
+			String sql = "INSERT INTO [Order] (" + "Price,"
 					+ "StaffDeliveryStatus," + "DriverDeliveryStatus,"
 					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID"
 					+ ") VALUES (" + "?, " + "?, " + "?, " + "?, " + "?, "
