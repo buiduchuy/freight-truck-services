@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,9 +19,14 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import vn.edu.fpt.fts.adapter.Model;
 import vn.edu.fpt.fts.adapter.ModelAdapter;
+import vn.edu.fpt.fts.classes.Route;
+import vn.edu.fpt.fts.common.Common;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,27 +41,33 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class SuggestActivity extends Activity {
+	private List<Route> list = new ArrayList<Route>();
+	private ListView listView;
+	private ModelAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
 
-		ModelAdapter adapter = new ModelAdapter(this, generateData());
-		ListView listView = (ListView) findViewById(R.id.listview_suggest);
-		listView.setAdapter(adapter);
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
+				SuggestActivity.this, "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_Route_Get;
+		wst.execute(new String[] { url });
+
 	}
 
 	private ArrayList<Model> generateData() {
 		// TODO Auto-generated method stub
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
-				SuggestActivity.this, "Đang xử lý...");
-
 		ArrayList<Model> models = new ArrayList<Model>();
 
-		models.add(new Model("Menu Item 1", "1"));
-		models.add(new Model("Menu Item 2", "2"));
-		models.add(new Model("Menu Item 3", "12"));
+		for (Route route : list) {
+			String start = route.getStartingAddress().replace(", Vietnam", "");
+			String[] strings = start.split(",");
+			String end = route.getDestinationAddress().replace(", Vietnam", "");
+			String[] strings2 = end.split(",");
+			models.add(new Model(strings[strings.length - 1] + " - " + strings2[strings2.length - 1] , "1"));
+		}
 
 		return models;
 	}
@@ -163,9 +175,43 @@ public class SuggestActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
+			try {
+				// android.os.Debug.waitForDebugger();
+				JSONObject jsonObject = new JSONObject(response);
+				JSONArray array = jsonObject.getJSONArray("route");
 
-			pDlg.dismiss();
-
+				for (int i = 0; i < array.length(); i++) {
+					Route route = new Route();
+					JSONObject jsonObject2 = array.getJSONObject(i);
+					route.setRouteID(Integer.parseInt(jsonObject2
+							.getString("routeID")));
+					route.setStartingAddress(jsonObject2
+							.getString("startingAddress"));
+					route.setDestinationAddress(jsonObject2
+							.getString("destinationAddress"));
+					route.setStartTime(jsonObject2.getString("startTime"));
+					route.setFinishTime(jsonObject2.getString("finishTime"));
+					try {
+						route.setNotes(jsonObject2.getString("notes"));
+					} catch (JSONException e) {
+						route.setNotes("");
+					}
+					route.setWeight(Integer.parseInt(jsonObject2
+							.getString("weight")));
+					route.setCreateTime(jsonObject2.getString("createTime"));
+					route.setActive(Integer.parseInt(jsonObject2
+							.getString("active")));
+					route.setDriverID(Integer.parseInt(jsonObject2
+							.getString("driverID")));
+					list.add(route);
+				}
+				pDlg.dismiss();
+			} catch (JSONException e) {
+				Log.e(TAG, e.getLocalizedMessage());
+			}
+			adapter = new ModelAdapter(SuggestActivity.this, generateData());
+			listView = (ListView) findViewById(R.id.listview_suggest);
+			listView.setAdapter(adapter);
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
