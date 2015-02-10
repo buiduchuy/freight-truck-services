@@ -256,6 +256,7 @@ public class ControllerCreateGoods extends HttpServlet {
 					session.setAttribute("listDriver", listDri);
 					session.setAttribute("messageCreateGood",
 							"Tạo hàng thành công");
+					
 					RequestDispatcher rd = request
 							.getRequestDispatcher("goi-y-he-thong.jsp");
 					rd.forward(request, response);

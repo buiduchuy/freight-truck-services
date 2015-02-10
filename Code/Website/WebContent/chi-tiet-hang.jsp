@@ -1,16 +1,18 @@
 <%-- 
-    Document   : chi-tiet-hang-chua-giao-dich
-    Created on : Jan 31, 2015, 12:18:21 AM
+    Document   : tao-hang-1
+    Created on : Jan 30, 2015, 11:21:10 AM
     Author     : KhuongNguyen-PC
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<title>Chi tiết hàng</title>
-<jsp:include page="header.jsp" />
+<title>Chi Tiết Hàng</title>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+<jsp:include page="header.jsp" />
+<script src="js/foundation-datepicker.js"></script>
+<link rel="stylesheet" href="css/foundation-datepicker.css">
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <c:if test="${not empty detailGood1 }">
 	<section class="container">
@@ -30,13 +32,30 @@
 						<input type="hidden" name="txtIdGood" value="${detailGood1.goodsID }"/>
 						</div>
 							</div>
-							<c:set var="message" value="${sessionScope.messageUpdateGood }" />
+							
+							<div class="row">
+							<c:set var="message" value="${sessionScope.messageUpdateGoodSucces }" />
 							<c:if test="${not empty message}">
-								<font color="green">${message}</font>
+								<div data-alert class="alert-box success radius inline">
+								${message} <a href="#" class="close">&times;</a>
+							</div>
 							</c:if>
 							<%
-								request.getSession().removeAttribute("messageUpdateGood");
+								request.getSession().removeAttribute("messageUpdateGoodSucces");
 							%>
+							</div>
+							
+							<div class="row">
+							<c:set var="message" value="${sessionScope.messageUpdateGoodError }" />
+							<c:if test="${not empty message}">
+								<div data-alert class="alert-box alert radius inline">
+								${message} <a href="#" class="close">&times;</a>
+							</div>
+							</c:if>
+							<%
+								request.getSession().removeAttribute("messageUpdateGoodError");
+							%>
+							</div>
 							<div class="large-12 columns">
 								<div class="extra-title">
 									<h3>Thông tin hàng hoá</h3>
@@ -218,6 +237,8 @@
 
 
 </c:if>
+
+<!-- autocomplete place google API -->
 <script> src = "https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places" ></script>
 <script>
             // Script autocomplete place for location pick up and location delivery
@@ -252,19 +273,22 @@
 <!-- end -->
 
 <script>
+
             $(function () {
                 window.prettyPrint && prettyPrint();
                 $('#d-pick-up-date').fdatepicker({
                 });
                 $('#d-dilivery-date').fdatepicker({
                 });
+            
                 var nowTemp = new Date();
                 var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
                 var checkin = $('#pick-up-date').fdatepicker({
                     onRender: function (date) {
                         return date.valueOf() < now.valueOf() ? 'disabled' : '';
                     }
-                }).on('changeDate', function (ev) {
+                })
+                .on('changeDate', function (ev) {
                     if (ev.date.valueOf() > checkout.date.valueOf()) {
                         var newDate = new Date(ev.date)
                         newDate.setDate(newDate.getDate() + 1);
@@ -274,6 +298,11 @@
                  
                 }).data('datepicker');
                 
+            
+                
+                
+                
+                
                 var checkout = $('#dilivery-date').fdatepicker({
                     onRender: function (date) {
                         return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
@@ -281,6 +310,8 @@
                 }).on('changeDate', function (ev) {
                     checkout.hide();
                 }).data('datepicker');
+                
+                
                 
                 var checkout1 = $('#dilivery-date').fdatepicker({
                     onRender: function (date) {
@@ -291,4 +322,5 @@
                 }).data('datepicker');
             });
         </script>
+
 <jsp:include page="footer.jsp" />

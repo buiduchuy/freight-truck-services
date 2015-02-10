@@ -24,75 +24,98 @@
 			<jsp:include page="menu-tao-hang.jsp" />
 
 
-			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
+			<form action="ControllerCreateGoods" method="post"
+				accept-charset="utf-8">
 				<c:choose>
 					<c:when test="${not empty router}">
 						<div class="row">
-                    <div class="large-12 columns">
-                        <div class="row">
-                            <div class="extra-title">
-                                <h3>Địa chỉ giao hàng</h3>
-                            </div>
-                            <div class="row">
-                                <div class="small-8 columns">
-                                    <div class="small-3 columns">
-                                        <label class="right inline"><small class="validate">*</small> Địa chỉ: </label>                                        
-                                    </div>
-                                    <div class="small-9 columns">
-                                        <input class="left inline" value="${router.pickupAddress}" name="txtpickupAddress"type="text"onFocus="geolocate()" id="place_start" pattern=".{1,100}" placeholder="Nhập địa điểm giao hàng" required=""data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !" data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !"/>
-                                    </div>
-                                </div>
-                                <div class="small-4 columns">
-                                    <div class="small-5 columns">
-                                        <label for="right-label" class="right inline"><small class="validate">*</small> Ngày: </label>                                        
-                                    </div>
-                                    <div class="small-7 columns">
-                                        <input type="text" name="txtpickupTime"value="${router.pickupTime}" id="pick-up-date" data-date-format="dd-mm-yyyy" readonly >                          
-                                    </div>
-                                </div>
-                            </div>
+							<div class="large-12 columns">
+								<div class="row">
+									<div class="extra-title">
+										<h3>Địa chỉ giao hàng</h3>
+									</div>
+									<div class="row">
+										<div class="small-8 columns">
+											<div class="small-3 columns">
+												<label class="right inline"><small class="validate">*</small>
+													Địa chỉ: </label>
+											</div>
+											<div class="small-9 columns">
+												<input class="left inline" value="${router.pickupAddress}"
+													name="txtpickupAddress" type="text" onFocus="geolocate()"
+													id="place_start" pattern=".{1,100}"
+													placeholder="Nhập địa điểm giao hàng" required=""
+													data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
+													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+											</div>
+										</div>
+										<div class="small-4 columns">
+											<div class="small-5 columns">
+												<label for="right-label" class="right inline"><small
+													class="validate">*</small> Ngày: </label>
+											</div>
+											<div class="small-7 columns">
+												<input type="text" name="txtpickupTime"
+													value="${router.pickupTime}" id="pick-up-date"
+													data-date-format="dd-mm-yyyy" readonly>
+											</div>
+										</div>
+									</div>
 
-                            <div class="extra-title">
-                                <h3>Địa chỉ nhận hàng</h3>
-                            </div>
-                            <div class="row">
-                                <div class="small-8 columns">
-                                    <div class="small-3 columns">
-                                        <label for="right-label" class="right inline"><small class="validate">*</small> Địa chỉ: </label>                                        
-                                    </div>
-                                    <div class="small-9 columns">
-                                        <input type="text" onFocus="geolocate()" value="${router.deliveryAddress}" name="txtdeliveryAddress"id="place_end" pattern=".{1,100}" placeholder="Nhập địa điểm nhận hàng" required=""data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !" data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !"/>
-                                    </div>
-                                </div>
-                                <div class="small-4 columns">
-                                    <div class="small-5 columns">
-                                        <label for="right-label" class="right inline"><small class="validate">*</small> Ngày: </label>                                        
-                                    </div>
-                                    <div class="small-7 columns">
-                                        <input type="text" name="txtdeliveryTime"value="${router.deliveryTime}" id="dilivery-date" data-date-format="dd-mm-yyyy" readonly>                           
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="large-12 columns">
-                                    <div class="submit-area right">
-                                    <button class=""name="btnAction" value="save1"><i class="icon-save"></i> Lưu thay đổi</button>
-                                        <button class="success"name="btnAction" value="next1"><i class="icon-mail-forward"></i> Tiếp theo</button>
+									<div class="extra-title">
+										<h3>Địa chỉ nhận hàng</h3>
+									</div>
+									<div class="row">
+										<div class="small-8 columns">
+											<div class="small-3 columns">
+												<label for="right-label" class="right inline"><small
+													class="validate">*</small> Địa chỉ: </label>
+											</div>
+											<div class="small-9 columns">
+												<input type="text" onFocus="geolocate()"
+													value="${router.deliveryAddress}" name="txtdeliveryAddress"
+													id="place_end" pattern=".{1,100}"
+													placeholder="Nhập địa điểm nhận hàng" required=""
+													data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
+													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+											</div>
+										</div>
+										<div class="small-4 columns">
+											<div class="small-5 columns">
+												<label for="right-label" class="right inline"><small
+													class="validate">*</small> Ngày: </label>
+											</div>
+											<div class="small-7 columns">
+												<input type="text" name="txtdeliveryTime"
+													value="${router.deliveryTime}" id="dilivery-date"
+													data-date-format="dd-mm-yyyy" readonly>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="large-12 columns">
+											<div class="submit-area right">
+												<button class="" name="btnAction" value="save1">
+													<i class="icon-save"></i> Lưu thay đổi
+												</button>
+												<button class="success" name="btnAction" value="next1">
+													<i class="icon-mail-forward"></i> Tiếp theo
+												</button>
 
-                                    </div>	
-                                    </br>
-                                </div>
-                            </div>
-                            <div class="row"> </div>
-                        </div>
-                    </div>
-                </div>
+											</div>
+											</br>
+										</div>
+									</div>
+									<div class="row"></div>
+								</div>
+							</div>
+						</div>
 					</c:when>
-					
-					
-					
-					
-					
+
+
+
+
+
 					<c:otherwise>
 						<div class="row" accept-charset="utf-8">
 							<div class="large-12 columns">
@@ -215,19 +238,22 @@
 <!-- end -->
 
 <script>
+
             $(function () {
                 window.prettyPrint && prettyPrint();
                 $('#d-pick-up-date').fdatepicker({
                 });
                 $('#d-dilivery-date').fdatepicker({
                 });
+            
                 var nowTemp = new Date();
                 var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
                 var checkin = $('#pick-up-date').fdatepicker({
                     onRender: function (date) {
                         return date.valueOf() < now.valueOf() ? 'disabled' : '';
                     }
-                }).on('changeDate', function (ev) {
+                })
+                .on('changeDate', function (ev) {
                     if (ev.date.valueOf() > checkout.date.valueOf()) {
                         var newDate = new Date(ev.date)
                         newDate.setDate(newDate.getDate() + 1);
@@ -237,6 +263,11 @@
                  
                 }).data('datepicker');
                 
+            
+                
+                
+                
+                
                 var checkout = $('#dilivery-date').fdatepicker({
                     onRender: function (date) {
                         return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
@@ -244,6 +275,8 @@
                 }).on('changeDate', function (ev) {
                     checkout.hide();
                 }).data('datepicker');
+                
+                
                 
                 var checkout1 = $('#dilivery-date').fdatepicker({
                     onRender: function (date) {
@@ -254,4 +287,5 @@
                 }).data('datepicker');
             });
         </script>
+
 <jsp:include page="footer.jsp" />

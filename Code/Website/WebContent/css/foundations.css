@@ -1703,17 +1703,7 @@ meta.foundation-mq-topbar {
   background-color: #008CBA;
   border-color: #0078a0;
   color: #FFFFFF; }
-  .alert-box .close {
-    font-size: 1.375rem;
-    padding: 9px 6px 4px;
-    line-height: 0;
-    position: absolute;
-    top: 50%;
-    margin-top: -0.6875rem;
-    right: 0.25rem;
-    color: #333333;
-    opacity: 0.3;
-    background: inherit; }
+  
     .alert-box .close:hover, .alert-box .close:focus {
       opacity: 0.5; }
   .alert-box.radius {

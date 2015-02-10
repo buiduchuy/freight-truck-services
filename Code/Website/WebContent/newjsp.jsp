@@ -1,17 +1,27 @@
-<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
+<jsp:include page="header.jsp"/>
+<div data-alert class="alert-box success radius">
+  This is a success alert with a radius.
+  <a href="#" class="close">&times;</a>
+</div>
 
-</head>
-<body>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div data-alert class="alert-box warning round inline">
+  This is a warning alert that is rounded.
+  <a href="#" class="close">&times;</a>
+</div>
 
-<c:set var="namePage" value="${sessionScope.account}"/>
-<c:if test="${not empty namePage }">
-${namePage }
-</c:if>
+<div data-alert class="alert-box info radius">
+  This is an info alert with a radius.
+  <a href="#" class="close">&times;</a>
+</div>
 
+<div data-alert class="alert-box alert round">
+  This is an alert - alert that is rounded.
+  <a href="#" class="close">&times;</a>
+</div>
 
-</html>
+<div data-alert class="alert-box secondary">
+  This is a secondary alert.
+  <a href="#" class="close">&times;</a>
+</div>
+<jsp:include page="footer.jsp"/>

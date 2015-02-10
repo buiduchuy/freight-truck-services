@@ -77,14 +77,7 @@
 
 							</div>
 							<div class="large-12 columns">
-								<ul class="tabs" data-tab>
-									<li class="tab-title active"><a href="#panel1">Hàng
-											chưa giao dịch</a></li>
-									<li class="tab-title"><a href="#panel2">Hàng đang giao
-											dich</a></li>
-								</ul>
-								<div class="tabs-content">
-									<div class="content active" id="panel1">
+								
 										<table id="example" class="display" cellspacing="0"
 											width="100%">
 											<thead>
@@ -133,49 +126,10 @@
 												<option value="cancel" selected="">Xoá nhanh hàng</option>
 											</select> <a class="button " id="delete">Thực hiện</a>
 										</div>
-									</div>
-									<div class="content" id="panel2">
-										<table id="example1" class="display" cellspacing="0"
-											width="100%">
-											<thead>
-												<tr>
-													<th width="125"><font color="orange">STT</font></th>
-													<th width="125"><font color="orange">LOẠI HÀNG</font></th>
-													<th width="225"><font color="orange">THỜI GIAN
-															GIAO HÀNG</font></th>
-													<th width="250"><font color="orange">THỜI GIAN
-															NHẬN HÀNG</font></th>
+						
+									
 
-													<th width="200"><h4>
-															<font color="orange"></font>
-														</h4></th>
-												</tr>
-											</thead>
-											<tbody>
-												<c:set var="list2" value="${sessionScope.listGood2 }" />
-												<c:if test="${not empty list2 }">
-													<c:forEach var="good2" items="${list2 }">
-														<tr>
-															<td><input type="checkbox" class="toggle-all"
-																value="0"></td>
-																<c:forEach var="row" items="${typeGoods }">
-																<c:if test="${good2.goodsCategoryID==row.goodsCategoryId }">
-																<td>${row.name }</td>
-																</c:if>
-																</c:forEach>
-															<td>${good2.pickupTime }</td>
-															<td>${good2.deliveryTime }</td>
-															<td><a class="button" href="ControllerManageGoods?btnAction=viewDetailGood2&idGood=${good2.goodsID }">Xem chi tiết</a></td>
-														</tr>
-													</c:forEach>
-
-												</c:if>
-											</tbody>
-
-										</table>
-									</div>
-
-								</div>
+					
 
 							</div>
 

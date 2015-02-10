@@ -12,20 +12,26 @@
 <c:set var="dri" value="${sessionScope.listDriver}" />
 <jsp:include page="header.jsp" />
 <section class="container">
+
 	<center>
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 900px;">
 
 			<div class="form-content">
-				<form action="ControllerMakeDeal" method="get" accept-charset="utf-8">
+				<form action="ControllerMakeDeal" method="get"
+					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
 								<font color="orange">Gợi ý từ hệ thống</font>
 							</h2>
 						</div>
+						<div class="row"></div>
 						<c:if test="${not empty message}">
-							<font color="green">${message}</font>
+							<div data-alert class="alert-box success radius inline">
+								${message} <a href="#" class="close">&times;</a>
+							</div>
+
 						</c:if>
 						<%
 							request.getSession().removeAttribute("messageCreateGood");
@@ -33,7 +39,7 @@
 						<div class="large-12 columns">
 							<div data-alert="" class="alert-box radius secondary">
 								<label class="left"><font color="white" size="+1">Danh
-										sách tài xế phù hợp</font></label> </br>
+										sách các lộ trình phù hợp</font></label> </br>
 							</div>
 							<table id="example" class="display" cellspacing="0" width="100%">
 								<thead>
@@ -49,7 +55,8 @@
 												đồng)</font></th>
 										<th width="150"><font color="orange">Điểm uy tín</font></th>
 										<th width="150"><a class="button success expand"
-											href="ControllerMakeDeal?btnAction=viewSuggest"> Các đề nghị </a></th>
+											href="ControllerMakeDeal?btnAction=viewSuggest"> Các đề
+												nghị </a></th>
 									</tr>
 
 								</thead>

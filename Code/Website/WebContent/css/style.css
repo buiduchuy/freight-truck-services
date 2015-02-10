@@ -237,16 +237,16 @@ button.info:hover, button.info:focus, .button.info:hover, .button.info:focus {
     margin-right: 10px;
 }
 .alert-box.success:before {
-    content: "";
+    content: "";
 }
 .alert-box.alert:before {
-    content: "�?";
+    content: "";
 }
 .alert-box.info:before {
-    content: "";
+    content: "";
 }
 .alert-box.warning:before {
-    content: "�?�";
+    content: "";
 }
 .alert-box.secondary:before {
   

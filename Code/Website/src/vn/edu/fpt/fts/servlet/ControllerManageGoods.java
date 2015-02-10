@@ -22,8 +22,10 @@ import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
+import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
+import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * Servlet implementation class ControllerManageGoods
@@ -66,25 +68,38 @@ public class ControllerManageGoods extends HttpServlet {
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
 			Common common= new Common();
+			if("suggestFromSystem".equals(action)){
+				int IdGood=Integer.parseInt(request.getParameter("txtIdGood"));
+				List<Route> list = routeDao.getAllRoute();
+				Route[] listRou = new Route[list.size()];
+				list.toArray(listRou);
+				List<Driver> listDriver = driverDao.getAllDriver();
+				Driver[] listDri = new Driver[listDriver.size()];
+				listDriver.toArray(listDri);
+				session.removeAttribute("router");
+				session.removeAttribute("good");
+				session.removeAttribute("price");
+				session.setAttribute("newGood", goodDao.getGoodsByID(IdGood));
+				session.setAttribute("listRouter", listRou);
+				session.setAttribute("listDriver", listDri);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("goi-y-he-thong.jsp");
+				rd.forward(request, response);
+			}
 			if ("manageGoods".equals(action)) {
 				Owner owner = (Owner) session.getAttribute("owner");
 				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
 				List<Goods> manageGood1 = new ArrayList<Goods>();
-				List<Goods> manageGood2 = new ArrayList<Goods>();
 				for (int i = 0; i < manageGood.size(); i++) {
 					if (manageGood.get(i).getActive() == 1) {
+						manageGood.get(i).setPickupTime(common.changeFormatDate(manageGood.get(i).getPickupTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+						manageGood.get(i).setDeliveryTime(common.changeFormatDate(manageGood.get(i).getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood1.add(manageGood.get(i));
-					}
-					if (manageGood.get(i).getActive() == 2) {
-						manageGood2.add(manageGood.get(i));
 					}
 				}
 				Goods[] list1 = new Goods[manageGood1.size()];
 				manageGood1.toArray(list1);
-				Goods[] list2 = new Goods[manageGood2.size()];
-				manageGood2.toArray(list2);
 				session.setAttribute("listGood1", list1);
-				session.setAttribute("listGood2", list2);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("quan-ly-hang.jsp");
 				rd.forward(request, response);
@@ -93,6 +108,8 @@ public class ControllerManageGoods extends HttpServlet {
 				try {
 					int idGood = Integer.parseInt(request.getParameter("idGood"));
 					Goods good = goodDao.getGoodsByID(idGood);
+					good.setPickupTime(common.changeFormatDate(good.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+					good.setDeliveryTime(common.changeFormatDate(good.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 					session.setAttribute("detailGood1", good);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-hang.jsp");
@@ -128,20 +145,26 @@ public class ControllerManageGoods extends HttpServlet {
 				}
 				float a = Float.parseFloat("10");
 				double price = Double.parseDouble(request.getParameter("txtPrice"));
-				Goods good = new Goods(go.getGoodsID(), weight, price, pickupTime,
-						pickupAddress, deliveryTime, deliveryAddress, a, a, a, a,
+				Goods good = new Goods(go.getGoodsID(), weight, price, common.changeFormatDate(
+						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"),
+						pickupAddress, common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+								"MM-dd-yyyy"), deliveryAddress, a, a, a, a,
 						notes, go.getCreateTime().toString(), 1, go.getOwnerID(),
 						goodsCategoryID);
 
-				if (goodDao.updateGoods(good) == 1) {
+				if (goodDao.updateGoods(good) != 1) {
 
-					session.setAttribute("messageUpdateGood", "Cập nhật thành công");
+					session.setAttribute("messageUpdateGoodSucces", "Cập nhật thành công");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageGoods?btnAction=viewDetailGood1&idGood="
 									+ go.getGoodsID());
 					rd.forward(request, response);
 				} else {
-
+					session.setAttribute("messageUpdateGoodError", "Cập nhật thất bại. Xin vui lòng thử lại sau!");
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerManageGoods?btnAction=viewDetailGood1&idGood="
+									+ go.getGoodsID());
+					rd.forward(request, response);
 				}
 			}
 			if ("deleteGood".equals(action)) {

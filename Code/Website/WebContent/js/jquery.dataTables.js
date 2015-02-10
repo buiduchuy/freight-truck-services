@@ -11091,7 +11091,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": "Hiện từ _START_ đến _END_ trong _TOTAL_ kết quả",
+			"sInfo": "Show from _START_ to _END_ in _TOTAL_ result",
 	
 	
 			/**
