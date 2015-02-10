@@ -34,8 +34,10 @@ public class DealDAO {
 
 			String sql = "INSERT INTO Deal ( " + "Price," + "Notes,"
 					+ "CreateTime," + "Sender," + "RouteID," + "GoodsID,"
-					+ "DealStatusID," + "Active" + ") VALUES (" + "?, " + "?, "
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?)";
+					+ "DealStatusID," + "RefDealID," + "Active," + "UpdateBy,"
+					+ "UpdateTime" + ") VALUES (" + "?, " + "?, " + "?, "
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 
@@ -45,6 +47,7 @@ public class DealDAO {
 			stmt.setString(i++, bean.getSender()); // Sender
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
+			stmt.setInt(i++, bean.getRefDealID());// getRefDealID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
 
@@ -104,6 +107,7 @@ public class DealDAO {
 				deal.setSender(rs.getString("Sender"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -162,6 +166,7 @@ public class DealDAO {
 				deal.setSender(rs.getString("Sender"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -211,6 +216,7 @@ public class DealDAO {
 			stmt.setString(i++, bean.getSender()); // Sender
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
+			stmt.setInt(i++, bean.getRefDealID()); // RefDealID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
 
@@ -263,6 +269,7 @@ public class DealDAO {
 				deal.setSender(rs.getString("Sender"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 				return deal;
@@ -314,6 +321,7 @@ public class DealDAO {
 				deal.setSender(rs.getString("Sender"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -374,6 +382,7 @@ public class DealDAO {
 				deal.setSender(rs.getString("Sender"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -433,6 +442,7 @@ public class DealDAO {
 				deal.setSender(rs.getString("Sender"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 

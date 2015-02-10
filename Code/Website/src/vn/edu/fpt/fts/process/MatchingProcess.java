@@ -13,10 +13,10 @@ import java.util.List;
 public class MatchingProcess {
 
 	// the radius of the Earth
-	private double earthRadius = 6371;
+	private double earthRadius = 6371; // kilometers
 
 	// maxAllowDistance
-	private double maxAllowDistance = 0.5; // meters
+	private double maxAllowDistance = 0.5; // kilometers
 
 	// convert from degree to radian
 	private Double deg2rad(Double deg) {
