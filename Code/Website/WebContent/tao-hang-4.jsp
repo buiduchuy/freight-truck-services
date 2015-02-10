@@ -20,7 +20,7 @@
 			<c:if test="${not empty error}">
 							<font color="red">${error}</font>
 						</c:if>
-			<form action="Controller" method="post" accept-charset="utf-8">
+			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
 				<div class="row">
 					<div class="large-12 columns">
 						<div class="row">

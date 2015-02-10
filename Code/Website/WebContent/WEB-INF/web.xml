@@ -42,4 +42,14 @@
     <servlet-name>ControllerAccount</servlet-name>
     <url-pattern>/ControllerAccount</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ControllerCreateGoods</display-name>
+    <servlet-name>ControllerCreateGoods</servlet-name>
+    <servlet-class>vn.edu.fpt.fts.servlet.ControllerCreateGoods</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ControllerCreateGoods</servlet-name>
+    <url-pattern>/ControllerCreateGoods</url-pattern>
+  </servlet-mapping>
 </web-app>
