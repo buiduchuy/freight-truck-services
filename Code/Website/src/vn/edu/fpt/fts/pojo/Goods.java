@@ -26,6 +26,59 @@ public class Goods implements java.io.Serializable {
 	private int OwnerID;
 	private int GoodsCategoryID;
 
+	private GoodsCategory goodsCategory;
+
+	public Goods(int weight, double price, String pickupTime,
+			String pickupAddress, String deliveryTime, String deliveryAddress,
+			float pickupMarkerLongtitude, float pickupMarkerLatidute,
+			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			String notes, String createTime, int active, int ownerID,
+			int goodsCategoryID, GoodsCategory goodsCategory) {
+		super();
+		Weight = weight;
+		Price = price;
+		PickupTime = pickupTime;
+		PickupAddress = pickupAddress;
+		DeliveryTime = deliveryTime;
+		DeliveryAddress = deliveryAddress;
+		PickupMarkerLongtitude = pickupMarkerLongtitude;
+		PickupMarkerLatidute = pickupMarkerLatidute;
+		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		DeliveryMarkerLatidute = deliveryMarkerLatidute;
+		Notes = notes;
+		CreateTime = createTime;
+		Active = active;
+		OwnerID = ownerID;
+		GoodsCategoryID = goodsCategoryID;
+		this.goodsCategory = goodsCategory;
+	}
+
+	public Goods(int goodsID, int weight, double price, String pickupTime,
+			String pickupAddress, String deliveryTime, String deliveryAddress,
+			float pickupMarkerLongtitude, float pickupMarkerLatidute,
+			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			String notes, String createTime, int active, int ownerID,
+			int goodsCategoryID, GoodsCategory goodsCategory) {
+		super();
+		GoodsID = goodsID;
+		Weight = weight;
+		Price = price;
+		PickupTime = pickupTime;
+		PickupAddress = pickupAddress;
+		DeliveryTime = deliveryTime;
+		DeliveryAddress = deliveryAddress;
+		PickupMarkerLongtitude = pickupMarkerLongtitude;
+		PickupMarkerLatidute = pickupMarkerLatidute;
+		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		DeliveryMarkerLatidute = deliveryMarkerLatidute;
+		Notes = notes;
+		CreateTime = createTime;
+		Active = active;
+		OwnerID = ownerID;
+		GoodsCategoryID = goodsCategoryID;
+		this.goodsCategory = goodsCategory;
+	}
+
 	public Goods(int weight, String notes, int goodsCategoryID) {
 		super();
 		Weight = weight;
@@ -221,6 +274,14 @@ public class Goods implements java.io.Serializable {
 
 	public void setGoodsCategoryID(int goodsCategoryID) {
 		GoodsCategoryID = goodsCategoryID;
+	}
+
+	public GoodsCategory getGoodsCategory() {
+		return goodsCategory;
+	}
+
+	public void setGoodsCategory(GoodsCategory goodsCategory) {
+		this.goodsCategory = goodsCategory;
 	}
 
 }

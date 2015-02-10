@@ -220,6 +220,7 @@ public class GoodsDAO {
 			stm.setInt(i++, ownerId);
 
 			rs = stm.executeQuery();
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
 			List<Goods> list = new ArrayList<Goods>();
 			Goods goods;
 			while (rs.next()) {
@@ -245,7 +246,11 @@ public class GoodsDAO {
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
 				goods.setOwnerID(rs.getInt("OwnerID"));
+
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+
+				goods.setGoodsCategory(goodsCategoryDao
+						.getGoodsCategoriesByID(rs.getInt("GoodsCategoryID")));
 
 				list.add(goods);
 			}

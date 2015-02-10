@@ -42,10 +42,9 @@ public class GoodsCategoryDAO {
 			}
 			return list;
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Route table");
+			System.out.println("Can't load data from GoodsCategory table");
 			e.printStackTrace();
-			Logger.getLogger(TAG).log(
-					Level.SEVERE, null, e);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (rs != null) {
@@ -59,9 +58,8 @@ public class GoodsCategoryDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Route table");
-				Logger.getLogger(TAG).log(
-						Level.SEVERE, null, e);
+				System.out.println("Can't load data from GoodsCategory table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
@@ -103,6 +101,55 @@ public class GoodsCategoryDAO {
 			}
 		}
 		return ret;
+	}
+
+	public GoodsCategory getGoodsCategoriesByID(int goodsCategoryID) {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM GoodsCategory WHERE GoodsCategoryID=?";
+			stm = con.prepareStatement(sql);
+
+			int i = 1;
+			stm.setInt(i++, goodsCategoryID);
+
+			rs = stm.executeQuery();
+			GoodsCategory goodsCategory;
+			while (rs.next()) {
+				goodsCategory = new GoodsCategory();
+
+				goodsCategory.setGoodsCategoryId(rs.getInt("GoodsCategoryID"));
+				goodsCategory.setName(rs.getString("Name"));
+
+				return goodsCategory;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Can't load data from GoodsCategory table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from GoodsCategory table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
 	}
 
 }
