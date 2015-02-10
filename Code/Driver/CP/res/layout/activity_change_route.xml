@@ -188,7 +188,7 @@
                     android:id="@+id/checkBox4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/other"
+                    android:text="@string/food"
                     android:textSize="14sp" />
             </LinearLayout>
 

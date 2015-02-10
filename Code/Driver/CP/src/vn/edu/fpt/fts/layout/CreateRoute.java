@@ -28,9 +28,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
@@ -42,6 +44,8 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -86,16 +90,14 @@ public class CreateRoute extends Fragment {
 	CheckBox frozen;
 	CheckBox broken;
 	CheckBox flammable;
-	CheckBox others;
+	CheckBox food;
 	EditText payload;
 	View v;
 	ArrayList<LatLng> locations;
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
-	private static final String SERVICE_URL = "http://192.168.1.64:8080/FTS/api/Route/Create";
-	private static final String SERVICE_URL_2 = "http://192.168.1.64:8080/FTS/api/Route/Create";
-
+	private static final String SERVICE_URL = Constant.SERVICE_URL + "Route/Create";
 
 	@Override
 	public void onPause() {
@@ -164,7 +166,7 @@ public class CreateRoute extends Fragment {
 		frozen = (CheckBox) v.findViewById(R.id.checkBox1);
 		broken = (CheckBox) v.findViewById(R.id.checkBox2);
 		flammable = (CheckBox) v.findViewById(R.id.checkBox3);
-		others = (CheckBox) v.findViewById(R.id.checkBox4);
+		food = (CheckBox) v.findViewById(R.id.checkBox4);
 
 		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
 				R.layout.listview_item_row);
@@ -194,22 +196,27 @@ public class CreateRoute extends Fragment {
 				String Point1 = p1.getText().toString();
 				String Point2 = p2.getText().toString();
 				String endPoint = end.getText().toString();
-				String startD = startDate.getText().toString().replace("/", "-");
-				startD = common.changeFormatDate(startD) + " " + startHour.getText().toString();
+				String startD = startDate.getText().toString()
+						.replace("/", "-");
+				startD = common.changeFormatDate(startD) + " "
+						+ startHour.getText().toString();
 				String endD = endDate.getText().toString().replace("/", "-");
 				endD = common.changeFormatDate(endD);
 				String frz = String.valueOf(frozen.isChecked());
 				String brk = String.valueOf(broken.isChecked());
 				String flm = String.valueOf(flammable.isChecked());
-				String oth = String.valueOf(others.isChecked());
+				String fd = String.valueOf(food.isChecked());
 				String load = payload.getText().toString();
 				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
 				String current = String.valueOf(calendar.get(Calendar.YEAR))
-						+ "-" + String.valueOf(calendar.get(Calendar.MONTH)+1) + "-"
-						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + " "
-						+ String.valueOf(calendar.get(Calendar.HOUR)) + ":"
-						+ String.valueOf(calendar.get(Calendar.MINUTE)) + ":"
-						+ String.valueOf(calendar.get(Calendar.SECOND));
+						+ "-"
+						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
+						+ "-"
+						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
+						+ " " + String.valueOf(calendar.get(Calendar.HOUR))
+						+ ":" + String.valueOf(calendar.get(Calendar.MINUTE))
+						+ ":" + String.valueOf(calendar.get(Calendar.SECOND));
 				if (startPoint.equals("")) {
 					Toast.makeText(getActivity(),
 							"Điểm bắt đầu không được để trống.",
@@ -246,34 +253,49 @@ public class CreateRoute extends Fragment {
 					Toast.makeText(getActivity(),
 							"Ngày kết thúc không được để trống.",
 							Toast.LENGTH_SHORT).show();
-				} else if (payload.equals("")) {
-					Toast.makeText(getActivity(),
-							"Khối lượng chở không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else if (Integer.parseInt(load) > 20) {
-					Toast.makeText(getActivity(),
-							"Khối lượng chở không vượt quá 20 tấn",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					WebService ws = new WebService(WebService.POST_TASK,
-							getActivity(), "Đang xử lý ...");
-					ws.addNameValuePair("startingAddress", startPoint);
-					ws.addNameValuePair("destinationAddress", endPoint);
-					ws.addNameValuePair("routeMarkerLocation1", Point1);
-					ws.addNameValuePair("routeMarkerLocation2", Point2);
-					ws.addNameValuePair("startTime", startD);
-					ws.addNameValuePair("finishTime", endD);
-					ws.addNameValuePair("notes", null);
-					ws.addNameValuePair("weight", load);
-					ws.addNameValuePair("createTime", current);
-					ws.addNameValuePair("active", "1");
-					ws.addNameValuePair("driverID", "1");
-					ws.addNameValuePair("Food", oth);
-					ws.addNameValuePair("Freeze", frz);
-					ws.addNameValuePair("Broken", brk);
-					ws.addNameValuePair("Flame", flm);
-					ws.execute(new String[] { SERVICE_URL });
-				}
+				} else
+					try {
+						if (formatter.parse(startDate.getText().toString()).compareTo(formatter.parse(endDate.getText().toString())) >= 0) {
+							Toast.makeText(getActivity(),
+									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
+									Toast.LENGTH_SHORT).show();
+						}
+						else if (payload.equals("")) {
+							Toast.makeText(getActivity(),
+									"Khối lượng chở không được để trống.",
+									Toast.LENGTH_SHORT).show();
+						} else if (Integer.parseInt(load) > 20) {
+							Toast.makeText(getActivity(),
+									"Khối lượng chở không vượt quá 20 tấn",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							WebService ws = new WebService(WebService.POST_TASK,
+									getActivity(), "Đang xử lý ...");
+							ws.addNameValuePair("startingAddress", startPoint);
+							ws.addNameValuePair("destinationAddress", endPoint);
+							ws.addNameValuePair("routeMarkerLocation1", Point1);
+							ws.addNameValuePair("routeMarkerLocation2", Point2);
+							ws.addNameValuePair("startTime", startD);
+							ws.addNameValuePair("finishTime", endD);
+							ws.addNameValuePair("notes", null);
+							ws.addNameValuePair("weight", load);
+							ws.addNameValuePair("createTime", current);
+							ws.addNameValuePair("active", "1");
+							ws.addNameValuePair("driverID", getActivity().getIntent()
+									.getStringExtra("driverID"));
+							ws.addNameValuePair("Food", fd);
+							ws.addNameValuePair("Freeze", frz);
+							ws.addNameValuePair("Broken", brk);
+							ws.addNameValuePair("Flame", flm);
+							ws.execute(new String[] { SERVICE_URL });
+						}
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
 			}
 		});
@@ -330,6 +352,7 @@ public class CreateRoute extends Fragment {
 		startHour.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				cal.add(Calendar.HOUR_OF_DAY, 6);
 				TimePickerDialog dialog = new TimePickerDialog(getActivity(),
 						startHourListener, cal.get(Calendar.HOUR_OF_DAY), cal
 								.get(Calendar.MINUTE), true);
@@ -355,13 +378,21 @@ public class CreateRoute extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-
-				if (start.getText().toString().equals("")
+				ConnectivityManager cm = (ConnectivityManager) getActivity()
+						.getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo ni = cm.getActiveNetworkInfo();
+				if (ni == null) {
+					Toast.makeText(
+							getActivity().getBaseContext(),
+							"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
+							Toast.LENGTH_SHORT).show();
+				}
+				else if (start.getText().toString().equals("")
 						|| end.getText().toString().equals("")) {
 					Toast.makeText(
 							getActivity().getBaseContext(),
 							"Vui lòng nhập địa điểm bắt đầu và kết thúc trước khi tùy chỉnh",
-							3).show();
+							Toast.LENGTH_SHORT).show();
 				} else {
 					Intent intent = getActivity().getIntent();
 
@@ -608,161 +639,12 @@ public class CreateRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-		}
-
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
-
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
-		}
-
-		private HttpResponse doResponse(String url) {
-
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
-
-				Log.e(TAG, e.getLocalizedMessage(), e);
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
-		}
-
-	}
-	
-	private class WebService2 extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
-
-		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
-
-		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
-
-		private int taskType = GET_TASK;
-		private Context mContext = null;
-		private String processMessage = "Processing...";
-
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
-
-		public WebService2(int taskType, Context mContext, String processMessage) {
-
-			this.taskType = taskType;
-			this.mContext = mContext;
-			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
-		}
-
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
-		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
-		protected String doInBackground(String... urls) {
-			String url = urls[0];
-			String result = "";
-
-			HttpResponse response = doResponse(url);
-
-			if (response.getEntity() == null) {
-				return result;
-			} else {
-				try {
-					result = inputStreamToString(response.getEntity()
-							.getContent());
-
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-				}
-
-			}
-
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String response) {
-			// Xu li du lieu tra ve sau khi insert thanh cong
-			// handleResponse(response);
-			pDlg.dismiss();
-
 			if (response.equals("Success")) {
-				Toast.makeText(getActivity().getBaseContext(),
-						"Tạo mới thành công", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(), "Tạo mới thành công",
+						Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(getActivity().getBaseContext(),
-						"Tạo mới thất bại", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(), "Tạo mới thất bại",
+						Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -791,7 +673,8 @@ public class CreateRoute extends Fragment {
 				case POST_TASK:
 					HttpPost httppost = new HttpPost(url);
 					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params));
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
 
 					response = httpclient.execute(httppost);
 					break;
@@ -831,6 +714,4 @@ public class CreateRoute extends Fragment {
 		}
 
 	}
-
-
 }

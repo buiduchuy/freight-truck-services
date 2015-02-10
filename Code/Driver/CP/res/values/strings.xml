@@ -19,7 +19,7 @@
     <string name="cantLoad"><u>Các loại hàng không thể chở</u></string>
     <string name="frozen">Hàng đông lạnh</string>
     <string name="easyToBreak">Hàng dễ vỡ</string>
-    <string name="other">Loại hàng khác</string>
+    <string name="food">Hàng thực phẩm</string>
     <string name="flamable">Hàng dễ cháy nổ</string>
     <string name="create">Tạo mới</string>
     <string name="change">Cập nhật</string>

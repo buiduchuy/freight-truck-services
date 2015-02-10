@@ -18,6 +18,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import vn.edu.fpt.fts.classes.Constant;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,7 +34,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Login extends Activity {
-	private static final String SERVICE_URL = "http://192.168.1.64:8080/FTS/api/Account/Login";
+	private static final String SERVICE_URL = Constant.SERVICE_URL + "Account/DriverLogin";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -149,9 +151,13 @@ public class Login extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-
-			if (response.equals("Owner")) {
+			android.os.Debug.waitForDebugger();
+			if (Integer.parseInt(response) > 0) {
+				Toast.makeText(Login.this,
+						"Đăng nhập thành công",
+						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(Login.this, MainActivity.class);
+				intent.putExtra("driverID", response);
 				startActivity(intent);
 			} else {
 				Toast.makeText(Login.this,
