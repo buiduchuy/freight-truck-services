@@ -71,7 +71,7 @@
 <li><a href="ControllerManageGoods?btnAction=manageGoods"class="button info expand"><i
 		class="icon-desktop"></i> Quản lý hàng</a></li>
 		
-<li><a href="ControllerManageGoods?btnAction=manageOrder"class="button info expand"><i
+<li><a href="ControllerManageOrder?btnAction=manageOrder"class="button info expand"><i
 		class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 		
 

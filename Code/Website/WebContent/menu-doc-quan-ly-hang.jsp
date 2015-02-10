@@ -25,7 +25,7 @@
 			phù hợp</a></li>
 	<li><a href="ControllerMakeDeal?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }" class="button expand secondary">Danh sách các đề nghị</a></li>
 </ul>
-<li><a href="ControllerManageGoods?btnAction=manageOrder"
+<li><a href="ControllerManageOrder?btnAction=manageOrder"
 	class="button info expand"><i class="icon-desktop"></i> Quản lý hoá
 		đơn</a></li>
 

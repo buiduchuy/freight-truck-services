@@ -110,7 +110,7 @@
                                     <a href="tao-hang-1.jsp"><i class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a>
                                 </li>
                                 <li><a href="ControllerManageGoods?btnAction=manageGoods"><i class="icon-desktop"></i> Quản lý hàng</a></li>
-                                <li><a href="ControllerManageGoods?btnAction=manageOrder"><i class="icon-desktop"></i> Quản lý hoá đơn</a></li>
+                                <li><a href="ControllerManageOrder?btnAction=manageOrder"><i class="icon-desktop"></i> Quản lý hoá đơn</a></li>
                                
                             </ul>
                         </nav>

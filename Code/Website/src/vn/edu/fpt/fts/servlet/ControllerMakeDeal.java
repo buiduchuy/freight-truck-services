@@ -103,35 +103,85 @@ public class ControllerMakeDeal extends HttpServlet {
 							"yyyy/MM/dd HH:mm:ss");
 					Date date = new Date();
 					String createTime = dateFormat.format(date);
-					Deal newDeal = new Deal(good.getPrice(), good.getNotes(),
-							createTime, "Owner", route.getRouteID(),
-							good.getGoodsID(), 0, 1, 1);
-					if (dealDao.insertDeal(newDeal) != -1) {
-						Route[] listRouter = (Route[]) session
-								.getAttribute("listRouter");
-						List<Route> list = new ArrayList<Route>(
-								Arrays.asList(listRouter));
-						for (int i = 0; i < list.size(); i++) {
-							if (list.get(i).getRouteID() == route.getRouteID()) {
-								list.remove(i);
+					List<Deal> listDealByGoodID = dealDao.getDealByGoodsID(good
+							.getGoodsID());
+					int idDealFa = 0;
+					if (listDealByGoodID.size() != 0) {
+
+						for (int i = 0; i < listDealByGoodID.size(); i++) {
+							if (listDealByGoodID.get(i).getRouteID() == idRoute
+									&& listDealByGoodID.get(i).getRefDealID() == 0) {
+								idDealFa = listDealByGoodID.get(i).getDealID();
 							}
 						}
-						Route[] listRou = new Route[list.size()];
-						list.toArray(listRou);
-						session.setAttribute("listRouter", listRou);
-						session.setAttribute("messageSuccess",
-								"Gửi đề nghị thành công");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("goi-y-he-thong.jsp");
-						rd.forward(request, response);
-					} else {
-						session.setAttribute("messageError",
-								"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
-										+ idRoute);
-						rd.forward(request, response);
 					}
+					if (idDealFa == 0) {
+						Deal newDeal = new Deal(good.getPrice(),
+								good.getNotes(), createTime, "Owner",
+								route.getRouteID(), good.getGoodsID(), 0, 1, 1);
+
+						if (dealDao.insertDeal(newDeal) != -1) {
+							Route[] listRouter = (Route[]) session
+									.getAttribute("listRouter");
+							List<Route> list = new ArrayList<Route>(
+									Arrays.asList(listRouter));
+							for (int i = 0; i < list.size(); i++) {
+								if (list.get(i).getRouteID() == route
+										.getRouteID()) {
+									list.remove(i);
+								}
+							}
+							Route[] listRou = new Route[list.size()];
+							list.toArray(listRou);
+							session.setAttribute("listRouter", listRou);
+							session.setAttribute("messageSuccess",
+									"Gửi đề nghị thành công");
+							RequestDispatcher rd = request
+									.getRequestDispatcher("goi-y-he-thong.jsp");
+							rd.forward(request, response);
+						} else {
+							session.setAttribute("messageError",
+									"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
+							RequestDispatcher rd = request
+									.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
+											+ idRoute);
+							rd.forward(request, response);
+						}
+					} else {
+						Deal newDeal = new Deal(good.getPrice(),
+								good.getNotes(), createTime, "Owner",
+								route.getRouteID(), good.getGoodsID(),
+								idDealFa, 1, 1);
+
+						if (dealDao.insertDeal(newDeal) != -1) {
+							Route[] listRouter = (Route[]) session
+									.getAttribute("listRouter");
+							List<Route> list = new ArrayList<Route>(
+									Arrays.asList(listRouter));
+							for (int i = 0; i < list.size(); i++) {
+								if (list.get(i).getRouteID() == route
+										.getRouteID()) {
+									list.remove(i);
+								}
+							}
+							Route[] listRou = new Route[list.size()];
+							list.toArray(listRou);
+							session.setAttribute("listRouter", listRou);
+							session.setAttribute("messageSuccess",
+									"Gửi đề nghị thành công");
+							RequestDispatcher rd = request
+									.getRequestDispatcher("goi-y-he-thong.jsp");
+							rd.forward(request, response);
+						} else {
+							session.setAttribute("messageError",
+									"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
+							RequestDispatcher rd = request
+									.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
+											+ idRoute);
+							rd.forward(request, response);
+						}
+					}
+
 				}
 			}
 			if ("viewSuggest".equals(action)) {
@@ -225,16 +275,26 @@ public class ControllerMakeDeal extends HttpServlet {
 
 			}
 			if ("confirmDeal".equals(action)) {
-				int idDeal = Integer.parseInt(request
-						.getParameter("idDeal"));
+				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				try {
 					Deal dealConfirm = dealDao.getDealByID(idDeal);
 					List<Deal> listDealByID = dealDao
 							.getDealByGoodsID(dealConfirm.getGoodsID());
 					for (int i = 0; i < listDealByID.size(); i++) {
-						listDealByID.get(i).setActive(0);
-						dealDao.updateDeal(listDealByID.get(i));
+						if (listDealByID.get(i).getDealID() != idDeal) {
+							listDealByID.get(i).setActive(0);
+							dealDao.updateDeal(listDealByID.get(i));
+						}
 					}
+					DateFormat dateFormat = new SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss");
+					Date date = new Date();
+					String createTime = dateFormat.format(date);
+					Order newOrder = new Order(dealConfirm.getPrice(), false,
+							false, false, createTime, 1);
+					
+					DealOrder newDealOrder= new DealOrder(idDeal, orderDao.insertOrder(newOrder));
+					dealOrderDao.insertDealOrder(newDealOrder);
 					Goods goodChangeStatus = goodDao.getGoodsByID(dealConfirm
 							.getGoodsID());
 					goodChangeStatus.setActive(2);
@@ -242,12 +302,12 @@ public class ControllerMakeDeal extends HttpServlet {
 					session.setAttribute("messageSuccess",
 							"Hoàn thành hoá đơn!");
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerManageGoods?btnAction=manageGoods");
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
 				} catch (Exception ex) {
 					session.setAttribute("messageError",
 							"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
-					
+
 				}
 			}
 			// out.println("<!DOCTYPE html>");
