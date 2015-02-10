@@ -64,12 +64,12 @@ public class ControllerAccount extends HttpServlet {
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
 			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
-			AccountDAO acc = new AccountDAO();
-			RouteDAO rou = new RouteDAO();
+			AccountDAO accountDao = new AccountDAO();
+			RouteDAO routeDao = new RouteDAO();
 			GoodsDAO goodDao = new GoodsDAO();
-			OwnerDAO ow = new OwnerDAO();
-			DealDAO dea = new DealDAO();
-			DriverDAO dri = new DriverDAO();
+			OwnerDAO ownerDao = new OwnerDAO();
+			DealDAO dealDao = new DealDAO();
+			DriverDAO driverDao = new DriverDAO();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
 			Common common= new Common();
@@ -79,9 +79,9 @@ public class ControllerAccount extends HttpServlet {
 				String password = request.getParameter("txtPassword");
 				session.removeAttribute("errorLogin");
 				session.removeAttribute("account");
-				if (acc.checkLoginAccount(email, password) != null) {
+				if (accountDao.checkLoginAccount(email, password) != null) {
 
-					Owner owner = ow.getOwnerByEmail(acc.checkLoginAccount(email,
+					Owner owner = ownerDao.getOwnerByEmail(accountDao.checkLoginAccount(email,
 							password).getEmail());
 					List<GoodsCategory> list = goodCa.getAllGoodsCategory();
 
@@ -112,6 +112,7 @@ public class ControllerAccount extends HttpServlet {
 				session.removeAttribute("router");
 				session.removeAttribute("good");
 				session.removeAttribute("price");
+				session.removeAttribute("typeGoods");
 				RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 				rd.forward(request, response);
 			}
