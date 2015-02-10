@@ -17,7 +17,7 @@
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 900px;">
 
 			<div class="form-content">
-				<form action="Controller" method="get" accept-charset="utf-8">
+				<form action="ControllerMakeDeal" method="get" accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
@@ -49,7 +49,7 @@
 												đồng)</font></th>
 										<th width="150"><font color="orange">Điểm uy tín</font></th>
 										<th width="150"><a class="button success expand"
-											href="Controller?btnAction=viewSuggest"> Các đề nghị </a></th>
+											href="ControllerMakeDeal?btnAction=viewSuggest"> Các đề nghị </a></th>
 									</tr>
 
 								</thead>
@@ -81,7 +81,7 @@
 
 
 												<td><a class="button"
-													href="Controller?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
+													href="ControllerMakeDeal?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
 														<i class="icon-ok"></i> Xem chi tiết
 												</a></td>
 											</tr>
