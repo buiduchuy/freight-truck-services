@@ -32,30 +32,34 @@ import vn.edu.fpt.fts.pojo.Route;
  */
 public class ControllerManageGoods extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public ControllerManageGoods() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-        	request.setCharacterEncoding("UTF-8");
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public ControllerManageGoods() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+	 * methods.
+	 *
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 * @throws ServletException
+	 *             if a servlet-specific error occurs
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	protected void processRequest(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html;charset=UTF-8");
+		try (PrintWriter out = response.getWriter()) {
+			/* TODO output your page here. You may use following sample code. */
+			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
 			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
@@ -67,9 +71,10 @@ public class ControllerManageGoods extends HttpServlet {
 			DriverDAO driverDao = new DriverDAO();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
-			Common common= new Common();
-			if("suggestFromSystem".equals(action)){
-				int IdGood=Integer.parseInt(request.getParameter("txtIdGood"));
+			Common common = new Common();
+			if ("suggestFromSystem".equals(action)) {
+				int IdGood = Integer
+						.parseInt(request.getParameter("txtIdGood"));
 				List<Route> list = routeDao.getAllRoute();
 				Route[] listRou = new Route[list.size()];
 				list.toArray(listRou);
@@ -88,12 +93,19 @@ public class ControllerManageGoods extends HttpServlet {
 			}
 			if ("manageGoods".equals(action)) {
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
+				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
+						.getOwnerID());
 				List<Goods> manageGood1 = new ArrayList<Goods>();
 				for (int i = 0; i < manageGood.size(); i++) {
 					if (manageGood.get(i).getActive() == 1) {
-						manageGood.get(i).setPickupTime(common.changeFormatDate(manageGood.get(i).getPickupTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-						manageGood.get(i).setDeliveryTime(common.changeFormatDate(manageGood.get(i).getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+						manageGood.get(i).setPickupTime(
+								common.changeFormatDate(manageGood.get(i)
+										.getPickupTime(),
+										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+						manageGood.get(i).setDeliveryTime(
+								common.changeFormatDate(manageGood.get(i)
+										.getDeliveryTime(),
+										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood1.add(manageGood.get(i));
 					}
 				}
@@ -106,10 +118,15 @@ public class ControllerManageGoods extends HttpServlet {
 			}
 			if ("viewDetailGood1".equals(action)) {
 				try {
-					int idGood = Integer.parseInt(request.getParameter("idGood"));
+					int idGood = Integer.parseInt(request
+							.getParameter("idGood"));
 					Goods good = goodDao.getGoodsByID(idGood);
-					good.setPickupTime(common.changeFormatDate(good.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-					good.setDeliveryTime(common.changeFormatDate(good.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+					good.setPickupTime(common.changeFormatDate(
+							good.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
+							"dd-MM-yyyy"));
+					good.setDeliveryTime(common.changeFormatDate(
+							good.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
+							"dd-MM-yyyy"));
 					session.setAttribute("detailGood1", good);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-hang.jsp");
@@ -117,9 +134,11 @@ public class ControllerManageGoods extends HttpServlet {
 				} catch (Exception ex) {
 
 				}
-			}if ("viewDetailGood2".equals(action)) {
+			}
+			if ("viewDetailGood2".equals(action)) {
 				try {
-					int idGood = Integer.parseInt(request.getParameter("idGood"));
+					int idGood = Integer.parseInt(request
+							.getParameter("idGood"));
 					Goods good = goodDao.getGoodsByID(idGood);
 					session.setAttribute("detailGood2", good);
 					RequestDispatcher rd = request
@@ -128,13 +147,16 @@ public class ControllerManageGoods extends HttpServlet {
 				} catch (Exception ex) {
 
 				}
-			}if ("updateGood".equals(action)) {
+			}
+			if ("updateGood".equals(action)) {
 				Goods go = (Goods) session.getAttribute("detailGood1");
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
-				String deliveryAddress = request.getParameter("txtdeliveryAddress");
+				String deliveryAddress = request
+						.getParameter("txtdeliveryAddress");
 				String deliveryTime = request.getParameter("txtdeliveryTime");
-				int weight = Integer.parseInt(request.getParameter("txtWeight"));
+				int weight = Integer
+						.parseInt(request.getParameter("txtWeight"));
 				int goodsCategoryID = Integer.parseInt(request
 						.getParameter("ddlgoodsCategoryID"));
 				String notes = "";
@@ -144,23 +166,26 @@ public class ControllerManageGoods extends HttpServlet {
 
 				}
 				float a = Float.parseFloat("10");
-				double price = Double.parseDouble(request.getParameter("txtPrice"));
-				Goods good = new Goods(go.getGoodsID(), weight, price, common.changeFormatDate(
-						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"),
-						pickupAddress, common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+				double price = Double.parseDouble(request
+						.getParameter("txtPrice"));
+				Goods good = new Goods(go.getGoodsID(), weight, price,
+						common.changeFormatDate(pickupTime, "dd-MM-yyyy",
+								"MM-dd-yyyy"), pickupAddress,
+						common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
 								"MM-dd-yyyy"), deliveryAddress, a, a, a, a,
-						notes, go.getCreateTime().toString(), 1, go.getOwnerID(),
-						goodsCategoryID);
+						notes, go.getCreateTime().toString(), 1,
+						go.getOwnerID(), goodsCategoryID);
 
-				if (goodDao.updateGoods(good) != 1) {
-
-					session.setAttribute("messageUpdateGoodSucces", "Cập nhật thành công");
+				if (goodDao.updateGoods(good) == 1) {
+					session.setAttribute("messageSuccess",
+							"Cập nhật thành công");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageGoods?btnAction=viewDetailGood1&idGood="
 									+ go.getGoodsID());
 					rd.forward(request, response);
 				} else {
-					session.setAttribute("messageUpdateGoodError", "Cập nhật thất bại. Xin vui lòng thử lại sau!");
+					session.setAttribute("messageError",
+							"Cập nhật thất bại. Xin vui lòng thử lại sau!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageGoods?btnAction=viewDetailGood1&idGood="
 									+ go.getGoodsID());
@@ -168,37 +193,29 @@ public class ControllerManageGoods extends HttpServlet {
 				}
 			}
 			if ("deleteGood".equals(action)) {
-				Goods go = (Goods) session.getAttribute("detailGood1");
-				go.setActive(0);
-				if (goodDao.updateGoods(go) == 1) {
-					Owner owner = (Owner) session.getAttribute("owner");
-					List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
-					List<Goods> manageGood1 = new ArrayList<Goods>();
-					List<Goods> manageGood2 = new ArrayList<Goods>();
-					for (int i = 0; i < manageGood.size(); i++) {
-						if (manageGood.get(i).getActive() == 1) {
-							manageGood1.add(manageGood.get(i));
-						}
-						if (manageGood.get(i).getActive() == 2) {
-							manageGood2.add(manageGood.get(i));
-						}
-					}
-					Goods[] list1 = new Goods[manageGood1.size()];
-					manageGood1.toArray(list1);
-					Goods[] list2 = new Goods[manageGood2.size()];
-					manageGood2.toArray(list2);
-					session.setAttribute("listGood1", list1);
-					session.setAttribute("listGood2", list2);
+				int idGoodDelete = Integer.parseInt(request
+						.getParameter("txtIdGood"));
+				Goods goodDelete = goodDao.getGoodsByID(idGoodDelete);
+				goodDelete.setActive(0);
+				if (goodDao.updateGoods(goodDelete) == 1) {
+					session.setAttribute("messageSuccess",
+							"Xoá hàng thành công!");
 					RequestDispatcher rd = request
-							.getRequestDispatcher("quan-ly-hang.jsp");
+							.getRequestDispatcher("ControllerManageGoods?btnAction=manageGoods");
 					rd.forward(request, response);
 				} else {
-
+					session.setAttribute("messageError",
+							"Xoá hàng thất bại. Xin vui lòng thử lại sau!");
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerManageGoods?btnAction=viewDetailGood1&idGood="
+									+ idGoodDelete);
+					rd.forward(request, response);
 				}
 			}
 			if ("viewDetailGood1".equals(action)) {
 				try {
-					int idGood = Integer.parseInt(request.getParameter("idGood"));
+					int idGood = Integer.parseInt(request
+							.getParameter("idGood"));
 					Goods good = goodDao.getGoodsByID(idGood);
 					session.setAttribute("detailGood1", good);
 					RequestDispatcher rd = request
@@ -208,55 +225,65 @@ public class ControllerManageGoods extends HttpServlet {
 
 				}
 			}
-//            out.println("<!DOCTYPE html>");
-//            out.println("<html>");
-//            out.println("<head>");
-//            out.println("<title>Servlet Controller</title>");            
-//            out.println("</head>");
-//            out.println("<body>");
-//            out.println("<h1>Servlet Controller at " + request.getContextPath() + "</h1>");
-//            out.println("</body>");
-//            out.println("</html>");
-        }
-    }
+			// out.println("<!DOCTYPE html>");
+			// out.println("<html>");
+			// out.println("<head>");
+			// out.println("<title>Servlet Controller</title>");
+			// out.println("</head>");
+			// out.println("<body>");
+			// out.println("<h1>Servlet Controller at " +
+			// request.getContextPath() + "</h1>");
+			// out.println("</body>");
+			// out.println("</html>");
+		}
+	}
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+	// <editor-fold defaultstate="collapsed"
+	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+	/**
+	 * Handles the HTTP <code>GET</code> method.
+	 *
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 * @throws ServletException
+	 *             if a servlet-specific error occurs
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
+	/**
+	 * Handles the HTTP <code>POST</code> method.
+	 *
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 * @throws ServletException
+	 *             if a servlet-specific error occurs
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+	/**
+	 * Returns a short description of the servlet.
+	 *
+	 * @return a String containing servlet description
+	 */
+	@Override
+	public String getServletInfo() {
+		return "Short description";
+	}// </editor-fold>
 
 }

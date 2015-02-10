@@ -21,41 +21,50 @@
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 700px;">
 
 				<div class="form-content">
-					<form action="ControllerManageGoods" method="post" accept-charset="utf-8">
+					<form action="ControllerManageGoods" method="post"
+						accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
 									<font color="orange">Chi tiết hàng</font>
+									
 								</h2>
-							<div class="row">
-						<button class="right" name="btnAction" value="suggestFromSystem">Gợi ý từ hệ thống</button>
-						<input type="hidden" name="txtIdGood" value="${detailGood1.goodsID }"/>
-						</div>
+								<button class="right info" name="btnAction"
+										value="suggestFromSystem">Gợi ý lộ trình phù hợp</button>
+									<input type="hidden" name="txtIdGood"
+										value="${detailGood1.goodsID }" />
+								<c:set var="messageSuccess"
+									value="${sessionScope.messageSuccess }" />
+								<c:set var="messageError"
+									value="${sessionScope.messageError }" />
+								<c:if test="${not empty messageSuccess}">
+									<div class="row">
+										<div data-alert class="alert-box success radius inline">
+											${messageSuccess} <a href="#" class="close">&times;</a>
+										</div>
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageSuccess");
+									%>
+								</c:if>
+								<c:if test="${not empty messageError}">
+									<div class="row">
+										<div data-alert class="alert-box alert radius inline">
+											${messageError} <a href="#" class="close">&times;</a>
+										</div>
+
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageError");
+									%>
+								</c:if>
 							</div>
-							
-							<div class="row">
-							<c:set var="message" value="${sessionScope.messageUpdateGoodSucces }" />
-							<c:if test="${not empty message}">
-								<div data-alert class="alert-box success radius inline">
-								${message} <a href="#" class="close">&times;</a>
-							</div>
-							</c:if>
-							<%
-								request.getSession().removeAttribute("messageUpdateGoodSucces");
-							%>
-							</div>
-							
-							<div class="row">
-							<c:set var="message" value="${sessionScope.messageUpdateGoodError }" />
-							<c:if test="${not empty message}">
-								<div data-alert class="alert-box alert radius inline">
-								${message} <a href="#" class="close">&times;</a>
-							</div>
-							</c:if>
-							<%
-								request.getSession().removeAttribute("messageUpdateGoodError");
-							%>
-							</div>
+
+
+
+
 							<div class="large-12 columns">
 								<div class="extra-title">
 									<h3>Thông tin hàng hoá</h3>
@@ -212,11 +221,15 @@
 												name="btnAction" value="updateGood">
 												<i class="icon-wrench"></i> Cập nhật hàng
 											</button>
+											
 											<button class="button  alert"
-												onclick="return confirm('Bạn có mướn huỷ hàng không?')"
+												onclick="return confirm('Bạn có muốn xoá hàng không?')"
 												name="btnAction" value="deleteGood">
 												<i class="icon-remove"> Xoá hàng</i>
+												
 											</button>
+									
+							
 
 										</div>
 										</br>

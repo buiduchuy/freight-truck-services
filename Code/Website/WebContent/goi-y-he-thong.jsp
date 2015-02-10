@@ -11,6 +11,7 @@
 <c:set var="message" value="${sessionScope.messageCreateGood }" />
 <c:set var="dri" value="${sessionScope.listDriver}" />
 <jsp:include page="header.jsp" />
+
 <section class="container">
 
 	<center>
@@ -26,16 +27,7 @@
 								<font color="orange">Gợi ý từ hệ thống</font>
 							</h2>
 						</div>
-						<div class="row"></div>
-						<c:if test="${not empty message}">
-							<div data-alert class="alert-box success radius inline">
-								${message} <a href="#" class="close">&times;</a>
-							</div>
-
-						</c:if>
-						<%
-							request.getSession().removeAttribute("messageCreateGood");
-						%>
+					
 						<div class="large-12 columns">
 							<div data-alert="" class="alert-box radius secondary">
 								<label class="left"><font color="white" size="+1">Danh
