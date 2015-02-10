@@ -37,7 +37,7 @@ public class DealAPI {
 	}
 
 	@POST
-	@Path("getDealByGoodsID")
+	@Path("getDealByID")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Deal getDealByID(MultivaluedMap<String, String> params) {
 		Deal deal = new Deal();
@@ -132,4 +132,23 @@ public class DealAPI {
 		}
 		return "Success";
 	}
+
+	@POST
+	@Path("getDealByDriverID")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Deal> getDealByDriverID(MultivaluedMap<String, String> params) {
+		List<Deal> l_deals = dealDao.getDealByDriverID(Integer.valueOf(params
+				.getFirst("driverID")));
+		return l_deals;
+	}
+
+	@POST
+	@Path("getDealByOwnerID")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Deal> getDealByOwnerID(MultivaluedMap<String, String> params) {
+		List<Deal> l_deals = dealDao.getDealByOnwerID(Integer.valueOf(params
+				.getFirst("ownerID")));
+		return l_deals;
+	}
+
 }
