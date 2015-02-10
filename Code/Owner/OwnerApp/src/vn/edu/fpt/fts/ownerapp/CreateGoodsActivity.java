@@ -64,6 +64,7 @@ public class CreateGoodsActivity extends Activity {
 	private Button btnPost;
 	private List<String> cateList = new ArrayList<String>();
 	private int cateId;
+	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0, deliverLng = 0.0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +181,7 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						CreateGoodsMapFragment.class);
+				intent.putExtra("flag", "pickup");
 				intent.putExtra("address", actPickupAddr.getText().toString());
 				startActivity(intent);
 			}
@@ -195,6 +197,7 @@ public class CreateGoodsActivity extends Activity {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						CreateGoodsMapFragment.class);
+				intent.putExtra("flag", "delivery");
 				intent.putExtra("address", actDeliverAddr.getText().toString());
 				startActivity(intent);
 			}
@@ -206,10 +209,7 @@ public class CreateGoodsActivity extends Activity {
 		actDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_deliver));
 
-		// button
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-				.permitAll().build();
-		StrictMode.setThreadPolicy(policy);
+		// button		
 		btnPost = (Button) findViewById(R.id.btn_post);
 		btnPost.setOnClickListener(new View.OnClickListener() {
 
@@ -219,8 +219,21 @@ public class CreateGoodsActivity extends Activity {
 				postData(v);
 			}
 		});
-
+		
+		// lay longitude va latitude
+		Bundle bundle = getIntent().getBundleExtra("info");
+		String flag = bundle.getString("flag");
+		if (flag.equals("pickup")) {
+			pickupLat = bundle.getDouble("lat");
+			pickupLng = bundle.getDouble("lng");
+		} else if (flag.equals("delivery")) {
+			deliverLat = bundle.getDouble("lat");
+			deliverLng = bundle.getDouble("lng");
+		}
+		
 	}
+	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -282,16 +295,16 @@ public class CreateGoodsActivity extends Activity {
 		wst.addNameValuePair("createTime", formatDate(currentTime));
 		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
 				.toString());
-		wst.addNameValuePair("deliveryMarkerLatidute", "0.0");
-		wst.addNameValuePair("deliveryMarkerLongtitude", "0.0");
+		wst.addNameValuePair("deliveryMarkerLatidute", Double.toString(deliverLat));
+		wst.addNameValuePair("deliveryMarkerLongtitude", Double.toString(deliverLng));
 		wst.addNameValuePair("deliveryTime", formatDate(calendar2));
-		wst.addNameValuePair("goodsCategoryID", "1");
+		wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
 		wst.addNameValuePair("notes", etNotes.getText().toString());
 		wst.addNameValuePair("ownerID", "1");
 		wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
 				.toString());
-		wst.addNameValuePair("pickupMarkerLatidute", "0.0");
-		wst.addNameValuePair("pickupMarkerLongtitude", "0.0");
+		wst.addNameValuePair("pickupMarkerLatidute", Double.toString(pickupLat));
+		wst.addNameValuePair("pickupMarkerLongtitude", Double.toString(pickupLng));
 		wst.addNameValuePair("pickupTime", formatDate(calendar1));
 		wst.addNameValuePair("price", etPrice.getText().toString());
 		wst.addNameValuePair("weight", etWeight.getText().toString());

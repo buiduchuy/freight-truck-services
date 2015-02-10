@@ -4,11 +4,14 @@ import java.io.IOException;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,7 +23,8 @@ public class CreateGoodsMapFragment extends Activity {
 	private double mlong, mlat;
 	private LatLng point;
 	private GoogleMap map;	
-
+	private Button btn_accept;
+	private String flag;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -28,6 +32,7 @@ public class CreateGoodsMapFragment extends Activity {
 		setContentView(R.layout.fragment_create_goods_fragment);
 
 		String address = getIntent().getStringExtra("address");
+		flag = getIntent().getStringExtra("flag");
 		
 		// khoi tao map
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -52,6 +57,22 @@ public class CreateGoodsMapFragment extends Activity {
 
 		//zoom to marker	
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+		
+		btn_accept = (Button)findViewById(R.id.button_accept);
+		btn_accept.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Bundle bundle = new Bundle();
+				bundle.putString("flag", flag);
+				bundle.putDouble("lat", mlat);
+				bundle.putDouble("lng", mlong);				
+				Intent intent = new Intent(CreateGoodsMapFragment.this, CreateGoodsActivity.class);
+				intent.putExtra("info", bundle);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
