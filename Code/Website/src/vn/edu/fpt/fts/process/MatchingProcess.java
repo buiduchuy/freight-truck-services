@@ -13,7 +13,10 @@ import java.util.List;
 public class MatchingProcess {
 
 	// the radius of the Earth
-	double earthRadius = 6371;
+	private double earthRadius = 6371; // kilometers
+
+	// maxAllowDistance
+	private double maxAllowDistance = 0.5; // kilometers
 
 	// convert from degree to radian
 	private Double deg2rad(Double deg) {
@@ -21,9 +24,9 @@ public class MatchingProcess {
 	}
 
 	// convert from radian to degree
-//	private Double rad2deg(Double rad) {
-//		return (rad / Math.PI * 180.0);
-//	}
+	// private Double rad2deg(Double rad) {
+	// return (rad / Math.PI * 180.0);
+	// }
 
 	// change coordinate of gmaps to 3D
 	public List<Double> ChangeCoordinateMapToCoordinate3D(Double longitude,
@@ -44,40 +47,35 @@ public class MatchingProcess {
 		return result;
 	}
 
-// change coordinate 3D to gmaps - not using now but reserve for future
-//	public List<Double> ChangeCoordinate3DToCoordinateMap(Double x, Double y,
-//			Double z) {
-//
-//		// change to longitude and latitude
-//		Double longitude = Math.atan(y / x);
-//		if (longitude < 0)
-//			longitude += Math.PI;
-//		Double latitude = Math.asin(z / earthRadius);
-//
-//		// change from radian to degree
-//		longitude = rad2deg(longitude);
-//		latitude = rad2deg(latitude);
-//		List<Double> result = new ArrayList<Double>();
-//		result.add(latitude);
-//		result.add(longitude);
-//		return result;
-//	}
+	// change coordinate 3D to gmaps - not using now but reserve for future
+	// public List<Double> ChangeCoordinate3DToCoordinateMap(Double x, Double y,
+	// Double z) {
+	//
+	// // change to longitude and latitude
+	// Double longitude = Math.atan(y / x);
+	// if (longitude < 0)
+	// longitude += Math.PI;
+	// Double latitude = Math.asin(z / earthRadius);
+	//
+	// // change from radian to degree
+	// longitude = rad2deg(longitude);
+	// latitude = rad2deg(latitude);
+	// List<Double> result = new ArrayList<Double>();
+	// result.add(latitude);
+	// result.add(longitude);
+	// return result;
+	// }
 
-	private double maxAllowDistance = 1000.0; // meters
-
-	// / <summary>
 	// / Check whether the distance from the goods position to the stage connect
 	// two point on path is not exceed the max allowed distance or not
-	// / </summary>
-	// / <param name="latGoods">latitude of goods</param>
-	// / <param name="longGoods">longitude of goods</param>
-	// / <param name="latStart">latitude of start point of the stage</param>
-	// / <param name="longStart">longitude of start point of the stage</param>
-	// / <param name="latEnd">latitude of end point of the stage</param>
-	// / <param name="longEnd">longitude of end point of the stage</param>
-	// / <returns></returns>
-	@SuppressWarnings("unused")
-	private boolean checkDistance(Double latGoods, Double longGoods,
+
+	// /latGoods: latitude of goods
+	// / longGoods: longitude of goods
+	// / latStart: latitude of start point of the stage
+	// / longStart: longitude of start point of the stage
+	// / latEnd: latitude of end point of the stage
+	// / longEnd: longitude of end point of the stage
+	public boolean checkDistance(Double latGoods, Double longGoods,
 			Double latStart, Double longStart, Double latEnd, Double longEnd) {
 
 		// change from longitude and latitude to coordinate 3D
@@ -104,9 +102,9 @@ public class MatchingProcess {
 
 		// find vector connect goods point and end point
 		List<Double> vector2 = new ArrayList<Double>();
-		vector1.add(coordGoods.get(0) - coordEnd.get(0));
-		vector1.add(coordGoods.get(1) - coordEnd.get(1));
-		vector1.add(coordGoods.get(2) - coordEnd.get(2));
+		vector2.add(coordGoods.get(0) - coordEnd.get(0));
+		vector2.add(coordGoods.get(1) - coordEnd.get(1));
+		vector2.add(coordGoods.get(2) - coordEnd.get(2));
 
 		// find the dot product of two above vectors
 		List<Double> dotProduct = new ArrayList<Double>();
