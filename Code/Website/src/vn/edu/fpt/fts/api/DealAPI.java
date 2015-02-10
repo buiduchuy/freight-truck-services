@@ -104,38 +104,6 @@ public class DealAPI {
 	}
 
 	@POST
-	@Path("Update")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String updateDeal(MultivaluedMap<String, String> params) {
-		Deal deal;
-		try {
-			deal = new Deal();
-			deal.setPrice(Double.valueOf(params.getFirst("price")));
-			deal.setNotes(params.getFirst("notes"));
-			deal.setCreateTime(params.getFirst("createTime"));
-			deal.setSender(params.getFirst("sender"));
-			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
-			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
-			deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
-			deal.setDealStatusID(Integer.valueOf(params
-					.getFirst("dealStatusID")));
-			deal.setActive(Integer.valueOf(params.getFirst("active")));
-
-			int ret = dealDao.updateDeal(deal);
-
-			if (ret <= 0) {
-				return "Fail";
-			}
-		} catch (NumberFormatException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		}
-		return "Success";
-	}
-
-	@POST
 	@Path("getDealByDriverID")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Deal> getDealByDriverID(MultivaluedMap<String, String> params) {
@@ -148,7 +116,7 @@ public class DealAPI {
 	@Path("getDealByOwnerID")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Deal> getDealByOwnerID(MultivaluedMap<String, String> params) {
-		List<Deal> l_deals = dealDao.getDealByOnwerID(Integer.valueOf(params
+		List<Deal> l_deals = dealDao.getDealByOwnerID(Integer.valueOf(params
 				.getFirst("ownerID")));
 		return l_deals;
 	}
