@@ -10,18 +10,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Gửi đề nghị mới"
-            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/textView3"
@@ -31,42 +23,28 @@
             android:text="Địa điểm bắt đầu: A\nĐịa điểm kết thúc: B\nNgày bắt đầu: 5/5/2015\nKhối lượng: 5 tấn\nLoại hàng: Cá tôm"
             android:textSize="15dp" />
 
-        <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="10dp"
-                android:text="Phí chuyên chở:"
-                android:textSize="15dp" />
-
-            <EditText
-                android:id="@+id/editText1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/back"
-                android:ems="10"
-                android:layout_marginTop="5dp" >
-
-                <requestFocus />
-            </EditText>
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ghi chú:"
-            android:textSize="15dp"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="10"
+            android:hint="Giá đề nghị" >
+
+            <requestFocus />
+        </EditText>
 
         <EditText
             android:id="@+id/editText2"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
-            android:background="@drawable/back"
             android:ems="10"
-            android:layout_marginTop="5dp" >
+            android:hint="Ghi chú" >
 
             <requestFocus />
         </EditText>

@@ -138,11 +138,11 @@ public class CurrentRoute extends Fragment {
 							else if(rs3.getInt("GoodsCategoryID") == 2) {
 								content += "hàng dễ vỡ, ";
 							}
-							else if(rs3.getInt("GoodsCategoryID") == 3) {
+							else if(rs3.getInt("GoodsCategoryID") == 4) {
 								content += "hàng dễ cháy nổ, ";
 							}
-							else if(rs3.getInt("GoodsCategoryID") == 4) {
-								content += "các loại hàng khác, ";
+							else if(rs3.getInt("GoodsCategoryID") == 5) {
+								content += "hàng thực phẩm, ";
 							}
 						}
 						content = content.substring(0, content.length() - 2);
