@@ -24,12 +24,14 @@ import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
+import vn.edu.fpt.fts.dao.OrderStatusDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.pojo.OrderStatus;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 
@@ -64,6 +66,7 @@ public class ControllerManageOrder extends HttpServlet {
 			DriverDAO driverDao = new DriverDAO();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
+			OrderStatusDAO orderStatusDao = new OrderStatusDAO();
 			Common common = new Common();
 
 			if ("manageOrder".equals(action)) {
@@ -92,17 +95,21 @@ public class ControllerManageOrder extends HttpServlet {
 				rd.forward(request, response);
 			}
 			if ("viewDetailOrder".equals(action)) {
-				int idGood= Integer.parseInt(request.getParameter("idGood"));
-				Order order= orderDao.
+				int idGood = Integer.parseInt(request.getParameter("idGood"));
+				Order order = orderDao.getOrderByGoodsID(idGood);
+
 				try {
-					Goods goodDetail=goodDao.getGoodsByID(idGood);
+				OrderStatus trackingStatus = orderStatusDao.getOrderStatusByID(order.getOrderStatusID());
+					Goods goodDetail = goodDao.getGoodsByID(idGood);
 					goodDetail.setPickupTime(common.changeFormatDate(
-							goodDetail.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
-							"dd-MM-yyyy"));
+							goodDetail.getPickupTime(),
+							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 					goodDetail.setDeliveryTime(common.changeFormatDate(
-							goodDetail.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
-							"dd-MM-yyyy"));
+							goodDetail.getDeliveryTime(),
+							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 					session.setAttribute("detailOrder", goodDetail);
+					session.setAttribute("orderStatus", trackingStatus);
+
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-order.jsp");
 					rd.forward(request, response);

@@ -6,8 +6,8 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
 <div class="large-12 columns">
@@ -178,7 +178,57 @@
 									</div>
 
 								</div>
+								<div class="row">
+									<div class="extra-title">
+										<h3>Tracking hoá đơn</h3>
+									</div>
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Trạng thái </label>
+										</div>
+										<div class="small-4 columns left">
+											<c:set var="orderStatus" value="${sessionScope.orderStatus }" />
+											<c:if test="${not empty orderStatus }">
+												<input type="text" id="right-label"
+													value="${orderStatus.orderStatusName}" readonly="readonly" />
+											</c:if>
 
+										</div>
+									</div>
+
+								</div>
+								<div class="row">
+									<div class="large-12 columns">
+										<div class="submit-area">
+											<a href="ControllerManageOrder?btnAction=manageOrder"
+												class="button secondary"> <i class="icon-mail-reply"></i>
+												Trở về trước
+											</a>
+											<fmt:parseDate value="${detailGood1.deliveryTime }" var="parsedDate" pattern="yyyy-MM-dd"/>
+											<jsp:useBean id="currentDate" type="java.util.Date" />
+											<fmt:formatDate var="now" value="${currentDate} pattern=" yyyy-MM-dd"/>
+											<c:if test="test="${ parsedDate > now }">
+												<button class="button  alert"
+													onclick="return confirm('Bạn có muốn xoá hàng không?')"
+													name="btnAction" value="deleteGood">
+													<i class="icon-remove"> Báo mất hàng</i>
+
+												</button>
+											</c:if>
+
+											<c:if test="${orderStatus.orderStatusID==2}">
+												<a class="button success"
+													href="ControllerManageOrder?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
+													onclick="return confirm('Bạn có muốn xác nhận hoá đơn không?')">
+													<i class="icon-ok"></i> Xác nhận hoá đơn
+												</a>
+											</c:if>
+
+										</div>
+										</br>
+									</div>
+								</div>
+								<div class="row"></div>
 							</div>
 					</form>
 
@@ -187,7 +237,7 @@
 			</c:if>
 		</div>
 	</div>
-	
+
 </div>
 
 
