@@ -1,27 +1,20 @@
 <html lang="en">
-<jsp:include page="header.jsp"/>
-<div data-alert class="alert-box success radius">
-  This is a success alert with a radius.
-  <a href="#" class="close">&times;</a>
+<jsp:include page="header.jsp" />
+<div class="large-12 columns">
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		</div>
+	</div>
+	<div class="large-8 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		</div>
+	</div>
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		</div>
+	</div>
 </div>
-
-<div data-alert class="alert-box warning round inline">
-  This is a warning alert that is rounded.
-  <a href="#" class="close">&times;</a>
-</div>
-
-<div data-alert class="alert-box info radius">
-  This is an info alert with a radius.
-  <a href="#" class="close">&times;</a>
-</div>
-
-<div data-alert class="alert-box alert round">
-  This is an alert - alert that is rounded.
-  <a href="#" class="close">&times;</a>
-</div>
-
-<div data-alert class="alert-box secondary">
-  This is a secondary alert.
-  <a href="#" class="close">&times;</a>
-</div>
-<jsp:include page="footer.jsp"/>
+<jsp:include page="footer.jsp" />
