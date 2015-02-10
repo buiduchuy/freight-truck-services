@@ -48,7 +48,7 @@
                 <div class="row">
                     <center>
                         <div class="form-content large-6" style="border: 1px solid #ccc;padding: 10px;box-shadow: 1px 1px 2px 2px #CCC;margin-bottom: 50px;">
-                            <form action="#" method="post" accept-charset="utf-8" id="frm-register">
+                            <form action="ControllerAccount" method="post" accept-charset="utf-8" id="frm-register">
                                 <h2>Đăng ký tài khoản</h2>
                                 <span id="error-login" style="width: 100%;"></span>
                                 <hr />

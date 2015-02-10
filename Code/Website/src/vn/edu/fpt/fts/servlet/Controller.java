@@ -64,14 +64,7 @@ public class Controller extends HttpServlet {
 		GoodsDAO goodDao = new GoodsDAO();
 		String action = request.getParameter("btnAction");
 		HttpSession session = request.getSession(true);
-		if ("offAccount".equals(action)) {
-			session.removeAttribute("account");
-			session.removeAttribute("router");
-			session.removeAttribute("good");
-			session.removeAttribute("price");
-			RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-			rd.forward(request, response);
-		}
+		
 		if ("viewCreate_1".equals(action)) {
 			RequestDispatcher rd = request
 					.getRequestDispatcher("tao-hang-1.jsp");
@@ -107,7 +100,7 @@ public class Controller extends HttpServlet {
 				Goods good = (Goods) session.getAttribute("newGood");
 				Deal newDeal = new Deal(good.getPrice(), good.getNotes(),
 						createTime, "Owner", route.getRouteID(),
-						good.getGoodsID(), 1, 1);
+						good.getGoodsID(), 1, 1,1);
 				if (dea.insertDeal(newDeal) != -1) {
 					Route[] listRouter = (Route[]) session
 							.getAttribute("listRouter");
@@ -215,7 +208,7 @@ public class Controller extends HttpServlet {
 			int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 			Deal deleteDeal = dea.getDealByID(idDeal);
 			deleteDeal.setActive(0);
-			if (dea.updateDeal(deleteDeal) == 1) {
+			if (dea.insertDeal(deleteDeal) == 1) {
 				List<Deal> dealByOwner = new ArrayList<Deal>();
 				List<Deal> dealByDriver = new ArrayList<Deal>();
 				Goods goolast = (Goods) session.getAttribute("newGood");
@@ -257,7 +250,7 @@ public class Controller extends HttpServlet {
 			Deal changeDealStatus = dea.getDealByID(idDeal);
 
 			List<Deal> listHistory = new ArrayList<Deal>();
-			if (dea.updateDeal(changeDealStatus) == 1) {
+			if (dea.insertDeal(changeDealStatus) == 1) {
 				List<Deal> list = dea.getDealByRouteID(changeDealStatus
 						.getRouteID());
 				for (int i = 0; i < list.size(); i++) {
@@ -299,40 +292,7 @@ public class Controller extends HttpServlet {
 		DealOrderDAO dealOrderDao = new DealOrderDAO();
 		OrderDAO orderDao = new OrderDAO();
 		Common common= new Common();
-		if ("login".equals(action)) {
-			String email = request.getParameter("txtEmail");
-			String password = request.getParameter("txtPassword");
-			session.removeAttribute("errorLogin");
-			session.removeAttribute("account");
-			if (acc.checkLoginAccount(email, password) != null) {
-
-				Owner owner = ow.getOwnerByEmail(acc.checkLoginAccount(email,
-						password).getEmail());
-				List<GoodsCategory> list = goodCa.getAllGoodsCategory();
-
-				GoodsCategory[] typeGoods = new GoodsCategory[list.size()];
-				list.toArray(typeGoods);
-				session.setAttribute("typeGoods", typeGoods);
-				session.setAttribute("owner", owner);
-				session.setAttribute("account", owner.getLastName());
-				if (session.getAttribute("namePage") != null) {
-					String prePage = (String) session.getAttribute("namePage");
-					RequestDispatcher rd = request
-							.getRequestDispatcher(prePage);
-					rd.forward(request, response);
-				} else {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("index.jsp");
-					rd.forward(request, response);
-				}
-			} else {
-				session.setAttribute("errorLogin",
-						"Email hoặc mật khẩu không đúng. Xin đăng nhập lại !");
-				RequestDispatcher rd = request
-						.getRequestDispatcher("dang-nhap.jsp");
-				rd.forward(request, response);
-			}
-		}
+		
 		if ("next1".equals(action)) {
 			String pickupAddress = request.getParameter("txtpickupAddress");
 			String pickupTime = request.getParameter("txtpickupTime");
@@ -610,7 +570,7 @@ public class Controller extends HttpServlet {
 			String createTime = dateFormat.format(date);
 			Deal dealFromDriver = (Deal) session.getAttribute("dealFromDriver");
 			dealFromDriver.setDealStatusID(3);
-			if (dea.updateDeal(dealFromDriver) == 1) {
+			if (dea.insertDeal(dealFromDriver) == 1) {
 				Order order = new Order(dealFromDriver.getPrice(), false,
 						false, false, createTime, 1);
 				try {
@@ -657,7 +617,7 @@ public class Controller extends HttpServlet {
 		if ("denyDeal".equals(action)) {
 			Deal dealFromDriver = (Deal) session.getAttribute("dealFromDriver");
 			dealFromDriver.setDealStatusID(4);
-			if (dea.updateDeal(dealFromDriver) == 1) {
+			if (dea.insertDeal(dealFromDriver) == 1) {
 				List<Deal> dealByOwner = new ArrayList<Deal>();
 				List<Deal> dealByDriver = new ArrayList<Deal>();
 				Goods goolast = (Goods) session.getAttribute("newGood");

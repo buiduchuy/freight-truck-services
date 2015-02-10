@@ -84,7 +84,7 @@
                                                     <li><a href="Controller?btnAction=manageGoods"><i class="icon-desktop"></i>Quản lý hàng</a></li>
                                                     <li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu hình tài khoản</a></li>
                                                     <li><a href="lich-su-hang.jsp"><i class="icon-bar-chart"></i>Lịch sử giao dịch</a></li>
-                                                    <li><a href="Controller?btnAction=offAccount"><i class="icon-off"></i>Đăng xuất</a></li>
+                                                    <li><a href="ControllerAccount?btnAction=offAccount"><i class="icon-off"></i>Đăng xuất</a></li>
                                                 </ul>
                                             </li>
                                         </ul> 
