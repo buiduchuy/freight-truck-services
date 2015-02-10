@@ -222,14 +222,17 @@ public class CreateGoodsActivity extends Activity {
 		
 		// lay longitude va latitude
 		Bundle bundle = getIntent().getBundleExtra("info");
-		String flag = bundle.getString("flag");
-		if (flag.equals("pickup")) {
-			pickupLat = bundle.getDouble("lat");
-			pickupLng = bundle.getDouble("lng");
-		} else if (flag.equals("delivery")) {
-			deliverLat = bundle.getDouble("lat");
-			deliverLng = bundle.getDouble("lng");
+		if (bundle != null) {
+			String flag = bundle.getString("flag");
+			if (flag.equals("pickup")) {
+				pickupLat = bundle.getDouble("lat");
+				pickupLng = bundle.getDouble("lng");
+			} else if (flag.equals("delivery")) {
+				deliverLat = bundle.getDouble("lat");
+				deliverLng = bundle.getDouble("lng");
+			}			
 		}
+		
 		
 	}
 	

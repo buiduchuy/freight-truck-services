@@ -197,52 +197,6 @@ public class DealDAO {
 		return null;
 	}
 
-	public int updateDeal(Deal bean) {
-		Connection con = null;
-		PreparedStatement stmt = null;
-		int ret = 0;
-		try {
-			con = DBAccess.makeConnection();
-			String sql = "UPDATE Deal SET " + " Price = ?," + " Notes = ?,"
-					+ " CreateTime = ?," + " Sender = ?," + " RouteID = ?,"
-					+ " GoodsID = ?," + " DealStatusID = ?," + " Active = ? "
-					+ " WHERE DealID = '" + bean.getDealID() + "' ";
-			stmt = con.prepareStatement(sql);
-			int i = 1;
-
-			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setString(i++, bean.getNotes()); // Notes
-			stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			stmt.setString(i++, bean.getSender()); // Sender
-			stmt.setInt(i++, bean.getRouteID()); // RouteID
-			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
-			stmt.setInt(i++, bean.getRefDealID()); // RefDealID
-			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
-			stmt.setInt(i++, bean.getActive()); // Active
-
-			ret = stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			// TODO: handle exception
-			System.out.println("Can't update to Deal table");
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-			}
-		}
-		return ret;
-	}
-
 	public Deal getDealByID(int dealId) {
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -413,7 +367,7 @@ public class DealDAO {
 		return null;
 	}
 
-	public List<Deal> getDealByOnwerID(int onwerID) {
+	public List<Deal> getDealByOwnerID(int ownerID) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -426,7 +380,7 @@ public class DealDAO {
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
-			stm.setInt(i++, onwerID);
+			stm.setInt(i++, ownerID);
 
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();

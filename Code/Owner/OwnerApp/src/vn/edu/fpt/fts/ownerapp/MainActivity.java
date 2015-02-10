@@ -18,7 +18,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private ActionBar actionBar;
-	private String[] tabs = {"Hàng hóa", "Trạng thái"};
+	private String[] tabs = {"Hàng hóa", "Đơn hàng"};
 	
 	
 	
