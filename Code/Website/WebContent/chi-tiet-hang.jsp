@@ -19,7 +19,7 @@
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 700px;">
 
 				<div class="form-content">
-					<form action="Controller" method="post" accept-charset="utf-8">
+					<form action="ControllerManageGoods" method="post" accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
@@ -184,7 +184,7 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area">
-											<a href="Controller?btnAction=manageGoods"
+											<a href="ControllerManageGoods?btnAction=manageGoods"
 												class="button secondary"> <i class="icon-mail-reply"></i>
 												Trở về trước
 											</a>

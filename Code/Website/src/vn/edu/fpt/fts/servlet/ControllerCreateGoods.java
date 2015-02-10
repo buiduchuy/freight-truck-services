@@ -93,7 +93,6 @@ public class ControllerCreateGoods extends HttpServlet {
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-2.jsp");
 				rd.forward(request, response);
-				System.out.println("OK");
 			}
 			if ("save1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");

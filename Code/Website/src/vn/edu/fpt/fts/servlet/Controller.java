@@ -108,52 +108,7 @@ public class Controller extends HttpServlet {
 
 			}
 		}
-		if ("manageGoods".equals(action)) {
-			Owner owner = (Owner) session.getAttribute("owner");
-			List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
-			List<Goods> manageGood1 = new ArrayList<Goods>();
-			List<Goods> manageGood2 = new ArrayList<Goods>();
-			for (int i = 0; i < manageGood.size(); i++) {
-				if (manageGood.get(i).getActive() == 1) {
-					manageGood1.add(manageGood.get(i));
-				}
-				if (manageGood.get(i).getActive() == 2) {
-					manageGood2.add(manageGood.get(i));
-				}
-			}
-			Goods[] list1 = new Goods[manageGood1.size()];
-			manageGood1.toArray(list1);
-			Goods[] list2 = new Goods[manageGood2.size()];
-			manageGood2.toArray(list2);
-			session.setAttribute("listGood1", list1);
-			session.setAttribute("listGood2", list2);
-			RequestDispatcher rd = request
-					.getRequestDispatcher("quan-ly-hang.jsp");
-			rd.forward(request, response);
-		}
-		if ("viewDetailGood1".equals(action)) {
-			try {
-				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				Goods good = goodDao.getGoodsByID(idGood);
-				session.setAttribute("detailGood1", good);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("chi-tiet-hang.jsp");
-				rd.forward(request, response);
-			} catch (Exception ex) {
-
-			}
-		}if ("viewDetailGood2".equals(action)) {
-			try {
-				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				Goods good = goodDao.getGoodsByID(idGood);
-				session.setAttribute("detailGood2", good);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("chi-tiet-order.jsp");
-				rd.forward(request, response);
-			} catch (Exception ex) {
-
-			}
-		}
+		
 		if ("viewSuggest".equals(action)) {
 			List<Deal> dealByOwner = new ArrayList<Deal>();
 			List<Deal> dealByDriver = new ArrayList<Deal>();
@@ -296,80 +251,7 @@ public class Controller extends HttpServlet {
 					.getRequestDispatcher("goi-y-he-thong.jsp");
 			rd.forward(request, response);
 		}
-		if ("updateGood".equals(action)) {
-			Goods go = (Goods) session.getAttribute("detailGood1");
-			String pickupAddress = request.getParameter("txtpickupAddress");
-			String pickupTime = request.getParameter("txtpickupTime");
-			String deliveryAddress = request.getParameter("txtdeliveryAddress");
-			String deliveryTime = request.getParameter("txtdeliveryTime");
-			int weight = Integer.parseInt(request.getParameter("txtWeight"));
-			int goodsCategoryID = Integer.parseInt(request
-					.getParameter("ddlgoodsCategoryID"));
-			String notes = "";
-			try {
-				notes = notes + request.getParameter("txtNotes");
-			} catch (Exception ex) {
-
-			}
-			float a = Float.parseFloat("10");
-			double price = Double.parseDouble(request.getParameter("txtPrice"));
-			Goods good = new Goods(go.getGoodsID(), weight, price, pickupTime,
-					pickupAddress, deliveryTime, deliveryAddress, a, a, a, a,
-					notes, go.getCreateTime().toString(), 1, go.getOwnerID(),
-					goodsCategoryID);
-
-			if (goodDao.updateGoods(good) == 1) {
-
-				session.setAttribute("messageUpdateGood", "Cập nhật thành công");
-				RequestDispatcher rd = request
-						.getRequestDispatcher("Controller?btnAction=viewDetailGood1&idGood="
-								+ go.getGoodsID());
-				rd.forward(request, response);
-			} else {
-
-			}
-		}
-		if ("deleteGood".equals(action)) {
-			Goods go = (Goods) session.getAttribute("detailGood1");
-			go.setActive(0);
-			if (goodDao.updateGoods(go) == 1) {
-				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner.getOwnerID());
-				List<Goods> manageGood1 = new ArrayList<Goods>();
-				List<Goods> manageGood2 = new ArrayList<Goods>();
-				for (int i = 0; i < manageGood.size(); i++) {
-					if (manageGood.get(i).getActive() == 1) {
-						manageGood1.add(manageGood.get(i));
-					}
-					if (manageGood.get(i).getActive() == 2) {
-						manageGood2.add(manageGood.get(i));
-					}
-				}
-				Goods[] list1 = new Goods[manageGood1.size()];
-				manageGood1.toArray(list1);
-				Goods[] list2 = new Goods[manageGood2.size()];
-				manageGood2.toArray(list2);
-				session.setAttribute("listGood1", list1);
-				session.setAttribute("listGood2", list2);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("quan-ly-hang.jsp");
-				rd.forward(request, response);
-			} else {
-
-			}
-		}
-		if ("viewDetailGood1".equals(action)) {
-			try {
-				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				Goods good = goodDao.getGoodsByID(idGood);
-				session.setAttribute("detailGood1", good);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("chi-tiet-hang.jsp");
-				rd.forward(request, response);
-			} catch (Exception ex) {
-
-			}
-		}
+		
 		if ("confirmDeal".equals(action)) {
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			Date date = new Date();
