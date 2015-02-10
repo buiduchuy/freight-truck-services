@@ -9,27 +9,59 @@
 <title>Chi tiết đề nghị</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="header.jsp" />
-<c:set var="historyDeal" value="${sessionScope.historyDeal}" />
-<section class="container">
-	<center>
+<c:set var="historyDeal" value="${sessionScope.listDealDetail}" />
+<c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
+<div class="large-12 columns">
+	<div class="large-2 columns">
 		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 700px;">
-
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="menu-doc-quan-ly-hang.jsp" />
+		</div>
+	</div>
+	<div class="large-8 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerMakeDeal" method="post" accept-charset="utf-8">
+				<form action="ControllerMakeDeal" method="post"
+					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
 								<font color="orange">Chi tiết đề nghị</font>
 							</h2>
+							<c:set var="messageSuccess"
+									value="${sessionScope.messageSuccess }" />
+								<c:set var="messageError"
+									value="${sessionScope.messageError }" />
+								<c:if test="${not empty messageSuccess}">
+									<div class="row">
+										<div data-alert class="alert-box success radius inline">
+											${messageSuccess} <a href="#" class="close">&times;</a>
+										</div>
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageSuccess");
+									%>
+								</c:if>
+								<c:if test="${not empty messageError}">
+									<div class="row">
+										<div data-alert class="alert-box alert radius inline">
+											${messageError} <a href="#" class="close">&times;</a>
+										</div>
+
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageError");
+									%>
+								</c:if>
 						</div>
 						<div class="large-12 columns">
-							<div data-alert="" class="alert-box radius secondary">
-								<label class="left"><font color="white" size="+1">Lịch
-										sử đề nghị</font></label> </br>
+							<div class="extra-title">
+								<h3>Lịch sử đề nghị</h3>
 							</div>
-							<table id="example" class="display" cellspacing="0"
-											width="100%">
+							<table id="example" class="display" cellspacing="0" width="100%">
 								<thead>
 									<tr>
 										<th><h3>
@@ -39,11 +71,12 @@
 												<font color="orange">NGƯỜI GỬI</font>
 											</h3></th>
 										<th><h3>
-												<font color="orange">GIÁ (NGÀN ĐỒNG)</font>
+												<font color="orange">GIÁ</font>
 											</h3></th>
 										<th><h3>
 												<font color="orange">GHI CHÚ</font>
 											</h3></th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -51,9 +84,20 @@
 										<c:forEach var="history" items="${historyDeal }">
 											<tr>
 												<td>${history.createTime }</td>
-												<td>${history.sender }</td>
+												<td>${history.createBy }</td>
 												<td>${history.price }</td>
 												<td>${history.notes }</td>
+												<c:choose>
+													<c:when test="${history.createBy== 'Driver' }">
+														<td><a class="button success"
+															href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }">Chấp
+																nhận</a></td>
+													</c:when>
+													<c:otherwise>
+														<td><a class="button success disabled">Chấp
+																nhận</a></td></td>
+													</c:otherwise>
+												</c:choose>
 											</tr>
 										</c:forEach>
 									</c:if>
@@ -63,28 +107,16 @@
 
 							</table>
 							</br>
-							<div class="submit-area">
-								<div class="submit-area right">
-									<button class="success" name="btnAction" value="confirmDeal"
-										onclick="return confirm('Bạn có muốn chấp nhận đề nghị không?')">
-										<i class="icon-ok"></i> Chấp nhận
-									</button>
-									<button name="btnAction" value="denyDeal" class="alert"
-										onclick="return confirm('Bạn có muốn từ chối đề nghị không?')">
-										<i class="icon-remove"></i> Từ chối
-									</button>
 
-								</div>
-							</div>
 						</div>
 						</br>
 				</form>
-				<form action="ControllerMakeDeal" method="post" accept-charset="utf-8">
+				<form action="ControllerMakeDeal" method="post"
+					accept-charset="utf-8">
 					<div class="large-12 columns">
 						</br>
-						<div data-alert="" class="alert-box radius secondary">
-							<label class="left"><font color="white" size="+1">Phản
-									hồi</font></label> </br>
+						<div class="extra-title">
+							<h3>Phản hồi</h3>
 						</div>
 						<div class="row">
 							<div class="small-3 columns">
@@ -94,7 +126,8 @@
 							<div class="small-6 columns">
 								<input onkeypress="return keyPhone(event);" type="text"
 									id="right-label" placeholder="" required=""
-									data-errormessage-value-missing="Vui lòng nhập giá thương lượng !" name="txtPrice"/>
+									data-errormessage-value-missing="Vui lòng nhập giá thương lượng !"
+									name="txtPrice" />
 							</div>
 							<div class="small-3 columns">
 								<label for="right-label" class="left inline">Ngàn đồng</label>
@@ -111,7 +144,6 @@
 							<div class="small-3 columns"></div>
 							<div class="submit-area">
 								<div class="submit-area right">
-
 									<button name="btnAction" value="sendOffer"
 										onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 										<i class="icon-mail-forward"></i> Gửi
@@ -125,18 +157,21 @@
 
 
 					</div>
+				</form>
 			</div>
-			</form>
-
-
 		</div>
-
+	</div>
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 		</div>
-		</br>
+	</div>
+</div>
 
-	</center>
 
-</section>
+
+
+
 <script>
     function keyPhone(e)
     {

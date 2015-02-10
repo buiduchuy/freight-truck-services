@@ -14,12 +14,17 @@
 <c:set var="price" value="${sessionScope.price}" />
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
-<section class="container">
-	<center>
+<div class="large-12 columns">
+	<div class="large-2 columns">
 		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 850px;">
-
-			<div class="form-content">
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<jsp:include page="menu-doc-quan-ly.jsp"/>
+		</div>
+	</div>
+	<div class="large-8 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<div class="form-content">
 				<form action="#" method="post" accept-charset="utf-8"
 					enctype="multipart/form-data" data-abide="" novalidate="novalidate">
 					<div class="row">
@@ -145,18 +150,7 @@
 
 										</table>
 										</br>
-										<div class="pull-left">
-											<select name="smart-action"
-												style="width: 180px; margin-right: 10px;">
-												<option value="0">-- Chức năng --</option>
-
-												<option value="cancel" selected="">Xoá nhanh hàng</option>
-											</select> <a class="button " id="delete">Thực hiện</a>
-										</div>
-						
-									
-
-					
+			
 
 							</div>
 
@@ -170,11 +164,14 @@
 
 
 			</div>
-
 		</div>
-		</br>
+	</div>
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		</div>
+	</div>
+</div>
 
-	</center>
 
-</section>
 <jsp:include page="footer.jsp" />

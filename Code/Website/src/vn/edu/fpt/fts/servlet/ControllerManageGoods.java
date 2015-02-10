@@ -84,6 +84,8 @@ public class ControllerManageGoods extends HttpServlet {
 				session.removeAttribute("router");
 				session.removeAttribute("good");
 				session.removeAttribute("price");
+				Goods good = goodDao.getGoodsByID(IdGood);
+				session.setAttribute("detailGood1", good);
 				session.setAttribute("newGood", goodDao.getGoodsByID(IdGood));
 				session.setAttribute("listRouter", listRou);
 				session.setAttribute("listDriver", listDri);

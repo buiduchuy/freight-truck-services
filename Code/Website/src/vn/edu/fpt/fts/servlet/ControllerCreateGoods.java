@@ -247,19 +247,12 @@ public class ControllerCreateGoods extends HttpServlet {
 				listDriver.toArray(listDri);
 				int idnewGood = goodDao.insertGoods(goo);
 				if (idnewGood != -1) {
-					System.out.println(idnewGood);
-					session.removeAttribute("router");
-					session.removeAttribute("good");
-					session.removeAttribute("price");
-					session.setAttribute("newGood",
-							goodDao.getGoodsByID(idnewGood));
-					session.setAttribute("listRouter", listRou);
-					session.setAttribute("listDriver", listDri);
 					session.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
-					
+
 					RequestDispatcher rd = request
-							.getRequestDispatcher("goi-y-he-thong.jsp");
+							.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+									+ idnewGood);
 					rd.forward(request, response);
 				} else {
 					session.setAttribute("messageError",

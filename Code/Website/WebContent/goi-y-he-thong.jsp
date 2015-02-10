@@ -8,15 +8,20 @@
 <!DOCTYPE html>
 <title>Gợi ý hệ thống</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="message" value="${sessionScope.messageCreateGood }" />
 <c:set var="dri" value="${sessionScope.listDriver}" />
+<c:set var="detailGood1" value="${sessionScope.detailGood1}" />
 <jsp:include page="header.jsp" />
-
-<section class="container">
-
-	<center>
+<div class="large-12 columns">
+	<div class="large-2 columns">
 		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 900px;">
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<jsp:include page="menu-doc-quan-ly-hang.jsp"/>
+		</div>
+	</div>
+	<div class="large-8 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		
 
 			<div class="form-content">
 				<form action="ControllerMakeDeal" method="get"
@@ -63,16 +68,12 @@
 										<th width="50"><h4>
 												<font color="orange">#</font>
 											</h4></th>
-										<th width="150"><font color="orange">Địa điểm bắt
+										<th ><font color="orange">Địa điểm bắt
 												đầu</font></th>
 										<th width="150"><font color="orange">Địa điểm kết
 												thúc</font></th>
-										<th width="150"><font color="orange">Gía (ngàn
-												đồng)</font></th>
-										<th width="150"><font color="orange">Điểm uy tín</font></th>
-										<th width="150"><a class="button success expand"
-											href="ControllerMakeDeal?btnAction=viewSuggest"> Các đề
-												nghị </a></th>
+											<th width="150"><font color="orange">Điểm uy tín</font></th>
+										<th width="150"></th>
 									</tr>
 
 								</thead>
@@ -89,7 +90,6 @@
 												<td>${count}</td>
 												<td>${rows.startingAddress}</td>
 												<td>${rows.destinationAddress}</td>
-												<td>1</td>
 												<c:if test="${not empty dri }">
 													<c:forEach var="driver" items="${dri }">
 														<c:if test="${driver.driverID==rows.driverID }">
@@ -124,11 +124,21 @@
 			</div>
 
 		</div>
-		</br>
+	</div>
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		</div>
+	</div>
+</div>
 
-	</center>
 
-</section>
+
+
+
+
+
+
 
 
 <jsp:include page="footer.jsp" />
