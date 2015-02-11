@@ -247,6 +247,7 @@ public class ControllerCreateGoods extends HttpServlet {
 				listDriver.toArray(listDri);
 				int idnewGood = goodDao.insertGoods(goo);
 				if (idnewGood != -1) {
+					System.out.println(idnewGood);
 					session.removeAttribute("router");
 					session.removeAttribute("good");
 					session.removeAttribute("price");
@@ -254,14 +255,14 @@ public class ControllerCreateGoods extends HttpServlet {
 							goodDao.getGoodsByID(idnewGood));
 					session.setAttribute("listRouter", listRou);
 					session.setAttribute("listDriver", listDri);
-					session.setAttribute("messageCreateGood",
-							"Tạo hàng thành công");
+					session.setAttribute("messageSuccess",
+							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
 					
 					RequestDispatcher rd = request
 							.getRequestDispatcher("goi-y-he-thong.jsp");
 					rd.forward(request, response);
 				} else {
-					session.setAttribute("errorCreateGood",
+					session.setAttribute("messageError",
 							"Có lỗi khi tạo hàng. Vui lòng thử lại");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("tao-hang-4.jsp");

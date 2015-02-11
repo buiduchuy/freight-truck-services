@@ -24,15 +24,39 @@
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
-								<font color="orange">Gợi ý từ hệ thống</font>
+								<font color="orange">Danh sách các lộ trình thích hợp</font>
 							</h2>
+							<c:set var="messageSuccess"
+									value="${sessionScope.messageSuccess }" />
+								<c:set var="messageError"
+									value="${sessionScope.messageError }" />
+								<c:if test="${not empty messageSuccess}">
+									<div class="row">
+										<div data-alert class="alert-box success radius inline">
+											${messageSuccess} <a href="#" class="close">&times;</a>
+										</div>
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageSuccess");
+									%>
+								</c:if>
+								<c:if test="${not empty messageError}">
+									<div class="row">
+										<div data-alert class="alert-box alert radius inline">
+											${messageError} <a href="#" class="close">&times;</a>
+										</div>
+
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageError");
+									%>
+								</c:if>
 						</div>
 					
 						<div class="large-12 columns">
-							<div data-alert="" class="alert-box radius secondary">
-								<label class="left"><font color="white" size="+1">Danh
-										sách các lộ trình phù hợp</font></label> </br>
-							</div>
+						
 							<table id="example" class="display" cellspacing="0" width="100%">
 								<thead>
 									<tr>

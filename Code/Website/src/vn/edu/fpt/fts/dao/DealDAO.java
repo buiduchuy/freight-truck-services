@@ -47,7 +47,15 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
-			stmt.setInt(i++, bean.getRefDealID()); // RefDealID
+			
+			if (bean.getRefDealID() == 0) {
+				// RefDealID when input 0
+				stmt.setNull(i++, java.sql.Types.INTEGER);
+			} else {
+				// RefDealID when input # 0
+				stmt.setInt(i++, bean.getRefDealID());
+			}
+
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			stmt.executeUpdate();
@@ -435,7 +443,7 @@ public class DealDAO {
 		return null;
 	}
 
-	public static int updateDeal(Deal bean) {
+	public int updateDeal(Deal bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;

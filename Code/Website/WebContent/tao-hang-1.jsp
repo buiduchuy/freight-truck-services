@@ -16,10 +16,16 @@
 <jsp:include page="header.jsp" />
 <script src="js/foundation-datepicker.js"></script>
 <link rel="stylesheet" href="css/foundation-datepicker.css">
-<section class="container">
-	<center>
+<div class="large-12 columns">
+	<div class="large-2 columns">
+	<div class="form-content "
+		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<jsp:include page="menu-doc-tao-hang.jsp"/>
+	</div>
+	</div>
+	<div class="large-8 columns">
 		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 
 			<jsp:include page="menu-tao-hang.jsp" />
 
@@ -200,8 +206,22 @@
 
 			</form>
 		</div>
-	</center>
-</section>
+	</div>
+	<div class="large-2 columns">
+	<div class="form-content"
+		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+	</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
 
 <!-- autocomplete place google API -->
 <script> src = "https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places" ></script>

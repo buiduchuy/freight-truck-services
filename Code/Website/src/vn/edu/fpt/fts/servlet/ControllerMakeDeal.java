@@ -103,9 +103,7 @@ public class ControllerMakeDeal extends HttpServlet {
 							"yyyy/MM/dd HH:mm:ss");
 					Date date = new Date();
 					String createTime = dateFormat.format(date);
-					Deal newDeal = new Deal(good.getPrice(), good.getNotes(),
-							createTime, "Owner", route.getRouteID(),
-							good.getGoodsID(), 1, 0, 1);
+					Deal newDeal= new Deal(good.getPrice(), good.getNotes(), createTime, "Owner", route.getRouteID(), good.getGoodsID(), 0, 1, 1);
 					if (dealDao.insertDeal(newDeal) != -1){
 						System.out.println(dealDao.insertDeal(newDeal));
 					}

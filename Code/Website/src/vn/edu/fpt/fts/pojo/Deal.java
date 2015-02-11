@@ -35,6 +35,20 @@ public class Deal implements Serializable {
 	public Deal() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	//not have refDealID
+	public Deal(double price, String notes, String createTime, String createBy,
+			int routeID, int goodsID, int dealStatusID, int active) {
+		super();
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.createBy = createBy;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
+		this.active = active;
+	}
 
 	public Deal(double price, String notes, String createTime, String createBy,
 			int routeID, int goodsID, int refDealID, int dealStatusID,

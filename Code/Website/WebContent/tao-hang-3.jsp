@@ -10,12 +10,18 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="pricePre" value="${sessionScope.price}" />
 <jsp:include page="header.jsp" />
-<section class="container">
-	<center>
+<div class="large-12 columns">
+	<div class="large-2 columns">
+	<div class="form-content"
+		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+	<jsp:include page="menu-doc-tao-hang.jsp"/>
+	</div>
+	</div>
+	<div class="large-8 columns">
 		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
-			<jsp:include page="menu-tao-hang.jsp" />
-			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<jsp:include page="menu-tao-hang.jsp" />
+		<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
 				<c:choose>
 					<c:when test="${not empty pricePre }">
 						<div class="row">
@@ -67,7 +73,7 @@
 										</label>
 										<div class="submit-area right">
 
-											<a href="Controller?btnAction=viewCreate_2"
+											<a href="ControllerCreateGoods?btnAction=viewCreate_2"
 												class="button secondary"><i class="icon-mail-reply"></i>
 												Trở về</a>
 												<button class="" name="btnAction" value="save3">
@@ -133,7 +139,7 @@
 										</label>
 										<div class="submit-area right">
 
-											<a href="Controller?btnAction=viewCreate_2"
+											<a href="ControllerCreateGoods?btnAction=viewCreate_2"
 												class="button secondary"><i class="icon-mail-reply"></i>
 												Trở về</a>
 											<button class="success" name="btnAction" value="next3">
@@ -149,13 +155,18 @@
 					</c:otherwise>
 				</c:choose>
 			</form>
-
 		</div>
+	</div>
+	<div class="large-2 columns">
+	<div class="form-content"
+		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+	</div>
+	</div>
+</div>
 
 
-	</center>
 
-</section>
+
 <script>
     function keyPhone(e)
     {
