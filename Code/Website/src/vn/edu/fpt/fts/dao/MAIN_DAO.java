@@ -64,9 +64,8 @@ public class MAIN_DAO {
 		// listRouteGoodsCategory.size());
 		
 		List<Order> list = new ArrayList<Order>();
-		list = orderDao.getOrderByGoodsID(11);
 
-		System.out.println(list.size());
+		System.out.println(orderDao.getOrderByGoodsID(11).getCreateTime());
 
 	}
 

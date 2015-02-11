@@ -247,18 +247,18 @@ public class OrderDAO {
 		return null;
 	}
 
-	public List<Order> getOrderByGoodsID(int goodsID) {
+	public Order getOrderByGoodsID(int goodsID) {
 		OrderDAO orderDao = new OrderDAO();
 		List<Order> list = new ArrayList<Order>();
-		List<Order> listOrderByGoodsID = new ArrayList<Order>();
+		Order order = new Order();
 
 		list = orderDao.getAllOrder();
 
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).getDeal() != null) {
-				listOrderByGoodsID.add(list.get(i));
+				order = list.get(i);
 			}
 		}
-		return listOrderByGoodsID;
+		return order;
 	}
 }
