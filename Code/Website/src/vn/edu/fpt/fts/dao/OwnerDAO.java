@@ -137,14 +137,14 @@ public class OwnerDAO {
 			Owner owner;
 			while (rs.next()) {
 				owner = new Owner();
-				owner.setOwnerID(Integer.valueOf(rs.getString("OwnerID")));
+				owner.setOwnerID(rs.getInt("OwnerID"));
 				owner.setEmail(rs.getString("Email"));
 				owner.setFirstName(rs.getString("FirstName"));
 				owner.setLastName(rs.getString("LastName"));
-				owner.setGender(Integer.valueOf(rs.getInt("Gender")));
+				owner.setGender(rs.getInt("Gender"));
 				owner.setPhone(rs.getString("Phone"));
 				owner.setAddress(rs.getString("Address"));
-				owner.setActive(Integer.valueOf(rs.getString("Active")));
+				owner.setActive(rs.getInt("Active"));
 				owner.setCreateBy(rs.getString("CreateBy"));
 				owner.setCreateTime(rs.getString("CreateTime"));
 				owner.setUpdateBy(rs.getString("UpdateBy"));
