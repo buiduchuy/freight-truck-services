@@ -19,9 +19,24 @@ public class RouteGoodsCategory implements Serializable {
 	private static final long serialVersionUID = 8486213753223506260L;
 	private int routeID;
 	private int goodsCategoryID;
+	private GoodsCategory goodsCategory;
 
 	public RouteGoodsCategory() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public RouteGoodsCategory(int routeID, int goodsCategoryID,
+			GoodsCategory goodsCategory) {
+		super();
+		this.routeID = routeID;
+		this.goodsCategoryID = goodsCategoryID;
+		this.goodsCategory = goodsCategory;
+	}
+
+	public RouteGoodsCategory(int goodsCategoryID, GoodsCategory goodsCategory) {
+		super();
+		this.goodsCategoryID = goodsCategoryID;
+		this.goodsCategory = goodsCategory;
 	}
 
 	public int getRouteID() {
@@ -40,6 +55,14 @@ public class RouteGoodsCategory implements Serializable {
 		this.goodsCategoryID = goodsCategoryID;
 	}
 
+	public GoodsCategory getGoodsCategory() {
+		return goodsCategory;
+	}
+
+	public void setGoodsCategory(GoodsCategory goodsCategory) {
+		this.goodsCategory = goodsCategory;
+	}
+
 	public RouteGoodsCategory(int routeID, int goodsCategoryID) {
 		super();
 		this.routeID = routeID;
@@ -50,5 +73,5 @@ public class RouteGoodsCategory implements Serializable {
 		super();
 		this.goodsCategoryID = goodsCategoryID;
 	}
-	
+
 }

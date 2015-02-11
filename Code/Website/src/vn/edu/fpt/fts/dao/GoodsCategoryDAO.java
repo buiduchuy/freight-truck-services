@@ -103,7 +103,7 @@ public class GoodsCategoryDAO {
 		return ret;
 	}
 
-	public GoodsCategory getGoodsCategoriesByID(int goodsCategoryID) {
+	public GoodsCategory getGoodsCategoryByID(int goodsCategoryID) {
 
 		Connection con = null;
 		PreparedStatement stm = null;

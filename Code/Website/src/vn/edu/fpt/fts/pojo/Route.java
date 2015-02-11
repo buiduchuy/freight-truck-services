@@ -2,8 +2,6 @@ package vn.edu.fpt.fts.pojo;
 
 import java.util.List;
 
-
-
 /**
  * @author Huy
  *
@@ -27,8 +25,11 @@ public class Route implements java.io.Serializable {
 	private String createTime;
 	private int active;
 	private int driverID;
+
 	private List<RouteMarker> routeMarkers;
 	private List<Vehicle> vehicles;
+	private List<RouteGoodsCategory> routeGoodsCategory;
+	private List<GoodsCategory> goodsCategory;
 
 	public Route() {
 		// TODO Auto-generated constructor stub
@@ -37,7 +38,9 @@ public class Route implements java.io.Serializable {
 	public Route(String startingAddress, String destinationAddress,
 			String startTime, String finishTime, String notes, int weight,
 			String createTime, int active, int driverID,
-			List<RouteMarker> routeMarkers, List<Vehicle> vehicles) {
+			List<RouteMarker> routeMarkers, List<Vehicle> vehicles,
+			List<RouteGoodsCategory> routeGoodsCategory,
+			List<GoodsCategory> goodsCategory) {
 		super();
 		this.startingAddress = startingAddress;
 		this.destinationAddress = destinationAddress;
@@ -50,14 +53,17 @@ public class Route implements java.io.Serializable {
 		this.driverID = driverID;
 		this.routeMarkers = routeMarkers;
 		this.vehicles = vehicles;
+		this.routeGoodsCategory = routeGoodsCategory;
+		this.goodsCategory = goodsCategory;
 	}
-
-
 
 	public Route(int routeID, String startingAddress,
 			String destinationAddress, String startTime, String finishTime,
 			String notes, int weight, String createTime, int active,
-			int driverID, List<RouteMarker> routeMarkers, List<Vehicle> vehicles) {
+			int driverID, List<RouteMarker> routeMarkers,
+			List<Vehicle> vehicles,
+			List<RouteGoodsCategory> routeGoodsCategory,
+			List<GoodsCategory> goodsCategory) {
 		super();
 		RouteID = routeID;
 		this.startingAddress = startingAddress;
@@ -71,9 +77,9 @@ public class Route implements java.io.Serializable {
 		this.driverID = driverID;
 		this.routeMarkers = routeMarkers;
 		this.vehicles = vehicles;
+		this.routeGoodsCategory = routeGoodsCategory;
+		this.goodsCategory = goodsCategory;
 	}
-
-
 
 	public int getRouteID() {
 		return RouteID;
@@ -169,6 +175,23 @@ public class Route implements java.io.Serializable {
 
 	public void setVehicles(List<Vehicle> vehicles) {
 		this.vehicles = vehicles;
+	}
+
+	public List<RouteGoodsCategory> getRouteGoodsCategory() {
+		return routeGoodsCategory;
+	}
+
+	public void setRouteGoodsCategory(
+			List<RouteGoodsCategory> routeGoodsCategory) {
+		this.routeGoodsCategory = routeGoodsCategory;
+	}
+
+	public List<GoodsCategory> getGoodsCategory() {
+		return goodsCategory;
+	}
+
+	public void setGoodsCategory(List<GoodsCategory> goodsCategory) {
+		this.goodsCategory = goodsCategory;
 	}
 
 }

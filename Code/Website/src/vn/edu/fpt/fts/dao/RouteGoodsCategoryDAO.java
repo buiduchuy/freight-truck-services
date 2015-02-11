@@ -5,7 +5,10 @@ package vn.edu.fpt.fts.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,6 +60,60 @@ public class RouteGoodsCategoryDAO {
 			}
 		}
 		return ret;
+	}
+
+	public List<RouteGoodsCategory> getListRouteGoodsCategoryByRouteID(
+			int routeID) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM RouteGoodsCategory where RouteID=?";
+			stm = con.prepareStatement(sql);
+			stm.setInt(1, routeID);
+			rs = stm.executeQuery();
+			List<RouteGoodsCategory> list = new ArrayList<RouteGoodsCategory>();
+			RouteGoodsCategory routeGoodsCategory;
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			while (rs.next()) {
+				routeGoodsCategory = new RouteGoodsCategory();
+
+				routeGoodsCategory.setRouteID(rs.getInt("RouteID"));
+				routeGoodsCategory.setGoodsCategoryID(rs
+						.getInt("GoodsCategoryID"));
+				routeGoodsCategory.setGoodsCategory(goodsCategoryDao
+						.getGoodsCategoryByID(rs.getInt("RouteID")));
+
+				list.add(routeGoodsCategory);
+
+				return list;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Can't load data from RouteGoodsCategory table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out
+						.println("Can't load data from RouteGoodsCategory table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
 	}
 
 }

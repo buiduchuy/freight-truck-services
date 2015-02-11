@@ -249,8 +249,8 @@ public class GoodsDAO {
 
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
 
-				goods.setGoodsCategory(goodsCategoryDao
-						.getGoodsCategoriesByID(rs.getInt("GoodsCategoryID")));
+				goods.setGoodsCategory(goodsCategoryDao.getGoodsCategoryByID(rs
+						.getInt("GoodsCategoryID")));
 
 				list.add(goods);
 			}

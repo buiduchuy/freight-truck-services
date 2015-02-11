@@ -16,7 +16,7 @@ public class MatchingProcess {
 	private double earthRadius = 6371; // kilometers
 
 	// maxAllowDistance
-	private double maxAllowDistance = 0.5; // kilometers
+	// private double maxAllowDistance = 0.5; // kilometers
 
 	// convert from degree to radian
 	private Double deg2rad(Double deg) {
@@ -40,6 +40,7 @@ public class MatchingProcess {
 		double x = Math.cos(latitude) * Math.cos(longitude) * earthRadius;
 		double y = Math.cos(latitude) * Math.sin(longitude) * earthRadius;
 		double z = Math.sin(latitude) * earthRadius;
+
 		List<Double> result = new ArrayList<Double>();
 		result.add(x);
 		result.add(y);
@@ -68,15 +69,15 @@ public class MatchingProcess {
 
 	// / Check whether the distance from the goods position to the stage connect
 	// two point on path is not exceed the max allowed distance or not
-
-	// /latGoods: latitude of goods
+	// / latGoods: latitude of goods
 	// / longGoods: longitude of goods
 	// / latStart: latitude of start point of the stage
 	// / longStart: longitude of start point of the stage
 	// / latEnd: latitude of end point of the stage
 	// / longEnd: longitude of end point of the stage
-	public boolean checkDistance(Double latGoods, Double longGoods,
-			Double latStart, Double longStart, Double latEnd, Double longEnd) {
+	public Double checkDistance(Double latGoods, Double longGoods,
+			Double latStart, Double longStart, Double latEnd, Double longEnd,
+			Double maxAllowDistance) {
 
 		// change from longitude and latitude to coordinate 3D
 		List<Double> coordGoods = ChangeCoordinateMapToCoordinate3D(longGoods,
@@ -105,7 +106,31 @@ public class MatchingProcess {
 		vector2.add(coordGoods.get(0) - coordEnd.get(0));
 		vector2.add(coordGoods.get(1) - coordEnd.get(1));
 		vector2.add(coordGoods.get(2) - coordEnd.get(2));
+		
+		// distance from goods position to start point
+		Double length1 = Math.sqrt(vector1.get(0) * vector1.get(0)
+				+ vector1.get(1) * vector1.get(1) + vector1.get(2)
+				* vector1.get(2));
 
+		// distance from goods position to end point
+		Double length2 = Math.sqrt(vector2.get(0) * vector2.get(0)
+				+ vector2.get(1) * vector2.get(1) + vector2.get(2)
+				* vector2.get(2));
+
+		// check acute angle
+		Double signOfCos1 = (length1 * length1 + lengthOfPath * lengthOfPath - length2
+				* length2);
+		Double signOfCos2 = (length2 * length2 + lengthOfPath * lengthOfPath - length1
+				* length1);
+
+		if (signOfCos1 <= 0 || signOfCos2 <= 0) {
+			// the projection lies outside the segment
+			if (length1 > maxAllowDistance && length2 > maxAllowDistance)
+				return -1.0;
+			else {
+				return Math.min(length1, length2);
+			}
+		}
 		// find the dot product of two above vectors
 		List<Double> dotProduct = new ArrayList<Double>();
 		dotProduct.add(vector1.get(1) * vector2.get(2) - vector1.get(2)
@@ -115,22 +140,13 @@ public class MatchingProcess {
 		dotProduct.add(vector1.get(0) * vector2.get(1) - vector1.get(1)
 				* vector2.get(0));
 
-		// if the start point and end point are the same
-		if (lengthOfPath == 0) {
-			if (Math.sqrt(vector1.get(0) * vector1.get(0) + vector1.get(1)
-					* vector1.get(1) + vector1.get(2) * vector1.get(2)) > maxAllowDistance) {
-				return false;
-			}
-			return true;
-		}
-
 		// find the distance by the area of the triangle
 		double result = Math.sqrt(dotProduct.get(0) * dotProduct.get(0)
 				+ dotProduct.get(1) * dotProduct.get(1) + dotProduct.get(2)
 				* dotProduct.get(2))
 				/ lengthOfPath;
 		if (result > maxAllowDistance)
-			return false;
-		return true;
+			return -1.0;
+		return result;
 	}
 }

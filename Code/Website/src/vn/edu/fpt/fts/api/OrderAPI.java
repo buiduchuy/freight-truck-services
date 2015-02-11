@@ -22,6 +22,7 @@ import vn.edu.fpt.fts.pojo.Order;
  * @author Huy
  *
  */
+@Path("/Order")
 public class OrderAPI {
 	private final static String TAG = "GoodsCategoryAPI";
 	OrderDAO orderDao = new OrderDAO();

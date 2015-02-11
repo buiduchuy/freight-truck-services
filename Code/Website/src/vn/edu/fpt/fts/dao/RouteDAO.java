@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
+import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 
 public class RouteDAO {
 
@@ -147,10 +149,16 @@ public class RouteDAO {
 			stm.setInt(1, Id);
 			rs = stm.executeQuery();
 			Route route;
+			List<GoodsCategory> goodsCategories = new ArrayList<GoodsCategory>();
+			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
+
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+
 			while (rs.next()) {
 				route = new Route();
 
-				route.setRouteID(rs.getInt("RouteID"));
+				route.setRouteID(Id);
 				route.setStartingAddress(rs.getString("StartingAddress"));
 				route.setDestinationAddress(rs.getString("DestinationAddress"));
 				route.setStartTime(rs.getString("StartTime"));
@@ -160,6 +168,19 @@ public class RouteDAO {
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(Integer.valueOf(rs.getString("Active")));
 				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
+
+				listRouteGoodsCategory = routeGoodsCategoryDao
+						.getListRouteGoodsCategoryByRouteID(Id);
+
+				for (int i = 0; i <= listRouteGoodsCategory.size()-1; i++) {
+					GoodsCategory goodsCategory = new GoodsCategory();
+					goodsCategory = goodsCategoryDao
+							.getGoodsCategoryByID(listRouteGoodsCategory.get(i)
+									.getGoodsCategoryID());
+					goodsCategories.add(goodsCategory);
+				}
+
+				route.setGoodsCategory(goodsCategories);
 				return route;
 			}
 
