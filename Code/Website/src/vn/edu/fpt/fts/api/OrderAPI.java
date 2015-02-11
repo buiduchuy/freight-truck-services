@@ -92,5 +92,24 @@ public class OrderAPI {
 
 		return null;
 	}
+	
+	@POST
+	@Path("getOrderByDriverID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Order getOrderByID(MultivaluedMap<String, String> params) {
+		Order order = new Order();
+		try {
+			order = orderDao.getOrderByID(Integer.valueOf(params
+					.getFirst("orderID")));
+			return order;
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return null;
+	}
 
 }
