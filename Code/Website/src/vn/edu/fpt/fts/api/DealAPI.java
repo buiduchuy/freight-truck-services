@@ -17,6 +17,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.pojo.Deal;
+import vn.edu.fpt.fts.process.UpdateDealProcess;
 
 /**
  * @author Huy
@@ -124,4 +125,20 @@ public class DealAPI {
 		return l_deals;
 	}
 
+	@POST
+	@Path("accept")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String acceptDeal(MultivaluedMap<String, String> params) {
+		try {
+			int dealID = Integer.valueOf(params.getFirst("dealID"));
+			UpdateDealProcess udp = new UpdateDealProcess();
+			udp.changeDealOwnerAccept(dealID);
+			return "Success";
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return "Fail";
+	}
 }

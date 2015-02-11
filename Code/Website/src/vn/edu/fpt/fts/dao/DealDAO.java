@@ -47,7 +47,7 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
-			
+
 			if (bean.getRefDealID() == 0) {
 				// RefDealID when input 0
 				stmt.setNull(i++, java.sql.Types.INTEGER);
@@ -464,7 +464,15 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
-			stmt.setInt(i++, bean.getRefDealID()); // RefDealID
+
+			if (bean.getRefDealID() == 0) {
+				// RefDealID when input 0
+				stmt.setNull(i++, java.sql.Types.INTEGER);
+			} else {
+				// RefDealID when input # 0
+				stmt.setInt(i++, bean.getRefDealID());
+			}
+
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			ret = stmt.executeUpdate();
