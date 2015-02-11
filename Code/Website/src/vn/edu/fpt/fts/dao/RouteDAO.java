@@ -101,10 +101,10 @@ public class RouteDAO {
 				route.setStartTime(rs.getString("StartTime"));
 				route.setFinishTime(rs.getString("FinishTime"));
 				route.setNotes(rs.getString("Notes"));
-				route.setWeight(Integer.valueOf(rs.getString("Weight")));
+				route.setWeight(rs.getInt("Weight"));
 				route.setCreateTime(rs.getString("CreateTime"));
-				route.setActive(Integer.valueOf(rs.getString("Active")));
-				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
+				route.setActive(rs.getInt("Active"));
+				route.setDriverID(rs.getInt("DriverID"));
 				route.setRouteMarkers(routeMarkderDAO
 						.getAllRouteMarkerByRouteID(route.getRouteID()));
 				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
@@ -151,10 +151,10 @@ public class RouteDAO {
 			Route route;
 			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
 			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
-			
+
 			GoodsCategory goodsCategory = new GoodsCategory();
 			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
-			
+
 			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
 			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 
@@ -167,15 +167,16 @@ public class RouteDAO {
 				route.setStartTime(rs.getString("StartTime"));
 				route.setFinishTime(rs.getString("FinishTime"));
 				route.setNotes(rs.getString("Notes"));
-				route.setWeight(Integer.valueOf(rs.getString("Weight")));
+				route.setWeight(rs.getInt("Weight"));
 				route.setCreateTime(rs.getString("CreateTime"));
-				route.setActive(Integer.valueOf(rs.getString("Active")));
-				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
-				route.setRouteMarkers(routeMarkerDao.getAllRouteMarkerByRouteID(Id));
-				
+				route.setActive(rs.getInt("Active"));
+				route.setDriverID(rs.getInt("DriverID"));
+				route.setRouteMarkers(routeMarkerDao
+						.getAllRouteMarkerByRouteID(Id));
+
 				listRouteGoodsCategory = routeGoodsCategoryDao
 						.getListRouteGoodsCategoryByRouteID(Id);
-				
+
 				for (int i = 0; i <= listRouteGoodsCategory.size() - 1; i++) {
 					goodsCategory = goodsCategoryDao
 							.getGoodsCategoryByID(listRouteGoodsCategory.get(i)
