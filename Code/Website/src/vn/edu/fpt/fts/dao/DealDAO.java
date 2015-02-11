@@ -33,22 +33,21 @@ public class DealDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO Deal ( " + "Price," + "Notes,"
-					+ "CreateTime," + "Sender," + "RouteID," + "GoodsID,"
-					+ "DealStatusID," + "RefDealID," + "Active," + "UpdateBy,"
-					+ "UpdateTime" + ") VALUES (" + "?, " + "?, " + "?, "
+					+ "CreateTime," + "CreateBy," + "RouteID," + "GoodsID,"
+					+ "DealStatusID," + "RefDealID," + "Active" + ") VALUES ("
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?)";
+					+ "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 
 			stmt.setDouble(i++, bean.getPrice()); // Price
 			stmt.setString(i++, bean.getNotes()); // Notes
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			stmt.setString(i++, bean.getSender()); // Sender
+			stmt.setString(i++, bean.getCreateBy()); // CreateBy
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
-			stmt.setInt(i++, bean.getRefDealID());// getRefDealID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
+			stmt.setInt(i++, bean.getRefDealID()); // RefDealID
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			stmt.executeUpdate();
@@ -104,7 +103,7 @@ public class DealDAO {
 				deal.setPrice(rs.getDouble("Price"));
 				deal.setNotes(rs.getString("Notes"));
 				deal.setCreateTime(rs.getString("CreateTime"));
-				deal.setSender(rs.getString("Sender"));
+				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setRefDealID(rs.getInt("RefDealID"));
@@ -163,7 +162,7 @@ public class DealDAO {
 				deal.setPrice(rs.getDouble("Price"));
 				deal.setNotes(rs.getString("Notes"));
 				deal.setCreateTime(rs.getString("CreateTime"));
-				deal.setSender(rs.getString("Sender"));
+				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setRefDealID(rs.getInt("RefDealID"));
@@ -224,7 +223,7 @@ public class DealDAO {
 				deal.setPrice(rs.getDouble("Price"));
 				deal.setNotes(rs.getString("Notes"));
 				deal.setCreateTime(rs.getString("CreateTime"));
-				deal.setSender(rs.getString("Sender"));
+				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setRefDealID(rs.getInt("RefDealID"));
@@ -281,7 +280,7 @@ public class DealDAO {
 				deal.setPrice(rs.getDouble("Price"));
 				deal.setNotes(rs.getString("Notes"));
 				deal.setCreateTime(rs.getString("CreateTime"));
-				deal.setSender(rs.getString("Sender"));
+				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setRefDealID(rs.getInt("RefDealID"));
@@ -342,7 +341,7 @@ public class DealDAO {
 				deal.setPrice(rs.getDouble("Price"));
 				deal.setNotes(rs.getString("Notes"));
 				deal.setCreateTime(rs.getString("CreateTime"));
-				deal.setSender(rs.getString("Sender"));
+				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setRefDealID(rs.getInt("RefDealID"));
@@ -402,7 +401,7 @@ public class DealDAO {
 				deal.setPrice(rs.getDouble("Price"));
 				deal.setNotes(rs.getString("Notes"));
 				deal.setCreateTime(rs.getString("CreateTime"));
-				deal.setSender(rs.getString("Sender"));
+				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setRefDealID(rs.getInt("RefDealID"));
@@ -434,6 +433,68 @@ public class DealDAO {
 			}
 		}
 		return null;
+	}
+
+	public static int updateDeal(Deal bean) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Goods SET " + " Weight = ?," + " Price = ?,"
+					+ " PickupTime = ?," + " PickupAddress = ?,"
+					+ " DeliveryTime = ?," + " DeliveryAddress = ?,"
+					+ " PickupMarkerLongtitude = ?,"
+					+ " PickupMarkerLatidute = ?,"
+					+ " DeliveryMarkerLongtitude = ?,"
+					+ " DeliveryMarkerLatidute = ?," + " Notes = ?,"
+					+ " CreateTime = ?," + " Active = ?," + " OwnerID = ?,"
+					+ " GoodsCategoryID = ? " + " WHERE GoodsID = '"
+					+ bean.getGoodsID() + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			// stmt.setInt(i++, bean.getWeight()); // Weight
+			// stmt.setDouble(i++, bean.getPrice()); // Price
+			// stmt.setString(i++, bean.getPickupTime()); // PickupTime
+			// stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
+			// stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
+			// stmt.setString(i++, bean.getDeliveryAddress()); //
+			// DeliveryAddress
+			// stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); //
+			// PickupMarkerLongtitude
+			// stmt.setFloat(i++, bean.getPickupMarkerLatidute()); //
+			// PickupMarkerLatidute
+			// stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); //
+			// DeliveryMarkerLongtitude
+			// stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); //
+			// DeliveryMarkerLatidute
+			// stmt.setString(i++, bean.getNotes()); // Notes
+			// stmt.setString(i++, bean.getCreateTime()); // CreateTime
+			// stmt.setInt(i++, bean.getActive()); // Active
+			// stmt.setInt(i++, bean.getOwnerID()); // OwnerID
+			// stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update to Goods table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
 	}
 
 }

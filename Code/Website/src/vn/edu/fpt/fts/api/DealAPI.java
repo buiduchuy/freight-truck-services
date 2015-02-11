@@ -79,17 +79,18 @@ public class DealAPI {
 		Deal deal;
 		try {
 			deal = new Deal();
+
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
 			deal.setCreateTime(params.getFirst("createTime"));
-			deal.setSender(params.getFirst("sender"));
+			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+			deal.setDealStatusID(Integer.valueOf(params
+					.getFirst("dealStatusID")));
 			if (!params.getFirst("refDealID").equals("")) {
 				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			}
-			deal.setDealStatusID(Integer.valueOf(params
-					.getFirst("dealStatusID")));
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
 
 			int ret = dealDao.insertDeal(deal);

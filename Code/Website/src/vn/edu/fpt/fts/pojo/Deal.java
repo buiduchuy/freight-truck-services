@@ -21,11 +21,11 @@ public class Deal implements Serializable {
 	private double price;
 	private String notes;
 	private String createTime;
-	private String sender;
+	private String createBy;
 	private int routeID;
 	private int goodsID;
-	private int refDealID;
 	private int dealStatusID;
+	private int refDealID;
 	private int active;
 
 	private Goods goods;
@@ -36,14 +36,14 @@ public class Deal implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Deal(double price, String notes, String createTime, String sender,
+	public Deal(double price, String notes, String createTime, String createBy,
 			int routeID, int goodsID, int refDealID, int dealStatusID,
 			int active) {
 		super();
 		this.price = price;
 		this.notes = notes;
 		this.createTime = createTime;
-		this.sender = sender;
+		this.createBy = createBy;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
 		this.refDealID = refDealID;
@@ -59,7 +59,7 @@ public class Deal implements Serializable {
 		this.price = price;
 		this.notes = notes;
 		this.createTime = createTime;
-		this.sender = sender;
+		this.createBy = createBy;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
 		this.refDealID = refDealID;
@@ -99,12 +99,12 @@ public class Deal implements Serializable {
 		this.createTime = createTime;
 	}
 
-	public String getSender() {
-		return sender;
+	public String getCreateBy() {
+		return createBy;
 	}
 
-	public void setSender(String sender) {
-		this.sender = sender;
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
 	}
 
 	public int getRouteID() {
