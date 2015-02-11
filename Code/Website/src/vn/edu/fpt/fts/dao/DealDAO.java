@@ -215,6 +215,7 @@ public class DealDAO {
 
 			GoodsDAO goodsDao = new GoodsDAO();
 			RouteDAO routeDao = new RouteDAO();
+			DealStatusDAO dealStatusDao = new DealStatusDAO();
 
 			while (rs.next()) {
 				Deal deal = new Deal();
@@ -232,7 +233,8 @@ public class DealDAO {
 
 				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
 				deal.setRoute(routeDao.getRouteById(rs.getInt("RouteID")));
-
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
 				return deal;
 			}
 

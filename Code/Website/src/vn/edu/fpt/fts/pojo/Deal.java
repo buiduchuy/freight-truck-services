@@ -4,7 +4,6 @@
 package vn.edu.fpt.fts.pojo;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,7 +30,7 @@ public class Deal implements Serializable {
 
 	private Goods goods;
 	private Route route;
-	private List<DealStatus> listDealStatus;
+	private DealStatus dealStatus;
 
 	public Deal() {
 		// TODO Auto-generated constructor stub
@@ -52,29 +51,9 @@ public class Deal implements Serializable {
 		this.active = active;
 	}
 
-	public Deal(double price, String notes, String createTime, String sender,
-			int routeID, int goodsID, int refDealID, int dealStatusID,
-			int active, Goods goods, Route route,
-			List<DealStatus> listDealStatus) {
-		super();
-		this.price = price;
-		this.notes = notes;
-		this.createTime = createTime;
-		this.sender = sender;
-		this.routeID = routeID;
-		this.goodsID = goodsID;
-		this.refDealID = refDealID;
-		this.dealStatusID = dealStatusID;
-		this.active = active;
-		this.goods = goods;
-		this.route = route;
-		this.listDealStatus = listDealStatus;
-	}
-
 	public Deal(int dealID, double price, String notes, String createTime,
 			String sender, int routeID, int goodsID, int refDealID,
-			int dealStatusID, int active, Goods goods, Route route,
-			List<DealStatus> listDealStatus) {
+			int dealStatusID, int active) {
 		super();
 		this.dealID = dealID;
 		this.price = price;
@@ -86,9 +65,6 @@ public class Deal implements Serializable {
 		this.refDealID = refDealID;
 		this.dealStatusID = dealStatusID;
 		this.active = active;
-		this.goods = goods;
-		this.route = route;
-		this.listDealStatus = listDealStatus;
 	}
 
 	public int getDealID() {
@@ -187,12 +163,12 @@ public class Deal implements Serializable {
 		this.route = route;
 	}
 
-	public List<DealStatus> getListDealStatus() {
-		return listDealStatus;
+	public DealStatus getDealStatus() {
+		return dealStatus;
 	}
 
-	public void setListDealStatus(List<DealStatus> listDealStatus) {
-		this.listDealStatus = listDealStatus;
+	public void setDealStatus(DealStatus dealStatus) {
+		this.dealStatus = dealStatus;
 	}
 
 }

@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
+import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Order;
 
 /**
@@ -133,21 +134,26 @@ public class OrderDAO {
 			stm.setInt(i++, orderId);
 
 			rs = stm.executeQuery();
-
+			DealOrderDAO dealOrderDao = new DealOrderDAO();
+			DealDAO dealDao = new DealDAO();
+			DealOrder dealOrder = new DealOrder();
+			Order order;
 			while (rs.next()) {
-				Order order = new Order();
+				order = new Order();
 
-				order.setOrderID(Integer.valueOf(rs.getString("OrderID")));
-				order.setPrice(Double.valueOf(rs.getString("Price")));
-				order.setStaffDeliveryStatus(Boolean.getBoolean(rs
-						.getString("StaffDeliveryStatus")));
-				order.setDriverDeliveryStatus(Boolean.getBoolean(rs
-						.getString("DriverDeliveryStatus")));
-				order.setOwnerDeliveryStatus(Boolean.getBoolean(rs
-						.getString("OwnerDeliveryStatus")));
+				order.setOrderID(rs.getInt("OrderID"));
+				order.setPrice(rs.getDouble("Price"));
+				order.setStaffDeliveryStatus(rs
+						.getBoolean("StaffDeliveryStatus"));
+				order.setDriverDeliveryStatus(rs
+						.getBoolean("DriverDeliveryStatus"));
+				order.setOwnerDeliveryStatus(rs
+						.getBoolean("OwnerDeliveryStatus"));
 				order.setCreateTime(rs.getString("CreateTime"));
-				order.setOrderStatusID(Integer.valueOf(rs
-						.getString("OrderStatusID")));
+				order.setOrderStatusID(rs.getInt("OrderStatusID"));
+				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
+						.getInt("OrderID"));
+				order.setDeal(dealDao.getDealByID(dealOrder.getDealID()));
 
 				return order;
 			}
@@ -174,5 +180,4 @@ public class OrderDAO {
 		}
 		return null;
 	}
-
 }

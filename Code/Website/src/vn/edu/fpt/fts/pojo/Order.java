@@ -24,6 +24,8 @@ public class Order implements Serializable {
 	private boolean ownerDeliveryStatus;
 	private String createTime;
 	private int orderStatusID;
+	
+	private Deal deal;
 
 	public Order() {
 		// TODO Auto-generated constructor stub
@@ -83,6 +85,14 @@ public class Order implements Serializable {
 
 	public void setOrderStatusID(int orderStatusID) {
 		this.orderStatusID = orderStatusID;
+	}
+	
+	public Deal getDeal() {
+		return deal;
+	}
+
+	public void setDeal(Deal deal) {
+		this.deal = deal;
 	}
 
 	public Order(double price, boolean staffDeliveryStatus,
