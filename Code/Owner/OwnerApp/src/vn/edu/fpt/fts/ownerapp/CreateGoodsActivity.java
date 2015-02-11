@@ -62,8 +62,10 @@ public class CreateGoodsActivity extends Activity {
 	private Button btnPost;
 	private List<String> cateList = new ArrayList<String>();
 	private int cateId;
-	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0, deliverLng = 0.0;
+	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
+			deliverLng = 0.0;
 	private String ownerid;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,12 +79,13 @@ public class CreateGoodsActivity extends Activity {
 				this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_GoodsCategory_Get;
 		task2.execute(new String[] { url });
-		
+
 		spinner = (Spinner) findViewById(R.id.spinner_goods_type);
 		dataAdapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_spinner_item, cateList);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
+		dataAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
 		spinner.setAdapter(dataAdapter);
 		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
@@ -100,28 +103,31 @@ public class CreateGoodsActivity extends Activity {
 					cateId = 5;
 				}
 			}
+
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
 
 		// date picker listener
 		calendar1 = Calendar.getInstance();
+
 		date1 = new DatePickerDialog.OnDateSetListener() {
 
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
 				// TODO Auto-generated method stub
+
 				calendar1.set(Calendar.YEAR, year);
 				calendar1.set(Calendar.MONTH, monthOfYear);
 				calendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 				updateLabel(etPickupDate, calendar1);
 			}
 		};
+
 		calendar2 = Calendar.getInstance();
 		date2 = new DatePickerDialog.OnDateSetListener() {
 
@@ -144,10 +150,17 @@ public class CreateGoodsActivity extends Activity {
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if (hasFocus) {
-					new DatePickerDialog(CreateGoodsActivity.this, date1,
-							calendar1.get(Calendar.YEAR), calendar1
+					DatePickerDialog dialog = new DatePickerDialog(
+							CreateGoodsActivity.this, date1, calendar1
+									.get(Calendar.YEAR), calendar1
 									.get(Calendar.MONTH), calendar1
-									.get(Calendar.DAY_OF_MONTH)).show();
+									.get(Calendar.DAY_OF_MONTH));
+					DatePicker picker = dialog.getDatePicker();
+					Calendar cal = Calendar.getInstance();
+					picker.setMinDate(cal.getTimeInMillis() - 1000);
+					cal.add(Calendar.MONTH, 1);
+					picker.setMaxDate(cal.getTimeInMillis());
+					dialog.show();
 				}
 			}
 		});
@@ -161,10 +174,17 @@ public class CreateGoodsActivity extends Activity {
 					public void onFocusChange(View v, boolean hasFocus) {
 						// TODO Auto-generated method stub
 						if (hasFocus) {
-							new DatePickerDialog(CreateGoodsActivity.this,
-									date2, calendar2.get(Calendar.YEAR),
-									calendar2.get(Calendar.MONTH), calendar2
-											.get(Calendar.DAY_OF_MONTH)).show();
+							DatePickerDialog dialog = new DatePickerDialog(
+									CreateGoodsActivity.this, date2, calendar2
+											.get(Calendar.YEAR), calendar2
+											.get(Calendar.MONTH), calendar2
+											.get(Calendar.DAY_OF_MONTH));
+							DatePicker picker = dialog.getDatePicker();
+							Calendar cal = Calendar.getInstance();
+							picker.setMinDate(cal.getTimeInMillis() - 1000);
+							cal.add(Calendar.MONTH, 1);
+							picker.setMaxDate(cal.getTimeInMillis());
+							dialog.show();
 						}
 					}
 				});
@@ -207,7 +227,7 @@ public class CreateGoodsActivity extends Activity {
 		actDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_deliver));
 
-		// button		
+		// button
 		btnPost = (Button) findViewById(R.id.btn_post);
 		btnPost.setOnClickListener(new View.OnClickListener() {
 
@@ -217,7 +237,7 @@ public class CreateGoodsActivity extends Activity {
 				postData(v);
 			}
 		});
-		
+
 		// lay longitude va latitude
 		Bundle bundle = getIntent().getBundleExtra("info");
 		if (bundle != null) {
@@ -228,15 +248,14 @@ public class CreateGoodsActivity extends Activity {
 			} else if (flag.equals("delivery")) {
 				deliverLat = bundle.getDouble("lat");
 				deliverLng = bundle.getDouble("lng");
-			}			
+			}
 		}
-		
+
 		// set owner id
-		SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
 	}
-	
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -262,7 +281,7 @@ public class CreateGoodsActivity extends Activity {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		et.setText(sdf.format(calendar.getTime()));
 	}
-	
+
 	private String formatDate(Calendar calendar) {
 		String format = "yyyy-MM-dd HH:mm:ss";
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
@@ -293,13 +312,15 @@ public class CreateGoodsActivity extends Activity {
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		// Cac cap gia tri gui ve server
-		currentTime = Calendar.getInstance();		
+		currentTime = Calendar.getInstance();
 		wst.addNameValuePair("active", "1");
 		wst.addNameValuePair("createTime", formatDate(currentTime));
 		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
 				.toString());
-		wst.addNameValuePair("deliveryMarkerLatidute", Double.toString(deliverLat));
-		wst.addNameValuePair("deliveryMarkerLongtitude", Double.toString(deliverLng));
+		wst.addNameValuePair("deliveryMarkerLatidute",
+				Double.toString(deliverLat));
+		wst.addNameValuePair("deliveryMarkerLongtitude",
+				Double.toString(deliverLng));
 		wst.addNameValuePair("deliveryTime", formatDate(calendar2));
 		wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
 		wst.addNameValuePair("notes", etNotes.getText().toString());
@@ -307,7 +328,8 @@ public class CreateGoodsActivity extends Activity {
 		wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
 				.toString());
 		wst.addNameValuePair("pickupMarkerLatidute", Double.toString(pickupLat));
-		wst.addNameValuePair("pickupMarkerLongtitude", Double.toString(pickupLng));
+		wst.addNameValuePair("pickupMarkerLongtitude",
+				Double.toString(pickupLng));
 		wst.addNameValuePair("pickupTime", formatDate(calendar1));
 		wst.addNameValuePair("price", etPrice.getText().toString());
 		wst.addNameValuePair("weight", etWeight.getText().toString());
@@ -345,8 +367,6 @@ public class CreateGoodsActivity extends Activity {
 	// }
 	//
 	// }
-
-	
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -396,7 +416,6 @@ public class CreateGoodsActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 
-			
 			showProgressDialog();
 
 		}
@@ -433,14 +452,16 @@ public class CreateGoodsActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (response.equals("Success")) {
-				Toast.makeText(CreateGoodsActivity.this, "Hàng tạo thành công", Toast.LENGTH_LONG)
-				.show();
-				Intent intent = new Intent(CreateGoodsActivity.this, SuggestActivity.class);
-				startActivity(intent);
+			if (response.equals("-1")) {
+				Toast.makeText(CreateGoodsActivity.this, "Hàng chưa được tạo",
+						Toast.LENGTH_LONG).show();
 			} else {
-				Toast.makeText(CreateGoodsActivity.this, "Hàng chưa được tạo", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(CreateGoodsActivity.this, "Hàng tạo thành công",
+						Toast.LENGTH_LONG).show();
+				Intent intent = new Intent(CreateGoodsActivity.this,
+						SuggestActivity.class);
+				intent.putExtra("goodsID", response);
+				startActivity(intent);
 			}
 			pDlg.dismiss();
 
@@ -471,7 +492,8 @@ public class CreateGoodsActivity extends Activity {
 				case POST_TASK:
 					HttpPost httppost = new HttpPost(url);
 					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
 
 					response = httpclient.execute(httppost);
 					break;
@@ -560,7 +582,6 @@ public class CreateGoodsActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 
-			
 			showProgressDialog();
 
 		}
@@ -597,7 +618,7 @@ public class CreateGoodsActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {				
+			try {
 				JSONObject jsonObject = new JSONObject(response);
 				JSONArray array = jsonObject.getJSONArray("goodsCategory");
 				for (int i = 0; i < array.length(); i++) {

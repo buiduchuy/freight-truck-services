@@ -66,11 +66,7 @@
         <activity
             android:name=".SuggestActivity"
             android:label="@string/title_activity_suggest" >
-        </activity>
-        <activity
-            android:name=".SuggestListFragment"
-            android:label="@string/title_activity_suggest_list_fragment" >
-        </activity>
+        </activity>        
         <activity
             android:name=".CreateGoodsMapFragment"
             android:label="@string/title_activity_create_goods_map_fragment" >

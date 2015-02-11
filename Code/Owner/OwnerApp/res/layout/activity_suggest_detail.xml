@@ -9,38 +9,50 @@
     tools:context="vn.edu.fpt.fts.ownerapp.SuggestDetailActivity" >
 
     <LinearLayout
+        android:id="@+id/linearlayout_suggest_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/textview_startAddr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@+id/textview_startAddr" />
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
+            android:id="@+id/textview_destAddr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@+id/textview_destAddr"
-            />
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
+            android:id="@+id/textview_startTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@+id/textview_startTime"
-            />
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
+            android:id="@+id/textview_finishTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@+id/textview_finishTime"
-            />
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" />
 
         <TextView
+            android:id="@+id/textview_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@+id/textview_category"
-            />
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
         <EditText
             android:id="@+id/edittext_price"
@@ -53,6 +65,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Ghi chú" />
+
+        <Button
+            android:id="@+id/button_send"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Gửi đề nghị" />
     </LinearLayout>
 
 </RelativeLayout>

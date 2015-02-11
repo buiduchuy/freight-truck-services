@@ -31,6 +31,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -48,7 +49,7 @@ public class GoodsFragment extends Fragment {
 	private ListView listView;
 	private ArrayAdapter<String> adapter;
 	private String ownerid;
-	
+	private List<String> goodsID, goodsCategoryID;
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -64,6 +65,9 @@ public class GoodsFragment extends Fragment {
 		wst.addNameValuePair("ownerID", ownerid);
 		wst.execute(new String[] { url });
 
+		goodsID = new ArrayList<String>();
+		goodsCategoryID = new ArrayList<String>();
+		
 		listView = (ListView) rootView.findViewById(R.id.listview_goods);
 		
 
@@ -72,8 +76,17 @@ public class GoodsFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
+				int pos = listView.getPositionForView(view);
+				
 				Intent intent = new Intent(view.getContext(),
 						GoodsDetailActivity.class);
+				String tmp = goodsCategoryID.get(pos);
+				
+				
+				
+				intent.putExtra("goodsID", goodsID.get(pos));
+				intent.putExtra("goodsCategoryID", goodsCategoryID.get(pos));
+				
 				startActivity(intent);
 			}
 		});
@@ -189,6 +202,12 @@ public class GoodsFragment extends Fragment {
 //					goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
 //					list.add(goods);
 					JSONObject jsonObject2 = array.getJSONObject(i);
+					String a = jsonObject2.getString("goodsID");
+					
+					
+					goodsID.add(jsonObject2.getString("goodsID"));
+					goodsCategoryID.add(jsonObject2.getString("goodsCategoryID"));
+					
 					JSONObject jsonObject3 = jsonObject2.getJSONObject("goodsCategory");
 					result[i] = jsonObject3.getString("name");
 					
