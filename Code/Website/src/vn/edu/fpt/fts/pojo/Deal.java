@@ -29,8 +29,8 @@ public class Deal implements Serializable {
 	private int dealStatusID;
 	private int active;
 
-	private List<Goods> listGoods;
-	private List<Route> listRoute;
+	private Goods goods;
+	private Route route;
 	private List<DealStatus> listDealStatus;
 
 	public Deal() {
@@ -54,7 +54,7 @@ public class Deal implements Serializable {
 
 	public Deal(double price, String notes, String createTime, String sender,
 			int routeID, int goodsID, int refDealID, int dealStatusID,
-			int active, List<Goods> listGoods, List<Route> listRoute,
+			int active, Goods goods, Route route,
 			List<DealStatus> listDealStatus) {
 		super();
 		this.price = price;
@@ -66,15 +66,15 @@ public class Deal implements Serializable {
 		this.refDealID = refDealID;
 		this.dealStatusID = dealStatusID;
 		this.active = active;
-		this.listGoods = listGoods;
-		this.listRoute = listRoute;
+		this.goods = goods;
+		this.route = route;
 		this.listDealStatus = listDealStatus;
 	}
 
 	public Deal(int dealID, double price, String notes, String createTime,
 			String sender, int routeID, int goodsID, int refDealID,
-			int dealStatusID, int active, List<Goods> listGoods,
-			List<Route> listRoute, List<DealStatus> listDealStatus) {
+			int dealStatusID, int active, Goods goods, Route route,
+			List<DealStatus> listDealStatus) {
 		super();
 		this.dealID = dealID;
 		this.price = price;
@@ -86,8 +86,8 @@ public class Deal implements Serializable {
 		this.refDealID = refDealID;
 		this.dealStatusID = dealStatusID;
 		this.active = active;
-		this.listGoods = listGoods;
-		this.listRoute = listRoute;
+		this.goods = goods;
+		this.route = route;
 		this.listDealStatus = listDealStatus;
 	}
 
@@ -171,20 +171,20 @@ public class Deal implements Serializable {
 		this.active = active;
 	}
 
-	public List<Goods> getListGoods() {
-		return listGoods;
+	public Goods getGoods() {
+		return goods;
 	}
 
-	public void setListGoods(List<Goods> listGoods) {
-		this.listGoods = listGoods;
+	public void setGoods(Goods goods) {
+		this.goods = goods;
 	}
 
-	public List<Route> getListRoute() {
-		return listRoute;
+	public Route getRoute() {
+		return route;
 	}
 
-	public void setListRoute(List<Route> listRoute) {
-		this.listRoute = listRoute;
+	public void setRoute(Route route) {
+		this.route = route;
 	}
 
 	public List<DealStatus> getListDealStatus() {

@@ -149,11 +149,14 @@ public class RouteDAO {
 			stm.setInt(1, Id);
 			rs = stm.executeQuery();
 			Route route;
-			List<GoodsCategory> goodsCategories = new ArrayList<GoodsCategory>();
+			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
 			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
-
+			
+			GoodsCategory goodsCategory = new GoodsCategory();
 			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			
 			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 
 			while (rs.next()) {
 				route = new Route();
@@ -168,19 +171,19 @@ public class RouteDAO {
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(Integer.valueOf(rs.getString("Active")));
 				route.setDriverID(Integer.valueOf(rs.getString("DriverID")));
-
+				route.setRouteMarkers(routeMarkerDao.getAllRouteMarkerByRouteID(Id));
+				
 				listRouteGoodsCategory = routeGoodsCategoryDao
 						.getListRouteGoodsCategoryByRouteID(Id);
-
-				for (int i = 0; i <= listRouteGoodsCategory.size()-1; i++) {
-					GoodsCategory goodsCategory = new GoodsCategory();
+				
+				for (int i = 0; i <= listRouteGoodsCategory.size() - 1; i++) {
 					goodsCategory = goodsCategoryDao
 							.getGoodsCategoryByID(listRouteGoodsCategory.get(i)
 									.getGoodsCategoryID());
-					goodsCategories.add(goodsCategory);
+					listGoodsCategory.add(goodsCategory);
 				}
 
-				route.setGoodsCategory(goodsCategories);
+				route.setGoodsCategory(listGoodsCategory);
 				return route;
 			}
 

@@ -74,22 +74,21 @@ public class RouteGoodsCategoryDAO {
 			stm = con.prepareStatement(sql);
 			stm.setInt(1, routeID);
 			rs = stm.executeQuery();
+
 			List<RouteGoodsCategory> list = new ArrayList<RouteGoodsCategory>();
 			RouteGoodsCategory routeGoodsCategory;
-			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+
 			while (rs.next()) {
 				routeGoodsCategory = new RouteGoodsCategory();
 
 				routeGoodsCategory.setRouteID(rs.getInt("RouteID"));
 				routeGoodsCategory.setGoodsCategoryID(rs
 						.getInt("GoodsCategoryID"));
-				routeGoodsCategory.setGoodsCategory(goodsCategoryDao
-						.getGoodsCategoryByID(rs.getInt("RouteID")));
 
 				list.add(routeGoodsCategory);
 
-				return list;
 			}
+			return list;
 
 		} catch (SQLException e) {
 			System.out.println("Can't load data from RouteGoodsCategory table");

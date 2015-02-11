@@ -4,8 +4,12 @@
 package vn.edu.fpt.fts.dao;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 
 /**
  * @author Huy
@@ -47,6 +51,15 @@ public class MAIN_DAO {
 		order = orderDao.getOrderByID(3);
 		
 		System.out.println(order.isDriverDeliveryStatus());
+		
+		List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
+
+		RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+		
+		listRouteGoodsCategory = routeGoodsCategoryDao
+				.getListRouteGoodsCategoryByRouteID(3);
+		
+		System.out.println("RouteGoodsCategory Size: " + listRouteGoodsCategory.size());
 	}
 
 }

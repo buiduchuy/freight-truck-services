@@ -213,6 +213,9 @@ public class DealDAO {
 
 			rs = stm.executeQuery();
 
+			GoodsDAO goodsDao = new GoodsDAO();
+			RouteDAO routeDao = new RouteDAO();
+
 			while (rs.next()) {
 				Deal deal = new Deal();
 
@@ -226,6 +229,10 @@ public class DealDAO {
 				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
+
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteById(rs.getInt("RouteID")));
+
 				return deal;
 			}
 
