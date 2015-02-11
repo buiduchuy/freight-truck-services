@@ -85,7 +85,9 @@ public class DealAPI {
 			deal.setSender(params.getFirst("sender"));
 			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
-			deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			if (!params.getFirst("refDealID").equals("")) {
+				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			}
 			deal.setDealStatusID(Integer.valueOf(params
 					.getFirst("dealStatusID")));
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
