@@ -3,6 +3,7 @@
  */
 package vn.edu.fpt.fts.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +40,7 @@ public class OrderAPI {
 	@Path("get")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Order> JSON() {
-		return null;
+		return orderDao.getAllOrder();
 	}
 
 	@POST
@@ -97,9 +98,23 @@ public class OrderAPI {
 	@Path("getOrderByDriverID")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Order getOrderByDriverID(MultivaluedMap<String, String> params) {
+	public List<Order> getOrderByDriverID(MultivaluedMap<String, String> params) {
+		List<Order> list = new ArrayList<Order>();
+		List<Order> listOrderByDriver = new ArrayList<Order>();
 
-		return null;
+		list = orderDao.getAllOrder();
+
+		int driverID = Integer.valueOf(params.getFirst("driverID"));
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getDeal() != null) {
+				if (list.get(i).getDeal().getRoute() != null) {
+					if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
+						listOrderByDriver.add(list.get(i));
+					}
+				}
+			}
+		}
+		return listOrderByDriver;
 	}
 
 }

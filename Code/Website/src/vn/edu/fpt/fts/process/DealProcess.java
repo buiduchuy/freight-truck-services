@@ -45,7 +45,7 @@ public class DealProcess {
 				}
 			}
 
-			// Change list parent deal with different accept status to decline 4
+			// Change list parent deal to decline 4
 			for (int j = 0; j < l_declineDeal.size(); j++) {
 				l_declineDeal.get(j).setDealStatusID(i_declineStatus);
 				dealDao.updateDeal(l_declineDeal.get(j));
