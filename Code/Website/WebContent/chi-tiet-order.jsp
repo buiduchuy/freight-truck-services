@@ -8,22 +8,26 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<title>Chi tiết hàng</title>
+<title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
-
-<c:set var="detailGood1" value="${sessionScope.detailGood2 }" />
-<c:if test="${not empty detailGood1 }">
-	<section class="container">
-		<center>
-			<div class="form-content"
-				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 700px;">
-
+<div class="large-12 columns">
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="menu-doc-quan-ly.jsp" />
+		</div>
+	</div>
+	<div class="large-8 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<c:set var="detailGood1" value="${sessionScope.detailOrder }" />
+			<c:if test="${not empty detailGood1 }">
 				<div class="form-content">
 					<form action="Controller" method="post" accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
-									<font color="orange">Chi tiết hàng</font>
+									<font color="orange">Chi tiết hoá đơn</font>
 								</h2>
 
 							</div>
@@ -52,8 +56,10 @@
 
 												<c:forEach var="row" items="${typeGoods }">
 
-													<c:if test="${row.goodsCategoryId==detailGood1.goodsCategoryID}">
-													<input type="text" value="${row.name }" readonly="readonly" />
+													<c:if
+														test="${row.goodsCategoryId==detailGood1.goodsCategoryID}">
+														<input type="text" value="${row.name }"
+															readonly="readonly" />
 													</c:if>
 
 												</c:forEach>
@@ -178,15 +184,21 @@
 
 
 				</div>
-
-			</div>
-			</br>
-
-		</center>
-
-	</section>
+			</c:if>
+		</div>
+	</div>
+	
+</div>
 
 
-</c:if>
+
+
+
+
+
+
+
+
+
 
 <jsp:include page="footer.jsp" />

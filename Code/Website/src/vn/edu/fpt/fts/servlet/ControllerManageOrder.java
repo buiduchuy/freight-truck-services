@@ -93,6 +93,22 @@ public class ControllerManageOrder extends HttpServlet {
 			}
 			if ("viewDetailOrder".equals(action)) {
 				int idGood= Integer.parseInt(request.getParameter("idGood"));
+				Order order= orderDao.
+				try {
+					Goods goodDetail=goodDao.getGoodsByID(idGood);
+					goodDetail.setPickupTime(common.changeFormatDate(
+							goodDetail.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
+							"dd-MM-yyyy"));
+					goodDetail.setDeliveryTime(common.changeFormatDate(
+							goodDetail.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
+							"dd-MM-yyyy"));
+					session.setAttribute("detailOrder", goodDetail);
+					RequestDispatcher rd = request
+							.getRequestDispatcher("chi-tiet-order.jsp");
+					rd.forward(request, response);
+				} catch (Exception ex) {
+
+				}
 			}
 
 			// out.println("<!DOCTYPE html>");
