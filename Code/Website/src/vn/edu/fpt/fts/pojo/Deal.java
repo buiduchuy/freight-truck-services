@@ -52,7 +52,7 @@ public class Deal implements Serializable {
 	}
 
 	public Deal(int dealID, double price, String notes, String createTime,
-			String sender, int routeID, int goodsID, int refDealID,
+			String createBy, int routeID, int goodsID, int refDealID,
 			int dealStatusID, int active) {
 		super();
 		this.dealID = dealID;

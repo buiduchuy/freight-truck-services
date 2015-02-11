@@ -441,44 +441,29 @@ public class DealDAO {
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE Goods SET " + " Weight = ?," + " Price = ?,"
-					+ " PickupTime = ?," + " PickupAddress = ?,"
-					+ " DeliveryTime = ?," + " DeliveryAddress = ?,"
-					+ " PickupMarkerLongtitude = ?,"
-					+ " PickupMarkerLatidute = ?,"
-					+ " DeliveryMarkerLongtitude = ?,"
-					+ " DeliveryMarkerLatidute = ?," + " Notes = ?,"
-					+ " CreateTime = ?," + " Active = ?," + " OwnerID = ?,"
-					+ " GoodsCategoryID = ? " + " WHERE GoodsID = '"
-					+ bean.getGoodsID() + "' ";
+			String sql = "UPDATE Deal SET " + " Price = ?," + " Notes = ?,"
+					+ " CreateTime = ?," + " CreateBy = ?," + " RouteID = ?,"
+					+ " GoodsID = ?," + " DealStatusID = ?,"
+					+ " RefDealID = ?," + " Active = ? " + " WHERE DealID = '"
+					+ bean.getDealID() + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
-			// stmt.setInt(i++, bean.getWeight()); // Weight
-			// stmt.setDouble(i++, bean.getPrice()); // Price
-			// stmt.setString(i++, bean.getPickupTime()); // PickupTime
-			// stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
-			// stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
-			// stmt.setString(i++, bean.getDeliveryAddress()); //
-			// DeliveryAddress
-			// stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); //
-			// PickupMarkerLongtitude
-			// stmt.setFloat(i++, bean.getPickupMarkerLatidute()); //
-			// PickupMarkerLatidute
-			// stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); //
-			// DeliveryMarkerLongtitude
-			// stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); //
-			// DeliveryMarkerLatidute
-			// stmt.setString(i++, bean.getNotes()); // Notes
-			// stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			// stmt.setInt(i++, bean.getActive()); // Active
-			// stmt.setInt(i++, bean.getOwnerID()); // OwnerID
-			// stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
+
+			stmt.setDouble(i++, bean.getPrice()); // Price
+			stmt.setString(i++, bean.getNotes()); // Notes
+			stmt.setString(i++, bean.getCreateTime()); // CreateTime
+			stmt.setString(i++, bean.getCreateBy()); // CreateBy
+			stmt.setInt(i++, bean.getRouteID()); // RouteID
+			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
+			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
+			stmt.setInt(i++, bean.getRefDealID()); // RefDealID
+			stmt.setInt(i++, bean.getActive()); // Active
 
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update to Goods table");
+			System.out.println("Can't update to Deal table");
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
