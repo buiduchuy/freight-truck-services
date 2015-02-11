@@ -36,9 +36,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
@@ -55,6 +58,22 @@ public class SuggestActivity extends Activity {
 		String url = Common.IP_URL + Common.Service_Route_Get;
 		wst.execute(new String[] { url });
 
+		listView = (ListView) findViewById(R.id.listview_suggest);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				int pos = listView.getPositionForView(view);
+				Route route = list.get(pos);
+				int routeId = route.getRouteID();
+				Intent intent = new Intent(SuggestActivity.this,
+						SuggestDetailActivity.class);
+				intent.putExtra("route", routeId);
+				startActivity(intent);
+			}
+		});
+
 	}
 
 	private ArrayList<Model> generateData() {
@@ -66,7 +85,8 @@ public class SuggestActivity extends Activity {
 			String[] strings = start.split(",");
 			String end = route.getDestinationAddress().replace(", Vietnam", "");
 			String[] strings2 = end.split(",");
-			models.add(new Model(strings[strings.length - 1] + " - " + strings2[strings2.length - 1] , "1"));
+			models.add(new Model(strings[strings.length - 1] + " - "
+					+ strings2[strings2.length - 1], "1"));
 		}
 
 		return models;
@@ -210,7 +230,7 @@ public class SuggestActivity extends Activity {
 				Log.e(TAG, e.getLocalizedMessage());
 			}
 			adapter = new ModelAdapter(SuggestActivity.this, generateData());
-			listView = (ListView) findViewById(R.id.listview_suggest);
+
 			listView.setAdapter(adapter);
 		}
 

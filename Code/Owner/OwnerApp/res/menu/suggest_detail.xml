@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.ownerapp.SuggestDetailFragment" >
+    tools:context="vn.edu.fpt.fts.ownerapp.SuggestDetailActivity" >
 
     <item
         android:id="@+id/action_settings"

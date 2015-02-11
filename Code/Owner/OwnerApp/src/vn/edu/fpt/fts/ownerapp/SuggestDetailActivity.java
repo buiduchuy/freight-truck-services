@@ -17,55 +17,54 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import vn.edu.fpt.fts.adapter.ModelAdapter;
+import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-
-import android.R.anim;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class LoginActivity extends Activity {
-
-	private EditText etEmail, etPass;
-	private Button btnLogin;
-
+public class SuggestDetailActivity extends Activity {
+	private String routeid;
+	private TextView startAddr, destAddr, startTime, finishTime, category;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
-		etEmail = (EditText) findViewById(R.id.edittext_email);
-		etPass = (EditText) findViewById(R.id.edittext_pass);
-		btnLogin = (Button) findViewById(R.id.button_login);
+		setContentView(R.layout.activity_suggest_detail);
 		
-		btnLogin.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				postData(v);
-			}
-		});
-
+		routeid = getIntent().getStringExtra("route");
 		
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
+				SuggestDetailActivity.this, "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_Route_GetByID;
+		wst.addNameValuePair("routeID", "3");
+		wst.execute(new String[] { url });
+		
+		startAddr = (TextView) findViewById(R.id.textview_startAddr);
+		destAddr = (TextView) findViewById(R.id.textview_destAddr);
+		startTime = (TextView) findViewById(R.id.textview_startTime);
+		finishTime = (TextView) findViewById(R.id.textview_finishTime);
+		category = (TextView) findViewById(R.id.textview_category);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login, menu);
+		getMenuInflater().inflate(R.menu.suggest_detail, menu);
 		return true;
 	}
 
@@ -79,25 +78,6 @@ public class LoginActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	public void postData(View vw) {
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
-				"Đang xử lý...");
-		wst.addNameValuePair("email", etEmail.getText().toString());
-		wst.addNameValuePair("password", etPass.getText().toString());
-		String url = Common.IP_URL + Common.Service_Login;
-		wst.execute(new String[] { url });
-	}
-	
-	private void hideKeyboard() {
-
-		InputMethodManager inputManager = (InputMethodManager) LoginActivity.this
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-		inputManager.hideSoftInputFromWindow(LoginActivity.this
-				.getCurrentFocus().getWindowToken(),
-				InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -148,7 +128,6 @@ public class LoginActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 
-			hideKeyboard();
 			showProgressDialog();
 
 		}
@@ -160,7 +139,7 @@ public class LoginActivity extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response == null) {
+			if (response.getEntity() == null) {
 				return result;
 			} else {
 
@@ -185,20 +164,49 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			
-			if (response.equals("0")) {
-				Toast.makeText(LoginActivity.this, "Sai email hoặc password", Toast.LENGTH_LONG).show();
-				
+			if (response != null) {
+				Route route = new Route();
+				try {					
+					android.os.Debug.waitForDebugger();
+					JSONObject jsonObject = new JSONObject(response);
+					String startTime = jsonObject.getString("startTime");
+					String start[] = startTime.split(" ");
+					String finishTime = jsonObject.getString("finishTime");
+					String finish[] = finishTime.split(" ");
+//					JSONObject jsonObject2 = jsonObject.getJSONObject("goodsCategory");
+					JSONArray array = jsonObject.getJSONArray("goodsCategory");
+					String category = "";
+					for (int i = 0; i < array.length(); i++) {
+						JSONObject jsonObject2 = array.getJSONObject(i);
+						category = category + jsonObject2.getString("name") + ", ";
+					}
+															
+										
+					route.setStartingAddress(jsonObject.getString("startingAddress"));
+					route.setDestinationAddress(jsonObject.getString("destinationAddress"));					
+					route.setStartTime(start[0]);
+					route.setFinishTime(finish[0]);
+					route.setCategory(category);
+					
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				String a = route.getStartingAddress();
+				startAddr.setText("Địa điểm bắt đầu" + route.getStartingAddress());
+				destAddr.setText("Địa điểm kết thúc" + route.getDestinationAddress());
+				startTime.setText("Thời gian bắt đầu" +route.getStartTime());
+				finishTime.setText("Thời gian kết thúc" + route.getFinishTime());
+				category.setText(route.getCategory());
 			} else {
-				SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-				SharedPreferences.Editor editor = preferences.edit();
-				editor.putString("ownerID", response);
-				editor.commit();
-				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-				startActivity(intent);
+				Toast.makeText(SuggestDetailActivity.this, "Lộ trình không tồn tại", Toast.LENGTH_LONG).show();
 			}
+			
+			
+			
+			
+			
 			pDlg.dismiss();
-
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
@@ -226,7 +234,8 @@ public class LoginActivity extends Activity {
 				case POST_TASK:
 					HttpPost httppost = new HttpPost(url);
 					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params));
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
 
 					response = httpclient.execute(httppost);
 					break;
@@ -264,5 +273,6 @@ public class LoginActivity extends Activity {
 			// Return full string
 			return total.toString();
 		}
+
 	}
 }

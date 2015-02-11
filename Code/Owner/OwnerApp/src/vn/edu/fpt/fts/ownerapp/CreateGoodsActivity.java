@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,14 +33,13 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -65,7 +63,7 @@ public class CreateGoodsActivity extends Activity {
 	private List<String> cateList = new ArrayList<String>();
 	private int cateId;
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0, deliverLng = 0.0;
-
+	private String ownerid;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -233,7 +231,9 @@ public class CreateGoodsActivity extends Activity {
 			}			
 		}
 		
-		
+		// set owner id
+		SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+		ownerid = preferences.getString("ownerID", "");
 	}
 	
 	
@@ -303,7 +303,7 @@ public class CreateGoodsActivity extends Activity {
 		wst.addNameValuePair("deliveryTime", formatDate(calendar2));
 		wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
 		wst.addNameValuePair("notes", etNotes.getText().toString());
-		wst.addNameValuePair("ownerID", "1");
+		wst.addNameValuePair("ownerID", ownerid);
 		wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
 				.toString());
 		wst.addNameValuePair("pickupMarkerLatidute", Double.toString(pickupLat));

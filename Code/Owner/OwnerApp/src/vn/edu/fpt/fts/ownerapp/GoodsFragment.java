@@ -30,6 +30,7 @@ import vn.edu.fpt.fts.common.Common;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -43,12 +44,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class GoodsFragment extends Fragment {
-	private String[] goods = { "Bàn ghế", "Thức ăn", "Thiết bị gia dụng" };
+public class GoodsFragment extends Fragment {	
 	private ListView listView;
-	private List<Goods> list;
 	private ArrayAdapter<String> adapter;
-
+	private String ownerid;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -56,9 +56,12 @@ public class GoodsFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_goods, container,
 				false);
 
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				getActivity(), "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Goods_Get;
+		SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+		ownerid = preferences.getString("ownerID", "");
+		wst.addNameValuePair("ownerID", ownerid);
 		wst.execute(new String[] { url });
 
 		listView = (ListView) rootView.findViewById(R.id.listview_goods);
@@ -162,13 +165,12 @@ public class GoodsFragment extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {
+			try {				
 				JSONObject jsonObject = new JSONObject(response);
-				JSONArray array = jsonObject.getJSONArray("goods");
-				list = new ArrayList<Goods>();
+				JSONArray array = jsonObject.getJSONArray("goods");				
+				String[] result = new String[array.length()];
 				for (int i = 0; i < array.length(); i++) {
-//					Goods goods = new Goods();
-//					JSONObject jsonObject2 = array.getJSONObject(i);
+//					Goods goods = new Goods();					
 //					goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
 //					goods.setWeight(Integer.parseInt(jsonObject2.getString("weight")));
 //					goods.setPrice(Double.parseDouble(jsonObject2.getString("price")));
@@ -186,19 +188,22 @@ public class GoodsFragment extends Fragment {
 //					goods.setOwnerID(Integer.parseInt(jsonObject2.getString("ownerID")));
 //					goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
 //					list.add(goods);
+					JSONObject jsonObject2 = array.getJSONObject(i);
+					JSONObject jsonObject3 = jsonObject2.getJSONObject("goodsCategory");
+					result[i] = jsonObject3.getString("name");
+					
 				}
+				adapter = new ArrayAdapter<String>(
+						getActivity(), android.R.layout.simple_list_item_1,
+						result);
+				listView.setAdapter(adapter);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getLocalizedMessage());
 			}
 			pDlg.dismiss();
-			for (Goods g : list) {
-				String[] result = g.getg
-			}
-			adapter = new ArrayAdapter<String>(
-					getActivity(), android.R.layout.simple_list_item_1,
-					goods);
-			listView.setAdapter(adapter);
+			
+			
 
 		}
 

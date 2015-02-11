@@ -13,6 +13,15 @@ public class Route implements Serializable {
 	private String createTime;
 	private int active;
 	private int driverID;
+	private String category;
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
 	public Route() {
 		// TODO Auto-generated constructor stub
@@ -35,6 +44,14 @@ public class Route implements Serializable {
 		this.driverID = driverID;		
 	}
 
+	public Route(String startingAddress, String destinationAddress, String startTime, String finishTime, String category) {
+		// TODO Auto-generated constructor stub
+		this.startingAddress = startingAddress;
+		this.destinationAddress = destinationAddress;
+		this.startTime = startTime;
+		this.finishTime = finishTime;
+		this.category = category;
+	}
 	public int getRouteID() {
 		return RouteID;
 	}

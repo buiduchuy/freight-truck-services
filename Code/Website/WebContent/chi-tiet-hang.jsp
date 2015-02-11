@@ -15,28 +15,30 @@
 <link rel="stylesheet" href="css/foundation-datepicker.css">
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <c:if test="${not empty detailGood1 }">
-	<section class="container">
-		<center>
+	<div class="large-12 columns">
+		<div class="large-2 columns">
 			<div class="form-content"
-				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 700px;">
-
-				<div class="form-content">
+				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+				<jsp:include page="menu-doc-quan-ly-hang.jsp" />
+			</div>
+		</div>
+		<div class="large-8 columns">
+			<div class="form-content"
+				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<div class="form-content">
 					<form action="ControllerManageGoods" method="post"
 						accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
 									<font color="orange">Chi tiết hàng</font>
-									
+
 								</h2>
-								<button class="right info" name="btnAction"
-										value="suggestFromSystem">Gợi ý lộ trình phù hợp</button>
-									<input type="hidden" name="txtIdGood"
-										value="${detailGood1.goodsID }" />
+								<input type="hidden" name="txtIdGood"
+									value="${detailGood1.goodsID }" />
 								<c:set var="messageSuccess"
 									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError"
-									value="${sessionScope.messageError }" />
+								<c:set var="messageError" value="${sessionScope.messageError }" />
 								<c:if test="${not empty messageSuccess}">
 									<div class="row">
 										<div data-alert class="alert-box success radius inline">
@@ -44,8 +46,7 @@
 										</div>
 									</div>
 									<%
-										request.getSession().removeAttribute(
-														"messageSuccess");
+										request.getSession().removeAttribute("messageSuccess");
 									%>
 								</c:if>
 								<c:if test="${not empty messageError}">
@@ -56,8 +57,7 @@
 
 									</div>
 									<%
-										request.getSession().removeAttribute(
-														"messageError");
+										request.getSession().removeAttribute("messageError");
 									%>
 								</c:if>
 							</div>
@@ -221,15 +221,15 @@
 												name="btnAction" value="updateGood">
 												<i class="icon-wrench"></i> Cập nhật hàng
 											</button>
-											
+
 											<button class="button  alert"
 												onclick="return confirm('Bạn có muốn xoá hàng không?')"
 												name="btnAction" value="deleteGood">
 												<i class="icon-remove"> Xoá hàng</i>
-												
+
 											</button>
-									
-							
+
+
 
 										</div>
 										</br>
@@ -240,13 +240,14 @@
 
 
 				</div>
-
 			</div>
-			</br>
+		</div>
+	
+	</div>
 
-		</center>
 
-	</section>
+
+	
 
 
 </c:if>

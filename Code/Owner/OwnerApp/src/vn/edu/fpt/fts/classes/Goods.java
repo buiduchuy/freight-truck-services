@@ -19,6 +19,7 @@ public class Goods implements Serializable{
 	private int Active;
 	private int OwnerID;
 	private int GoodsCategoryID;
+	private String GoodsCategory;
 	
 	public Goods() {
 		// TODO Auto-generated constructor stub
@@ -29,7 +30,7 @@ public class Goods implements Serializable{
 			float pickupMarkerLongtitude, float pickupMarkerLatidute,
 			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
-			int goodsCategoryID) {
+			int goodsCategoryID, String GoodsCategory) {
 		super();
 		GoodsID = goodsID;
 		Weight = weight;
@@ -47,6 +48,7 @@ public class Goods implements Serializable{
 		Active = active;
 		OwnerID = ownerID;
 		GoodsCategoryID = goodsCategoryID;
+		this.GoodsCategory = GoodsCategory;
 	}
 
 	public int getGoodsID() {
@@ -175,6 +177,14 @@ public class Goods implements Serializable{
 
 	public void setGoodsCategoryID(int goodsCategoryID) {
 		GoodsCategoryID = goodsCategoryID;
+	}
+
+	public String getGoodsCategory() {
+		return GoodsCategory;
+	}
+
+	public void setGoodsCategory(String goodsCategory) {
+		GoodsCategory = goodsCategory;
 	}
 	
 	

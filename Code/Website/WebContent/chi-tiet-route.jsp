@@ -6,9 +6,10 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<title>Chi tiết tài xế</title>
+<title>Chi tiết lộ trình</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="detailRoute" value="${sessionScope.viewDetailRoute }" />
+<c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <jsp:include page="header.jsp" />
 <style>
 html, body, #map-canvas {
@@ -71,12 +72,17 @@ html, body, #map-canvas {
 	height: 300px;
 }
 </style>
-<section class="container">
-	<center>
+<div class="large-12 columns">
+	<div class="large-2 columns">
 		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
-
-			<div class="form-content">
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<jsp:include page="menu-doc-quan-ly-hang.jsp"/>
+		</div>
+	</div>
+	<div class="large-8 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		<div class="form-content">
 				<c:choose>
 					<c:when test="${not empty detailRoute }">
 						<form action="#" method="post" accept-charset="utf-8"
@@ -87,16 +93,40 @@ html, body, #map-canvas {
 									<h2 class="page-title">
 										<font color="orange">Chi tiết lộ trình</font>
 									</h2>
+									<c:set var="messageSuccess"
+									value="${sessionScope.messageSuccess }" />
+								<c:set var="messageError"
+									value="${sessionScope.messageError }" />
+								<c:if test="${not empty messageSuccess}">
+									<div class="row">
+										<div data-alert class="alert-box success radius inline">
+											${messageSuccess} <a href="#" class="close">&times;</a>
+										</div>
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageSuccess");
+									%>
+								</c:if>
+								<c:if test="${not empty messageError}">
+									<div class="row">
+										<div data-alert class="alert-box alert radius inline">
+											${messageError} <a href="#" class="close">&times;</a>
+										</div>
+
+									</div>
+									<%
+										request.getSession().removeAttribute(
+														"messageError");
+									%>
+								</c:if>
 								</div>
 								<c:set var="error" value="${sessionScope.errorSendSuggest}" />
 								<c:if test="${not empty error}">
 									<font color="red">${error}</font>
 								</c:if>
 								<div class="large-12 columns">
-									<div data-alert="" class="alert-box radius secondary">
-										<label class="left"><font color="white" size="+1">Thông
-												tin lộ trình</font></label> </br>
-									</div>
+								
 									<div class="row">
 										<div class="small-4 columns ">
 											<label class="right inline">Địa điểm bắt đầu:</label>
@@ -172,14 +202,7 @@ html, body, #map-canvas {
 									</div>
 
 								</div>
-								<div class="large-12 columns">
-									<div data-alert="" class="alert-box radius secondary">
-										<label class="left"><font color="white" size="+1">Lộ
-												trình</font></label> </br>
-									</div>
-									<div id="map-canvas"></div>
-									</br> </br>
-								</div>
+							
 
 
 
@@ -194,11 +217,21 @@ html, body, #map-canvas {
 
 
 			</div>
-
 		</div>
-		</br>
+	</div>
+	<div class="large-2 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+		</div>
+	</div>
+</div>
 
-	</center>
 
-</section>
+
+
+
+
+
+
+
 <jsp:include page="footer.jsp" />

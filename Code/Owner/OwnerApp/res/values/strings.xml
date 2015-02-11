@@ -20,5 +20,6 @@
     <string name="title_activity_create_goods_map_fragment">CreateGoodsMapFragment</string>
     <string name="title_activity_login">Login</string>
     <string name="prompt">Loại hàng</string>
+    <string name="title_activity_suggest_detail">SuggestDetailActivity</string>
 
 </resources>

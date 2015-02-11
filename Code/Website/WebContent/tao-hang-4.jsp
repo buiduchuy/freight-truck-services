@@ -23,29 +23,7 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<jsp:include page="menu-tao-hang.jsp" />
-			<c:set var="messageSuccess" value="${sessionScope.messageSuccess }" />
-			<c:set var="messageError" value="${sessionScope.messageError }" />
-			<c:if test="${not empty messageSuccess}">
-				<div class="row">
-					<div data-alert class="alert-box success radius inline">
-						${messageSuccess} <a href="#" class="close">&times;</a>
-					</div>
-				</div>
-				<%
-					request.getSession().removeAttribute("messageSuccess");
-				%>
-			</c:if>
-			<c:if test="${not empty messageError}">
-				<div class="row">
-					<div data-alert class="alert-box alert radius inline">
-						${messageError} <a href="#" class="close">&times;</a>
-					</div>
 
-				</div>
-				<%
-					request.getSession().removeAttribute("messageError");
-				%>
-			</c:if>
 			<form action="ControllerCreateGoods" method="post"
 				accept-charset="utf-8">
 
@@ -150,20 +128,20 @@
 
 					</div>
 				</div>
-				<div class="row">
-					<div class="large-12 columns">
-						<div class="submit-area right">
-							<a href="ControllerCreateGoods?btnAction=viewCreate_3"
-								class="button secondary"><i class="icon-mail-reply"></i> Trở
-								về</a>
-							<button class="success"
-								onclick="return confirm('Bạn có muốn tạo hàng không?')"
-								name="btnAction" value="createGood">
-								<i class="icon-ok"></i> Tạo hàng
-							</button>
-						</div>
+
+				<div class="large-12 columns">
+					<div class="submit-area right">
+						<a href="ControllerCreateGoods?btnAction=viewCreate_3"
+							class="button secondary"><i class="icon-mail-reply"></i> Trở
+							về</a>
+						<button class="success"
+							onclick="return confirm('Bạn có muốn tạo hàng không?')"
+							name="btnAction" value="createGood">
+							<i class="icon-ok"></i> Tạo hàng
+						</button>
 					</div>
 				</div>
+				<div class="row"></div>
 				<div class="row"></div>
 			</form>
 		</div>
