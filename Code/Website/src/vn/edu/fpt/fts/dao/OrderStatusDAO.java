@@ -90,7 +90,7 @@ public class OrderStatusDAO {
 				orderStatus.setOrderStatusName(Integer.valueOf(rs
 						.getString("OrderStatusName")));
 
-				return dealStatus;
+				return orderStatus;
 			}
 
 		} catch (SQLException e) {
