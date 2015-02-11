@@ -15,37 +15,45 @@ import vn.edu.fpt.fts.pojo.Deal;
  */
 public class UpdateDealProcess {
 
-	public static void main(String[] args) {
+	DealDAO dealDao = new DealDAO();
 
-		changeDealOwnerAccept(1);
+	public static void main(String[] args) {
+		UpdateDealProcess udp = new UpdateDealProcess();
+		udp.changeDealOwnerAccept(1);
 	}
 
-	public static int changeDealOwnerAccept(int ownerID) {
-		DealDAO dealDao = new DealDAO();
-		Deal deal = new Deal();
-		List<Deal> listDeal = new ArrayList<Deal>();
-		List<Deal> l_declineDeal = new ArrayList<Deal>();
-		// bean.setDealStatusID(3);
+	public int changeDealOwnerAccept(int ownerID) {
 
+		Deal deal = new Deal();
+		List<Deal> l_deal = new ArrayList<Deal>();
+
+		List<Deal> l_declineDeal = new ArrayList<Deal>();
+
+		// Update deal with accept status 3
+		// bean.setDealStatusID(3);
 		int s_update = 1;
-		// DealDAO.updateDeal(bean);
+		// dealDao.updateDeal(bean);
 
 		if (s_update != 0) {
-			listDeal = dealDao.getDealByOwnerID(ownerID);
-			for (int i = 0; i < listDeal.size(); i++) {
-				if (listDeal.get(i).getDealStatusID() != 3) {
-
-					deal = listDeal.get(i);
+			// Get list deal by OwnerID with different accept status 3
+			l_deal = dealDao.getDealByOwnerID(ownerID);
+			for (int i = 0; i < l_deal.size(); i++) {
+				if (l_deal.get(i).getDealStatusID() != 3) {
+					deal = l_deal.get(i);
 					l_declineDeal.add(deal);
-
 				}
 			}
-		}
 
+			// Change list deal with different accept status to decline 4
+			for (int j = 0; j < l_declineDeal.size(); j++) {
+				l_declineDeal.get(j).setDealStatusID(4);
+				dealDao.updateDeal(l_declineDeal.get(j));
+			}
+		}
 		return 1;
 	}
 
-	public static int updateDeal() {
+	public int updateDeal() {
 		return 1;
 	}
 

@@ -443,7 +443,7 @@ public class DealDAO {
 		return null;
 	}
 
-	public static int updateDeal(Deal bean) {
+	public int updateDeal(Deal bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
