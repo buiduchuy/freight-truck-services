@@ -72,4 +72,14 @@
     <servlet-name>ControllerMakeDeal</servlet-name>
     <url-pattern>/ControllerMakeDeal</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ControllerManageOrder</display-name>
+    <servlet-name>ControllerManageOrder</servlet-name>
+    <servlet-class>vn.edu.fpt.fts.servlet.ControllerManageOrder</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ControllerManageOrder</servlet-name>
+    <url-pattern>/ControllerManageOrder</url-pattern>
+  </servlet-mapping>
 </web-app>

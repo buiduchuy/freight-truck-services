@@ -20,7 +20,7 @@
 	class="button info expand"><i class="icon-desktop"></i> Quản lý
 		hàng</a></li>
 
-<li><a href="ControllerManageGoods?btnAction=manageOrder"
+<li><a href="ControllerManageOrder?btnAction=manageOrder"
 	class="button info expand"><i class="icon-desktop"></i> Quản lý hoá
 		đơn</a></li>
 
