@@ -61,7 +61,7 @@ public class CreateGoodsActivity extends Activity {
 	private ImageButton ibPickupMap, ibDeliverMap;
 	private Button btnPost;
 	private List<String> cateList = new ArrayList<String>();
-	private int cateId;
+	private int cateId, spinnerPos;
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
 			deliverLng = 0.0;
 	private String ownerid;
@@ -70,6 +70,9 @@ public class CreateGoodsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_goods);
+		
+		
+		
 		etNotes = (EditText) findViewById(R.id.edittext_note);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etWeight = (EditText) findViewById(R.id.edittext_weight);
@@ -93,6 +96,7 @@ public class CreateGoodsActivity extends Activity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				String selected = parent.getItemAtPosition(position).toString();
+				spinnerPos = position;
 				if (selected.equals("Hàng thực phẩm")) {
 					cateId = 1;
 				} else if (selected.equals("Hàng đông lạnh")) {
@@ -255,6 +259,45 @@ public class CreateGoodsActivity extends Activity {
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
+		
+		if (savedInstanceState != null) {
+			spinner.setSelection(savedInstanceState.getInt("spinner"));
+			etDeliverDate.setText(savedInstanceState.getString("deliverDate"));
+			etNotes.setText(savedInstanceState.getString("note"));
+			etPickupDate.setText(savedInstanceState.getString("pickupDate"));
+			etPrice.setText(savedInstanceState.getString("price"));
+			etWeight.setText(savedInstanceState.getString("weight"));
+			actPickupAddr.setText(savedInstanceState.getString("pickup"));
+			actDeliverAddr.setText(savedInstanceState.getString("deliver"));
+		}
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		outState.putInt("spinner", spinnerPos);
+		outState.putString("weight", etWeight.getText().toString());
+		outState.putString("pickupDate", etPickupDate.getText().toString());
+		outState.putString("deliverDate", etDeliverDate.getText().toString());
+		outState.putString("price", etPrice.getText().toString());
+		outState.putString("note", etNotes.getText().toString());
+		outState.putString("pickup", actPickupAddr.getText().toString());
+		outState.putString("deliver", actDeliverAddr.getText().toString());
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onRestoreInstanceState(savedInstanceState);
+		spinner.setSelection(savedInstanceState.getInt("spinner"));
+		etDeliverDate.setText(savedInstanceState.getString("deliverDate"));
+		etNotes.setText(savedInstanceState.getString("note"));
+		etPickupDate.setText(savedInstanceState.getString("pickupDate"));
+		etPrice.setText(savedInstanceState.getString("price"));
+		etWeight.setText(savedInstanceState.getString("weight"));
+		actPickupAddr.setText(savedInstanceState.getString("pickup"));
+		actDeliverAddr.setText(savedInstanceState.getString("deliver"));
 	}
 
 	@Override

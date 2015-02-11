@@ -58,7 +58,8 @@
             android:id="@+id/edittext_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Giá tiền đề nghị" />
+            android:hint="Giá tiền đề nghị" 
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/edittext_note"

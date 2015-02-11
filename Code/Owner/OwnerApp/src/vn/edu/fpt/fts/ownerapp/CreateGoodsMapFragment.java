@@ -70,6 +70,7 @@ public class CreateGoodsMapFragment extends Activity {
 				bundle.putDouble("lng", mlong);				
 				Intent intent = new Intent(CreateGoodsMapFragment.this, CreateGoodsActivity.class);
 				intent.putExtra("info", bundle);
+				intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 				startActivity(intent);
 			}
 		});
