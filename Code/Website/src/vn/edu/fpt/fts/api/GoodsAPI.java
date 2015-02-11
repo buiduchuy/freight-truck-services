@@ -43,6 +43,7 @@ public class GoodsAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createGoods(MultivaluedMap<String, String> goodsParams) {
 		Goods goods = new Goods();
+		int ret = 0;
 		try {
 			goods.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
 			goods.setPrice(Double.valueOf(goodsParams.getFirst("price")));
@@ -66,10 +67,7 @@ public class GoodsAPI {
 					.getFirst("goodsCategoryID")));
 			System.out.println(goodsParams.getFirst("deliveryAddress"));
 
-			int ret = goodsDao.insertGoods(goods);
-			if (ret <= 0) {
-				return "Fail";
-			}
+			ret = goodsDao.insertGoods(goods);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -79,7 +77,7 @@ public class GoodsAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return "Success";
+		return String.valueOf(ret);
 	}
 
 	@POST

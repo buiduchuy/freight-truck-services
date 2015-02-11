@@ -68,7 +68,7 @@ public class OrderStatusDAO {
 		return null;
 	}
 
-	public DealStatus getOrderStatusByID(int orderStatusID) {
+	public OrderStatus getOrderStatusByID(int orderStatusID) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -82,12 +82,13 @@ public class OrderStatusDAO {
 
 			rs = stm.executeQuery();
 
-			DealStatus dealStatus;
+			OrderStatus orderStatus;
 			while (rs.next()) {
-				dealStatus = new DealStatus();
+				orderStatus = new OrderStatus();
 
-				dealStatus.setDealStatusID(orderStatusID);
-				dealStatus.setDealStatusName(rs.getString("OrderStatusName"));
+				orderStatus.setOrderStatusID(orderStatusID);
+				orderStatus.setOrderStatusName(Integer.valueOf(rs
+						.getString("OrderStatusName")));
 
 				return dealStatus;
 			}
