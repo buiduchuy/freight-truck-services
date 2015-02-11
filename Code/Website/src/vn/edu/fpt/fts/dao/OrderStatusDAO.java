@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.pojo.DealStatus;
 import vn.edu.fpt.fts.pojo.OrderStatus;
 
 /**
@@ -40,7 +39,7 @@ public class OrderStatusDAO {
 				orderStatus = new OrderStatus();
 
 				orderStatus.setOrderStatusID(rs.getInt("OrderStatusID"));
-				orderStatus.setOrderStatusName(rs.getInt("OrderStatusName"));
+				orderStatus.setOrderStatusName(rs.getString("OrderStatusName"));
 
 				list.add(orderStatus);
 			}
@@ -87,8 +86,7 @@ public class OrderStatusDAO {
 				orderStatus = new OrderStatus();
 
 				orderStatus.setOrderStatusID(orderStatusID);
-				orderStatus.setOrderStatusName(Integer.valueOf(rs
-						.getString("OrderStatusName")));
+				orderStatus.setOrderStatusName(rs.getString("OrderStatusName"));
 
 				return orderStatus;
 			}

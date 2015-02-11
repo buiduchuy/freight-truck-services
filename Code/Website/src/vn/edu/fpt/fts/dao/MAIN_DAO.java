@@ -3,11 +3,6 @@
  */
 package vn.edu.fpt.fts.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import vn.edu.fpt.fts.pojo.Order;
-
 /**
  * @author Huy
  *

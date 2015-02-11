@@ -19,13 +19,13 @@ public class OrderStatus implements Serializable {
 	 */
 	private static final long serialVersionUID = -7833228392990812176L;
 	private int orderStatusID;
-	private int orderStatusName;
+	private String orderStatusName;
 
 	public OrderStatus() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public OrderStatus(int orderStatusID, int orderStatusName) {
+	public OrderStatus(int orderStatusID, String orderStatusName) {
 		super();
 		this.orderStatusID = orderStatusID;
 		this.orderStatusName = orderStatusName;
@@ -39,11 +39,11 @@ public class OrderStatus implements Serializable {
 		this.orderStatusID = orderStatusID;
 	}
 
-	public int getOrderStatusName() {
+	public String getOrderStatusName() {
 		return orderStatusName;
 	}
 
-	public void setOrderStatusName(int orderStatusName) {
+	public void setOrderStatusName(String orderStatusName) {
 		this.orderStatusName = orderStatusName;
 	}
 
