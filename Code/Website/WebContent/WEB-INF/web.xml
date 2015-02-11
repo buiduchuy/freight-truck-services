@@ -32,4 +32,44 @@
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ControllerAccount</display-name>
+    <servlet-name>ControllerAccount</servlet-name>
+    <servlet-class>vn.edu.fpt.fts.servlet.ControllerAccount</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ControllerAccount</servlet-name>
+    <url-pattern>/ControllerAccount</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ControllerCreateGoods</display-name>
+    <servlet-name>ControllerCreateGoods</servlet-name>
+    <servlet-class>vn.edu.fpt.fts.servlet.ControllerCreateGoods</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ControllerCreateGoods</servlet-name>
+    <url-pattern>/ControllerCreateGoods</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ControllerManageGoods</display-name>
+    <servlet-name>ControllerManageGoods</servlet-name>
+    <servlet-class>vn.edu.fpt.fts.servlet.ControllerManageGoods</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ControllerManageGoods</servlet-name>
+    <url-pattern>/ControllerManageGoods</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ControllerMakeDeal</display-name>
+    <servlet-name>ControllerMakeDeal</servlet-name>
+    <servlet-class>vn.edu.fpt.fts.servlet.ControllerMakeDeal</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ControllerMakeDeal</servlet-name>
+    <url-pattern>/ControllerMakeDeal</url-pattern>
+  </servlet-mapping>
 </web-app>

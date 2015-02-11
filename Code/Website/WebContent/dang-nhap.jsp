@@ -50,7 +50,7 @@
 			<center>
 				<div class="form-content"
 					style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 550px;">
-					<form action="Controller" method="post" accept-charset="utf-8"
+					<form action="ControllerAccount" method="post" accept-charset="utf-8"
 						id="frm-login">
 						<h2>Đăng nhập</h2>
 						</br>

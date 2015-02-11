@@ -16,7 +16,7 @@
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 800px;">
 			<jsp:include page="menu-tao-hang.jsp" />
 
-			<form action="Controller" method="post" accept-charset="utf-8">
+			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
 				<c:choose>
 					<c:when test="${not empty good}">
 						<div class="row">

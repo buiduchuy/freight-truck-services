@@ -161,7 +161,7 @@ html, body, #map-canvas {
 											<a href="goi-y-he-thong.jsp" class="button secondary"> <i
 												class="icon-mail-reply"></i> Trở về trước
 											</a> <a class="button success"
-												href="Controller?btnAction=sendSuggest&routeID=${detailRoute.routeID }">
+												href="ControllerMakeDeal?btnAction=sendSuggest&routeID=${detailRoute.routeID }">
 												<i class="icon-envelope"></i> Gửi để nghị
 											</a>
 

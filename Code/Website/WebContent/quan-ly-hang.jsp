@@ -116,7 +116,7 @@
 																</c:forEach>
 															<td>${good1.pickupTime }</td>
 															<td>${good1.deliveryTime }</td>
-															<td><a class="button" href="Controller?btnAction=viewDetailGood1&idGood=${good1.goodsID }">Xem chi tiết</a></td>
+															<td><a class="button" href="ControllerManageGoods?btnAction=viewDetailGood1&idGood=${good1.goodsID }">Xem chi tiết</a></td>
 														</tr>
 													</c:forEach>
 
@@ -165,7 +165,7 @@
 																</c:forEach>
 															<td>${good2.pickupTime }</td>
 															<td>${good2.deliveryTime }</td>
-															<td><a class="button" href="Controller?btnAction=viewDetailGood2&idGood=${good2.goodsID }">Xem chi tiết</a></td>
+															<td><a class="button" href="ControllerManageGoods?btnAction=viewDetailGood2&idGood=${good2.goodsID }">Xem chi tiết</a></td>
 														</tr>
 													</c:forEach>
 
@@ -196,42 +196,4 @@
 	</center>
 
 </section>
-<script>
-	function reset() {
-		$("#toggleCSS").attr("href", "css/alertify.default.css");
-		alertify.set({
-			labels : {
-				ok : "Đồng ý",
-				cancel : "Không đồng ý"
-			},
-			delay : 5000,
-			buttonReverse : false,
-			buttonFocus : "ok"
-		});
-	}
-
-	// ==============================
-	// Standard Dialogs
-
-	$("#update").on('click', function() {
-		reset();
-		alertify.confirm("Bạn có muốn cập nhật hàng không?", function(e) {
-			if (e) {
-				document.location.href = "Controller?btnAction=test";
-			} else {
-			}
-		});
-		return false;
-	});
-	$("#delete").on('click', function() {
-		reset();
-		alertify.confirm("Bạn có muốn xoá hàng không?", function(e) {
-			if (e) {
-				document.location.href = "Controller?btnAction=#";
-			} else {
-			}
-		});
-		return false;
-	});
-</script>
 <jsp:include page="footer.jsp" />

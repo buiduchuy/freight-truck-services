@@ -73,7 +73,7 @@
 															</c:if>
 															<td><a class="button alert"
 																onclick="return confirm('Bạn có chắc khi huỷ đề nghị không?')"
-																href="Controller?btnAction=deleteDealSent&idDeal=${dealOwner.dealID }"><i
+																href="ControllerMakeDeal?btnAction=deleteDealSent&idDeal=${dealOwner.dealID }"><i
 																	class="icon-remove"></i> Huỷ đề nghị</a></td>
 														</tr>
 													</c:if>
@@ -132,7 +132,7 @@
 															</c:if>
 															<td><a class="button "
 																
-																href="Controller?btnAction=viewDetailDeal&idDeal=${dealDriver.dealID }"><i
+																href="ControllerMakeDeal?btnAction=viewDetailDeal&idDeal=${dealDriver.dealID }"><i
 																	class="icon-bullseye"></i> Xem Chi Tiết</a></td>
 														</tr>
 													</c:if>

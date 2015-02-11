@@ -24,7 +24,7 @@
 			<jsp:include page="menu-tao-hang.jsp" />
 
 
-			<form action="Controller" method="post" accept-charset="utf-8">
+			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
 				<c:choose>
 					<c:when test="${not empty router}">
 						<div class="row">
