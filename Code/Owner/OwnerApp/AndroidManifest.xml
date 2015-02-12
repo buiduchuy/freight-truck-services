@@ -28,7 +28,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBrDEbsx0CEHEF6XdhQ4-WONJJxyHmxITc" />
+            android:value="AIzaSyDSUc8vinUlESX4oX4nPiK0rtIyMVard3w" />
 
         <activity
             android:name=".LoginActivity"
@@ -66,11 +66,7 @@
         <activity
             android:name=".SuggestActivity"
             android:label="@string/title_activity_suggest" >
-        </activity>
-        <activity
-            android:name=".SuggestListFragment"
-            android:label="@string/title_activity_suggest_list_fragment" >
-        </activity>
+        </activity>        
         <activity
             android:name=".CreateGoodsMapFragment"
             android:label="@string/title_activity_create_goods_map_fragment" >

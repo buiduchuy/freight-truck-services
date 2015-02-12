@@ -7,7 +7,7 @@
     <string name="title_activity_goods_fragment">GoodsFragment</string>
     <string name="title_activity_track_fragment">TrackFragment</string>
     <string name="action_logout">Đăng xuất</string>
-    <string name="title_activity_goods_detail">Bàn ghế</string>
+    <string name="title_activity_goods_detail">Chi tiết hàng</string>
     <string name="action_create_goods">Đăng hàng</string>
     <string name="action_suggest_driver">Gợi ý tài xế</string>
     <string name="title_activity_create_good_fragment">Tạo hàng</string>

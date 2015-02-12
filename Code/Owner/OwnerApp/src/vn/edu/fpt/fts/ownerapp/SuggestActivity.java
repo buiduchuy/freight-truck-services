@@ -47,12 +47,14 @@ public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
 	private ModelAdapter adapter;
+	private String goodsID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
-
+		goodsID = getIntent().getStringExtra("goodsID");
+		
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
 				SuggestActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Route_Get;
@@ -68,8 +70,9 @@ public class SuggestActivity extends Activity {
 				Route route = list.get(pos);
 				int routeId = route.getRouteID();
 				Intent intent = new Intent(SuggestActivity.this,
-						SuggestDetailActivity.class);
+						SuggestDetailActivity.class);				
 				intent.putExtra("route", routeId);
+				intent.putExtra("goodsID", goodsID);
 				startActivity(intent);
 			}
 		});

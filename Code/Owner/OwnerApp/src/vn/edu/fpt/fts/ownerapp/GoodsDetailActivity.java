@@ -1,14 +1,43 @@
 package vn.edu.fpt.fts.ownerapp;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import vn.edu.fpt.fts.adapter.GoodsDetailPagerAdapter;
+import vn.edu.fpt.fts.adapter.ModelAdapter;
+import vn.edu.fpt.fts.classes.Route;
 import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,14 +47,35 @@ public class GoodsDetailActivity extends FragmentActivity implements
 	private GoodsDetailPagerAdapter mAdapter;
 	private ActionBar actionBar;
 	private String[] tabs = { "Giao dịch", "Thông tin" };
+	private String goodsCategoryID, goodsID;
 
-	// private String[] deals = {"Thông tin", "Giao dịch #11", "Giao dịch #22",
-	// "Giao dịch #33"};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_goods_detail);
 
+		goodsID = getIntent().getStringExtra("goodsID");
+		goodsCategoryID = getIntent().getStringExtra("goodsCategoryID");
+		String categoryName = "";
+		switch (Integer.parseInt(goodsCategoryID)) {
+		case 1:
+			categoryName = "Hàng thực phẩm";
+			break;
+		case 2:
+			categoryName = "Hàng đông lạnh";
+			break;
+		case 4:
+			categoryName = "Hàng dễ vỡ";
+			break;
+		case 5:
+			categoryName = "Hàng dễ cháy nổ";
+			break;
+		default:
+			break;
+		}
+		
+		this.getActionBar().setTitle(categoryName);
+		
 		viewPager = (ViewPager) findViewById(R.id.pager_goods);
 		actionBar = getActionBar();
 		mAdapter = new GoodsDetailPagerAdapter(getSupportFragmentManager());
@@ -35,7 +85,8 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		for (String tab_name : tabs) {
-			actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
+			actionBar.addTab(actionBar.newTab().setText(tab_name)
+					.setTabListener(this));
 		}
 
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -83,6 +134,7 @@ public class GoodsDetailActivity extends FragmentActivity implements
 			return true;
 		} else if (id == R.id.suggest_driver) {
 			Intent intent = new Intent(this, SuggestActivity.class);
+			intent.putExtra("goodsID", goodsID);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -106,4 +158,6 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 
 	}
+
+	
 }
