@@ -40,11 +40,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+@SuppressLint("UseSparseArrays")
 public class Deals2 extends Fragment {
 
 	ArrayList<String> list;
 	@SuppressLint("UseSparseArrays")
-	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
+	ArrayList<String> map;
 	ListView list1;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByDriverID";
@@ -52,6 +53,7 @@ public class Deals2 extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		list = new ArrayList<String>();
+		map = new ArrayList<String>();
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("driverID", getActivity().getIntent()
@@ -67,10 +69,13 @@ public class Deals2 extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				
+				int id = Integer.parseInt(map.get((int)arg3));
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				OfferResponse frag = new OfferResponse();
+				Bundle bundle = new Bundle();
+				bundle.putString("dealID", String.valueOf(id));
+				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
@@ -164,10 +169,9 @@ public class Deals2 extends Fragment {
 				JSONArray array = obj.getJSONArray("deal");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
-					if (item.getString("sender").equals("owner")) {
+					if (item.getString("createBy").equalsIgnoreCase("owner") && item.getString("dealStatusID").equals("1")) {
 						list.add("Đề nghị " + (i+1) + ": " + item.getString("price") + " đồng");
-						map.put(Long.valueOf(i),
-								Integer.parseInt(item.getString("dealID")));
+						map.add(item.getString("dealID"));
 					}
 				}
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(

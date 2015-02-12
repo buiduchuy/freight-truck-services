@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 
@@ -154,8 +156,7 @@ public class MainActivity extends FragmentActivity {
 			trs.replace(R.id.content_frame, frag1, "createRoute");
 			trs.addToBackStack("createRoute");
 			trs.commit();
-		} else {
-		}
+		} 
 		return super.onOptionsItemSelected(item);
 	}
 

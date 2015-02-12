@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.layout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,11 +11,31 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import vn.edu.fpt.fts.classes.Constant;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +45,11 @@ import android.widget.Toast;
 
 public class CurrentRoute extends Fragment {
 
-	private static final String url = "jdbc:jtds:sqlserver://10.0.3.2:1433;instance=MSSQLSERVER;DatabaseName=FTS";
-	private static final String user = "sa";
-	private static final String pass = "123456";
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Route/getRouteByID";
 	TextView contentView;
 	String id;
+	String part1;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -35,165 +59,238 @@ public class CurrentRoute extends Fragment {
 				false);
 		contentView = (TextView) v.findViewById(R.id.textView3);
 		Bundle bundle = getArguments();
-		id = bundle.getString("id");
-		try {
-			new GetRoute().execute(id).get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		id = bundle.getString("routeID");
+		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
+				"Đang xử lý ...");
+		ws.addNameValuePair("routeID", id);
+		ws.execute(new String[] { SERVICE_URL });
 		Button button = (Button) v.findViewById(R.id.button1);
 		button.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-	    		FragmentManager mng = getActivity().getSupportFragmentManager();
-	    		FragmentTransaction trs = mng.beginTransaction();
-	    		ChangeRoute frag = new ChangeRoute();
-	    		Bundle bundle = new Bundle();
-	    		bundle.putString("id", id);
-	    		frag.setArguments(bundle);
-	    		trs.replace(R.id.content_frame, frag, "changeRoute");
-	    		trs.addToBackStack("changeRoute");
-	    		trs.commit();
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				ChangeRoute frag = new ChangeRoute();
+				Bundle bundle = new Bundle();
+				bundle.putString("id", id);
+				frag.setArguments(bundle);
+				trs.replace(R.id.content_frame, frag, "changeRoute");
+				trs.addToBackStack("changeRoute");
+				trs.commit();
 			}
 		});
 		Button button2 = (Button) v.findViewById(R.id.button2);
 		button2.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-	    		try {
-					boolean result = new DeleteRoute().execute().get();
-					if(result) {
-						Toast.makeText(getActivity(), "Đã hủy lộ trình thành công", Toast.LENGTH_SHORT).show();
-					}
-					else {
-						Toast.makeText(getActivity(), "Hủy lộ trình thất bại", Toast.LENGTH_SHORT).show();
-					}
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
 			}
 		});
 		return v;
 	}
 
-	private class GetRoute extends AsyncTask<String, Void, Void> {
+	private class WebService extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebService(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
 		@Override
-		protected Void doInBackground(String... params) {
-			ArrayList<String> array = new ArrayList<String>();
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			try {
-				Class.forName("net.sourceforge.jtds.jdbc.Driver");
+		}
 
-				Connection con = DriverManager.getConnection(url, user, pass);
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
 
-				String result = "Database connection success\n";
-				String sql = "SELECT * FROM dbo.Route WHERE RouteID = "
-						+ params[0];
-				PreparedStatement st = con.prepareStatement(sql);
+			HttpResponse response = doResponse(url);
 
-				ResultSet rs = st.executeQuery();
-				
-				sql = "SELECT * FROM dbo.RouteMarker WHERE RouteID = "
-						+ params[0];
-				st = con.prepareStatement(sql);
+			if (response.getEntity() == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
 
-				ResultSet rs2 = st.executeQuery();
-				
-				sql = "SELECT * FROM dbo.RouteGoodsCategory WHERE RouteID = "
-						+ params[0];
-				st = con.prepareStatement(sql);
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
 
-				ResultSet rs3 = st.executeQuery();
-				
-				while (rs.next()) {
-					String content = "Địa điểm bắt đầu: "
-							+ rs.getString("StartingAddress") + "\n";
-					int i = 1;
-					while (rs2.next()) {
-						content += "Địa điểm đi qua " + i + ": " + rs2.getString("RouteMarkerLocation") + "\n";
-						i++;
-					};
-					content += "Địa điểm kết thúc: " + rs.getString("DestinationAddress")
-							+ "\nNgày bắt đầu: " + rs.getString("StartTime")
-							+ "\nNgày kết thúc: " + rs.getString("FinishTime")
-							+ "\nKhối lượng có thể chở: " + rs.getString("Weight") + " tấn\nHàng không chở: ";
-					if(!rs3.isBeforeFirst()) {
-						content += "không có loại hàng nào";
-					}
-					else {
-						while (rs3.next()) {
-							if(rs3.getInt("GoodsCategoryID") == 1) {
-								content += "hàng đông lạnh, ";
-							}
-							else if(rs3.getInt("GoodsCategoryID") == 2) {
-								content += "hàng dễ vỡ, ";
-							}
-							else if(rs3.getInt("GoodsCategoryID") == 4) {
-								content += "hàng dễ cháy nổ, ";
-							}
-							else if(rs3.getInt("GoodsCategoryID") == 5) {
-								content += "hàng thực phẩm, ";
-							}
-						}
-						content = content.substring(0, content.length() - 2);
-					}
-					contentView.setText(content);
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
-				con.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				// tv.setText(e.toString());
+
 			}
-			return null;
+
+			return result;
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			JSONObject obj;
+			try {
+				obj = new JSONObject(response);
+				Object intervent;
+				part1 = "Địa điểm bắt đầu: " + obj.getString("startingAddress")
+						+ "\n";
+
+				if (obj.has("routeMarkers")) {
+					intervent = obj.get("routeMarkers");
+					if (intervent instanceof JSONArray) {
+						JSONArray catArray = obj.getJSONArray("routeMarkers");
+						for (int j = 0; j < catArray.length(); j++) {
+							JSONObject cat = catArray.getJSONObject(j);
+							part1 += "Địa điểm đi qua " + (j + 1) + ": "
+									+ cat.getString("routeMarkerLocation")
+									+ "\n";
+						}
+					} else if (intervent instanceof JSONObject) {
+						JSONObject cat = obj.getJSONObject("routeMarkers");
+						part1 += "Địa điểm đi qua 1: "
+								+ cat.getString("routeMarkerLocation") + "\n";
+					}
+				}
+
+				part1 += "Địa điểm kết thúc: "
+						+ obj.getString("destinationAddress") + "\n"
+						+ "Thời gian bắt đầu: " + obj.getString("startTime")
+						+ "\n" + "Thời gian kết thúc: "
+						+ obj.getString("finishTime") + "\n"
+						+ "Khối lượng có thể chở: " + obj.getString("weight")
+						+ " tấn\nLoại hàng không chở: ";
+
+				if (obj.has("goodsCategory")) {
+					intervent = obj.get("goodsCategory");
+					if (intervent instanceof JSONArray) {
+						JSONArray goodArray = obj.getJSONArray("goodsCategory");
+						for (int j = 0; j < goodArray.length(); j++) {
+							JSONObject good = goodArray.getJSONObject(j);
+							part1 += good.getString("name") + ", ";
+						}
+						part1 = part1.substring(0, part1.length() - 2);
+					} else if (intervent instanceof JSONObject) {
+						JSONObject good = obj.getJSONObject("goodsCategory");
+						part1 += good.getString("name");
+					}
+				} else {
+					part1 += "không có loại hàng nào";
+				}
+
+				contentView.setText(part1);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			pDlg.dismiss();
 		}
-	}
-	
-	private class DeleteRoute extends AsyncTask<String, Void, Boolean> {
-		@Override
-		protected Boolean doInBackground(String... params) {
-			ArrayList<String> array = new ArrayList<String>();
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
 
 			try {
-				Class.forName("net.sourceforge.jtds.jdbc.Driver");
+				switch (taskType) {
 
-				Connection con = DriverManager.getConnection(url, user, pass);
-				
-				String sql = "UPDATE dbo.Route SET Active = 0 WHERE RouteID = " + id;
-				PreparedStatement st = con.prepareStatement(sql);
-				st.executeUpdate();
-				
-				sql = "UPDATE dbo.Deal SET Active = 'False' WHERE RouteID = " + id;
-				st = con.prepareStatement(sql);
-				st.executeUpdate();
-				
-				con.close();
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
 			}
-			return true;
+
+			return response;
 		}
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
+
 	}
 }

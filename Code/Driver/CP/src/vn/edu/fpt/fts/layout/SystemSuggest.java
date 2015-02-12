@@ -53,6 +53,7 @@ public class SystemSuggest extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		list = new ArrayList<String>();
+		getActivity().setTitle("Gợi ý hệ thống");
 		WebService ws = new WebService(WebService.GET_TASK,
 				getActivity(), "Đang lấy dữ liệu ...");
 		ws.execute(new String[] { SERVICE_URL });

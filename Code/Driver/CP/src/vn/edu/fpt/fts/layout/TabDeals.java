@@ -14,6 +14,7 @@ public class TabDeals extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+    	getActivity().setTitle("Danh sách đề nghị");
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.activity_main);
 

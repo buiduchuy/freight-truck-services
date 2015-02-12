@@ -52,6 +52,7 @@ public class SuggestList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		list = new ArrayList<String>();
+		getActivity().setTitle("Gợi ý hệ thống");
 		WebService ws = new WebService(WebService.GET_TASK,
 				getActivity(), "Đang lấy dữ liệu ...");
 		ws.execute(new String[] { SERVICE_URL });

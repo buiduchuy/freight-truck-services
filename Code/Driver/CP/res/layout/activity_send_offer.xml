@@ -20,7 +20,7 @@
             android:layout_width="281dp"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="Địa điểm bắt đầu: A\nĐịa điểm kết thúc: B\nNgày bắt đầu: 5/5/2015\nKhối lượng: 5 tấn\nLoại hàng: Cá tôm"
+            android:text=""
             android:textSize="15dp" />
 
         <EditText
@@ -32,7 +32,7 @@
             android:ems="10"
             android:inputType="number"
             android:maxLength="10"
-            android:hint="Giá đề nghị" >
+            android:hint="Giá đề nghị (ngàn đồng)" >
 
             <requestFocus />
         </EditText>
