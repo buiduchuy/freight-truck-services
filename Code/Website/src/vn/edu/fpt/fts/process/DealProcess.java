@@ -16,9 +16,10 @@ import vn.edu.fpt.fts.pojo.Deal;
 public class DealProcess {
 
 	DealDAO dealDao = new DealDAO();
+
 	public static void main(String[] args) {
 		DealProcess dp = new DealProcess();
-		dp.declineDeal(27);
+		dp.declineDeal(30);
 	}
 
 	public int acceptDeal(int dealID) {
@@ -55,8 +56,13 @@ public class DealProcess {
 				dealDao.updateDeal(l_declineDeal.get(j));
 			}
 
-			System.out.println("Accept - Number of deals will be change to decline: "
-					+ l_declineDeal.size());
+			// CAN PHAI LAM
+			// Insert order when accept finish
+			// Change goods of this order
+
+			System.out
+					.println("Accept - Number of deals will be change to decline: "
+							+ l_declineDeal.size());
 			return 1;
 		}
 		return 0;
@@ -64,14 +70,13 @@ public class DealProcess {
 
 	public int declineDeal(int dealID) {
 
-		//int i_acceptStatus = 3;
+		// int i_acceptStatus = 3;
 		int i_declineStatus = 4;
 
 		Deal deal = dealDao.getDealByID(dealID);
 		List<Deal> l_deal = new ArrayList<Deal>();
-		List<Deal> l_declineDeal = new ArrayList<Deal>();
 
-		// Update deal with accept status 3
+		// Update deal with decline status 4
 		deal.setDealStatusID(i_declineStatus);
 		int s_update = dealDao.updateDeal(deal);
 
@@ -81,17 +86,12 @@ public class DealProcess {
 			l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
 
 			for (int i = 0; i < l_deal.size(); i++) {
-				System.out.println(l_deal.get(i).getRefDealID() + " "
-						+ l_deal.get(i).getRouteID());
-				// RefDealID is NULL AND RouteID match with others
-				if (l_deal.get(i).getRefDealID() == deal.getRefDealID()
-						&& l_deal.get(i).getRouteID() == deal.getRouteID()) {
-					l_deal.get(i).setActive(i_declineStatus);
+
+				if (l_deal.get(i).getDealID() == 9) {
+					l_deal.get(i).setDealStatusID(i_declineStatus);
+					dealDao.updateDeal(l_deal.get(i));
 				}
 			}
-
-			System.out.println("Decline - Number of deals will be change to decline: "
-					+ l_declineDeal.size());
 			return 1;
 		}
 		return 0;
