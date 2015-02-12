@@ -88,7 +88,7 @@
 												<td>${history.price }</td>
 												<td>${history.notes }</td>
 												<c:choose>
-													<c:when test="${history.createBy== 'Driver' }">
+													<c:when test="${history.createBy== 'driver' }">
 														<td><a class="button success"
 															href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }"
 															onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp

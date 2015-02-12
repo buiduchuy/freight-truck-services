@@ -141,4 +141,21 @@ public class DealAPI {
 		}
 		return "Fail";
 	}
+
+	@POST
+	@Path("decline")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String declineDeal(MultivaluedMap<String, String> params) {
+		try {
+			int dealID = Integer.valueOf(params.getFirst("dealID"));
+			DealProcess dp = new DealProcess();
+			dp.declineDeal(dealID);
+			return "Success";
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return "Fail";
+	}
 }

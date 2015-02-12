@@ -97,4 +97,15 @@ public class GoodsAPI {
 		}
 		return l_goods;
 	}
+
+	@POST
+	@Path("getGoodsByID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Goods getGoodsByID(MultivaluedMap<String, String> params) {
+		Goods goods = new Goods();
+		goods = goodsDao.getGoodsByID(Integer.valueOf(params
+				.getFirst("goodsID")));
+		return goods;
+	}
 }
