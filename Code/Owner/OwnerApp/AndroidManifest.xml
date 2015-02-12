@@ -66,7 +66,7 @@
         <activity
             android:name=".SuggestActivity"
             android:label="@string/title_activity_suggest" >
-        </activity>        
+        </activity>
         <activity
             android:name=".CreateGoodsMapFragment"
             android:label="@string/title_activity_create_goods_map_fragment" >
@@ -78,6 +78,10 @@
         <activity
             android:name=".SuggestDetailActivity"
             android:label="@string/title_activity_suggest_detail" >
+        </activity>
+        <activity
+            android:name=".DealDetailActivity"
+            android:label="@string/title_activity_deal_detail" >
         </activity>
     </application>
 

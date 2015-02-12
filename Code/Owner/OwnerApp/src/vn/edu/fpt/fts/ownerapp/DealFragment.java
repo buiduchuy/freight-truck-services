@@ -71,7 +71,20 @@ public class DealFragment extends Fragment {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				int pos = listView.getPositionForView(view);				
-				
+				int dealID = list.get(pos).getDealID();
+				int dealStatus = list.get(pos).getDealStatusID();
+				int routeID = list.get(pos).getRouteID();
+				int goodsID = list.get(pos).getGoodsID();
+				double price = list.get(pos).getPrice();
+				String note = list.get(pos).getNotes();
+				Intent intent = new Intent(getActivity(), DealDetailActivity.class);
+				intent.putExtra("dealID", dealID);
+				intent.putExtra("dealStatus", dealStatus);
+				intent.putExtra("routeID", routeID);
+				intent.putExtra("goodsID", goodsID);
+				intent.putExtra("price", price);
+				intent.putExtra("note", note);
+				startActivity(intent);
 			}
 		});
 
@@ -192,7 +205,7 @@ public class DealFragment extends Fragment {
 
 				for (int i = 0; i < list.size(); i++) {
 					if (list.get(i).getDealStatusID() == 3
-							|| list.get(i).getDealStatusID() == 4) {
+							|| list.get(i).getDealStatusID() == 4 || list.get(i).getActive() != 1) {
 						list.remove(i);
 					}
 					price[i] = (int) list.get(i).getPrice() + "";
