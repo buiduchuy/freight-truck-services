@@ -204,19 +204,24 @@
 												class="button secondary"> <i class="icon-mail-reply"></i>
 												Trở về trước
 											</a>
-											<fmt:parseDate value="${detailGood1.deliveryTime }" var="parsedDate" pattern="yyyy-MM-dd"/>
-											<jsp:useBean id="currentDate" type="java.util.Date" />
-											<fmt:formatDate var="now" value="${currentDate} pattern=" yyyy-MM-dd"/>
-											<c:if test="test="${ parsedDate > now }">
-												<button class="button  alert"
-													onclick="return confirm('Bạn có muốn xoá hàng không?')"
-													name="btnAction" value="deleteGood">
-													<i class="icon-remove"> Báo mất hàng</i>
-
-												</button>
+											<fmt:parseDate value="${detailGood1.deliveryTime }"
+												var="deliveryTime" pattern="dd-MM-yyyy" />
+											<fmt:formatDate pattern="yyyy-MM-dd" value="${deliveryTime}"
+												var="checkDay" />
+											<jsp:useBean id="today" class="java.util.Date" />
+											<fmt:formatDate pattern="yyyy-MM-dd" value="${today}"
+												var="current" />
+											<c:if test="${checkDay lt current}">
+												<c:if test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
+												<a class="button alert"
+													href="ControllerManageOrder?btnAction=lostGood&idGood=${detailGood1.goodsID }"
+													onclick="return confirm('Bạn có muốn báo mất hàng không?')">
+													<i class="icon-ok"></i> Báo mất hàng
+												</a>
+												</c:if>
 											</c:if>
 
-											<c:if test="${orderStatus.orderStatusID==2}">
+											<c:if test="${orderStatus.orderStatusID==3}">
 												<a class="button success"
 													href="ControllerManageOrder?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
 													onclick="return confirm('Bạn có muốn xác nhận hoá đơn không?')">
