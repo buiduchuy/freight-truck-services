@@ -316,6 +316,10 @@ public class CreateGoodsActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
+		if (id == R.id.action_homepage) {
+			Intent intent = new Intent(CreateGoodsActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
 	}
 

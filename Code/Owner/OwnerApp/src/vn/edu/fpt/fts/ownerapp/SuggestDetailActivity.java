@@ -119,6 +119,10 @@ public class SuggestDetailActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
+		if (id == R.id.action_homepage) {
+			Intent intent = new Intent(SuggestDetailActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
