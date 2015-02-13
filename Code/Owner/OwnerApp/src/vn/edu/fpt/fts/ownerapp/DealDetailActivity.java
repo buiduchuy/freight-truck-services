@@ -71,13 +71,7 @@ public class DealDetailActivity extends Activity {
 		// goodsweight = (TextView) findViewById(R.id.textview_weightgoods);
 		// goodspickup = (TextView) findViewById(R.id.textview_pickupgoods);
 		// goodsdeliver = (TextView) findViewById(R.id.textview_delivergoods);
-		if (dealStatus == 1) {
-			btn_counter.setVisibility(View.GONE);
-			btnAccept.setVisibility(View.GONE);
-			btnDecline.setVisibility(View.GONE);
-			etPrice.setVisibility(View.GONE);
-			etNote.setVisibility(View.GONE);
-		}
+		
 
 		dealID = getIntent().getIntExtra("dealID", 0);
 		dealStatus = getIntent().getIntExtra("dealStatus", 0);
@@ -85,6 +79,14 @@ public class DealDetailActivity extends Activity {
 		goodsID = getIntent().getIntExtra("goodsID", 0);
 		price = getIntent().getDoubleExtra("price", 0.0);
 		note = getIntent().getStringExtra("note");
+		
+		if (dealStatus == 1) {
+			btn_counter.setVisibility(View.GONE);
+			btnAccept.setVisibility(View.GONE);
+			btnDecline.setVisibility(View.GONE);
+			etPrice.setVisibility(View.GONE);
+			etNote.setVisibility(View.GONE);
+		}
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				DealDetailActivity.this, "Đang xử lý...");
@@ -145,6 +147,10 @@ public class DealDetailActivity extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		if (id == R.id.action_homepage) {
+			Intent intent = new Intent(DealDetailActivity.this, MainActivity.class);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -97,4 +97,32 @@ public class DealProcess {
 		return 0;
 	}
 
+	public int cancelDeal(int dealID) {
+		// int i_acceptStatus = 3;
+		int i_declineStatus = 4;
+
+		Deal deal = dealDao.getDealByID(dealID);
+		List<Deal> l_deal = new ArrayList<Deal>();
+
+		// Update deal with decline status 4
+		deal.setDealStatusID(i_declineStatus);
+		int s_update = dealDao.updateDeal(deal);
+
+		if (s_update != 0) {
+			// Get list parent deals with condition:
+			// First get list deal with same GoodsID
+			l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
+
+			for (int i = 0; i < l_deal.size(); i++) {
+
+				if (l_deal.get(i).getDealID() == 9) {
+					l_deal.get(i).setDealStatusID(i_declineStatus);
+					dealDao.updateDeal(l_deal.get(i));
+				}
+			}
+			return 1;
+		}
+		return 0;
+	}
+
 }

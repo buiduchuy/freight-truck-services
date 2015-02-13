@@ -81,7 +81,7 @@ public class GoodsFragment extends Fragment {
 				Intent intent = new Intent(view.getContext(),
 						GoodsDetailActivity.class);
 				String tmp = goodsCategoryID.get(pos);
-				
+				String tmp2 = goodsID.get(pos);
 				
 				
 				intent.putExtra("goodsID", goodsID.get(pos));
