@@ -362,6 +362,12 @@ public class OfferResponse extends Fragment {
 			else if(response.equals("Fail")) {
 				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
 			}
+			FragmentManager mng = getActivity().getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			Fragment fragment = new TabDeals();
+			trs.replace(R.id.content_frame, fragment);
+			trs.addToBackStack(null);
+			trs.commit();
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
@@ -516,6 +522,12 @@ public class OfferResponse extends Fragment {
 			else if(response.equals("Fail")) {
 				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
 			}
+			FragmentManager mng = getActivity().getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			Fragment fragment = new TabDeals();
+			trs.replace(R.id.content_frame, fragment);
+			trs.addToBackStack(null);
+			trs.commit();
 		}
 
 		// Establish connection and socket (data retrieval) timeouts

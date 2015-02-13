@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
@@ -21,6 +22,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -50,6 +52,9 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		getActivity().setTitle("Tùy chỉnh lộ trình");
 		View v = inflater.inflate(R.layout.activity_customize_route, container,
 				false);
+		InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+			      Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
