@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
@@ -21,9 +22,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.internal.pd;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,13 +43,18 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	GoogleMap map;
 	GeocoderHelper helper = new GeocoderHelper();
 	Button button;
+	ProgressDialog pDlg;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().setTitle("Tùy chỉnh lộ trình");
 		View v = inflater.inflate(R.layout.activity_customize_route, container,
 				false);
+		InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+			      Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
@@ -84,11 +92,11 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 						marker.position(p);
 						b.include(marker.getPosition());
 					}
-					LatLngBounds bounds = b.build();
-					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
-							bounds, 20);
-					map.animateCamera(cu);
 				}
+				LatLngBounds bounds = b.build();
+				CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
+						bounds, 20);
+				map.animateCamera(cu);
 			}
 
 			@Override
@@ -122,6 +130,12 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 									.snippet(String.valueOf(i + 2)));
 						}
 					}
+					pDlg = new ProgressDialog(getActivity());
+					pDlg.setMessage("Đang vẽ lại lộ trình ...");
+					pDlg.setProgressDrawable(getActivity().getWallpaper());
+					pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+					pDlg.setCancelable(false);
+					pDlg.show();
 					for (int i = 0; i < locations.size() - 1; i++) {
 						LatLng s = locations.get(i);
 						LatLng e = locations.get(i + 1);
@@ -135,6 +149,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 							ex.printStackTrace();
 						}
 					}
+					pDlg.dismiss();
 				}
 			}
 		});
@@ -203,9 +218,6 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	}
 
 	private class connectAsyncTask extends AsyncTask<String, Void, String> {
-		private ProgressDialog progressDialog;
-		String url;
-
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub

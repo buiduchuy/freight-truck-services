@@ -15,7 +15,7 @@
     <string name="startHour">Giờ bắt đầu</string>
     <string name="endPoint">Địa điểm kết thúc</string>
     <string name="endDate">Ngày kết thúc</string>
-    <string name="payload">Khối lượng có thể chở</string>
+    <string name="payload">Khối lượng có thể chở (tấn)</string>
     <string name="cantLoad"><u>Các loại hàng không thể chở</u></string>
     <string name="frozen">Hàng đông lạnh</string>
     <string name="easyToBreak">Hàng dễ vỡ</string>

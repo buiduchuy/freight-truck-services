@@ -61,6 +61,7 @@ public class RouteList extends Fragment {
 			Bundle savedInstanceState) {
 		list = new ArrayList<String>();
 		map = new HashMap<Long, Integer>();
+		getActivity().setTitle("Danh sách lộ trình");
 		WebService ws = new WebService(WebService.GET_TASK,
 				getActivity(), "Đang lấy dữ liệu ...");
 		ws.execute(new String[] { SERVICE_URL });
@@ -77,7 +78,7 @@ public class RouteList extends Fragment {
 	    		FragmentTransaction trs = mng.beginTransaction();
 	    		CurrentRoute frag = new CurrentRoute();
 	    		Bundle bundle = new Bundle();
-	    		bundle.putString("id", String.valueOf(id));
+	    		bundle.putString("routeID", String.valueOf(id));
 	    		frag.setArguments(bundle);
 	    		trs.replace(R.id.content_frame, frag);
 	    		trs.addToBackStack(null);
@@ -166,6 +167,7 @@ public class RouteList extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
+			android.os.Debug.waitForDebugger();
 			JSONObject obj;
 			try {
 				obj = new JSONObject(response);
@@ -176,7 +178,7 @@ public class RouteList extends Fragment {
 					String[] end = item.getString("destinationAddress").replace(", Vietnam", "").split(",");
 					String itm = "Lộ trình: " + start[start.length - 1] + " - " + end[end.length - 1] ;
 					list.add(itm);
-					map.put(new Long(i), Integer.parseInt(item.getString("routeID")));
+					map.put(Long.valueOf(i), Integer.parseInt(item.getString("routeID")));
 				}
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.listview_item_row, list);
 			    list1.setAdapter(adapter);

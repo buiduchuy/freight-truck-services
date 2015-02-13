@@ -19,6 +19,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
 
@@ -33,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SendOffer extends Fragment {
@@ -40,16 +43,20 @@ public class SendOffer extends Fragment {
 	Button button;
 	EditText price;
 	EditText note;
+	TextView content;
 	private static final String SERVICE_URL = Constant.SERVICE_URL + "Deal/Create";
+	private static final String SERVICE_URL2 = Constant.SERVICE_URL + "Goods/getGoodsByID";
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		getActivity().setTitle("Gửi đề nghị");
 		View v = inflater.inflate(R.layout.activity_send_offer, container, false);
+		
 		button = (Button) v.findViewById(R.id.button1);
 		price = (EditText) v.findViewById(R.id.editText1);
 		note = (EditText) v.findViewById(R.id.editText2);
+		content = (TextView) v.findViewById(R.id.textView3);
 		button.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -71,10 +78,16 @@ public class SendOffer extends Fragment {
 					ws.addNameValuePair("price", pr);
 					ws.addNameValuePair("notes", note.getText().toString());
 					ws.addNameValuePair("createTime", current);
-					ws.addNameValuePair("sender", "driver");
+					ws.addNameValuePair("createBy", "driver");
 					ws.addNameValuePair("routeID", getArguments().getString("routeID"));
 					ws.addNameValuePair("goodsID", getArguments().getString("goodID"));
-					ws.addNameValuePair("dealStatusID", "1");
+					if(getArguments().getString("refID") == null) {
+						ws.addNameValuePair("refDealID", "0");
+					}
+					else {
+						ws.addNameValuePair("refDealID", getArguments().getString("refID"));
+					}
+					ws.addNameValuePair("dealStatusID", "2");
 					ws.addNameValuePair("active", "1");
 					ws.execute(new String[] { SERVICE_URL });
 				}

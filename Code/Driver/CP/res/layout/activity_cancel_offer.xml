@@ -20,8 +20,8 @@
             android:layout_width="281dp"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="Địa điểm bắt đầu: A\nĐịa điểm kết thúc: B\nNgày bắt đầu: 5/5/2015\nKhối lượng: 5 tấn\nLoại hàng: Cá tôm\nPhí chuyên chở: 2000000đ "
-            android:textSize="15dp" />
+            android:text=""
+            android:textSize="14dp" />
 
         <Button
             android:id="@+id/button1"

@@ -151,6 +151,7 @@ public class CreateRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().setTitle("Tạo mới đề nghị");
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
 		startDate = (EditText) v.findViewById(R.id.editText2);
 		startHour = (EditText) v.findViewById(R.id.editText3);

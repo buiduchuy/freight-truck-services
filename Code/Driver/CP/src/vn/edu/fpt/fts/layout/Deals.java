@@ -44,7 +44,7 @@ import android.widget.ListView;
 public class Deals extends Fragment {
 	ArrayList<String> list;
 	@SuppressLint("UseSparseArrays")
-	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
+	ArrayList<String> map = new ArrayList<String>();
 	ListView list1;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByDriverID";
@@ -67,10 +67,13 @@ public class Deals extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				
+				int id = Integer.parseInt(map.get((int)arg3));
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				CancelOffer frag = new CancelOffer();
+				Bundle bundle = new Bundle();
+				bundle.putString("dealID", String.valueOf(id));
+				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
@@ -164,10 +167,9 @@ public class Deals extends Fragment {
 				JSONArray array = obj.getJSONArray("deal");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
-					if (item.getString("sender").equals("driver")) {
+					if (item.getString("createBy").equalsIgnoreCase("driver") && item.getString("dealStatusID").equals("2")) {
 						list.add("Đề nghị " + (i+1) + ": " + item.getString("price") + " đồng");
-						map.put(Long.valueOf(i),
-								Integer.parseInt(item.getString("dealID")));
+						map.add(item.getString("dealID"));
 					}
 				}
 				ArrayAdapter<String> adapter = new ArrayAdapter<String>(

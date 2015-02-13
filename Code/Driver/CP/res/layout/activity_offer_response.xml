@@ -16,19 +16,11 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Trả lời đề nghị"
-            android:textSize="20dp" />
-
-        <TextView
             android:id="@+id/textView3"
             android:layout_width="281dp"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="Địa điểm bắt đầu: A\nĐịa điểm kết thúc: B\nNgày bắt đầu: 5/5/2015\nKhối lượng: 5 tấn\nLoại hàng: Cá tôm\nPhí chuyên chở: 2000000đ "
+            android:text=""
             android:textSize="15dp" />
 
         <LinearLayout

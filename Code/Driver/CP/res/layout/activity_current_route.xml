@@ -20,8 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="Địa điểm bắt đầu: A\nĐịa điểm kết thúc: B\nNgày bắt đầu: 5/5/2015\nKhối lượng có thể chở: 5 tấn\nLoại hàng không chở: Hàng dễ vỡ"
-            android:textSize="18dp"
+            android:text=""
+            android:textSize="14dp"
             android:layout_marginBottom="10dp" />
 
         <LinearLayout
