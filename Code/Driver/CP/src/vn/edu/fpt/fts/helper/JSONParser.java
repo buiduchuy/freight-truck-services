@@ -25,11 +25,14 @@ public class JSONParser {
     public String getJSONFromUrl(String url) {
 
         try {
+        	long startTime = System.nanoTime();
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(url);
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
             HttpEntity httpEntity = httpResponse.getEntity();
+            long stopTime = System.nanoTime();
+            Log.d("message", ("Request time: " + (stopTime - startTime)));
             is = httpEntity.getContent();           
 
         } catch (UnsupportedEncodingException e) {
@@ -40,15 +43,22 @@ public class JSONParser {
             e.printStackTrace();
         }
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
+        	String line = "";
+			StringBuilder total = new StringBuilder();
 
-            json = sb.toString();
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// Return full string
+			json = total.toString();
             is.close();
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());

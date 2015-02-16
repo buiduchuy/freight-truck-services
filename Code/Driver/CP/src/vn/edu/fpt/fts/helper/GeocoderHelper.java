@@ -1,6 +1,7 @@
 package vn.edu.fpt.fts.helper;
 
-
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,27 +18,48 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 public class GeocoderHelper {
 	List<Polyline> polylines = new ArrayList<Polyline>();
-	
+
 	public void RemovePolylines() {
-		for(Polyline line: polylines) {
+		for (Polyline line : polylines) {
 			line.remove();
 		}
 		polylines.clear();
 	}
-	
-	public String makeURL(double sourcelat, double sourcelog, double destlat,
-			double destlog) {
+
+	public String makeURL(LatLng org, LatLng p1, LatLng p2, LatLng des) {
 		StringBuilder urlString = new StringBuilder();
 		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
-		urlString.append("?origin=");// from
-		urlString.append(Double.toString(sourcelat));
+		urlString.append("?origin=");
+		urlString.append(Double.toString(org.latitude));
 		urlString.append(",");
-		urlString.append(Double.toString(sourcelog));
-		urlString.append("&destination=");// to
-		urlString.append(Double.toString(destlat));
+		urlString.append(Double.toString(org.longitude));
+		urlString.append("&destination=");
+		urlString.append(Double.toString(des.latitude));
 		urlString.append(",");
-		urlString.append(Double.toString(destlog));
-		urlString.append("&sensor=false&mode=driving&alternatives=true");
+		urlString.append(Double.toString(des.longitude));
+		if(p1 != null || p2 != null) { 
+			urlString.append("&waypoints=");
+			String waypoints = "";
+			if(p1 != null) {
+				waypoints += Double.toString(p1.latitude);
+				waypoints += ",";
+				waypoints += Double.toString(p1.longitude);
+			}
+			if(p2 != null) {
+				waypoints += "|";
+				waypoints += Double.toString(p2.latitude);
+				waypoints += ",";
+				waypoints += Double.toString(p2.longitude);
+			}
+			try {
+				waypoints = URLEncoder.encode(waypoints, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			urlString.append(waypoints);
+		}
+		urlString.append("&mode=driving");
 		return urlString.toString();
 	}
 

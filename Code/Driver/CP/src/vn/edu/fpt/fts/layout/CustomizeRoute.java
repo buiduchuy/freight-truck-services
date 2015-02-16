@@ -1,7 +1,7 @@
 package vn.edu.fpt.fts.layout;
 
-
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,9 +53,10 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		getActivity().setTitle("Tùy chỉnh lộ trình");
 		View v = inflater.inflate(R.layout.activity_customize_route, container,
 				false);
-		InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-			      Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+		InputMethodManager imm = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(getActivity().getCurrentFocus()
+				.getWindowToken(), 0);
 		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
@@ -69,33 +71,54 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			@Override
 			public void onMarkerDragEnd(Marker mrk) {
+				mrk.remove();
+				String param = mrk.getPosition().latitude + ","
+						+ mrk.getPosition().longitude;
+				LatLng real = mrk.getPosition();
+				try {
+					real = new GetLatLng().execute(param).get();
+					MarkerOptions realMarker = new MarkerOptions()
+							.position(real).draggable(true)
+							.snippet(mrk.getSnippet());
+					map.addMarker(realMarker);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				// TODO Auto-generated method stub
 				int id = Integer.parseInt(mrk.getSnippet());
-				locations.set(id - 1, mrk.getPosition());
+				locations.set(id - 1, real);
 				helper.RemovePolylines();
-				for (int i = 0; i < locations.size() - 1; i++) {
-					LatLng s = locations.get(i);
-					LatLng e = locations.get(i + 1);
-					String url = helper.makeURL(s.latitude, s.longitude,
-							e.latitude, e.longitude);
-					try {
-						String result = new connectAsyncTask().execute(url)
-								.get();
-						helper.drawPath(result, map);
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-					map.setMyLocationEnabled(true);
-					map.getUiSettings().setMyLocationButtonEnabled(true);
-					for (LatLng p : locations) {
-						MarkerOptions marker = new MarkerOptions();
-						marker.position(p);
-						b.include(marker.getPosition());
-					}
+				String url = "";
+				if (locations.size() == 2) {
+					url = helper.makeURL(locations.get(0), null, null,
+							locations.get(1));
+				} else if (locations.size() == 3) {
+					url = helper.makeURL(locations.get(0), locations.get(1),
+							null, locations.get(2));
+				} else if (locations.size() == 4) {
+					url = helper.makeURL(locations.get(0), locations.get(1),
+							locations.get(2), locations.get(3));
+				}
+				try {
+					new connectAsyncTask().execute(url);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+
+				map.setMyLocationEnabled(true);
+				map.getUiSettings().setMyLocationButtonEnabled(true);
+				for (LatLng p : locations) {
+					MarkerOptions marker = new MarkerOptions();
+					marker.position(p);
+					b.include(marker.getPosition());
 				}
 				LatLngBounds bounds = b.build();
-				CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
-						bounds, 20);
+				CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
+						20);
 				map.animateCamera(cu);
 			}
 
@@ -109,9 +132,20 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			@Override
 			public void onMapClick(LatLng arg0) {
+				String param = arg0.latitude + "," + arg0.longitude;
+				try {
+					arg0 = new GetLatLng().execute(param).get();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				if (locations.size() >= 4) {
 					Toast.makeText(getActivity(),
-							"Chỉ thêm được tối đa 2 địa điểm đi qua", Toast.LENGTH_SHORT).show();
+							"Chỉ thêm được tối đa 2 địa điểm đi qua",
+							Toast.LENGTH_SHORT).show();
 				} else {
 					for (int i = 0; i < locations.size() - 1; i++) {
 						LatLng s = locations.get(i);
@@ -123,34 +157,67 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 					}
 					map.clear();
 					for (int i = 0; i < locations.size() - 1; i++) {
-						map.addMarker(new MarkerOptions().position(locations.get(i)).draggable(true)
-								.snippet(String.valueOf(i+1)));
+						map.addMarker(new MarkerOptions()
+								.position(locations.get(i)).draggable(true)
+								.snippet(String.valueOf(i + 1)));
 						if (i == locations.size() - 2) {
-							map.addMarker(new MarkerOptions().position(locations.get(i+1)).draggable(true)
+							map.addMarker(new MarkerOptions()
+									.position(locations.get(i + 1))
+									.draggable(true)
 									.snippet(String.valueOf(i + 2)));
 						}
 					}
-					pDlg = new ProgressDialog(getActivity());
-					pDlg.setMessage("Đang vẽ lại lộ trình ...");
-					pDlg.setProgressDrawable(getActivity().getWallpaper());
-					pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-					pDlg.setCancelable(false);
-					pDlg.show();
+					String url = "";
+					if (locations.size() == 2) {
+						url = helper.makeURL(locations.get(0), null, null,
+								locations.get(1));
+					} else if (locations.size() == 3) {
+						url = helper.makeURL(locations.get(0),
+								locations.get(1), null, locations.get(2));
+					} else if (locations.size() == 4) {
+						url = helper.makeURL(locations.get(0),
+								locations.get(1), locations.get(2),
+								locations.get(3));
+					}
+					try {
+						new connectAsyncTask().execute(url);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+
+		map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+			@Override
+			public boolean onMarkerClick(Marker arg0) {
+				int id = Integer.parseInt(arg0.getSnippet());
+				if (id != 1 && id != locations.size()) {
+					locations.remove(id - 1);
+					map.clear();
 					for (int i = 0; i < locations.size() - 1; i++) {
-						LatLng s = locations.get(i);
-						LatLng e = locations.get(i + 1);
-						String url = helper.makeURL(s.latitude, s.longitude,
-								e.latitude, e.longitude);
-						try {
-							String result = new connectAsyncTask().execute(url)
-									.get();
-							helper.drawPath(result, map);
-						} catch (Exception ex) {
-							ex.printStackTrace();
+						map.addMarker(new MarkerOptions()
+								.position(locations.get(i)).draggable(true)
+								.snippet(String.valueOf(i + 1)));
+						if (i == locations.size() - 2) {
+							map.addMarker(new MarkerOptions()
+									.position(locations.get(i + 1))
+									.draggable(true)
+									.snippet(String.valueOf(i + 2)));
 						}
 					}
-					pDlg.dismiss();
+					String url = "";
+					if (locations.size() == 2) {
+						url = helper.makeURL(locations.get(0), null, null,
+								locations.get(1));
+					} else if (locations.size() == 3) {
+						url = helper.makeURL(locations.get(0),
+								locations.get(1), null, locations.get(2));
+					}
+					new connectAsyncTask().execute(url);
 				}
+				return true;
 			}
 		});
 		button = (Button) v.findViewById(R.id.save);
@@ -186,19 +253,21 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 		@Override
 		protected LatLng doInBackground(String... locations) {
-			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?address="
-					+ locations[0] + "&sensor=false";
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
+					+ locations[0]
+					+ "&destination="
+					+ locations[0]
+					+ "&sensor=false";
 
 			try {
 				JSONObject googleMapResponse = new JSONObject(
 						ANDROID_HTTP_CLIENT.execute(
 								new HttpGet(googleMapUrl.replace(" ", "%20")),
 								new BasicResponseHandler()));
-				JSONArray results = (JSONArray) googleMapResponse
-						.get("results");
+				JSONArray results = (JSONArray) googleMapResponse.get("routes");
 				JSONObject result = results.getJSONObject(0);
-				JSONObject location = result.getJSONObject("geometry")
-						.getJSONObject("location");
+				JSONObject location = result.getJSONObject("bounds")
+						.getJSONObject("northeast");
 				double latitude = location.getDouble("lat");
 				double longitude = location.getDouble("lng");
 				ANDROID_HTTP_CLIENT.close();
@@ -218,10 +287,19 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	}
 
 	private class connectAsyncTask extends AsyncTask<String, Void, String> {
+		long startTime;
+
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			super.onPreExecute();
+			pDlg = new ProgressDialog(getActivity());
+			pDlg.setMessage("Đang vẽ lộ trình ...");
+			pDlg.setProgressDrawable(getActivity().getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+			startTime = System.nanoTime();
 		}
 
 		@Override
@@ -234,6 +312,13 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
+			long stopTime = System.nanoTime();
+			Log.d("message", ("Parse time: " + (stopTime - startTime)));
+			startTime = System.nanoTime();
+			helper.drawPath(result, map);
+			stopTime = System.nanoTime();
+			Log.d("message", ("Draw map time: " + (stopTime - startTime)));
+			pDlg.dismiss();
 		}
 	}
 
@@ -248,6 +333,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			String point1 = intent.getStringExtra("p1");
 			String point2 = intent.getStringExtra("p2");
 			String endPoint = intent.getStringExtra("end");
+			LatLng p1 = null;
+			LatLng p2 = null;
 
 			LatLng start = new GetLatLng().execute(startPoint).get();
 			MarkerOptions startMarker = new MarkerOptions().draggable(true)
@@ -257,7 +344,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			map.addMarker(startMarker);
 
 			if (!point1.equals("")) {
-				LatLng p1 = new GetLatLng().execute(point1).get();
+				p1 = new GetLatLng().execute(point1).get();
 				MarkerOptions p1Marker = new MarkerOptions().draggable(true)
 						.snippet("2");
 				p1Marker.position(p1);
@@ -265,7 +352,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				map.addMarker(p1Marker);
 			}
 			if (!point2.equals("")) {
-				LatLng p2 = new GetLatLng().execute(point2).get();
+				p2 = new GetLatLng().execute(point2).get();
 				MarkerOptions p2Marker = new MarkerOptions().draggable(true)
 						.snippet("3");
 				p2Marker.position(p2);
@@ -280,29 +367,22 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			locations.add(end);
 			map.addMarker(endMarker);
 
-			for (int i = 0; i < locations.size() - 1; i++) {
-				LatLng s = locations.get(i);
-				LatLng e = locations.get(i + 1);
-				String url = helper.makeURL(s.latitude, s.longitude,
-						e.latitude, e.longitude);
-				try {
-					String result = new connectAsyncTask().execute(url).get();
-					helper.drawPath(result, map);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-				map.setMyLocationEnabled(true);
-				map.getUiSettings().setMyLocationButtonEnabled(true);
-				for (LatLng p : locations) {
-					MarkerOptions marker = new MarkerOptions();
-					marker.position(p);
-					b.include(marker.getPosition());
-				}
-				LatLngBounds bounds = b.build();
-				CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
-						20);
-				map.animateCamera(cu);
+			String url = helper.makeURL(start, p1, p2, end);
+			try {
+				new connectAsyncTask().execute(url);
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
+			map.setMyLocationEnabled(true);
+			map.getUiSettings().setMyLocationButtonEnabled(true);
+			for (LatLng p : locations) {
+				MarkerOptions marker = new MarkerOptions();
+				marker.position(p);
+				b.include(marker.getPosition());
+			}
+			LatLngBounds bounds = b.build();
+			CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 20);
+			map.animateCamera(cu);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

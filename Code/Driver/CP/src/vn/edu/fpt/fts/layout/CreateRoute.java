@@ -97,7 +97,8 @@ public class CreateRoute extends Fragment {
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
-	private static final String SERVICE_URL = Constant.SERVICE_URL + "Route/Create";
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Route/Create";
 
 	@Override
 	public void onPause() {
@@ -121,6 +122,40 @@ public class CreateRoute extends Fragment {
 		if (locations == null || locations.size() == 0) {
 			getActivity().getSupportFragmentManager()
 					.findFragmentByTag("createRoute").getRetainInstance();
+
+			locationManager = (LocationManager) getActivity().getSystemService(
+					Context.LOCATION_SERVICE);
+			LocationListener locationListener = new LocationListener() {
+				public void onLocationChanged(Location location) {
+					String current;
+					try {
+						current = new GetAddress()
+								.execute(location.getLatitude(),
+										location.getLongitude()).get();
+						start.setText(current);
+						locationManager.removeUpdates(this);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				public void onStatusChanged(String provider, int status,
+						Bundle extras) {
+				}
+
+				public void onProviderEnabled(String provider) {
+				}
+
+				public void onProviderDisabled(String provider) {
+				}
+			};
+			locationManager.requestLocationUpdates(
+					LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
 		} else {
 			for (LatLng p : locations) {
 				try {
@@ -256,12 +291,14 @@ public class CreateRoute extends Fragment {
 							Toast.LENGTH_SHORT).show();
 				} else
 					try {
-						if (formatter.parse(startDate.getText().toString()).compareTo(formatter.parse(endDate.getText().toString())) >= 0) {
+						if (formatter.parse(startDate.getText().toString())
+								.compareTo(
+										formatter.parse(endDate.getText()
+												.toString())) >= 0) {
 							Toast.makeText(getActivity(),
 									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
 									Toast.LENGTH_SHORT).show();
-						}
-						else if (payload.equals("")) {
+						} else if (payload.equals("")) {
 							Toast.makeText(getActivity(),
 									"Khối lượng chở không được để trống.",
 									Toast.LENGTH_SHORT).show();
@@ -270,8 +307,9 @@ public class CreateRoute extends Fragment {
 									"Khối lượng chở không vượt quá 20 tấn",
 									Toast.LENGTH_SHORT).show();
 						} else {
-							WebService ws = new WebService(WebService.POST_TASK,
-									getActivity(), "Đang xử lý ...");
+							WebService ws = new WebService(
+									WebService.POST_TASK, getActivity(),
+									"Đang xử lý ...");
 							ws.addNameValuePair("startingAddress", startPoint);
 							ws.addNameValuePair("destinationAddress", endPoint);
 							ws.addNameValuePair("routeMarkerLocation1", Point1);
@@ -282,8 +320,8 @@ public class CreateRoute extends Fragment {
 							ws.addNameValuePair("weight", load);
 							ws.addNameValuePair("createTime", current);
 							ws.addNameValuePair("active", "1");
-							ws.addNameValuePair("driverID", getActivity().getIntent()
-									.getStringExtra("driverID"));
+							ws.addNameValuePair("driverID", getActivity()
+									.getIntent().getStringExtra("driverID"));
 							ws.addNameValuePair("Food", fd);
 							ws.addNameValuePair("Freeze", frz);
 							ws.addNameValuePair("Broken", brk);
@@ -301,40 +339,6 @@ public class CreateRoute extends Fragment {
 			}
 		});
 
-		if (start.getText().toString().equals("")) {
-			locationManager = (LocationManager) getActivity().getSystemService(
-					Context.LOCATION_SERVICE);
-			LocationListener locationListener = new LocationListener() {
-				public void onLocationChanged(Location location) {
-					String current;
-					try {
-						current = new GetAddress()
-								.execute(location.getLatitude(),
-										location.getLongitude()).get();
-						start.setText(current);
-						locationManager.removeUpdates(this);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				public void onStatusChanged(String provider, int status,
-						Bundle extras) {
-				}
-
-				public void onProviderEnabled(String provider) {
-				}
-
-				public void onProviderDisabled(String provider) {
-				}
-			};
-			locationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-		}
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -383,12 +387,10 @@ public class CreateRoute extends Fragment {
 						.getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo ni = cm.getActiveNetworkInfo();
 				if (ni == null) {
-					Toast.makeText(
-							getActivity().getBaseContext(),
+					Toast.makeText(getActivity().getBaseContext(),
 							"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
 							Toast.LENGTH_SHORT).show();
-				}
-				else if (start.getText().toString().equals("")
+				} else if (start.getText().toString().equals("")
 						|| end.getText().toString().equals("")) {
 					Toast.makeText(
 							getActivity().getBaseContext(),
