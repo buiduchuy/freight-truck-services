@@ -124,5 +124,9 @@ public class DealProcess {
 		}
 		return 0;
 	}
+	
+	public int checkDuplicateDeal() {
+		return 0;
+	}
 
 }

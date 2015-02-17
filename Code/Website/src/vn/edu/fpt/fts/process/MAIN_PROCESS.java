@@ -7,7 +7,6 @@ package vn.edu.fpt.fts.process;
  * @author Huy
  *
  */
-@SuppressWarnings("deprecation")
 public class MAIN_PROCESS {
 
 	/**
