@@ -7,7 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.fpt.fts.dao.DealDAO;
+import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.OrderDAO;
+import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
+import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * @author Huy
@@ -16,6 +22,9 @@ import vn.edu.fpt.fts.pojo.Deal;
 public class DealProcess {
 
 	DealDAO dealDao = new DealDAO();
+	OrderDAO orderDao = new OrderDAO();
+	GoodsDAO goodsDao = new GoodsDAO();
+	RouteDAO routeDao = new RouteDAO();
 
 	public static void main(String[] args) {
 		DealProcess dp = new DealProcess();
@@ -38,7 +47,7 @@ public class DealProcess {
 		if (s_update != 0) {
 
 			// Get list parent deals with condition:
-			// First get list deal with same GoodsID
+			// Get list deal with same GoodsID
 			l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
 			for (int i = 0; i < l_deal.size(); i++) {
 				System.out.println(l_deal.get(i).getRefDealID() + " "
@@ -56,9 +65,22 @@ public class DealProcess {
 				dealDao.updateDeal(l_declineDeal.get(j));
 			}
 
-			// CAN PHAI LAM
 			// Insert order when accept finish
+			Order order = new Order();
+			order.setPrice(deal.getPrice());
+			order.setStaffDeliveryStatus(false);
+			order.setDriverDeliveryStatus(false);
+			order.setOwnerDeliveryStatus(false);
+			order.setCreateTime(deal.getCreateTime());
+			order.setOrderStatusID(1);
+			orderDao.insertOrder(order);
+
 			// Change goods of this order
+			Goods goods = new Goods();
+			goodsDao.changeGoodsStatus(deal.getGoodsID(), 0);
+
+			// Change route of this order
+			Route route = new Route();
 
 			System.out
 					.println("Accept - Number of deals will be change to decline: "
@@ -82,7 +104,7 @@ public class DealProcess {
 
 		if (s_update != 0) {
 			// Get list parent deals with condition:
-			// First get list deal with same GoodsID
+			// Get list deal with same GoodsID
 			l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
 
 			for (int i = 0; i < l_deal.size(); i++) {
@@ -92,6 +114,9 @@ public class DealProcess {
 					dealDao.updateDeal(l_deal.get(i));
 				}
 			}
+			System.out
+					.println("Decline - Number of deals will be change to decline: "
+							+ l_deal.size());
 			return 1;
 		}
 		return 0;
@@ -124,7 +149,7 @@ public class DealProcess {
 		}
 		return 0;
 	}
-	
+
 	public int checkDuplicateDeal() {
 		return 0;
 	}

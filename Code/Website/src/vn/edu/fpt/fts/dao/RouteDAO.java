@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
+import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
@@ -136,7 +137,7 @@ public class RouteDAO {
 		return null;
 	}
 
-	public Route getRouteById(int Id) {
+	public Route getRouteByID(int Id) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -211,4 +212,86 @@ public class RouteDAO {
 		}
 		return null;
 	}
+
+	public static int updateRoute(Route bean) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Route SET " + " StartingAddress = ?,"
+					+ " DestinationAddress = ?," + " StartTime = ?,"
+					+ " FinishTime = ?," + " Notes = ?," + " Weight = ?,"
+					+ " CreateTime = ?," + " Active = ?," + " DriverID = ? "
+					+ " WHERE RouteID = '" + bean.getRouteID() + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setString(i++, bean.getStartingAddress()); // StartingAddress
+			stmt.setString(i++, bean.getDestinationAddress()); // DestinationAddress
+			stmt.setString(i++, bean.getStartTime()); // StartTime
+			stmt.setString(i++, bean.getFinishTime()); // FinishTime
+			stmt.setString(i++, bean.getNotes()); // Notes
+			stmt.setInt(i++, bean.getWeight()); // Weight
+			stmt.setString(i++, bean.getCreateTime()); // CreateTime
+			stmt.setInt(i++, bean.getActive()); // Active
+			stmt.setInt(i++, bean.getDriverID()); // DriverID
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update to Route table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public static int changeRouteStatus(int routeID, int status) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Route SET " + " Active = ?"
+					+ " WHERE RouteID = '" + routeID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, status); // Active
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update Status to Route table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+	
 }
