@@ -24,6 +24,7 @@ public class Order implements Serializable {
 	private boolean ownerDeliveryStatus;
 	private String createTime;
 	private int orderStatusID;
+	private int active;
 	
 	private Deal deal;
 
@@ -87,6 +88,14 @@ public class Order implements Serializable {
 		this.orderStatusID = orderStatusID;
 	}
 	
+	public int getActive() {
+		return active;
+	}
+
+	public void setActive(int active) {
+		this.active = active;
+	}
+
 	public Deal getDeal() {
 		return deal;
 	}
@@ -97,7 +106,7 @@ public class Order implements Serializable {
 
 	public Order(double price, boolean staffDeliveryStatus,
 			boolean driverDeliveryStatus, boolean ownerDeliveryStatus,
-			String createTime, int orderStatusID) {
+			String createTime, int orderStatusID, int active) {
 		super();
 		this.price = price;
 		this.staffDeliveryStatus = staffDeliveryStatus;
@@ -105,11 +114,12 @@ public class Order implements Serializable {
 		this.ownerDeliveryStatus = ownerDeliveryStatus;
 		this.createTime = createTime;
 		this.orderStatusID = orderStatusID;
+		this.active = active;
 	}
 
 	public Order(int orderID, double price, boolean staffDeliveryStatus,
 			boolean driverDeliveryStatus, boolean ownerDeliveryStatus,
-			String createTime, int orderStatusID) {
+			String createTime, int orderStatusID, int active) {
 		super();
 		this.orderID = orderID;
 		this.price = price;
@@ -118,6 +128,7 @@ public class Order implements Serializable {
 		this.ownerDeliveryStatus = ownerDeliveryStatus;
 		this.createTime = createTime;
 		this.orderStatusID = orderStatusID;
+		this.active = active;
 	}
 	
 }

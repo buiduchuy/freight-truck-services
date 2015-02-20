@@ -82,7 +82,7 @@ public class ControllerMakeDeal extends HttpServlet {
 			if ("viewDetailRouter".equals(action)) {
 				int idRouter = Integer.parseInt(request
 						.getParameter("idRouter"));
-				Route router = routeDao.getRouteById(idRouter);
+				Route router = routeDao.getRouteByID(idRouter);
 				router.setStartTime(common.changeFormatDate(
 						router.getStartTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"hh:mm dd-MM-yyyy"));
@@ -99,7 +99,7 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idRoute = Integer.parseInt(request.getParameter("routeID"));
 				if (session.getAttribute("newGood") != null) {
 					Goods good = (Goods) session.getAttribute("newGood");
-					Route route = routeDao.getRouteById(idRoute);
+					Route route = routeDao.getRouteByID(idRoute);
 					DateFormat dateFormat = new SimpleDateFormat(
 							"yyyy/MM/dd HH:mm:ss");
 					Date date = new Date();
@@ -292,7 +292,7 @@ public class ControllerMakeDeal extends HttpServlet {
 					Date date = new Date();
 					String createTime = dateFormat.format(date);
 					Order newOrder = new Order(dealConfirm.getPrice(), false,
-							false, false, createTime, 1);
+							false, false, createTime, 1, 1);
 					
 					DealOrder newDealOrder= new DealOrder(idDeal, orderDao.insertOrder(newOrder));
 					dealOrderDao.insertDealOrder(newDealOrder);

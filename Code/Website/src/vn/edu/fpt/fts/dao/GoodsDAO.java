@@ -84,7 +84,42 @@ public class GoodsDAO {
 		return ret;
 	}
 
-	public static int updateGoods(Goods bean) {
+	public int updateGoodsStatus(int goodsID, int status) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Goods SET " + " Active = ?"
+					+ " WHERE GoodsID = '" + goodsID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, status); // Active
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update Status to Goods table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public int updateGoods(Goods bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;

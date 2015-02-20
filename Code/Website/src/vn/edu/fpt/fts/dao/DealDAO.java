@@ -239,7 +239,7 @@ public class DealDAO {
 				deal.setActive(rs.getInt("Active"));
 
 				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
-				deal.setRoute(routeDao.getRouteById(rs.getInt("RouteID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
 				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
 						.getInt("DealStatusID")));
 				return deal;
@@ -474,6 +474,42 @@ public class DealDAO {
 			}
 
 			stmt.setInt(i++, bean.getActive()); // Active
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update to Deal table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public int changeDealStatus(int dealID, int dealStatus) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Deal SET " + " Active = ? "
+					+ " WHERE DealID = '" + dealID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+
+			stmt.setInt(i++, dealStatus); // Active
 
 			ret = stmt.executeUpdate();
 

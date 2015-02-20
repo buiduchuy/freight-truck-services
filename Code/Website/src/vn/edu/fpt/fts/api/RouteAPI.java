@@ -115,7 +115,7 @@ public class RouteAPI {
 	public Route getRouteByID(MultivaluedMap<String, String> params) {
 		Route route = new Route();
 		try {
-			route = routeDao.getRouteById(Integer.valueOf(params
+			route = routeDao.getRouteByID(Integer.valueOf(params
 					.getFirst("routeID")));
 			return route;
 		} catch (NumberFormatException e) {

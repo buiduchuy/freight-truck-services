@@ -35,8 +35,8 @@ public class OrderDAO {
 			String sql = "INSERT INTO [Order] (" + "Price,"
 					+ "StaffDeliveryStatus," + "DriverDeliveryStatus,"
 					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID"
-					+ ") VALUES (" + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?)";
+					+ "Active" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
+					+ "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setDouble(i++, bean.getPrice()); // Price
@@ -45,6 +45,7 @@ public class OrderDAO {
 			stmt.setBoolean(i++, bean.isOwnerDeliveryStatus()); // OwnerDeliveryStatus
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
+			stmt.setInt(i++, bean.getActive()); // Active
 
 			stmt.executeUpdate();
 
@@ -86,8 +87,8 @@ public class OrderDAO {
 					+ " StaffDeliveryStatus = ?,"
 					+ " DriverDeliveryStatus = ?,"
 					+ " OwnerDeliveryStatus = ?," + " CreateTime = ?,"
-					+ " OrderStatusID = ? " + " WHERE OrderID = '"
-					+ bean.getOrderID() + "' ";
+					+ " OrderStatusID = ? " + " Active = ? "
+					+ " WHERE OrderID = '" + bean.getOrderID() + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
@@ -97,6 +98,7 @@ public class OrderDAO {
 			stmt.setBoolean(i++, bean.isOwnerDeliveryStatus()); // OwnerDeliveryStatus
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
+			stmt.setInt(i++, bean.getActive()); // Active
 
 			ret = stmt.executeUpdate();
 
@@ -153,7 +155,7 @@ public class OrderDAO {
 						.getBoolean("OwnerDeliveryStatus"));
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
-
+				order.setActive(rs.getInt("Active"));
 				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
 						.getInt("OrderID"));
 				order.setDeal(dealDao.getDealByID(dealOrder.getDealID()));
@@ -214,6 +216,8 @@ public class OrderDAO {
 						.getBoolean("OwnerDeliveryStatus"));
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
+				order.setActive(rs.getInt("Active"));
+				
 				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
 						.getInt("OrderID"));
 				if (dealOrder != null) {
