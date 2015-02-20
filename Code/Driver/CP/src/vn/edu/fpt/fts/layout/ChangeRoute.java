@@ -517,7 +517,6 @@ public class ChangeRoute extends Fragment {
 	private class UpdateRoute extends AsyncTask<String, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(String... params) {
-			android.os.Debug.waitForDebugger();
 			String response = "";
 
 			try {

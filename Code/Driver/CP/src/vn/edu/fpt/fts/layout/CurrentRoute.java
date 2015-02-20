@@ -37,6 +37,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,9 +50,17 @@ public class CurrentRoute extends Fragment {
 
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Route/getRouteByID";
-	TextView contentView;
 	String id;
 	String part1;
+	TextView startPoint, point1, point2, endPoint, startDate, endDate, payload,
+			cantLoad;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -57,37 +68,20 @@ public class CurrentRoute extends Fragment {
 		getActivity().setTitle("Thông tin lộ trình");
 		View v = inflater.inflate(R.layout.activity_current_route, container,
 				false);
-		contentView = (TextView) v.findViewById(R.id.textView3);
+		startPoint = (TextView) v.findViewById(R.id.textView2);
+		point1 = (TextView) v.findViewById(R.id.textView4);
+		point2 = (TextView) v.findViewById(R.id.textView6);
+		endPoint = (TextView) v.findViewById(R.id.textView8);
+		startDate = (TextView) v.findViewById(R.id.textView10);
+		endDate = (TextView) v.findViewById(R.id.textView12);
+		payload = (TextView) v.findViewById(R.id.textView14);
+		cantLoad = (TextView) v.findViewById(R.id.textView16);
 		Bundle bundle = getArguments();
 		id = bundle.getString("routeID");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("routeID", id);
 		ws.execute(new String[] { SERVICE_URL });
-		Button button = (Button) v.findViewById(R.id.button1);
-		button.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				ChangeRoute frag = new ChangeRoute();
-				Bundle bundle = new Bundle();
-				bundle.putString("id", id);
-				frag.setArguments(bundle);
-				trs.replace(R.id.content_frame, frag, "changeRoute");
-				trs.addToBackStack("changeRoute");
-				trs.commit();
-			}
-		});
-		Button button2 = (Button) v.findViewById(R.id.button2);
-		button2.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-			}
-		});
 		return v;
 	}
 
@@ -174,52 +168,56 @@ public class CurrentRoute extends Fragment {
 			try {
 				obj = new JSONObject(response);
 				Object intervent;
-				part1 = "Địa điểm bắt đầu: " + obj.getString("startingAddress")
-						+ "\n";
-
+				startPoint.setText(obj.getString("startingAddress"));
 				if (obj.has("routeMarkers")) {
 					intervent = obj.get("routeMarkers");
 					if (intervent instanceof JSONArray) {
 						JSONArray catArray = obj.getJSONArray("routeMarkers");
 						for (int j = 0; j < catArray.length(); j++) {
 							JSONObject cat = catArray.getJSONObject(j);
-							part1 += "Địa điểm đi qua " + (j + 1) + ": "
-									+ cat.getString("routeMarkerLocation")
-									+ "\n";
+							if (j == 0) {
+								point1.setText(cat
+										.getString("routeMarkerLocation"));
+								point2.setText("Không có");
+							} else if (j == 1) {
+								point2.setText(cat
+										.getString("routeMarkerLocation"));
+							}
 						}
 					} else if (intervent instanceof JSONObject) {
 						JSONObject cat = obj.getJSONObject("routeMarkers");
-						part1 += "Địa điểm đi qua 1: "
-								+ cat.getString("routeMarkerLocation") + "\n";
+						point1.setText(cat.getString("routeMarkerLocation"));
+						point2.setText("Không có");
 					}
+				} else {
+					point1.setText("Không có");
+					point2.setText("Không có");
 				}
 
-				part1 += "Địa điểm kết thúc: "
-						+ obj.getString("destinationAddress") + "\n"
-						+ "Thời gian bắt đầu: " + obj.getString("startTime")
-						+ "\n" + "Thời gian kết thúc: "
-						+ obj.getString("finishTime") + "\n"
-						+ "Khối lượng có thể chở: " + obj.getString("weight")
-						+ " tấn\nLoại hàng không chở: ";
+				endPoint.setText(obj.getString("destinationAddress"));
+				startDate.setText(obj.getString("startTime"));
+				endDate.setText(obj.getString("finishTime"));
+				payload.setText(obj.getString("weight") + " kg");
 
+				String cLoad = "";
 				if (obj.has("goodsCategory")) {
 					intervent = obj.get("goodsCategory");
 					if (intervent instanceof JSONArray) {
 						JSONArray goodArray = obj.getJSONArray("goodsCategory");
 						for (int j = 0; j < goodArray.length(); j++) {
 							JSONObject good = goodArray.getJSONObject(j);
-							part1 += good.getString("name") + ", ";
+							cLoad += good.getString("name") + ", ";
 						}
-						part1 = part1.substring(0, part1.length() - 2);
+						cLoad = cLoad.substring(0, cLoad.length() - 2);
 					} else if (intervent instanceof JSONObject) {
 						JSONObject good = obj.getJSONObject("goodsCategory");
-						part1 += good.getString("name");
+						cLoad += good.getString("name");
 					}
 				} else {
-					part1 += "không có loại hàng nào";
+					cLoad += "không có loại hàng nào";
 				}
 
-				contentView.setText(part1);
+				cantLoad.setText(cLoad);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -291,6 +289,35 @@ public class CurrentRoute extends Fragment {
 			// Return full string
 			return total.toString();
 		}
+	}
 
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		inflater.inflate(R.menu.current_route, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.action_delete:
+
+			return true;
+		case R.id.action_update:
+			FragmentManager mng = getActivity().getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			ChangeRoute frag = new ChangeRoute();
+			Bundle bundle = new Bundle();
+			bundle.putString("id", id);
+			frag.setArguments(bundle);
+			trs.replace(R.id.content_frame, frag, "changeRoute");
+			trs.addToBackStack("changeRoute");
+			trs.commit();
+			return true;
+		default:
+			break;
+		}
+		return false;
 	}
 }

@@ -145,8 +145,8 @@ public class MainActivity extends FragmentActivity {
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-		int itemId = item.getItemId();
-		if (itemId == R.id.action_create) {
+		switch (item.getItemId()) {
+		case R.id.action_create:
 			setTitle("Tạo lộ trình mới");
 			Intent intent = getIntent();
 			intent.removeExtra("markerList");
@@ -156,8 +156,11 @@ public class MainActivity extends FragmentActivity {
 			trs.replace(R.id.content_frame, frag1, "createRoute");
 			trs.addToBackStack("createRoute");
 			trs.commit();
-		} 
-		return super.onOptionsItemSelected(item);
+			return true;
+		default:
+			break;
+		}
+		return false;
 	}
 
 	protected void onPostCreate(Bundle savedInstanceState) {

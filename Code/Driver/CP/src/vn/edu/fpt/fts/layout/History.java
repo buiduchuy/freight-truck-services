@@ -163,7 +163,6 @@ public class History extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			android.os.Debug.waitForDebugger();
 			JSONObject obj;
 			try {
 				obj = new JSONObject(response);

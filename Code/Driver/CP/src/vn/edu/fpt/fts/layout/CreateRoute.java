@@ -57,6 +57,9 @@ import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
@@ -183,10 +186,18 @@ public class CreateRoute extends Fragment {
 		pos.clear();
 	}
 
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Tạo mới đề nghị");
+		getActivity().setTitle("Lộ trình mới");
+
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
 		startDate = (EditText) v.findViewById(R.id.editText2);
 		startHour = (EditText) v.findViewById(R.id.editText3);
@@ -205,13 +216,13 @@ public class CreateRoute extends Fragment {
 		food = (CheckBox) v.findViewById(R.id.checkBox4);
 
 		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.listview_item_row);
+				R.layout.autocomplete_item);
 		p1Adapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.listview_item_row);
+				R.layout.autocomplete_item);
 		p2Adapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.listview_item_row);
+				R.layout.autocomplete_item);
 		endAdapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.listview_item_row);
+				R.layout.autocomplete_item);
 		start = (AutoCompleteTextView) v.findViewById(R.id.start);
 		p1 = (AutoCompleteTextView) v.findViewById(R.id.point1);
 		p2 = (AutoCompleteTextView) v.findViewById(R.id.point2);
@@ -221,123 +232,6 @@ public class CreateRoute extends Fragment {
 		p1.setAdapter(p1Adapter);
 		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
-
-		Button button = (Button) v.findViewById(R.id.button1);
-		button.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Common common = new Common();
-				String startPoint = start.getText().toString();
-				String Point1 = p1.getText().toString();
-				String Point2 = p2.getText().toString();
-				String endPoint = end.getText().toString();
-				String startD = startDate.getText().toString()
-						.replace("/", "-");
-				startD = common.changeFormatDate(startD) + " "
-						+ startHour.getText().toString();
-				String endD = endDate.getText().toString().replace("/", "-");
-				endD = common.changeFormatDate(endD);
-				String frz = String.valueOf(frozen.isChecked());
-				String brk = String.valueOf(broken.isChecked());
-				String flm = String.valueOf(flammable.isChecked());
-				String fd = String.valueOf(food.isChecked());
-				String load = payload.getText().toString();
-				Calendar calendar = Calendar.getInstance();
-				SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-				String current = String.valueOf(calendar.get(Calendar.YEAR))
-						+ "-"
-						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
-						+ "-"
-						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
-						+ " " + String.valueOf(calendar.get(Calendar.HOUR))
-						+ ":" + String.valueOf(calendar.get(Calendar.MINUTE))
-						+ ":" + String.valueOf(calendar.get(Calendar.SECOND));
-				if (startPoint.equals("")) {
-					Toast.makeText(getActivity(),
-							"Điểm bắt đầu không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else if (startPoint.length() > 100) {
-					Toast.makeText(
-							getActivity(),
-							"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-							Toast.LENGTH_SHORT).show();
-				} else if (Point1.length() > 100) {
-					Toast.makeText(
-							getActivity(),
-							"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-							Toast.LENGTH_SHORT);
-				} else if (Point2.length() > 100) {
-					Toast.makeText(
-							getActivity(),
-							"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-							Toast.LENGTH_SHORT).show();
-				} else if (endPoint.equals("")) {
-					Toast.makeText(getActivity(),
-							"Điểm kết thúc không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else if (endPoint.length() > 100) {
-					Toast.makeText(
-							getActivity(),
-							"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
-							Toast.LENGTH_SHORT).show();
-				} else if (startD.equals("")) {
-					Toast.makeText(getActivity(),
-							"Ngày bắt đầu không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else if (endD.equals("")) {
-					Toast.makeText(getActivity(),
-							"Ngày kết thúc không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else
-					try {
-						if (formatter.parse(startDate.getText().toString())
-								.compareTo(
-										formatter.parse(endDate.getText()
-												.toString())) >= 0) {
-							Toast.makeText(getActivity(),
-									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
-									Toast.LENGTH_SHORT).show();
-						} else if (payload.equals("")) {
-							Toast.makeText(getActivity(),
-									"Khối lượng chở không được để trống.",
-									Toast.LENGTH_SHORT).show();
-						} else if (Integer.parseInt(load) > 20) {
-							Toast.makeText(getActivity(),
-									"Khối lượng chở không vượt quá 20 tấn",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							WebService ws = new WebService(
-									WebService.POST_TASK, getActivity(),
-									"Đang xử lý ...");
-							ws.addNameValuePair("startingAddress", startPoint);
-							ws.addNameValuePair("destinationAddress", endPoint);
-							ws.addNameValuePair("routeMarkerLocation1", Point1);
-							ws.addNameValuePair("routeMarkerLocation2", Point2);
-							ws.addNameValuePair("startTime", startD);
-							ws.addNameValuePair("finishTime", endD);
-							ws.addNameValuePair("notes", null);
-							ws.addNameValuePair("weight", load);
-							ws.addNameValuePair("createTime", current);
-							ws.addNameValuePair("active", "1");
-							ws.addNameValuePair("driverID", getActivity()
-									.getIntent().getStringExtra("driverID"));
-							ws.addNameValuePair("Food", fd);
-							ws.addNameValuePair("Freeze", frz);
-							ws.addNameValuePair("Broken", brk);
-							ws.addNameValuePair("Flame", flm);
-							ws.execute(new String[] { SERVICE_URL });
-						}
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-			}
-		});
 
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -410,7 +304,6 @@ public class CreateRoute extends Fragment {
 					FragmentTransaction trs = mng.beginTransaction();
 					CustomizeRoute frag1 = new CustomizeRoute();
 					trs.replace(R.id.content_frame, frag1);
-					trs.addToBackStack(null);
 					trs.commit();
 				}
 			}
@@ -645,6 +538,12 @@ public class CreateRoute extends Fragment {
 			if (response.equals("Success")) {
 				Toast.makeText(getActivity(), "Tạo mới thành công",
 						Toast.LENGTH_SHORT).show();
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				RouteList frag = new RouteList();
+				trs.replace(R.id.content_frame, frag);
+				trs.addToBackStack(null);
+				trs.commit();
 			} else {
 				Toast.makeText(getActivity(), "Tạo mới thất bại",
 						Toast.LENGTH_SHORT).show();
@@ -716,5 +615,127 @@ public class CreateRoute extends Fragment {
 			return total.toString();
 		}
 
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
+		MenuItem item = menu.add(Menu.NONE, R.id.action_new, 99,
+				R.string.create2);
+		item.setActionView(R.layout.actionbar_create);
+		item.getActionView().setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Common common = new Common();
+				String startPoint = start.getText().toString();
+				String Point1 = p1.getText().toString();
+				String Point2 = p2.getText().toString();
+				String endPoint = end.getText().toString();
+				String startD = startDate.getText().toString().replace("/", "-");
+				startD = common.changeFormatDate(startD) + " "
+						+ startHour.getText().toString();
+				String endD = endDate.getText().toString().replace("/", "-");
+				endD = common.changeFormatDate(endD);
+				String frz = String.valueOf(frozen.isChecked());
+				String brk = String.valueOf(broken.isChecked());
+				String flm = String.valueOf(flammable.isChecked());
+				String fd = String.valueOf(food.isChecked());
+				String load = payload.getText().toString();
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+				String current = String.valueOf(calendar.get(Calendar.YEAR)) + "-"
+						+ String.valueOf(calendar.get(Calendar.MONTH) + 1) + "-"
+						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + " "
+						+ String.valueOf(calendar.get(Calendar.HOUR)) + ":"
+						+ String.valueOf(calendar.get(Calendar.MINUTE)) + ":"
+						+ String.valueOf(calendar.get(Calendar.SECOND));
+				if (startPoint.equals("")) {
+					Toast.makeText(getActivity(),
+							"Điểm bắt đầu không được để trống.", Toast.LENGTH_SHORT)
+							.show();
+				} else if (startPoint.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm bắt đầu chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT).show();
+				} else if (Point1.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm đi qua 1 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT);
+				} else if (Point2.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm đi qua 2 chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT).show();
+				} else if (endPoint.equals("")) {
+					Toast.makeText(getActivity(),
+							"Điểm kết thúc không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else if (endPoint.length() > 100) {
+					Toast.makeText(
+							getActivity(),
+							"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
+							Toast.LENGTH_SHORT).show();
+				} else if (startD.equals("")) {
+					Toast.makeText(getActivity(),
+							"Ngày bắt đầu không được để trống.", Toast.LENGTH_SHORT)
+							.show();
+				} else if (endD.equals("")) {
+					Toast.makeText(getActivity(),
+							"Ngày kết thúc không được để trống.",
+							Toast.LENGTH_SHORT).show();
+				} else
+					try {
+						if (formatter.parse(startDate.getText().toString())
+								.compareTo(
+										formatter.parse(endDate.getText()
+												.toString())) >= 0) {
+							Toast.makeText(getActivity(),
+									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
+									Toast.LENGTH_SHORT).show();
+						} else if (payload.equals("")) {
+							Toast.makeText(getActivity(),
+									"Khối lượng chở không được để trống.",
+									Toast.LENGTH_SHORT).show();
+						} else if (Integer.parseInt(load) > 20000) {
+							Toast.makeText(getActivity(),
+									"Khối lượng chở không vượt quá 20 tấn",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							WebService ws = new WebService(WebService.POST_TASK,
+									getActivity(), "Đang xử lý ...");
+							ws.addNameValuePair("startingAddress", startPoint);
+							ws.addNameValuePair("destinationAddress", endPoint);
+							ws.addNameValuePair("routeMarkerLocation1", Point1);
+							ws.addNameValuePair("routeMarkerLocation2", Point2);
+							ws.addNameValuePair("startTime", startD);
+							ws.addNameValuePair("finishTime", endD);
+							ws.addNameValuePair("notes", null);
+							ws.addNameValuePair("weight", load);
+							ws.addNameValuePair("createTime", current);
+							ws.addNameValuePair("active", "1");
+							ws.addNameValuePair("driverID", getActivity()
+									.getIntent().getStringExtra("driverID"));
+							ws.addNameValuePair("Food", fd);
+							ws.addNameValuePair("Freeze", frz);
+							ws.addNameValuePair("Broken", brk);
+							ws.addNameValuePair("Flame", flm);
+							ws.execute(new String[] { SERVICE_URL });
+						}
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		});
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT|MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item.setIcon(R.drawable.ic_action_accept);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 }

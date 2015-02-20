@@ -152,7 +152,6 @@ public class Login extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			android.os.Debug.waitForDebugger();
 			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(Login.this,
 						"Đăng nhập thành công",

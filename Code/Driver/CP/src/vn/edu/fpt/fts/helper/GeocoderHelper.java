@@ -59,7 +59,7 @@ public class GeocoderHelper {
 			}
 			urlString.append(waypoints);
 		}
-		urlString.append("&mode=driving");
+		urlString.append("&mode=driving&region=vi");
 		return urlString.toString();
 	}
 

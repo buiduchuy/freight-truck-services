@@ -1,6 +1,9 @@
 package vn.edu.fpt.fts.layout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.methods.HttpGet;
@@ -8,6 +11,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
 import android.app.ProgressDialog;
@@ -21,6 +25,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -46,6 +53,13 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	Button button;
 	ProgressDialog pDlg;
 
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -108,18 +122,6 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-
-				map.setMyLocationEnabled(true);
-				map.getUiSettings().setMyLocationButtonEnabled(true);
-				for (LatLng p : locations) {
-					MarkerOptions marker = new MarkerOptions();
-					marker.position(p);
-					b.include(marker.getPosition());
-				}
-				LatLngBounds bounds = b.build();
-				CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,
-						20);
-				map.animateCamera(cu);
 			}
 
 			@Override
@@ -218,30 +220,6 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 					new connectAsyncTask().execute(url);
 				}
 				return true;
-			}
-		});
-		button = (Button) v.findViewById(R.id.save);
-		button.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = getActivity().getIntent();
-
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				Fragment fragment = new Fragment();
-				if (intent.getStringExtra("sender").equalsIgnoreCase(
-						"createRoute")) {
-					fragment = getActivity().getSupportFragmentManager()
-							.findFragmentByTag("createRoute");
-					intent.putExtra("markerList", locations);
-				} else {
-					fragment = getActivity().getSupportFragmentManager()
-							.findFragmentByTag("changeRoute");
-					intent.putExtra("markerList2", locations);
-				}
-				trs.replace(R.id.content_frame, fragment);
-				trs.commit();
 			}
 		});
 		return v;
@@ -387,5 +365,40 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
+		MenuItem item = menu.add(Menu.NONE, R.id.action_updateRoute, 99,
+				R.string.change);
+		item.setActionView(R.layout.actionbar_update_route);
+		item.getActionView().setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = getActivity().getIntent();
+
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				Fragment fragment = new Fragment();
+				if (intent.getStringExtra("sender").equalsIgnoreCase(
+						"createRoute")) {
+					fragment = getActivity().getSupportFragmentManager()
+							.findFragmentByTag("createRoute");
+					intent.putExtra("markerList", locations);
+				} else {
+					fragment = getActivity().getSupportFragmentManager()
+							.findFragmentByTag("changeRoute");
+					intent.putExtra("markerList2", locations);
+				}
+				trs.replace(R.id.content_frame, fragment);
+				trs.commit();
+			}
+		});
+		item.setIcon(R.drawable.ic_action_accept);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT|MenuItem.SHOW_AS_ACTION_ALWAYS);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 }

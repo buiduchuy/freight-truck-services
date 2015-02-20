@@ -8,8 +8,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -30,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListItemAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -51,15 +56,16 @@ import android.widget.Toast;
 public class RouteList extends Fragment {
 	
 	Calendar cal = Calendar.getInstance();
-	ArrayList<String> list;
+	ArrayList<ListItem> list;
 	HashMap<Long, Integer> map;
+	ListItemAdapter adapter;
 	ListView list1;
 	private static final String SERVICE_URL = Constant.SERVICE_URL + "Route/get";
 	
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		list = new ArrayList<String>();
+		list = new ArrayList<ListItem>();
 		map = new HashMap<Long, Integer>();
 		getActivity().setTitle("Danh sách lộ trình");
 		WebService ws = new WebService(WebService.GET_TASK,
@@ -67,8 +73,6 @@ public class RouteList extends Fragment {
 		ws.execute(new String[] { SERVICE_URL });
 	    View myFragmentView = inflater.inflate(R.layout.activity_route_list, container, false);
 	    list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
-	    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(), R.layout.listview_item_row, list);
-	    list1.setAdapter(adapter1);
 	    list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 	    	@Override
 	    	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -167,20 +171,55 @@ public class RouteList extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			android.os.Debug.waitForDebugger();
 			JSONObject obj;
+			
+			String title = "", description = "";
 			try {
 				obj = new JSONObject(response);
 				JSONArray array = obj.getJSONArray("route");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
+					
+					Object intervent;
+					
 					String[] start = item.getString("startingAddress").replace(", Vietnam", "").split(",");
+					title = start[start.length - 1];
+
+					if (obj.has("routeMarkers")) {
+						intervent = obj.get("routeMarkers");
+						if (intervent instanceof JSONArray) {
+							JSONArray catArray = obj.getJSONArray("routeMarkers");
+							for (int j = 0; j < catArray.length(); j++) {
+								JSONObject cat = catArray.getJSONObject(j);
+								title += " - " + cat.getString("routeMarkerLocation");
+							}
+						} else if (intervent instanceof JSONObject) {
+							JSONObject cat = obj.getJSONObject("routeMarkers");
+							title += " - " + cat.getString("routeMarkerLocation");
+						}
+					}
+					
 					String[] end = item.getString("destinationAddress").replace(", Vietnam", "").split(",");
-					String itm = "Lộ trình: " + start[start.length - 1] + " - " + end[end.length - 1] ;
+					title += " - " + end[end.length - 1];
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					try {
+						Date startDate = format.parse(item.getString("startTime"));
+						format.applyPattern("dd/MM/yyyy");
+						String sd = format.format(startDate);
+						format.applyPattern("yyyy-MM-dd hh:mm:ss");
+						Date finishDate = format.parse(item.getString("finishTime"));
+						format.applyPattern("dd/MM/yyyy");
+						String fd = format.format(finishDate);
+						description = sd + " - " + fd;
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					ListItem itm = new ListItem(title, description);
 					list.add(itm);
 					map.put(Long.valueOf(i), Integer.parseInt(item.getString("routeID")));
 				}
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.listview_item_row, list);
+				adapter = new ListItemAdapter(getActivity(), list);
 			    list1.setAdapter(adapter);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
