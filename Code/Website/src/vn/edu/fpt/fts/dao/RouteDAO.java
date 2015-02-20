@@ -258,7 +258,7 @@ public class RouteDAO {
 		return ret;
 	}
 
-	public static int changeRouteStatus(int routeID, int status) {
+	public int updateRouteStatus(int routeID, int status) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -292,5 +292,7 @@ public class RouteDAO {
 		}
 		return ret;
 	}
+	
+	
 	
 }

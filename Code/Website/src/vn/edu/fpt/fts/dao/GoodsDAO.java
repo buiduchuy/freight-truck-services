@@ -84,7 +84,7 @@ public class GoodsDAO {
 		return ret;
 	}
 
-	public static int changeGoodsStatus(int goodsID, int status) {
+	public int updateGoodsStatus(int goodsID, int status) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -119,7 +119,7 @@ public class GoodsDAO {
 		return ret;
 	}
 
-	public static int updateGoods(Goods bean) {
+	public int updateGoods(Goods bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;

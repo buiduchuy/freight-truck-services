@@ -6,14 +6,13 @@ package vn.edu.fpt.fts.process;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
-import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * @author Huy
@@ -33,15 +32,12 @@ public class DealProcess {
 
 	public int acceptDeal(int dealID) {
 
-		int i_acceptStatus = 3;
-		int i_declineStatus = 4;
-
 		Deal deal = dealDao.getDealByID(dealID);
 		List<Deal> l_deal = new ArrayList<Deal>();
 		List<Deal> l_declineDeal = new ArrayList<Deal>();
 
 		// Update deal with accept status 3
-		deal.setDealStatusID(i_acceptStatus);
+		deal.setDealStatusID(Common.deal_accept);
 		int s_update = dealDao.updateDeal(deal);
 
 		if (s_update != 0) {
@@ -61,7 +57,7 @@ public class DealProcess {
 
 			// Change list parent deal to decline 4
 			for (int j = 0; j < l_declineDeal.size(); j++) {
-				l_declineDeal.get(j).setDealStatusID(i_declineStatus);
+				l_declineDeal.get(j).setDealStatusID(Common.deal_decline);
 				dealDao.updateDeal(l_declineDeal.get(j));
 			}
 
@@ -75,12 +71,11 @@ public class DealProcess {
 			order.setOrderStatusID(1);
 			orderDao.insertOrder(order);
 
-			// Change goods of this order
-			Goods goods = new Goods();
-			goodsDao.changeGoodsStatus(deal.getGoodsID(), 0);
+			// Change goods of this order to deactivate
+			goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
 
-			// Change route of this order
-			Route route = new Route();
+			// Change route of this order to deactivate
+			routeDao.updateRouteStatus(deal.getRouteID(), Common.deactivate);
 
 			System.out
 					.println("Accept - Number of deals will be change to decline: "
@@ -92,14 +87,11 @@ public class DealProcess {
 
 	public int declineDeal(int dealID) {
 
-		// int i_acceptStatus = 3;
-		int i_declineStatus = 4;
-
 		Deal deal = dealDao.getDealByID(dealID);
 		List<Deal> l_deal = new ArrayList<Deal>();
 
 		// Update deal with decline status 4
-		deal.setDealStatusID(i_declineStatus);
+		deal.setDealStatusID(Common.deal_decline);
 		int s_update = dealDao.updateDeal(deal);
 
 		if (s_update != 0) {
@@ -110,7 +102,7 @@ public class DealProcess {
 			for (int i = 0; i < l_deal.size(); i++) {
 
 				if (l_deal.get(i).getDealID() == 9) {
-					l_deal.get(i).setDealStatusID(i_declineStatus);
+					l_deal.get(i).setDealStatusID(Common.deal_decline);
 					dealDao.updateDeal(l_deal.get(i));
 				}
 			}
@@ -123,14 +115,12 @@ public class DealProcess {
 	}
 
 	public int cancelDeal(int dealID) {
-		// int i_acceptStatus = 3;
-		int i_declineStatus = 4;
 
 		Deal deal = dealDao.getDealByID(dealID);
 		List<Deal> l_deal = new ArrayList<Deal>();
 
 		// Update deal with decline status 4
-		deal.setDealStatusID(i_declineStatus);
+		deal.setDealStatusID(Common.deal_cancel);
 		int s_update = dealDao.updateDeal(deal);
 
 		if (s_update != 0) {
@@ -141,7 +131,7 @@ public class DealProcess {
 			for (int i = 0; i < l_deal.size(); i++) {
 
 				if (l_deal.get(i).getDealID() == 9) {
-					l_deal.get(i).setDealStatusID(i_declineStatus);
+					l_deal.get(i).setDealStatusID(Common.deal_cancel);
 					dealDao.updateDeal(l_deal.get(i));
 				}
 			}

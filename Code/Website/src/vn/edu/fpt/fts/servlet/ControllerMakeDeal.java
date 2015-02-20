@@ -292,7 +292,7 @@ public class ControllerMakeDeal extends HttpServlet {
 					Date date = new Date();
 					String createTime = dateFormat.format(date);
 					Order newOrder = new Order(dealConfirm.getPrice(), false,
-							false, false, createTime, 1);
+							false, false, createTime, 1, 1);
 					
 					DealOrder newDealOrder= new DealOrder(idDeal, orderDao.insertOrder(newOrder));
 					dealOrderDao.insertDealOrder(newDealOrder);
