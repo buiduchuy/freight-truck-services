@@ -54,44 +54,46 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class RouteList extends Fragment {
-	
+
 	Calendar cal = Calendar.getInstance();
 	ArrayList<ListItem> list;
 	HashMap<Long, Integer> map;
 	ListItemAdapter adapter;
 	ListView list1;
-	private static final String SERVICE_URL = Constant.SERVICE_URL + "Route/get";
-	
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Route/get";
+
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
 		map = new HashMap<Long, Integer>();
 		getActivity().setTitle("Danh sách lộ trình");
-		WebService ws = new WebService(WebService.GET_TASK,
-				getActivity(), "Đang lấy dữ liệu ...");
+		WebService ws = new WebService(WebService.GET_TASK, getActivity(),
+				"Đang lấy dữ liệu ...");
 		ws.execute(new String[] { SERVICE_URL });
-	    View myFragmentView = inflater.inflate(R.layout.activity_route_list, container, false);
-	    list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
-	    list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
-	    	@Override
-	    	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-	    			long arg3) {
-	    		int id = map.get(arg3);
-	    		FragmentManager mng = getActivity().getSupportFragmentManager();
-	    		FragmentTransaction trs = mng.beginTransaction();
-	    		CurrentRoute frag = new CurrentRoute();
-	    		Bundle bundle = new Bundle();
-	    		bundle.putString("routeID", String.valueOf(id));
-	    		frag.setArguments(bundle);
-	    		trs.replace(R.id.content_frame, frag);
-	    		trs.addToBackStack(null);
-	    		trs.commit();
-	    	}
+		View myFragmentView = inflater.inflate(R.layout.activity_route_list,
+				container, false);
+		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
+		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				int id = map.get(arg3);
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				CurrentRoute frag = new CurrentRoute();
+				Bundle bundle = new Bundle();
+				bundle.putString("routeID", String.valueOf(id));
+				frag.setArguments(bundle);
+				trs.replace(R.id.content_frame, frag);
+				trs.addToBackStack(null);
+				trs.commit();
+			}
 		}));
 		return myFragmentView;
 	}
-	
+
 	private class WebService extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -172,42 +174,70 @@ public class RouteList extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			JSONObject obj;
-			
+
 			String title = "", description = "";
 			try {
 				obj = new JSONObject(response);
 				JSONArray array = obj.getJSONArray("route");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
-					
-					Object intervent;
-					
-					String[] start = item.getString("startingAddress").replace(", Vietnam", "").split(",");
-					title = start[start.length - 1];
 
-					if (obj.has("routeMarkers")) {
-						intervent = obj.get("routeMarkers");
+					Object intervent;
+
+					String[] start = item.getString("startingAddress")
+							.replace(", Vietnam", "").replace(", Viet Nam", "")
+							.replace(", Việt Nam", "")
+							.replace(", việt nam", "").split(",");
+					title = start[start.length - 1].trim();
+
+					if (item.has("routeMarkers")) {
+						intervent = item.get("routeMarkers");
+
 						if (intervent instanceof JSONArray) {
-							JSONArray catArray = obj.getJSONArray("routeMarkers");
+							JSONArray catArray = item
+									.getJSONArray("routeMarkers");
 							for (int j = 0; j < catArray.length(); j++) {
 								JSONObject cat = catArray.getJSONObject(j);
-								title += " - " + cat.getString("routeMarkerLocation");
+								String[] point = cat
+										.getString("routeMarkerLocation")
+										.replace(", Vietnam", "")
+										.replace(", Viet Nam", "")
+										.replace(", Việt Nam", "")
+										.replace(", việt nam", "").split(",");
+								if (!point[point.length - 1].equals("")) {
+									title += " - "
+											+ point[point.length - 1].trim();
+								}
 							}
 						} else if (intervent instanceof JSONObject) {
-							JSONObject cat = obj.getJSONObject("routeMarkers");
-							title += " - " + cat.getString("routeMarkerLocation");
+							JSONObject cat = item.getJSONObject("routeMarkers");
+							String[] point = cat
+									.getString("routeMarkerLocation")
+									.replace(", Vietnam", "")
+									.replace(", Viet Nam", "")
+									.replace(", Việt Nam", "")
+									.replace(", việt nam", "").split(",");
+							if (!point[point.length - 1].equals("")) {
+								title += " - " + point[point.length - 1].trim();
+							}
 						}
 					}
-					
-					String[] end = item.getString("destinationAddress").replace(", Vietnam", "").split(",");
-					title += " - " + end[end.length - 1];
-					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+					String[] end = item.getString("destinationAddress")
+							.replace(", Vietnam", "").replace(", Viet Nam", "")
+							.replace(", Việt Nam", "")
+							.replace(", việt nam", "").split(",");
+					title += " - " + end[end.length - 1].trim();
+					SimpleDateFormat format = new SimpleDateFormat(
+							"yyyy-MM-dd hh:mm:ss");
 					try {
-						Date startDate = format.parse(item.getString("startTime"));
+						Date startDate = format.parse(item
+								.getString("startTime"));
 						format.applyPattern("dd/MM/yyyy");
 						String sd = format.format(startDate);
 						format.applyPattern("yyyy-MM-dd hh:mm:ss");
-						Date finishDate = format.parse(item.getString("finishTime"));
+						Date finishDate = format.parse(item
+								.getString("finishTime"));
 						format.applyPattern("dd/MM/yyyy");
 						String fd = format.format(finishDate);
 						description = sd + " - " + fd;
@@ -217,10 +247,11 @@ public class RouteList extends Fragment {
 					}
 					ListItem itm = new ListItem(title, description);
 					list.add(itm);
-					map.put(Long.valueOf(i), Integer.parseInt(item.getString("routeID")));
+					map.put(Long.valueOf(i),
+							Integer.parseInt(item.getString("routeID")));
 				}
 				adapter = new ListItemAdapter(getActivity(), list);
-			    list1.setAdapter(adapter);
+				list1.setAdapter(adapter);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -253,7 +284,8 @@ public class RouteList extends Fragment {
 				case POST_TASK:
 					HttpPost httppost = new HttpPost(url);
 					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
 
 					response = httpclient.execute(httppost);
 					break;

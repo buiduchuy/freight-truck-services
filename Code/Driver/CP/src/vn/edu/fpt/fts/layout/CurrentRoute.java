@@ -169,28 +169,29 @@ public class CurrentRoute extends Fragment {
 				obj = new JSONObject(response);
 				Object intervent;
 				startPoint.setText(obj.getString("startingAddress"));
-				if (obj.has("routeMarkers")) {
-					intervent = obj.get("routeMarkers");
-					if (intervent instanceof JSONArray) {
-						JSONArray catArray = obj.getJSONArray("routeMarkers");
-						for (int j = 0; j < catArray.length(); j++) {
-							JSONObject cat = catArray.getJSONObject(j);
-							if (j == 0) {
-								point1.setText(cat
-										.getString("routeMarkerLocation"));
-								point2.setText("Không có");
-							} else if (j == 1) {
-								point2.setText(cat
-										.getString("routeMarkerLocation"));
+
+				intervent = obj.get("routeMarkers");
+				if (intervent instanceof JSONArray) {
+					JSONArray catArray = obj.getJSONArray("routeMarkers");
+					for (int j = 0; j < catArray.length(); j++) {
+						JSONObject cat = catArray.getJSONObject(j);
+						if (j == 0) {
+							if(!cat.getString("routeMarkerLocation").equals("")) {
+								point1.setText(cat.getString("routeMarkerLocation"));
+							}
+							else {
+								point1.setText("Không có");
+							}
+							point2.setText("Không có");
+						} else if (j == 1) {
+							if(!cat.getString("routeMarkerLocation").equals("")) {
+								point2.setText(cat.getString("routeMarkerLocation"));
 							}
 						}
-					} else if (intervent instanceof JSONObject) {
-						JSONObject cat = obj.getJSONObject("routeMarkers");
-						point1.setText(cat.getString("routeMarkerLocation"));
-						point2.setText("Không có");
 					}
-				} else {
-					point1.setText("Không có");
+				} else if (intervent instanceof JSONObject) {
+					JSONObject cat = obj.getJSONObject("routeMarkers");
+					point1.setText(cat.getString("routeMarkerLocation"));
 					point2.setText("Không có");
 				}
 

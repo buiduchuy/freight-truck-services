@@ -97,6 +97,10 @@ public class CreateRoute extends Fragment {
 	EditText payload;
 	View v;
 	ArrayList<LatLng> locations;
+	String startString = "";
+	String p1String = "";
+	String p2String = "";
+	String endString = "";
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
@@ -429,7 +433,44 @@ public class CreateRoute extends Fragment {
 		@Override
 		protected String doInBackground(Double... locations) {
 			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
-					+ locations[0] + "," + locations[1] + "&sensor=false";
+					+ locations[0]
+					+ ","
+					+ locations[1]
+					+ "&sensor=false&language=vi";
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(new HttpGet(googleMapUrl),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse
+						.get("results");
+				JSONObject result = results.getJSONObject(0);
+				String address = result.getString("formatted_address");
+				ANDROID_HTTP_CLIENT.close();
+				return address;
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
+		}
+	}
+
+	private class GetFullAddress extends AsyncTask<String, Void, String> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetAddress.class.getName());
+
+		@Override
+		protected String doInBackground(String... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?address="
+					+ locations[0].replace(" ", "%20")
+					+ "&sensor=false&language=vi";
 
 			try {
 				JSONObject googleMapResponse = new JSONObject(
@@ -625,7 +666,7 @@ public class CreateRoute extends Fragment {
 				R.string.create2);
 		item.setActionView(R.layout.actionbar_create);
 		item.getActionView().setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Common common = new Common();
@@ -633,7 +674,29 @@ public class CreateRoute extends Fragment {
 				String Point1 = p1.getText().toString();
 				String Point2 = p2.getText().toString();
 				String endPoint = end.getText().toString();
-				String startD = startDate.getText().toString().replace("/", "-");
+				try {
+					if (!startPoint.equals("")) {
+						startPoint = new GetFullAddress().execute(startPoint)
+								.get();
+					}
+					if (!endPoint.equals("")) {
+						endPoint = new GetFullAddress().execute(endPoint).get();
+					}
+					if (!Point1.equals("")) {
+						Point1 = new GetFullAddress().execute(Point1).get();
+					}
+					if (!Point2.equals("")) {
+						Point2 = new GetFullAddress().execute(Point2).get();
+					}
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				String startD = startDate.getText().toString()
+						.replace("/", "-");
 				startD = common.changeFormatDate(startD) + " "
 						+ startHour.getText().toString();
 				String endD = endDate.getText().toString().replace("/", "-");
@@ -645,16 +708,18 @@ public class CreateRoute extends Fragment {
 				String load = payload.getText().toString();
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
-				String current = String.valueOf(calendar.get(Calendar.YEAR)) + "-"
-						+ String.valueOf(calendar.get(Calendar.MONTH) + 1) + "-"
-						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)) + " "
-						+ String.valueOf(calendar.get(Calendar.HOUR)) + ":"
-						+ String.valueOf(calendar.get(Calendar.MINUTE)) + ":"
-						+ String.valueOf(calendar.get(Calendar.SECOND));
+				String current = String.valueOf(calendar.get(Calendar.YEAR))
+						+ "-"
+						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
+						+ "-"
+						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
+						+ " " + String.valueOf(calendar.get(Calendar.HOUR))
+						+ ":" + String.valueOf(calendar.get(Calendar.MINUTE))
+						+ ":" + String.valueOf(calendar.get(Calendar.SECOND));
 				if (startPoint.equals("")) {
 					Toast.makeText(getActivity(),
-							"Điểm bắt đầu không được để trống.", Toast.LENGTH_SHORT)
-							.show();
+							"Điểm bắt đầu không được để trống.",
+							Toast.LENGTH_SHORT).show();
 				} else if (startPoint.length() > 100) {
 					Toast.makeText(
 							getActivity(),
@@ -681,18 +746,16 @@ public class CreateRoute extends Fragment {
 							Toast.LENGTH_SHORT).show();
 				} else if (startD.equals("")) {
 					Toast.makeText(getActivity(),
-							"Ngày bắt đầu không được để trống.", Toast.LENGTH_SHORT)
-							.show();
+							"Ngày bắt đầu không được để trống.",
+							Toast.LENGTH_SHORT).show();
 				} else if (endD.equals("")) {
 					Toast.makeText(getActivity(),
 							"Ngày kết thúc không được để trống.",
 							Toast.LENGTH_SHORT).show();
 				} else
 					try {
-						if (formatter.parse(startDate.getText().toString())
-								.compareTo(
-										formatter.parse(endDate.getText()
-												.toString())) >= 0) {
+						if (formatter.parse(startDate.getText().toString()).compareTo(
+								formatter.parse(endDate.getText().toString())) >= 0) {
 							Toast.makeText(getActivity(),
 									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
 									Toast.LENGTH_SHORT).show();
@@ -717,8 +780,8 @@ public class CreateRoute extends Fragment {
 							ws.addNameValuePair("weight", load);
 							ws.addNameValuePair("createTime", current);
 							ws.addNameValuePair("active", "1");
-							ws.addNameValuePair("driverID", getActivity()
-									.getIntent().getStringExtra("driverID"));
+							ws.addNameValuePair("driverID", getActivity().getIntent()
+									.getStringExtra("driverID"));
 							ws.addNameValuePair("Food", fd);
 							ws.addNameValuePair("Freeze", frz);
 							ws.addNameValuePair("Broken", brk);
@@ -734,7 +797,8 @@ public class CreateRoute extends Fragment {
 					}
 			}
 		});
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT|MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT
+				| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		item.setIcon(R.drawable.ic_action_accept);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
