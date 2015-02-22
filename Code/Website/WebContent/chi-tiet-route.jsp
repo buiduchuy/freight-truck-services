@@ -191,7 +191,8 @@ html, body, #map-canvas {
 											<a href="goi-y-he-thong.jsp" class="button secondary"> <i
 												class="icon-mail-reply"></i> Trở về trước
 											</a> <a class="button success"
-												href="ControllerMakeDeal?btnAction=sendSuggest&routeID=${detailRoute.routeID }">
+												href="ControllerMakeDeal?btnAction=sendSuggest&routeID=${detailRoute.routeID }" 
+												onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 												<i class="icon-envelope"></i> Gửi để nghị
 											</a>
 

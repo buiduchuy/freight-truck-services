@@ -90,7 +90,8 @@
 												<c:choose>
 													<c:when test="${history.createBy== 'Driver' }">
 														<td><a class="button success"
-															href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }">Chấp
+															href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }"
+															onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
 																nhận</a></td>
 													</c:when>
 													<c:otherwise>

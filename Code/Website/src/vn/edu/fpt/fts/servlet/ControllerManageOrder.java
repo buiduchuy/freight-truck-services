@@ -89,6 +89,7 @@ public class ControllerManageOrder extends HttpServlet {
 				}
 				Goods[] list1 = new Goods[manageGood1.size()];
 				manageGood1.toArray(list1);
+				session.removeAttribute("orderStatus");
 				session.setAttribute("listOrder", list1);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("quan-ly-order.jsp");
@@ -97,9 +98,10 @@ public class ControllerManageOrder extends HttpServlet {
 			if ("viewDetailOrder".equals(action)) {
 				int idGood = Integer.parseInt(request.getParameter("idGood"));
 				Order order = orderDao.getOrderByGoodsID(idGood);
-
+				System.out.println(order.getOrderID());
 				try {
-				OrderStatus trackingStatus = orderStatusDao.getOrderStatusByID(order.getOrderStatusID());
+					OrderStatus trackingStatus = orderStatusDao
+							.getOrderStatusByID(order.getOrderStatusID());
 					Goods goodDetail = goodDao.getGoodsByID(idGood);
 					goodDetail.setPickupTime(common.changeFormatDate(
 							goodDetail.getPickupTime(),
@@ -115,6 +117,49 @@ public class ControllerManageOrder extends HttpServlet {
 					rd.forward(request, response);
 				} catch (Exception ex) {
 
+				}
+			}
+			if ("lostGood".equals(action)) {
+				int idGood = Integer.parseInt(request.getParameter("idGood"));
+				Goods good = goodDao.getGoodsByID(idGood);
+				Order order = orderDao.getOrderByGoodsID(idGood);
+				try {
+					order.setOrderStatusID(5);
+					if (orderDao.updateOrder(order) == 1) {
+						session.setAttribute("messageSuccess",
+								"Xin lỗi vì sự cố mất hàng. Hệ thống sẽ kiểm tra và báo lại cho bạn trong thời gian gần nhất!");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+						rd.forward(request, response);
+					}
+				} catch (Exception ex) {
+					session.setAttribute("messageError",
+							"Có lỗi xảy ra. Xin vui lòng kiểm tra lại hoá đơn trước khi báo mất hàng!");
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+					rd.forward(request, response);
+				}
+			}
+			if ("confirmOrder".equals(action)) {
+				int idGood = Integer.parseInt(request.getParameter("idGood"));
+				Goods good = goodDao.getGoodsByID(idGood);
+				Order order = orderDao.getOrderByGoodsID(idGood);
+				try {
+					order.setOwnerDeliveryStatus(true);
+					order.setOrderStatusID(4);
+					if (orderDao.updateOrder(order) == 1) {
+						session.setAttribute("messageSuccess",
+								"Hoàn tất hoá đơn!");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+						rd.forward(request, response);
+					}
+				} catch (Exception ex) {
+					session.setAttribute("messageError",
+							"Có lỗi xảy ra!");
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+					rd.forward(request, response);
 				}
 			}
 

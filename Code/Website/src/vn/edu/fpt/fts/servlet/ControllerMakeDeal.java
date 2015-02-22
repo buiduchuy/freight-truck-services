@@ -95,6 +95,7 @@ public class ControllerMakeDeal extends HttpServlet {
 				rd.forward(request, response);
 			}
 			if ("sendSuggest".equals(action)) {
+				session.getAttribute("detailGood1");
 				int idRoute = Integer.parseInt(request.getParameter("routeID"));
 				if (session.getAttribute("newGood") != null) {
 					Goods good = (Goods) session.getAttribute("newGood");
