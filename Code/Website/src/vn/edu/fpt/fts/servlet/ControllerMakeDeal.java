@@ -118,7 +118,7 @@ public class ControllerMakeDeal extends HttpServlet {
 					}
 					if (idDealFa == 0) {
 						Deal newDeal = new Deal(good.getPrice(),
-								good.getNotes(), createTime, "Owner",
+								good.getNotes(), createTime, "owner",
 								route.getRouteID(), good.getGoodsID(), 0, 1, 1);
 
 						if (dealDao.insertDeal(newDeal) != -1) {
@@ -150,7 +150,7 @@ public class ControllerMakeDeal extends HttpServlet {
 						}
 					} else {
 						Deal newDeal = new Deal(good.getPrice(),
-								good.getNotes(), createTime, "Owner",
+								good.getNotes(), createTime, "owner",
 								route.getRouteID(), good.getGoodsID(),
 								idDealFa, 1, 1);
 
@@ -256,7 +256,7 @@ public class ControllerMakeDeal extends HttpServlet {
 				dealFa.setPrice(price);
 				dealFa.setNotes(notes);
 				dealFa.setCreateTime(createTime);
-				dealFa.setCreateBy("Owner");
+				dealFa.setCreateBy("owner");
 				dealFa.setRefDealID(idDealFa);
 				if (dealDao.insertDeal(dealFa) != -1) {
 					session.setAttribute("messageSuccess",
