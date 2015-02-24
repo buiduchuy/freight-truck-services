@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -21,6 +22,7 @@ import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
+import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Owner;
 
@@ -80,7 +82,7 @@ public class ControllerAccount extends HttpServlet {
 				session.removeAttribute("errorLogin");
 				session.removeAttribute("account");
 				if (accountDao.checkLoginAccount(email, password) != null) {
-
+					String start_date="";
 					Owner owner = ownerDao.getOwnerByEmail(accountDao.checkLoginAccount(email,
 							password).getEmail());
 					List<GoodsCategory> list = goodCa.getAllGoodsCategory();
@@ -90,6 +92,25 @@ public class ControllerAccount extends HttpServlet {
 					session.setAttribute("typeGoods", typeGoods);
 					session.setAttribute("owner", owner);
 					session.setAttribute("account", owner.getLastName());
+					List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
+							.getOwnerID());
+					List<Goods> manageGood1 = new ArrayList<Goods>();
+					for (int i = 0; i < manageGood.size(); i++) {
+						if (manageGood.get(i).getActive() == 1) {
+							manageGood.get(i).setPickupTime(
+									common.changeFormatDate(manageGood.get(i)
+											.getPickupTime(),
+											"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+							manageGood.get(i).setDeliveryTime(
+									common.changeFormatDate(manageGood.get(i)
+											.getDeliveryTime(),
+											"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+							manageGood1.add(manageGood.get(i));
+						}
+					}
+					Goods[] list1 = new Goods[manageGood1.size()];
+					manageGood1.toArray(list1);
+					session.setAttribute("listGood1", list1);
 					if (session.getAttribute("namePage") != null) {
 						String prePage = (String) session.getAttribute("namePage");
 						RequestDispatcher rd = request

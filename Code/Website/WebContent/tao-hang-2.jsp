@@ -11,19 +11,27 @@
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <jsp:include page="header.jsp" />
 <div class="large-12 columns">
-	<div class="large-2 columns">
-	<div class="form-content"
-		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-	<jsp:include page="menu-doc-tao-hang.jsp"/>
-	</div>
-	</div>
-	<div class="large-8 columns">
+	<div class="small-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		
-			<jsp:include page="menu-tao-hang.jsp" />
+			<jsp:include page="vertical-menu-create-good.jsp" />
+				<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
+		</div>
+	</div>
+	<div class="small-9 columns">
+		<div class="form-content"
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 
-			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
+			<jsp:include page="process-create-good.jsp" />
+
+			<form action="ControllerCreateGoods" method="post"
+				accept-charset="utf-8">
+					<div class="row">
 				<c:choose>
 					<c:when test="${not empty good}">
 						<div class="row">
@@ -179,11 +187,7 @@
 			</form>
 		</div>
 	</div>
-	<div class="large-2 columns">
-	<div class="form-content"
-		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-	</div>
-	</div>
+
 </div>
 
 

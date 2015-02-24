@@ -1,21 +1,19 @@
-<html lang="en">
-<jsp:include page="header.jsp" />
-<div class="large-12 columns">
-	<div class="large-2 columns">
-		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		<jsp:include page="menu-doc-quan-ly-hang.jsp"/>
-		</div>
-	</div>
-	<div class="large-8 columns">
-		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		</div>
-	</div>
-	<div class="large-2 columns">
-		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		</div>
-	</div>
-</div>
-<jsp:include page="footer.jsp" />
+<input type='date' id='date' />
+
+<div id='date'></div>
+<script>
+dateVariable = undefined;
+
+$("#date").datepicker({ 
+    dateFormat: 'dd, MM, yy', 
+    onClose: function(dateText) { 
+        dateVariable = dateText; 
+        alert(dateVariable); 
+        alert($("#date").val()) 
+    }
+});
+
+var ds = $.datepicker.formatDate('dd, MM, yy', new Date("20 April 2012"));
+        
+$("div#date").html(ds);
+</script>

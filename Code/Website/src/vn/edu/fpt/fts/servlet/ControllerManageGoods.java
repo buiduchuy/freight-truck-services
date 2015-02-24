@@ -226,6 +226,42 @@ public class ControllerManageGoods extends HttpServlet {
 				} catch (Exception ex) {
 
 				}
+			}if("filter".equals(action)){
+				String startDate="";
+				String endDate="";
+				try{
+					startDate=request.getParameter("txtstartdate");
+				}catch(Exception ex){
+					
+				}
+				try{
+					endDate=request.getParameter("txtenddate");
+				}catch(Exception ex){
+					
+				}
+				Owner owner = (Owner) session.getAttribute("owner");
+				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
+						.getOwnerID());
+				List<Goods> manageGood1 = new ArrayList<Goods>();
+				for (int i = 0; i < manageGood.size(); i++) {
+					if (manageGood.get(i).getActive() == 1) {
+						manageGood.get(i).setPickupTime(
+								common.changeFormatDate(manageGood.get(i)
+										.getPickupTime(),
+										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+						manageGood.get(i).setDeliveryTime(
+								common.changeFormatDate(manageGood.get(i)
+										.getDeliveryTime(),
+										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+						manageGood1.add(manageGood.get(i));
+					}
+				}
+				Goods[] list1 = new Goods[manageGood1.size()];
+				manageGood1.toArray(list1);
+				session.setAttribute("listGood1", list1);
+				RequestDispatcher rd = request
+						.getRequestDispatcher("quan-ly-hang.jsp");
+				rd.forward(request, response);
 			}
 			// out.println("<!DOCTYPE html>");
 			// out.println("<html>");

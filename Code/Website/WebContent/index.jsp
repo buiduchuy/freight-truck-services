@@ -77,7 +77,7 @@
                                 <div class="media-body">
                                     <h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-desktop"></i></font> Quản lý hàng</a></h4>
                                     <p>Giúp người sử dụng quản lý các hàng đã đăng cũng như tìm tài xế cho hàng</p>
-                                    <a class="button" href="ControllerManageGoods?btnAction=manageGoods"><i class="icon-ok"></i> Quản lý hàng</a>
+                                    <a class="button" href="quan-ly-hang.jsp"><i class="icon-ok"></i> Quản lý hàng</a>
                                 </div>
                             </div>
                         </div>

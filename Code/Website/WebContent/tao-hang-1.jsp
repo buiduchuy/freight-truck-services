@@ -17,201 +17,208 @@
 <script src="js/foundation-datepicker.js"></script>
 <link rel="stylesheet" href="css/foundation-datepicker.css">
 <div class="large-12 columns">
-	<div class="large-2 columns">
-	<div class="form-content "
-		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		<jsp:include page="menu-doc-tao-hang.jsp"/>
+	<div class="small-3 columns">
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-menu-create-good.jsp" />
+			<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
+		</div>
 	</div>
-	</div>
-	<div class="large-8 columns">
+	<div class="small-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-
-			<jsp:include page="menu-tao-hang.jsp" />
+			<jsp:include page="process-create-good.jsp" />
 
 
 			<form action="ControllerCreateGoods" method="post"
 				accept-charset="utf-8">
-				<c:choose>
-					<c:when test="${not empty router}">
-						<div class="row">
+				<div class="row">
+					<c:choose>
+						<c:when test="${not empty router}">
+
 							<div class="large-12 columns">
-								<div class="row">
-									<div class="extra-title">
-										<h3>Địa chỉ giao hàng</h3>
-									</div>
-									<div class="row">
-										<div class="small-8 columns">
-											<div class="small-3 columns">
-												<label class="right inline"><small class="validate">*</small>
-													Địa chỉ: </label>
-											</div>
-											<div class="small-9 columns">
-												<input class="left inline" value="${router.pickupAddress}"
-													name="txtpickupAddress" type="text" onFocus="geolocate()"
-													id="place_start" pattern=".{1,100}"
-													placeholder="Nhập địa điểm giao hàng" required=""
-													data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
-													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
-											</div>
-										</div>
-										<div class="small-4 columns">
-											<div class="small-5 columns">
-												<label for="right-label" class="right inline"><small
-													class="validate">*</small> Ngày: </label>
-											</div>
-											<div class="small-7 columns">
-												<input type="text" name="txtpickupTime"
-													value="${router.pickupTime}" id="pick-up-date"
-													data-date-format="dd-mm-yyyy" readonly>
-											</div>
-										</div>
-									</div>
 
-									<div class="extra-title">
-										<h3>Địa chỉ nhận hàng</h3>
-									</div>
-									<div class="row">
-										<div class="small-8 columns">
-											<div class="small-3 columns">
-												<label for="right-label" class="right inline"><small
-													class="validate">*</small> Địa chỉ: </label>
-											</div>
-											<div class="small-9 columns">
-												<input type="text" onFocus="geolocate()"
-													value="${router.deliveryAddress}" name="txtdeliveryAddress"
-													id="place_end" pattern=".{1,100}"
-													placeholder="Nhập địa điểm nhận hàng" required=""
-													data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
-													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
-											</div>
-										</div>
-										<div class="small-4 columns">
-											<div class="small-5 columns">
-												<label for="right-label" class="right inline"><small
-													class="validate">*</small> Ngày: </label>
-											</div>
-											<div class="small-7 columns">
-												<input type="text" name="txtdeliveryTime"
-													value="${router.deliveryTime}" id="dilivery-date"
-													data-date-format="dd-mm-yyyy" readonly>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="large-12 columns">
-											<div class="submit-area right">
-												<button class="" name="btnAction" value="save1">
-													<i class="icon-save"></i> Lưu thay đổi
-												</button>
-												<button class="success" name="btnAction" value="next1">
-													<i class="icon-mail-forward"></i> Tiếp theo
-												</button>
-
-											</div>
-											</br>
-										</div>
-									</div>
-									<div class="row"></div>
+								<div class="extra-title">
+									<h3>
+										<font color="blue">Địa chỉ giao hàng</font>
+									</h3>
 								</div>
+								<div class="row">
+									<div class="small-8 columns">
+										<div class="small-3 columns">
+											<label class="right inline"><small class="validate">*</small>
+												Địa chỉ: </label>
+										</div>
+										<div class="small-9 columns">
+											<input class="left inline" value="${router.pickupAddress}"
+												name="txtpickupAddress" type="text" onFocus="geolocate()"
+												id="place_start" pattern=".{1,100}"
+												placeholder="Nhập địa điểm giao hàng" required=""
+												data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
+												data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+										</div>
+									</div>
+									<div class="small-4 columns">
+										<div class="small-5 columns">
+											<label for="right-label" class="right inline"><small
+												class="validate">*</small> Ngày: </label>
+										</div>
+										<div class="small-7 columns">
+											<input type="text" name="txtpickupTime"
+												value="${router.pickupTime}" id="pick-up-date"
+												data-date-format="dd-mm-yyyy" readonly>
+										</div>
+									</div>
+								</div>
+
+								<div class="extra-title">
+									<h3>
+										<font color="blue">Địa chỉ nhận hàng</font>
+									</h3>
+								</div>
+								<div class="row">
+									<div class="small-8 columns">
+										<div class="small-3 columns">
+											<label for="right-label" class="right inline"><small
+												class="validate">*</small> Địa chỉ: </label>
+										</div>
+										<div class="small-9 columns">
+											<input type="text" onFocus="geolocate()"
+												value="${router.deliveryAddress}" name="txtdeliveryAddress"
+												id="place_end" pattern=".{1,100}"
+												placeholder="Nhập địa điểm nhận hàng" required=""
+												data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
+												data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+										</div>
+									</div>
+									<div class="small-4 columns">
+										<div class="small-5 columns">
+											<label for="right-label" class="right inline"><small
+												class="validate">*</small> Ngày: </label>
+										</div>
+										<div class="small-7 columns">
+											<input type="text" name="txtdeliveryTime"
+												value="${router.deliveryTime}" id="dilivery-date"
+												data-date-format="dd-mm-yyyy" readonly>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="large-12 columns">
+										<div class="submit-area right">
+											<button class="" name="btnAction" value="save1">
+												<i class="icon-save"></i> Lưu thay đổi
+											</button>
+											<button class="success" name="btnAction" value="next1">
+												<i class="icon-mail-forward"></i> Tiếp theo
+											</button>
+
+										</div>
+										</br>
+									</div>
+								</div>
+								<div class="row"></div>
+
 							</div>
-						</div>
-					</c:when>
+						</c:when>
 
 
 
 
 
-					<c:otherwise>
-						<div class="row" accept-charset="utf-8">
+						<c:otherwise>
 							<div class="large-12 columns">
-								<div class="row">
-									<div class="extra-title">
-										<h3>Địa chỉ giao hàng</h3>
-									</div>
-									<div class="row">
-										<div class="small-8 columns">
-											<div class="small-3 columns">
-												<label class="right inline"><small class="validate">*</small>
-													Địa chỉ: </label>
-											</div>
-											<div class="small-9 columns">
-												<input class="left inline" name="txtpickupAddress"
-													type="text" onFocus="geolocate()" id="place_start"
-													pattern=".{1,100}" placeholder="Nhập địa điểm giao hàng"
-													required=""
-													data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
-													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
-											</div>
-										</div>
-										<div class="small-4 columns">
-											<div class="small-5 columns">
-												<label for="right-label" class="right inline"><small
-													class="validate">*</small> Ngày: </label>
-											</div>
-											<div class="small-7 columns">
-												<input type="text" name="txtpickupTime"
-													value="<fmt:formatDate type="date" value='${today}' pattern='dd-MM-yyyy'/> "
-													id="pick-up-date" data-date-format="dd-mm-yyyy" readonly>
-											</div>
-										</div>
-									</div>
 
-									<div class="extra-title">
-										<h3>Địa chỉ nhận hàng</h3>
-									</div>
-									<div class="row">
-										<div class="small-8 columns">
-											<div class="small-3 columns">
-												<label for="right-label" class="right inline"><small
-													class="validate">*</small> Địa chỉ: </label>
-											</div>
-											<div class="small-9 columns">
-												<input type="text" onFocus="geolocate()"
-													name="txtdeliveryAddress" id="place_end" pattern=".{1,100}"
-													placeholder="Nhập địa điểm nhận hàng" required=""
-													data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
-													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
-											</div>
-										</div>
-										<div class="small-4 columns">
-											<div class="small-5 columns">
-												<label for="right-label" class="right inline"><small
-													class="validate">*</small> Ngày: </label>
-											</div>
-											<div class="small-7 columns">
-												<input type="text" name="txtdeliveryTime"
-													value="<fmt:formatDate type="date" value='${tomorrow}' pattern='dd-MM-yyyy'/>"
-													id="dilivery-date" data-date-format="dd-mm-yyyy" readonly>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="large-12 columns">
-											<div class="submit-area right">
-												<button class="success" name="btnAction" value="next1">
-													<i class="icon-mail-forward"></i> Tiếp theo
-												</button>
-
-											</div>
-											</br>
-										</div>
-									</div>
-									<div class="row"></div>
+								<div class="extra-title">
+									<h3>
+										<font color="blue">Địa chỉ giao hàng</font>
+									</h3>
 								</div>
-							</div>
-						</div>
-					</c:otherwise>
-				</c:choose>
+								<div class="row">
+									<div class="small-8 columns">
+										<div class="small-3 columns">
+											<label class="right inline"><small class="validate">*</small>
+												Địa chỉ: </label>
+										</div>
+										<div class="small-9 columns">
+											<input class="left inline" name="txtpickupAddress"
+												type="text" onFocus="geolocate()" id="place_start"
+												pattern=".{1,100}" placeholder="Nhập địa điểm giao hàng"
+												required=""
+												data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
+												data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+										</div>
+									</div>
+									<div class="small-4 columns">
+										<div class="small-5 columns">
+											<label for="right-label" class="right inline"><small
+												class="validate">*</small> Ngày: </label>
+										</div>
+										<div class="small-7 columns">
+											<input type="text" name="txtpickupTime"
+												value="<fmt:formatDate type="date" value='${today}' pattern='dd-MM-yyyy'/> "
+												id="pick-up-date" data-date-format="dd-mm-yyyy" readonly>
+										</div>
+									</div>
+								</div>
 
+								<div class="extra-title">
+									<h3>
+										<font color="blue">Địa chỉ nhận hàng</font>
+									</h3>
+								</div>
+								<div class="row">
+									<div class="small-8 columns">
+										<div class="small-3 columns">
+											<label for="right-label" class="right inline"><small
+												class="validate">*</small> Địa chỉ: </label>
+										</div>
+										<div class="small-9 columns">
+											<input type="text" onFocus="geolocate()"
+												name="txtdeliveryAddress" id="place_end" pattern=".{1,100}"
+												placeholder="Nhập địa điểm nhận hàng" required=""
+												data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
+												data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+										</div>
+									</div>
+									<div class="small-4 columns">
+										<div class="small-5 columns">
+											<label for="right-label" class="right inline"><small
+												class="validate">*</small> Ngày: </label>
+										</div>
+										<div class="small-7 columns">
+											<input type="text" name="txtdeliveryTime"
+												value="<fmt:formatDate type="date" value='${tomorrow}' pattern='dd-MM-yyyy'/>"
+												id="dilivery-date" data-date-format="dd-mm-yyyy" readonly>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="large-12 columns">
+										<div class="submit-area right">
+											<button class="success" name="btnAction" value="next1">
+												<i class="icon-mail-forward"></i> Tiếp theo
+											</button>
+
+										</div>
+										</br>
+									</div>
+								</div>
+								<div class="row"></div>
+
+							</div>
+
+						</c:otherwise>
+					</c:choose>
 			</form>
 		</div>
 	</div>
-	<div class="large-2 columns">
-	<div class="form-content"
-		style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-	</div>
-	</div>
+
 </div>
 
 

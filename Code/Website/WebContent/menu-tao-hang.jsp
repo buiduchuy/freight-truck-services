@@ -40,53 +40,98 @@
 					request.getSession().removeAttribute("messageError");
 				%>
 			</c:if>
-	<ul class="button-group even-4">
-		<c:choose>
-			<c:when test="${not empty router}">
-				<li><a href="ControllerCreateGoods?btnAction=viewCreate_1"
-					class="button success"><i class="icon-ok"></i> Địa chỉ giao nhận
-						hàng</a></li>
-			</c:when>
-			<c:when test="${namePage=='tao-hang-1.jsp'}">
-				<li><a href="#" class="button">Địa chỉ giao nhận hàng</a></li>
-			</c:when>
-			<c:otherwise>
-				<li><a href="#" class="button disabled">Địa chỉ giao nhận
-						hàng</a></li>
-			</c:otherwise>
-		</c:choose>
-		<c:choose>
-			<c:when test="${not empty good}">
-				<li><a href="ControllerCreateGoods?btnAction=viewCreate_2"
-					class="button success"><i class="icon-ok"></i> Thông tin hàng
-						hoá</a></li>
-			</c:when>
-			<c:when test="${namePage=='tao-hang-2.jsp'}">
-				<li><a href="#" class="button">Thông tin hàng hoá</a></li>
-			</c:when>
-			<c:otherwise>
-				<li><a href="#" class="button disabled">Thông tin hàng hoá</a></li>
-			</c:otherwise>
-		</c:choose>
-		<c:choose>
-			<c:when test="${not empty price}">
-				<li><a href="ControllerCreateGoods?btnAction=viewCreate_3"
-					class="button success"><i class="icon-ok"></i> Chi phí</a></li>
-			</c:when>
-			<c:when test="${namePage=='tao-hang-3.jsp'}">
-				<li><a href="#" class="button">Chi phí</a></li>
-			</c:when>
-			<c:otherwise>
-				<li><a href="#" class="button disabled">Chi phí</a></li>
-			</c:otherwise>
-		</c:choose>
-		<c:choose>
-			<c:when test="${namePage=='tao-hang-4.jsp'}">
-				<li><a href="#" class="button">Xác nhận</a></li>
-			</c:when>
-			<c:otherwise>
-				<li><a href="#" class="button disabled">Xác nhận</a></li>
-			</c:otherwise>
-		</c:choose>
-	</ul>
+	<ol class="progtrckr" data-progtrckr-steps="5">
+    <li class="progtrckr-todo">Order Processing</li><!--
+ --><li class="progtrckr-todo">Pre-Production</li><!--
+ --><li class="progtrckr-todo">In Production</li><!--
+ --><li class="progtrckr-todo">Shipped</li><!--
+ --><li class="progtrckr-todo">Delivered</li>
+</ol>
 </div>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<style>
+		ol.progtrckr {
+		    margin: 0;
+		    padding: 0;
+		    list-style-type none;
+		}
+
+		ol.progtrckr li {
+	    	display: inline-block;
+	    	text-align: center;
+	    	line-height: 3em;
+		}
+
+		ol.progtrckr[data-progtrckr-steps="2"] li { width: 49%; }
+		ol.progtrckr[data-progtrckr-steps="3"] li { width: 33%; }
+		ol.progtrckr[data-progtrckr-steps="4"] li { width: 24%; }
+		ol.progtrckr[data-progtrckr-steps="5"] li { width: 19%; }
+		ol.progtrckr[data-progtrckr-steps="6"] li { width: 16%; }
+		ol.progtrckr[data-progtrckr-steps="7"] li { width: 14%; }
+		ol.progtrckr[data-progtrckr-steps="8"] li { width: 12%; }
+		ol.progtrckr[data-progtrckr-steps="9"] li { width: 11%; }		
+
+		ol.progtrckr li.progtrckr-done {
+			    color: black;
+			    border-bottom: 4px solid yellowgreen;
+			}
+			ol.progtrckr li.progtrckr-todo {
+			    color: silver; 
+			    border-bottom: 4px solid silver;
+			}
+
+			ol.progtrckr li:after {
+			    content: "\00a0\00a0";
+			}
+			ol.progtrckr li:before {
+			    position: relative;
+			    bottom: -2.5em;
+			    float: left;
+			    left: 50%;
+			    line-height: 1em;
+			}
+			ol.progtrckr li.progtrckr-done:before {
+			    content: "\2713";
+			    color: white;
+			    background-color: yellowgreen;
+			    height: 1.2em;
+			    width: 1.2em;
+			    line-height: 1.2em;
+			    border: none;
+			    border-radius: 1.2em;
+			}
+			ol.progtrckr li.progtrckr-todo:before {
+			    content: "\039F";
+			    color: silver;
+			    background-color: white;
+			    font-size: 1.5em;
+			    bottom: -1.6em;
+			}
+	</style>
+	<script>
+
+
+$(document).ready(function(){
+
+$(window).load(function(){
+    $("ol.progtrckr").each(function(){
+        $(this).attr("data-progtrckr-steps", 
+                     $(this).children("li").length);
+    });
+})
+
+
+$("#submit").click(function(event){
+
+	event.preventDefault();
+
+	$("ol.progtrckr").find("li.progtrckr-todo:first").removeClass("progtrckr-todo").addClass("progtrckr-done");
+
+
+});
+
+
+});
+
+
+</script>

@@ -123,7 +123,7 @@ public class ControllerCreateGoods extends HttpServlet {
 
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
-				session.setAttribute("priceSuggest", "10000000");
+				session.setAttribute("priceSuggest", "10");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-3.jsp");
 				rd.forward(request, response);
@@ -142,7 +142,7 @@ public class ControllerCreateGoods extends HttpServlet {
 
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
-				session.setAttribute("priceSuggest", "10000000");
+				session.setAttribute("priceSuggest", "10");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-2.jsp");
 				rd.forward(request, response);
@@ -157,7 +157,7 @@ public class ControllerCreateGoods extends HttpServlet {
 				} catch (Exception ex) {
 
 				}
-				int total = price + 15000;
+				int total = price + 15;
 				session.setAttribute("total", total);
 				session.setAttribute("price", price);
 				if (session.getAttribute("router") == null) {
@@ -273,7 +273,7 @@ public class ControllerCreateGoods extends HttpServlet {
 				rd.forward(request, response);
 			}
 			if ("viewCreate_3".equals(action)) {
-				session.setAttribute("priceSuggest", "20000000");
+				session.setAttribute("priceSuggest", "20");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-3.jsp");
 				rd.forward(request, response);
