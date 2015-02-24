@@ -75,7 +75,7 @@ public class MatchingProcess {
 	// / longStart: longitude of start point of the stage
 	// / latEnd: latitude of end point of the stage
 	// / longEnd: longitude of end point of the stage
-	public Double checkDistance(Double latGoods, Double longGoods,
+	public Double calDistance(Double latGoods, Double longGoods,
 			Double latStart, Double longStart, Double latEnd, Double longEnd,
 			Double maxAllowDistance) {
 

@@ -36,8 +36,8 @@ public class MAIN_PROCESS {
 		Double latEnd = 10.9234099;
 		Double longEnd = 107.4084806;
 
-		System.out.println(matching.checkDistance(latGoods, longGoods,
-				latStart, longStart, latEnd, longEnd, 0.5));
+		System.out.println(matching.calDistance(latGoods, longGoods, latStart,
+				longStart, latEnd, longEnd, 0.5));
 
 	}
 
