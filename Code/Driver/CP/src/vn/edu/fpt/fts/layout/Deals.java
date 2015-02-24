@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -24,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListItemAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -42,32 +45,33 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class Deals extends Fragment {
-	ArrayList<String> list;
 	@SuppressLint("UseSparseArrays")
 	ArrayList<String> map = new ArrayList<String>();
+	ArrayList<ListItem> list;
+	ListItemAdapter adapter;
 	ListView list1;
+	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByDriverID";
+	private static final String SERVICE_URL2 = Constant.SERVICE_URL
+			+ "Goods/getGoodsByID";
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		list = new ArrayList<String>();
+		list = new ArrayList<ListItem>();
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("driverID", getActivity().getIntent()
 				.getStringExtra("driverID"));
 		ws.execute(new String[] { SERVICE_URL });
-		View myFragmentView = inflater.inflate(R.layout.activity_deals,
-				container, false);
+		myFragmentView = inflater.inflate(R.layout.activity_deals, container,
+				false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
-		ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
-				R.layout.listview_item_row, list);
-		list1.setAdapter(adapter1);
 		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				int id = Integer.parseInt(map.get((int)arg3));
+				int id = Integer.parseInt(map.get((int) arg3));
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				CancelOffer frag = new CancelOffer();
@@ -162,24 +166,204 @@ public class Deals extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			JSONObject obj;
-			try {
-				obj = new JSONObject(response);
-				JSONArray array = obj.getJSONArray("deal");
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject item = array.getJSONObject(i);
-					if (item.getString("createBy").equalsIgnoreCase("driver") && item.getString("dealStatusID").equals("2")) {
-						list.add("Đề nghị " + (i+1) + ": " + item.getString("price") + " đồng");
-						map.add(item.getString("dealID"));
+			if (!response.equals("null")) {
+				try {
+					int count = 1;
+					obj = new JSONObject(response);
+					JSONArray array = obj.getJSONArray("deal");
+					for (int i = array.length() - 1; i >= 0; i--) {
+						JSONObject item = array.getJSONObject(i);
+						if (item.getString("createBy").equalsIgnoreCase(
+								"driver")
+								&& item.getString("dealStatusID").equals("2")) {
+							WebService2 ws2 = new WebService2(
+									WebService2.POST_TASK, getActivity(), "");
+							ws2.addNameValuePair("goodsID",
+									item.getString("goodsID"));
+							try {
+								String good = ws2.execute(
+										new String[] { SERVICE_URL2 }).get();
+								JSONObject gd = new JSONObject(good);
+								String title = "";
+								String[] start = gd.getString("pickupAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title = start[start.length - 1].trim();
+
+								String[] end = gd.getString("deliveryAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title += " - " + end[end.length - 1].trim();
+								list.add(new ListItem(count + ". " + title,
+										"Giá đề nghị: "
+												+ (int) Double.parseDouble(item
+														.getString("price"))
+												+ " đồng"));
+								count++;
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (ExecutionException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							map.add(item.getString("dealID"));
+						}
 					}
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), R.layout.listview_item_row, list);
-				list1.setAdapter(adapter);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			adapter = new ListItemAdapter(getActivity(), list);
+			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+			list1.setAdapter(adapter);
 			pDlg.dismiss();
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+	}
+
+	private class WebService2 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebService2(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response.getEntity() == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
 		}
 
 		// Establish connection and socket (data retrieval) timeouts

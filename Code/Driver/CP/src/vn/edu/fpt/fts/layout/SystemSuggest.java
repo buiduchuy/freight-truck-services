@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListItemAdapter;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -43,26 +45,25 @@ import android.widget.ListView;
 
 public class SystemSuggest extends Fragment {
 
-	ArrayList<String> list;
+	ArrayList<ListItem> list;
+	ListItemAdapter adapter;
 	@SuppressLint("UseSparseArrays")
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
 	ListView list1;
+	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL + "Goods/get";
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		list = new ArrayList<String>();
+		list = new ArrayList<ListItem>();
 		getActivity().setTitle("Gợi ý hệ thống");
 		WebService ws = new WebService(WebService.GET_TASK,
 				getActivity(), "Đang lấy dữ liệu ...");
 		ws.execute(new String[] { SERVICE_URL });
-		View myFragmentView = inflater.inflate(
+		myFragmentView = inflater.inflate(
 				R.layout.activity_system_suggest, container, false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.listView4);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-				this.getActivity(), R.layout.listview_item_row, list);
-		list1.setAdapter(adapter);
 		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -168,11 +169,11 @@ public class SystemSuggest extends Fragment {
 				JSONArray array = obj.getJSONArray("goods");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
-					list.add("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn - " + item.getString("price") + " đồng");
+					list.add(new ListItem("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn",  item.getString("price") + " đồng"));
 					map.put(Long.valueOf(i), Integer.parseInt(item.getString("goodsID")));
 				}
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-						getActivity(), R.layout.listview_item_row, list);
+				adapter = new ListItemAdapter(getActivity(), list);
+				list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 				list1.setAdapter(adapter);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

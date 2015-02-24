@@ -31,19 +31,32 @@
     <string name="flamable">Hàng dễ cháy nổ</string>
     <string name="create">TẠO MỚI</string>
     <string name="create2">TẠO</string>
-    <string name="change">Cập nhật</string>
+    <string name="change">CẬP NHẬT</string>
     <string name="delete">Hủyt</string>
     <string name="time"><b>THỜI GIAN</b></string>
     <string name="otherInfo"><b>HÀNG HÓA</b></string>
     <string name="pass">Mật khẩu</string>
     <string name="login">Đăng nhập</string>
-    <string name="kg">kg</string>
-
+    <string name="sendPlace">Địa điểm giao hàng:</string>
+	<string name="receivePlace">Địa điểm nhận hàng:</string>
+	<string name="sentTime">Thời gian giao hàng:</string>
+	<string name="receiveTime">Thời gian nhận hàng:</string>
+	<string name="kg">kg</string>
+	<string name="price">Giá giao dịch:</string>
+	<string name="sendStatus">Trạng thái giao hàng:</string>
+	<string name="sendWeight">Khối lượng hàng:</string>
+	<string name="noOrder">Không có hóa đơn nào</string>
+	<string name="noRoute">Không có lộ trình nào</string>
+	<string name="noOffer">Không có đề nghị nào</string>
+	<string name="noSuggest">Không có gợi ý nào</string>
+	<string name="note">Ghi chú:</string>
+	<string name="note2">Ghi chú</string>
+	<string name="suggestPrice">Giá đề nghị (ngàn đồng):</string>
+	<string name="suggest">Xem gợi ý</string>
     <string-array name="navigation_drawer_items_array">
         <item>Danh sách lộ trình</item>
         <item>Đề nghị</item>
-        <item>Lịch sử giao dịch</item>
-        <item>Gợi ý hệ thống</item>
+        <item>Hóa đơn</item>
         <item>Tài khoản</item>
         <item>Đăng xuất</item>
     </string-array>
@@ -52,7 +65,6 @@
         <item>@drawable/ic_action_place</item>
         <item>@drawable/ic_action_sort_by_size</item>
         <item>@drawable/ic_action_copy</item>
-        <item>@drawable/ic_action_view_as_list</item>
         <item>@drawable/ic_action_accounts</item>
         <item>@drawable/ic_action_not_secure</item>
     </array>

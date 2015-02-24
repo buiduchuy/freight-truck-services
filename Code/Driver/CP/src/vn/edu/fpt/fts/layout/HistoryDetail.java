@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -36,20 +39,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class HistoryDetail extends Fragment {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByID";
-	TextView content;
+	TextView startPlace, endPlace, startTime, endTime, price, status, weight;
+	Button button;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().setTitle("Nội dung giao dịch");
 		View myFragmentView = inflater.inflate(
 				R.layout.activity_history_detail, container, false);
-		content = (TextView) myFragmentView.findViewById(R.id.textView3);
+		startPlace = (TextView) myFragmentView.findViewById(R.id.textView2);
+		endPlace = (TextView) myFragmentView.findViewById(R.id.textView4);
+		startTime = (TextView) myFragmentView.findViewById(R.id.textView6);
+		endTime = (TextView) myFragmentView.findViewById(R.id.textView8);
+		price = (TextView) myFragmentView.findViewById(R.id.textView10);
+		status = (TextView) myFragmentView.findViewById(R.id.textView12);
+		weight = (TextView) myFragmentView.findViewById(R.id.textView14);
+		button = (Button) myFragmentView.findViewById(R.id.button1);
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("orderID", getArguments().getString("orderID"));
@@ -141,24 +153,28 @@ public class HistoryDetail extends Fragment {
 				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("deal").getJSONObject(
 						"goods");
-				String cont = "Địa điểm nhận hàng: "
-						+ good.getString("pickupAddress") + "\n"
-						+ "Địa điểm giao hàng: "
-						+ good.getString("deliveryAddress") + "\n"
-						+ "Thời gian nhận hàng: "
-						+ good.getString("pickupTime") + "\n"
-						+ "Thời gian giao hàng: "
-						+ good.getString("deliveryTime") + "\n"
-						+ "Giá đơn hàng: " + obj.getString("price") + " đồng"
-						+ "\nTrạng thái giao hàng: ";
-						if(obj.getString("driverDeliveryStatus").equals("true")) {
-							cont += "đã giao hàng";
-						}
-						else {
-							cont += "chưa giao hàng";
-						}
-				content.setText(cont);
+				startPlace.setText(good.getString("pickupAddress"));
+				endPlace.setText(good.getString("deliveryAddress"));
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				Date start = format.parse(good.getString("pickupTime"));
+				Date end = format.parse(good.getString("deliveryTime"));
+				format.applyPattern("dd/MM/yyyy");
+				startTime.setText(format.format(start));
+				endTime.setText(format.format(end));
+				price.setText(obj.getString("price") + " đồng");
+				weight.setText(good.getString("weight") + " kg");
+				String stat = "";
+				if (obj.getString("driverDeliveryStatus").equals("true")) {
+					stat = "Đã giao hàng";
+					button.setEnabled(false);
+				} else {
+					stat = "Chưa giao hàng";
+				}
+				status.setText(stat);
 			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

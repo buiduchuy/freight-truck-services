@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -42,29 +44,27 @@ import android.widget.ListView;
 
 public class History extends Fragment {
 
-	ArrayList<String> list;
+	ArrayList<ListItem> list;
 	HashMap<Long, Integer> map;
 	ListView list1;
+	ListItemAdapter adapter;
+	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByDriverID";
 
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		list = new ArrayList<String>();
+		list = new ArrayList<ListItem>();
 		map = new HashMap<Long, Integer>();
 		getActivity().setTitle("Lịch sử giao dịch");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
-		ws.addNameValuePair("driverID", getActivity().getIntent()
-				.getStringExtra("driverID"));
+		ws.addNameValuePair("driverID", "6");
 		ws.execute(new String[] { SERVICE_URL });
-		View myFragmentView = inflater.inflate(R.layout.activity_history,
-				container, false);
+		myFragmentView = inflater.inflate(R.layout.activity_history, container,
+				false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.listView3);
-		ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
-				R.layout.listview_item_row, list);
-		list1.setAdapter(adapter1);
 		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -164,49 +164,51 @@ public class History extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			JSONObject obj;
-			try {
-				obj = new JSONObject(response);
-				Object invervent = obj.get("order");
-				if (invervent instanceof JSONArray) {
-					JSONArray array = obj.getJSONArray("order");
-					for (int i = 0; i < array.length(); i++) {
-						JSONObject item = array.getJSONObject(i);
+			if (!response.equals("null")) {
+				try {
+					obj = new JSONObject(response);
+					Object invervent = obj.get("order");
+					if (invervent instanceof JSONArray) {
+						JSONArray array = obj.getJSONArray("order");
+						for (int i = array.length() - 1; i >= 0; i--) {
+							JSONObject item = array.getJSONObject(i);
+							String status = "";
+							String driverStatus = item
+									.getString("driverDeliveryStatus");
+							String price = item.getString("price");
+							if (driverStatus.equals("True")) {
+								status = "Đã giao hàng";
+							} else {
+								status = "Chưa giao hàng";
+							}
+							list.add(new ListItem((i + 1) + ". " + price
+									+ " đồng", status));
+							map.put(Long.valueOf(i),
+									Integer.parseInt(item.getString("orderID")));
+						}
+					} else if (invervent instanceof JSONObject) {
+						JSONObject item = obj.getJSONObject("order");
 						String status = "";
 						String driverStatus = item
 								.getString("driverDeliveryStatus");
+						String price = item.getString("price");
 						if (driverStatus.equals("True")) {
 							status = "Đã giao hàng";
 						} else {
 							status = "Chưa giao hàng";
 						}
-						list.add("Hóa đơn " + (i + 1) + ": " + status);
-						map.put(Long.valueOf(i),
+						list.add(new ListItem("1. " + price + " đồng", status));
+						map.put(Long.valueOf(0),
 								Integer.parseInt(item.getString("orderID")));
 					}
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-							getActivity(), R.layout.listview_item_row, list);
-					list1.setAdapter(adapter);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				else if (invervent instanceof JSONObject) {
-					JSONObject item = obj.getJSONObject("order");
-					String status = "";
-					String driverStatus = item
-							.getString("driverDeliveryStatus");
-					if (driverStatus.equals("True")) {
-						status = "Đã giao hàng";
-					} else {
-						status = "Chưa giao hàng";
-					}
-					list.add("Hóa đơn 1:" + status);
-					map.put(Long.valueOf(0), Integer.parseInt(item.getString("orderID")));
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-							getActivity(), R.layout.listview_item_row, list);
-					list1.setAdapter(adapter);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			adapter = new ListItemAdapter(getActivity(), list);
+			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+			list1.setAdapter(adapter);
 			pDlg.dismiss();
 		}
 

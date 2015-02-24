@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -47,7 +50,7 @@ public class OfferResponse extends Fragment {
 			+ "Deal/accept";
 	private static final String SERVICE_URL3 = Constant.SERVICE_URL
 			+ "Deal/decline";
-	TextView content;
+	TextView startPlace, endPlace, startTime, endTime, price, note, weight;
 	String id;
 	String routeID;
 	String goodID;
@@ -64,6 +67,15 @@ public class OfferResponse extends Fragment {
 		ws.execute(new String[] { SERVICE_URL });
 		View v = inflater.inflate(R.layout.activity_offer_response, container,
 				false);
+
+		startPlace = (TextView) v.findViewById(R.id.textView2);
+		endPlace = (TextView) v.findViewById(R.id.textView4);
+		startTime = (TextView) v.findViewById(R.id.textView6);
+		endTime = (TextView) v.findViewById(R.id.textView8);
+		price = (TextView) v.findViewById(R.id.textView10);
+		note = (TextView) v.findViewById(R.id.textView12);
+		weight = (TextView) v.findViewById(R.id.textView14);
+
 		sendNewOffer = (Button) v.findViewById(R.id.button3);
 		accept = (Button) v.findViewById(R.id.button1);
 		decline = (Button) v.findViewById(R.id.button2);
@@ -88,8 +100,8 @@ public class OfferResponse extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				WebService2 ws = new WebService2(WebService.POST_TASK, getActivity(),
-						"Đang xử lý ...");
+				WebService2 ws = new WebService2(WebService.POST_TASK,
+						getActivity(), "Đang xử lý ...");
 				ws.addNameValuePair("dealID", id);
 				ws.execute(new String[] { SERVICE_URL2 });
 			}
@@ -98,13 +110,12 @@ public class OfferResponse extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				WebService3 ws = new WebService3(WebService.POST_TASK, getActivity(),
-						"Đang xử lý ...");
+				WebService3 ws = new WebService3(WebService.POST_TASK,
+						getActivity(), "Đang xử lý ...");
 				ws.addNameValuePair("dealID", id);
 				ws.execute(new String[] { SERVICE_URL3 });
 			}
 		});
-		content = (TextView) v.findViewById(R.id.textView3);
 		return v;
 	}
 
@@ -191,19 +202,31 @@ public class OfferResponse extends Fragment {
 			try {
 				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("goods");
-				String cont = "Địa điểm nhận hàng: "
-						+ good.getString("pickupAddress") + "\n"
-						+ "Địa điểm giao hàng: "
-						+ good.getString("deliveryAddress") + "\n"
-						+ "Thời gian nhận hàng: "
-						+ good.getString("pickupTime") + "\n"
-						+ "Thời gian giao hàng: "
-						+ good.getString("deliveryTime") + "\n" + "Giá giao dịch: " + obj.getString("price") + " đồng\nGhi chú: " + obj.getString("notes");
+				startPlace.setText(good.getString("pickupAddress"));
+				endPlace.setText(good.getString("deliveryAddress"));
+				SimpleDateFormat format = new SimpleDateFormat(
+						"yyyy-MM-dd hh:mm:ss");
+				Date start = format.parse(good.getString("pickupTime"));
+				Date end = format.parse(good.getString("deliveryTime"));
+				format.applyPattern("dd/MM/yyyy");
+				startTime.setText(format.format(start));
+				endTime.setText(format.format(end));
+				price.setText((int) Double.parseDouble(obj.getString("price"))
+						+ " đồng");
+				weight.setText(good.getString("weight") + " kg");
+				if (good.getString("notes").equals("")
+						|| good.getString("notes").equalsIgnoreCase("null")) {
+					note.setText("Không có");
+				} else {
+					note.setText(good.getString("notes"));
+				}
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
 				oldPrice = obj.getString("price");
-				content.setText(cont);
 			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -275,7 +298,7 @@ public class OfferResponse extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	private class WebService2 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -356,11 +379,13 @@ public class OfferResponse extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if(response.equals("Success")) {
-				Toast.makeText(getActivity(), "Đề nghị đã được chấp nhận.", Toast.LENGTH_SHORT).show();
-			}
-			else if(response.equals("Fail")) {
-				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+			if (response.equals("Success")) {
+				Toast.makeText(getActivity(), "Đề nghị đã được chấp nhận.",
+						Toast.LENGTH_SHORT).show();
+			} else if (response.equals("Fail")) {
+				Toast.makeText(getActivity(),
+						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
 			}
 			FragmentManager mng = getActivity().getSupportFragmentManager();
 			FragmentTransaction trs = mng.beginTransaction();
@@ -435,7 +460,7 @@ public class OfferResponse extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	private class WebService3 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -516,11 +541,13 @@ public class OfferResponse extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if(response.equals("Success")) {
-				Toast.makeText(getActivity(), "Đề nghị đã được từ chối.", Toast.LENGTH_SHORT).show();
-			}
-			else if(response.equals("Fail")) {
-				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+			if (response.equals("Success")) {
+				Toast.makeText(getActivity(), "Đề nghị đã được từ chối.",
+						Toast.LENGTH_SHORT).show();
+			} else if (response.equals("Fail")) {
+				Toast.makeText(getActivity(),
+						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
 			}
 			FragmentManager mng = getActivity().getSupportFragmentManager();
 			FragmentTransaction trs = mng.beginTransaction();

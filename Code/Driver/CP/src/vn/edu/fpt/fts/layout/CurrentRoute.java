@@ -8,7 +8,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -54,6 +57,7 @@ public class CurrentRoute extends Fragment {
 	String part1;
 	TextView startPoint, point1, point2, endPoint, startDate, endDate, payload,
 			cantLoad;
+	Button viewSuggest;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -76,12 +80,28 @@ public class CurrentRoute extends Fragment {
 		endDate = (TextView) v.findViewById(R.id.textView12);
 		payload = (TextView) v.findViewById(R.id.textView14);
 		cantLoad = (TextView) v.findViewById(R.id.textView16);
+		viewSuggest = (Button) v.findViewById(R.id.button1);
 		Bundle bundle = getArguments();
 		id = bundle.getString("routeID");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("routeID", id);
 		ws.execute(new String[] { SERVICE_URL });
+		viewSuggest.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+	    		FragmentTransaction trs = mng.beginTransaction();
+	    		SystemSuggest frag = new SystemSuggest();
+	    		Bundle bundle = new Bundle();
+	    		bundle.putString("routeID", String.valueOf(id));
+	    		frag.setArguments(bundle);
+	    		trs.replace(R.id.content_frame, frag);
+	    		trs.addToBackStack(null);
+	    		trs.commit();
+			}
+		});
 		return v;
 	}
 
@@ -196,8 +216,26 @@ public class CurrentRoute extends Fragment {
 				}
 
 				endPoint.setText(obj.getString("destinationAddress"));
-				startDate.setText(obj.getString("startTime"));
-				endDate.setText(obj.getString("finishTime"));
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				Date startD = null;
+				try {
+					startD = format.parse(obj.getString("startTime"));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				format.applyPattern("dd/MM/yyyy hh:mm");
+				startDate.setText(format.format(startD));
+				Date endD = null;
+				try {
+					format.applyPattern("yyyy-MM-dd hh:mm:ss");
+					endD = format.parse(obj.getString("finishTime"));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				format.applyPattern("dd/MM/yyyy");
+				endDate.setText(format.format(endD));
 				payload.setText(obj.getString("weight") + " kg");
 
 				String cLoad = "";

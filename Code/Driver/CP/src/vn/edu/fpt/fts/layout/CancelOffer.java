@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -37,9 +40,11 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class CancelOffer extends Fragment {
+
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByID";
-	TextView content;
+	TextView startPlace, endPlace, startTime, endTime, price, note, weight;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -50,7 +55,13 @@ public class CancelOffer extends Fragment {
 		ws.execute(new String[] { SERVICE_URL });
 		View v = inflater.inflate(R.layout.activity_cancel_offer, container,
 				false);
-		content = (TextView) v.findViewById(R.id.textView3);
+		startPlace = (TextView) v.findViewById(R.id.textView2);
+		endPlace = (TextView) v.findViewById(R.id.textView4);
+		startTime = (TextView) v.findViewById(R.id.textView6);
+		endTime = (TextView) v.findViewById(R.id.textView8);
+		price = (TextView) v.findViewById(R.id.textView10);
+		note = (TextView) v.findViewById(R.id.textView12);
+		weight = (TextView) v.findViewById(R.id.textView14);
 		return v;
 	}
 
@@ -137,17 +148,26 @@ public class CancelOffer extends Fragment {
 			try {
 				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("goods");
-				String cont = "Địa điểm nhận hàng: "
-						+ good.getString("pickupAddress") + "\n"
-						+ "Địa điểm giao hàng: "
-						+ good.getString("deliveryAddress") + "\n"
-						+ "Thời gian nhận hàng: "
-						+ good.getString("pickupTime") + "\n"
-						+ "Thời gian giao hàng: "
-						+ good.getString("deliveryTime") + "\n" + "Giá giao dịch: " + obj.getString("price") + " đồng\nGhi chú: " + obj.getString("notes");
-						
-				content.setText(cont);
+				startPlace.setText(good.getString("pickupAddress"));
+				endPlace.setText(good.getString("deliveryAddress"));
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				Date start = format.parse(good.getString("pickupTime"));
+				Date end = format.parse(good.getString("deliveryTime"));
+				format.applyPattern("dd/MM/yyyy");
+				startTime.setText(format.format(start));
+				endTime.setText(format.format(end));
+				price.setText((int) Double.parseDouble(obj
+						.getString("price")) + " đồng");
+				weight.setText(good.getString("weight") + " kg");
+				if (good.getString("notes").equals("")) {
+					note.setText("Không có");
+				} else {
+					note.setText(good.getString("notes"));
+				}
 			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
