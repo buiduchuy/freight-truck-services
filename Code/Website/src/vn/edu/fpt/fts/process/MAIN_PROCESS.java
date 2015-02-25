@@ -21,8 +21,8 @@ public class MAIN_PROCESS {
 		// Double latGoods = 10.4025053;
 		// Double longGoods = 107.1255859;
 
-		Double latGoods = 10.826469;
-		Double longGoods = 106.6799706;
+		Double latGoods = 10.853132;
+		Double longGoods = 106.626289;
 
 		// Quang Trung, TP.HCM
 		// Double latGoods = 10.853132;

@@ -30,7 +30,7 @@ public class MAIN_DAO {
 		//
 		// Order order = new Order();
 		//
-		OrderStatusDAO orderDao = new OrderStatusDAO();
+		DealDAO dealDao = new DealDAO();
 		//
 		// order.setPrice(0);
 		// order.setDriverDeliveryStatus(false);
@@ -56,7 +56,7 @@ public class MAIN_DAO {
 		// System.out.println("RouteGoodsCategory Size: " +
 		// listRouteGoodsCategory.size());
 
-		System.out.println(orderDao.getOrderStatusByID(1).getOrderStatusName());
+		System.out.println(dealDao.getNumberOfDealParent(68, 5));
 
 	}
 

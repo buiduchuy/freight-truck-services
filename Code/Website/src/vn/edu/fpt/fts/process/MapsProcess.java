@@ -53,8 +53,10 @@ public class MapsProcess {
 		return urlString.toString();
 	}
 
-	public void checkDistanceGoodsStart(LatLng goodsStartLocation, String result) {
+	public boolean checkDistance(LatLng goodsStartLocation,
+			LatLng goodsFinishLocation, String result, double maxAllowDistance) {
 		MatchingProcess matching = new MatchingProcess();
+
 		try {
 			final JSONObject json = new JSONObject(result);
 			JSONArray routeArray = json.getJSONArray("routes");
@@ -63,47 +65,46 @@ public class MapsProcess {
 					.getJSONObject("overview_polyline");
 			String encodedString = overviewPolylines.getString("points");
 			List<LatLng> list = decodePoly(encodedString);
-
+			List<Double> b_goodsStart = new ArrayList<Double>();
+			List<Double> b_goodsFinish = new ArrayList<Double>();
 			for (int z = 0; z < list.size() - 1; z++) {
 				LatLng src = list.get(z);
 				LatLng des = list.get(z + 1);
-				matching.calDistance(goodsStartLocation.getLatitude(),
+				b_goodsStart.add(matching.calDistance(
+						goodsStartLocation.getLatitude(),
 						goodsStartLocation.getLongitude(), src.getLatitude(),
 						src.getLongitude(), des.getLatitude(),
-						des.getLongitude(), 0.5);
-			}
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void checkDistanceGoodsFinish(LatLng goodsFinishLocation,
-			String result) {
-		MatchingProcess matching = new MatchingProcess();
-		try {
-			final JSONObject json = new JSONObject(result);
-			JSONArray routeArray = json.getJSONArray("routes");
-			JSONObject routes = routeArray.getJSONObject(0);
-			JSONObject overviewPolylines = routes
-					.getJSONObject("overview_polyline");
-			String encodedString = overviewPolylines.getString("points");
-			List<LatLng> list = decodePoly(encodedString);
-
-			for (int z = 0; z < list.size() - 1; z++) {
-				LatLng src = list.get(z);
-				LatLng des = list.get(z + 1);
-				matching.calDistance(goodsFinishLocation.getLatitude(),
+						des.getLongitude(), maxAllowDistance));
+				b_goodsFinish.add(matching.calDistance(
+						goodsFinishLocation.getLatitude(),
 						goodsFinishLocation.getLongitude(), src.getLatitude(),
 						src.getLongitude(), des.getLatitude(),
-						des.getLongitude(), 0.5);
+						des.getLongitude(), maxAllowDistance));
 			}
 
+			boolean b_distanceGoodsStart = false;
+			for (double distance : b_goodsStart) {
+				if (distance > -1.0 && distance <= maxAllowDistance) {
+					b_distanceGoodsStart = true;
+					break;
+				}
+			}
+			boolean b_distanceGoodsFinish = false;
+			for (double distance : b_goodsFinish) {
+				if (distance > -1.0 && distance <= maxAllowDistance) {
+					b_distanceGoodsFinish = true;
+					break;
+				}
+			}
+
+			if (b_distanceGoodsStart && b_distanceGoodsFinish) {
+				return true;
+			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	private List<LatLng> decodePoly(String encoded) {
