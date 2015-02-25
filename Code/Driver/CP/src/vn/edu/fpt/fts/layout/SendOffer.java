@@ -360,9 +360,13 @@ public class SendOffer extends Fragment {
 						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (good.has("notes")) {
-					nte.setText(good.getString("notes"));
-				}
-				else {
+					if (good.getString("notes").equals("")
+							|| good.getString("notes").equals("null")) {
+						nte.setText("Không có");
+					} else {
+						nte.setText(good.getString("notes"));
+					}
+				} else {
 					nte.setText("Không có");
 				}
 			} catch (JSONException e) {

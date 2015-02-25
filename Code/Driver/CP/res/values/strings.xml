@@ -32,7 +32,7 @@
     <string name="create">TẠO MỚI</string>
     <string name="create2">TẠO</string>
     <string name="change">CẬP NHẬT</string>
-    <string name="delete">Hủyt</string>
+    <string name="delete">HỦY</string>
     <string name="time"><b>THỜI GIAN</b></string>
     <string name="otherInfo"><b>HÀNG HÓA</b></string>
     <string name="pass">Mật khẩu</string>
@@ -86,6 +86,6 @@
     <string name="title_activity_customize_route">CustomizeRoute</string>
     <string name="title_activity_suggest_list">SuggestList</string>
     <string name="title_activity_cancel_offer">CancelOffer</string>
-    <string name="title_activity_login">Login</string>
+    <string name="title_activity_login">FTS Driver</string>
 
 </resources>

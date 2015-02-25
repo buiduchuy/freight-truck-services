@@ -34,6 +34,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,8 +45,6 @@ import android.widget.Toast;
 
 public class OfferResponse extends Fragment {
 	Button sendNewOffer;
-	Button accept;
-	Button decline;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByID";
 	private static final String SERVICE_URL2 = Constant.SERVICE_URL
@@ -55,6 +56,13 @@ public class OfferResponse extends Fragment {
 	String routeID;
 	String goodID;
 	String oldPrice;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -77,8 +85,6 @@ public class OfferResponse extends Fragment {
 		weight = (TextView) v.findViewById(R.id.textView14);
 
 		sendNewOffer = (Button) v.findViewById(R.id.button3);
-		accept = (Button) v.findViewById(R.id.button1);
-		decline = (Button) v.findViewById(R.id.button2);
 		sendNewOffer.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -94,26 +100,6 @@ public class OfferResponse extends Fragment {
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
-			}
-		});
-		accept.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				WebService2 ws = new WebService2(WebService.POST_TASK,
-						getActivity(), "Đang xử lý ...");
-				ws.addNameValuePair("dealID", id);
-				ws.execute(new String[] { SERVICE_URL2 });
-			}
-		});
-		decline.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				WebService3 ws = new WebService3(WebService.POST_TASK,
-						getActivity(), "Đang xử lý ...");
-				ws.addNameValuePair("dealID", id);
-				ws.execute(new String[] { SERVICE_URL3 });
 			}
 		});
 		return v;
@@ -214,11 +200,16 @@ public class OfferResponse extends Fragment {
 				price.setText((int) Double.parseDouble(obj.getString("price"))
 						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
-				if (good.getString("notes").equals("")
-						|| good.getString("notes").equalsIgnoreCase("null")) {
+				if (good.has("notes")) {
+					if (good.getString("notes").equals("")
+							|| good.getString("notes").equalsIgnoreCase("null")) {
+						note.setText("Không có");
+					} else {
+						note.setText(good.getString("notes"));
+					}
+				}
+				else {
 					note.setText("Không có");
-				} else {
-					note.setText(good.getString("notes"));
 				}
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
@@ -621,5 +612,33 @@ public class OfferResponse extends Fragment {
 			// Return full string
 			return total.toString();
 		}
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		inflater.inflate(R.menu.offer_response, menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.action_accept:
+			WebService2 ws = new WebService2(WebService.POST_TASK,
+					getActivity(), "Đang xử lý ...");
+			ws.addNameValuePair("dealID", id);
+			ws.execute(new String[] { SERVICE_URL2 });
+			return true;
+		case R.id.action_decline:
+			WebService3 ws2 = new WebService3(WebService.POST_TASK,
+					getActivity(), "Đang xử lý ...");
+			ws2.addNameValuePair("dealID", id);
+			ws2.execute(new String[] { SERVICE_URL3 });
+			return true;
+		default:
+			break;
+		}
+		return false;
 	}
 }

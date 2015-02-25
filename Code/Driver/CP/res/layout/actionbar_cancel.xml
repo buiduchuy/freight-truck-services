@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="14dp"
+    android:paddingBottom="14dp"
+    android:paddingRight="10dp"
+    android:gravity="center"
+    android:textStyle="bold"
+    android:textSize="14sp"
+    android:text="@string/delete"
+    android:drawableLeft="@drawable/ic_action_discard"
+    android:background="@drawable/actionbar_background"
+    android:clickable="true" />

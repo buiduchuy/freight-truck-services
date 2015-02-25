@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
+import vn.edu.fpt.fts.drawer.ListItemAdapter2;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -47,7 +48,7 @@ public class History extends Fragment {
 	ArrayList<ListItem> list;
 	HashMap<Long, Integer> map;
 	ListView list1;
-	ListItemAdapter adapter;
+	ListItemAdapter2 adapter;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByDriverID";
@@ -182,7 +183,7 @@ public class History extends Fragment {
 								status = "Chưa giao hàng";
 							}
 							list.add(new ListItem((i + 1) + ". " + price
-									+ " đồng", status));
+									+ " đồng", status, ""));
 							map.put(Long.valueOf(i),
 									Integer.parseInt(item.getString("orderID")));
 						}
@@ -197,7 +198,7 @@ public class History extends Fragment {
 						} else {
 							status = "Chưa giao hàng";
 						}
-						list.add(new ListItem("1. " + price + " đồng", status));
+						list.add(new ListItem("1. " + price + " đồng", status, ""));
 						map.put(Long.valueOf(0),
 								Integer.parseInt(item.getString("orderID")));
 					}
@@ -206,7 +207,7 @@ public class History extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter(getActivity(), list);
+			adapter = new ListItemAdapter2(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();

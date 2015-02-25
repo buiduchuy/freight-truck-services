@@ -13,12 +13,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ListItemAdapter extends BaseAdapter{
+public class ListItemAdapter2 extends BaseAdapter{
 
 	private Context context;
 	private ArrayList<ListItem> listItems;
 	
-	public ListItemAdapter(Context context, ArrayList<ListItem> listItems){
+	public ListItemAdapter2(Context context, ArrayList<ListItem> listItems){
 		this.context = context;
 		this.listItems = listItems;
 	}
@@ -47,15 +47,13 @@ public class ListItemAdapter extends BaseAdapter{
 		if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.listview_item_row, null);
+            convertView = mInflater.inflate(R.layout.listview_item_row_2, null);
         }
         TextView txtTitle = (TextView) convertView.findViewById(R.id.txtTitle);
         TextView txtDescription = (TextView) convertView.findViewById(R.id.txtDescription);
-        TextView txtDate = (TextView) convertView.findViewById(R.id.txtDate);
         
         txtTitle.setText(listItems.get(position).getTitle());
         txtDescription.setText(listItems.get(position).getDescription());
-        txtDate.setText(listItems.get(position).getDate());
         
         return convertView;
 	}

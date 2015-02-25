@@ -35,6 +35,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
+import vn.edu.fpt.fts.drawer.ListItemAdapter2;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -58,7 +59,7 @@ public class RouteList extends Fragment {
 	Calendar cal = Calendar.getInstance();
 	ArrayList<ListItem> list;
 	HashMap<Long, Integer> map;
-	ListItemAdapter adapter;
+	ListItemAdapter2 adapter;
 	ListView list1;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
@@ -250,7 +251,7 @@ public class RouteList extends Fragment {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						ListItem itm = new ListItem(title, description);
+						ListItem itm = new ListItem(title, description, "");
 						list.add(itm);
 						map.put(Long.valueOf(i),
 								Integer.parseInt(item.getString("routeID")));
@@ -260,7 +261,7 @@ public class RouteList extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter(getActivity(), list);
+			adapter = new ListItemAdapter2(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();

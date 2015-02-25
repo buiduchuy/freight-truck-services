@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -26,24 +28,38 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.helper.Common;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CancelOffer extends Fragment {
 
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByID";
 	TextView startPlace, endPlace, startTime, endTime, price, note, weight;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -150,19 +166,24 @@ public class CancelOffer extends Fragment {
 				JSONObject good = obj.getJSONObject("goods");
 				startPlace.setText(good.getString("pickupAddress"));
 				endPlace.setText(good.getString("deliveryAddress"));
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				SimpleDateFormat format = new SimpleDateFormat(
+						"yyyy-MM-dd hh:mm:ss");
 				Date start = format.parse(good.getString("pickupTime"));
 				Date end = format.parse(good.getString("deliveryTime"));
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText((int) Double.parseDouble(obj
-						.getString("price")) + " đồng");
+				price.setText((int) Double.parseDouble(obj.getString("price"))
+						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
-				if (good.getString("notes").equals("")) {
-					note.setText("Không có");
+				if (good.has("notes")) {
+					if (good.getString("notes").equals("") || good.getString("notes").equalsIgnoreCase("null")) {
+						note.setText("Không có");
+					} else {
+						note.setText(good.getString("notes"));
+					}
 				} else {
-					note.setText(good.getString("notes"));
+					note.setText("Không có");	
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -238,5 +259,25 @@ public class CancelOffer extends Fragment {
 			// Return full string
 			return total.toString();
 		}
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
+		MenuItem item = menu.add(Menu.NONE, R.id.action_cancelOffer, 99,
+				R.string.delete);
+		item.setActionView(R.layout.actionbar_cancel);
+		item.getActionView().setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+			}
+		});
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT
+				| MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item.setIcon(R.drawable.ic_action_discard);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 }

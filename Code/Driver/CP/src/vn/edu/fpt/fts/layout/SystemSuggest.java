@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
+import vn.edu.fpt.fts.drawer.ListItemAdapter2;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -46,7 +47,7 @@ import android.widget.ListView;
 public class SystemSuggest extends Fragment {
 
 	ArrayList<ListItem> list;
-	ListItemAdapter adapter;
+	ListItemAdapter2 adapter;
 	@SuppressLint("UseSparseArrays")
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
 	ListView list1;
@@ -169,10 +170,10 @@ public class SystemSuggest extends Fragment {
 				JSONArray array = obj.getJSONArray("goods");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
-					list.add(new ListItem("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn",  item.getString("price") + " đồng"));
+					list.add(new ListItem("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn",  item.getString("price") + " đồng", ""));
 					map.put(Long.valueOf(i), Integer.parseInt(item.getString("goodsID")));
 				}
-				adapter = new ListItemAdapter(getActivity(), list);
+				adapter = new ListItemAdapter2(getActivity(), list);
 				list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 				list1.setAdapter(adapter);
 			} catch (JSONException e) {
