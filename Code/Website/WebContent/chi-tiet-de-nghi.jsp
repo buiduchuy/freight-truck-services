@@ -12,13 +12,19 @@
 <c:set var="historyDeal" value="${sessionScope.listDealDetail}" />
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <div class="large-12 columns">
-	<div class="large-2 columns">
+	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="menu-doc-quan-ly-hang.jsp" />
+			<jsp:include page="vertical-menu-make-deal.jsp" />
+			<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
 		</div>
 	</div>
-	<div class="large-8 columns">
+	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
@@ -162,11 +168,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="large-2 columns">
-		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		</div>
-	</div>
+
 </div>
 
 

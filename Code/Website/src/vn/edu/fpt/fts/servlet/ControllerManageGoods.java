@@ -24,6 +24,7 @@ import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 
@@ -77,7 +78,11 @@ public class ControllerManageGoods extends HttpServlet {
 						.parseInt(request.getParameter("txtIdGood"));
 				List<Route> list = routeDao.getAllRoute();
 				Route[] listRou = new Route[list.size()];
+				for (Route route : listRou) {
+					
+				}
 				list.toArray(listRou);
+				
 				List<Driver> listDriver = driverDao.getAllDriver();
 				Driver[] listDri = new Driver[listDriver.size()];
 				listDriver.toArray(listDri);
@@ -226,7 +231,8 @@ public class ControllerManageGoods extends HttpServlet {
 				} catch (Exception ex) {
 
 				}
-			}if("filter".equals(action)){
+			}
+			if("filter".equals(action)){
 				String startDate="";
 				String endDate="";
 				try{

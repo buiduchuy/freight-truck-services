@@ -123,21 +123,31 @@
 								</c:otherwise>
 							</c:choose>
 							<c:choose>
-								<c:when test="${namePage=='quan-ly-hang.jsp' or namePage=='chi-tiet-hang.jsp'}">
+								<c:when
+									test="${namePage=='quan-ly-hang.jsp' or namePage=='chi-tiet-hang.jsp'or namePage=='goi-y-he-thong.jsp' or namePage=='chi-tiet-route.jsp' or namePage=='chi-tiet-de-nghi.jsp'or namePage=='danh-sach-de-nghi.jsp'}">
 									<li class="active"><a
 										href="ControllerManageGoods?btnAction=manageGoods"><i
 											class="icon-truck"></i> Quản lý hàng</a></li>
 								</c:when>
 								<c:otherwise>
-								<li ><a
-										href="ControllerManageGoods?btnAction=manageGoods"><i
+									<li><a href="ControllerManageGoods?btnAction=manageGoods"><i
 											class="icon-truck"></i> Quản lý hàng</a></li>
 
 								</c:otherwise>
 							</c:choose>
+							
+							<c:choose>
+								<c:when test="${namePage=='quan-ly-order.jsp' }">
+									<li class="active"><a href="ControllerManageOrder?btnAction=manageOrder"><i
+											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
+								</c:when>
+								<c:otherwise>
+									<li><a href="ControllerManageOrder?btnAction=manageOrder"><i
+											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 
-							<li><a href="ControllerManageOrder?btnAction=manageOrder"><i
-									class="icon-desktop"></i> Quản lý hoá đơn</a></li>
+								</c:otherwise>
+							</c:choose>
+
 
 						</ul>
 					</nav>

@@ -101,8 +101,8 @@
 					<thead>
 						<tr>
 							<th><font color="orange">#</font></th>
-							<th width="80"><font color="orange">LOẠI HÀNG</font></th>
-							<th width="200"><font color="orange">THỜI GIAN GIAO
+							<th ><font color="orange">LOẠI HÀNG</font></th>
+							<th><font color="orange">THỜI GIAN GIAO
 									NHẬN HÀNG</font></th>
 
 							<th><h4>

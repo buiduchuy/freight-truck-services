@@ -6,19 +6,26 @@
 <jsp:include page="header.jsp" />
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <div class="large-12 columns">
-	<div class="large-2 columns">
+	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="menu-doc-quan-ly-hang.jsp" />
+				<jsp:include page="vertical-menu-make-deal.jsp" />
+			<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
 		</div>
 	</div>
-	<div class="large-8 columns">
+	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
 				<form action="#" method="post" accept-charset="utf-8"
 					enctype="multipart/form-data" data-abide="" novalidate="novalidate">
 					<div class="row">
+						<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
 								<font color="orange">Danh sách các đề nghị</font>
@@ -60,14 +67,14 @@
 											<th><h4>
 													<font color="orange">#</font>
 												</h4></th>
-											<th width="175"><h3>
+											<th ><h3>
 													<font color="orange">Địa điểm bắt đầu</font>
 												</h3></th>
-											<th width="175"><h3>
+											<th ><h3>
 													<font color="orange">Địa điểm kết thúc</font>
 												</h3></th>
 
-											<th width="100"><h3>
+											<th ><h3>
 													<font color="orange">Điểm uy tín</font>
 												</h3></th>
 											<th><h4>
@@ -120,11 +127,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="large-2 columns">
-		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		</div>
-	</div>
+
 </div>
 
 

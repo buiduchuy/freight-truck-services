@@ -19,8 +19,14 @@
 		<div class="small-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-						<jsp:include page="vertical-menu-create-good.jsp" />
-			</div>
+						<jsp:include page="vertical-menu-make-deal.jsp" />
+					<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
+		</div>
 		</div>
 		<div class="small-9 columns">
 			<div class="form-content"
@@ -211,11 +217,8 @@
 								</div>
 								<div class="row">
 									<div class="large-12 columns">
-										<div class="submit-area">
-											<a href="ControllerManageGoods?btnAction=manageGoods"
-												class="button secondary"> <i class="icon-mail-reply"></i>
-												Trở về trước
-											</a>
+										<div class="submit-area right">
+										
 											<button class="button "
 												onclick="return confirm('Bạn có muốn cập nhật hàng không?')"
 												name="btnAction" value="updateGood">
@@ -235,6 +238,7 @@
 										</br>
 									</div>
 								</div>
+										<div class="row"></div>
 							</div>
 					</form>
 
