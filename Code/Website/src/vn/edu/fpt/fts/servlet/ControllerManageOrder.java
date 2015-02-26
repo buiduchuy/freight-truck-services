@@ -98,7 +98,6 @@ public class ControllerManageOrder extends HttpServlet {
 			if ("viewDetailOrder".equals(action)) {
 				int idGood = Integer.parseInt(request.getParameter("idGood"));
 				Order order = orderDao.getOrderByGoodsID(idGood);
-				System.out.println(order.getOrderID());
 				try {
 					OrderStatus trackingStatus = orderStatusDao
 							.getOrderStatusByID(order.getOrderStatusID());

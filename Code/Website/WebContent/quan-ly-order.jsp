@@ -6,18 +6,25 @@
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <div class="large-12 columns">
-	<div class="large-2 columns">
+	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="menu-doc-quan-ly.jsp" />
+				<jsp:include page="vertical-menu-manage-good.jsp" />
+			<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
 		</div>
 	</div>
-	<div class="large-8 columns">
+	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
 				<form action="#" method="post" accept-charset="utf-8"
 					enctype="multipart/form-data" data-abide="" novalidate="novalidate">
+						<div class="row">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
@@ -129,13 +136,11 @@
 									<thead>
 										<tr>
 											<th>#</th>
-											<th width="125"><font color="orange">LOẠI HÀNG</font></th>
-											<th width="225"><font color="orange">THỜI GIAN
-													GIAO HÀNG</font></th>
-											<th width="250"><font color="orange">THỜI GIAN
-													NHẬN HÀNG</font></th>
+											<th ><font color="orange">LOẠI HÀNG</font></th>
+											<th ><font color="orange">THỜI GIAN
+													GIAO NHẬN HÀNG</font></th>
 
-											<th width="200"><h4>
+											<th><h4>
 													<font color="orange"></font>
 												</h4></th>
 										</tr>
@@ -154,8 +159,9 @@
 															<td>${row.name }</td>
 														</c:if>
 													</c:forEach>
-													<td>${good1.pickupTime }</td>
-													<td>${good1.deliveryTime }</td>
+													<td>Ngày giao: ${good1.pickupTime } </br>Ngày
+										nhận:${good1.deliveryTime }
+									</td>
 													<td><a class="button"
 														href="ControllerManageOrder?btnAction=viewDetailOrder&idGood=${good1.goodsID }">Xem
 															chi tiết</a></td>
@@ -183,10 +189,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="large-2 columns">
-		<div class="form-content"
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		</div>
-	</div>
+
 </div>
 <jsp:include page="footer.jsp" />

@@ -251,7 +251,7 @@ public class ControllerCreateGoods extends HttpServlet {
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
 
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+							.getRequestDispatcher("ControllerManageGoods?btnAction=viewDetailGood1&idGood="
 									+ idnewGood);
 					rd.forward(request, response);
 				} else {
