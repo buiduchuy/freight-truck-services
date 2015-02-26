@@ -3,7 +3,6 @@
  */
 package vn.edu.fpt.fts.process;
 
-
 /**
  * @author Huy
  *
@@ -38,20 +37,18 @@ public class MAIN_PROCESS {
 		Double latEnd = 10.9234099;
 		Double longEnd = 107.4084806;
 
-		System.out.println(matching.calDistance(latGoods, longGoods, latStart,
-				longStart, latEnd, longEnd, 0.5));
-
-		//GoodsDAO goodsDao = new GoodsDAO();
+		// GoodsDAO goodsDao = new GoodsDAO();
 		LatLng goodsStartLocation = new LatLng();
-		goodsStartLocation.setLatitude(10.9234099);
-		goodsStartLocation.setLongitude(107.4084806);
+		goodsStartLocation.setLatitude(21.0248455);
+		goodsStartLocation.setLongitude(105.8287365);
 
 		LatLng goodsFinishLocation = new LatLng();
-		goodsFinishLocation.setLatitude(10.853132);
-		goodsFinishLocation.setLongitude(106.626289);
-		
-		System.out.println(mapProcess.checkDistance(8, goodsStartLocation, goodsFinishLocation,
-				0.5));
+		goodsFinishLocation.setLatitude(10.824391);
+		goodsFinishLocation.setLongitude(106.628505);
+
+
+		System.out.println(mapProcess.checkDistance(9, goodsStartLocation,
+				goodsFinishLocation, 2));
 
 	}
 

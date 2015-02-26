@@ -104,6 +104,7 @@ public class MapsProcess {
 		InputStream is = null;
 		String json = "";
 		try {
+			System.out.println(url);
 			long startTime = System.currentTimeMillis();
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPost httpPost = new HttpPost(url);
@@ -164,10 +165,14 @@ public class MapsProcess {
 
 		List<String> l_listRouteMarker = new ArrayList<String>();
 
-		for (int i = 0; i < listRouteMarker.size(); i++) {
-			l_listRouteMarker.add(routeMarkerDao
-					.getAllRouteMarkerByRouteID(routeID).get(i)
-					.getRouteMarkerLocation());
+		if (listRouteMarker.size() != 0) {
+			for (int i = 0; i < listRouteMarker.size(); i++) {
+				l_listRouteMarker.add(routeMarkerDao
+						.getAllRouteMarkerByRouteID(routeID).get(i)
+						.getRouteMarkerLocation());
+			}
+		} else {
+			l_listRouteMarker.add("");
 		}
 
 		String json = getJSONFromUrl(makeURL(routeDao.getRouteByID(routeID)
@@ -194,18 +199,22 @@ public class MapsProcess {
 						des.getLongitude(), maxAllowDistance));
 			}
 
+			System.out.println("Distance from start of goods to route "
+					+ "with condition nearest " + maxAllowDistance + "km : ");
 			boolean b_distanceGoodsStart = false;
 			for (double distance : b_goodsStart) {
 				if (distance > -1.0 && distance <= maxAllowDistance) {
+					System.out.println(distance);
 					b_distanceGoodsStart = true;
-					break;
 				}
 			}
+			System.out.println("Distance from destination of goods to route "
+					+ "with condition nearest " + maxAllowDistance + "km : ");
 			boolean b_distanceGoodsFinish = false;
 			for (double distance : b_goodsFinish) {
 				if (distance > -1.0 && distance <= maxAllowDistance) {
+					System.out.println(distance);
 					b_distanceGoodsFinish = true;
-					break;
 				}
 			}
 
