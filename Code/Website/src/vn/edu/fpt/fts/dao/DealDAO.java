@@ -340,6 +340,10 @@ public class DealDAO {
 
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();
+
+			GoodsDAO goodsDao = new GoodsDAO();
+			RouteDAO routeDao = new RouteDAO();
+			DealStatusDAO dealStatusDao = new DealStatusDAO();
 			Deal deal;
 
 			while (rs.next()) {
@@ -356,6 +360,10 @@ public class DealDAO {
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
 				list.add(deal);
 			}
 			return list;
@@ -400,6 +408,9 @@ public class DealDAO {
 
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();
+			GoodsDAO goodsDao = new GoodsDAO();
+			RouteDAO routeDao = new RouteDAO();
+			DealStatusDAO dealStatusDao = new DealStatusDAO();
 			Deal deal;
 
 			while (rs.next()) {
@@ -416,6 +427,10 @@ public class DealDAO {
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
 				list.add(deal);
 			}
 			return list;

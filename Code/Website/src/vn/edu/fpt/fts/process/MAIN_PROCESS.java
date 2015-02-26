@@ -3,6 +3,7 @@
  */
 package vn.edu.fpt.fts.process;
 
+
 /**
  * @author Huy
  *
@@ -16,6 +17,7 @@ public class MAIN_PROCESS {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		MatchingProcess matching = new MatchingProcess();
+		MapsProcess mapProcess = new MapsProcess();
 
 		// Vung Tau
 		// Double latGoods = 10.4025053;
@@ -38,6 +40,18 @@ public class MAIN_PROCESS {
 
 		System.out.println(matching.calDistance(latGoods, longGoods, latStart,
 				longStart, latEnd, longEnd, 0.5));
+
+		//GoodsDAO goodsDao = new GoodsDAO();
+		LatLng goodsStartLocation = new LatLng();
+		goodsStartLocation.setLatitude(10.9234099);
+		goodsStartLocation.setLongitude(107.4084806);
+
+		LatLng goodsFinishLocation = new LatLng();
+		goodsFinishLocation.setLatitude(10.853132);
+		goodsFinishLocation.setLongitude(106.626289);
+		
+		System.out.println(mapProcess.checkDistance(8, goodsStartLocation, goodsFinishLocation,
+				0.5));
 
 	}
 
