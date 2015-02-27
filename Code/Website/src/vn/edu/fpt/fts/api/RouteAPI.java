@@ -1,5 +1,6 @@
 package vn.edu.fpt.fts.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,7 @@ import vn.edu.fpt.fts.dao.RouteMarkerDAO;
 import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 import vn.edu.fpt.fts.pojo.RouteMarker;
+import vn.edu.fpt.fts.process.MatchingProcess;
 
 @Path("/Route")
 public class RouteAPI {
@@ -198,5 +200,23 @@ public class RouteAPI {
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return null;
+	}
+
+	@POST
+	@Path("getSuggestionRoute")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Route> getSuggestionRoute(MultivaluedMap<String, String> params) {
+		MatchingProcess matchingProcess = new MatchingProcess();
+		List<Route> list = new ArrayList<Route>();
+		try {
+			list = matchingProcess.getSuggestionRoute(Integer.valueOf(params
+					.getFirst("goodsID")));
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return list;
 	}
 }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Route;
@@ -136,7 +137,7 @@ public class RouteDAO {
 		return null;
 	}
 
-	public Route getRouteByID(int Id) {
+	public Route getRouteByID(int routeID) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -146,7 +147,8 @@ public class RouteDAO {
 			con = DBAccess.makeConnection();
 			String sql = "SELECT * FROM Route where RouteID=?";
 			stm = con.prepareStatement(sql);
-			stm.setInt(1, Id);
+			int i = 1;
+			stm.setInt(i++, routeID);
 			rs = stm.executeQuery();
 			Route route;
 			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
@@ -161,7 +163,7 @@ public class RouteDAO {
 			while (rs.next()) {
 				route = new Route();
 
-				route.setRouteID(Id);
+				route.setRouteID(routeID);
 				route.setStartingAddress(rs.getString("StartingAddress"));
 				route.setDestinationAddress(rs.getString("DestinationAddress"));
 				route.setStartTime(rs.getString("StartTime"));
@@ -172,14 +174,14 @@ public class RouteDAO {
 				route.setActive(rs.getInt("Active"));
 				route.setDriverID(rs.getInt("DriverID"));
 				route.setRouteMarkers(routeMarkerDao
-						.getAllRouteMarkerByRouteID(Id));
+						.getAllRouteMarkerByRouteID(routeID));
 
 				listRouteGoodsCategory = routeGoodsCategoryDao
-						.getListRouteGoodsCategoryByRouteID(Id);
+						.getListRouteGoodsCategoryByRouteID(routeID);
 
-				for (int i = 0; i <= listRouteGoodsCategory.size() - 1; i++) {
+				for (int j = 0; j < listRouteGoodsCategory.size(); j++) {
 					goodsCategory = goodsCategoryDao
-							.getGoodsCategoryByID(listRouteGoodsCategory.get(i)
+							.getGoodsCategoryByID(listRouteGoodsCategory.get(j)
 									.getGoodsCategoryID());
 					listGoodsCategory.add(goodsCategory);
 				}
@@ -292,7 +294,146 @@ public class RouteDAO {
 		}
 		return ret;
 	}
-	
-	
-	
+
+	public List<Route> getListActiveRoute() {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Route WHERE Active=?";
+			stm = con.prepareStatement(sql);
+			int i = 1;
+			stm.setInt(i++, Common.activate);
+			rs = stm.executeQuery();
+			List<Route> list = new ArrayList<Route>();
+			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
+			VehicleDAO vehicleDAO = new VehicleDAO();
+			Route route;
+			while (rs.next()) {
+				route = new Route();
+
+				route.setRouteID(rs.getInt("RouteID"));
+				route.setStartingAddress(rs.getString("StartingAddress"));
+				route.setDestinationAddress(rs.getString("DestinationAddress"));
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
+				route.setNotes(rs.getString("Notes"));
+				route.setWeight(rs.getInt("Weight"));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(rs.getInt("Active"));
+				route.setDriverID(rs.getInt("DriverID"));
+				route.setRouteMarkers(routeMarkderDAO
+						.getAllRouteMarkerByRouteID(route.getRouteID()));
+				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
+						.getRouteID()));
+				list.add(route);
+			}
+			return list;
+		} catch (SQLException e) {
+			System.out.println("Can't load data from Route table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Route table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public Route getActiveRouteByID(int routeID) {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Route where RouteID=? AND Active=?";
+			
+			stm = con.prepareStatement(sql);
+			int i = 1;
+			stm.setInt(i++, routeID);
+			stm.setInt(i++, Common.activate);
+			
+			rs = stm.executeQuery();
+			Route route;
+			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
+			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
+
+			GoodsCategory goodsCategory = new GoodsCategory();
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+
+			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+
+			while (rs.next()) {
+				route = new Route();
+
+				route.setRouteID(routeID);
+				route.setStartingAddress(rs.getString("StartingAddress"));
+				route.setDestinationAddress(rs.getString("DestinationAddress"));
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
+				route.setNotes(rs.getString("Notes"));
+				route.setWeight(rs.getInt("Weight"));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(rs.getInt("Active"));
+				route.setDriverID(rs.getInt("DriverID"));
+				route.setRouteMarkers(routeMarkerDao
+						.getAllRouteMarkerByRouteID(routeID));
+
+				listRouteGoodsCategory = routeGoodsCategoryDao
+						.getListRouteGoodsCategoryByRouteID(routeID);
+
+				for (int j = 0; j < listRouteGoodsCategory.size(); j++) {
+					goodsCategory = goodsCategoryDao
+							.getGoodsCategoryByID(listRouteGoodsCategory.get(j)
+									.getGoodsCategoryID());
+					listGoodsCategory.add(goodsCategory);
+				}
+
+				route.setGoodsCategory(listGoodsCategory);
+				return route;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Can't load data from Route table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Route table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
 }

@@ -591,5 +591,42 @@ public class DealDAO {
 		}
 		return cnt;
 	}
-	
+
+	public int changeStatusOfOtherDeal(int dealStatusID, int goodsID,
+			int routeID) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Deal SET DealStatusID = ? WHERE GoodsID=? AND RouteID!=?";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+
+			stmt.setInt(i++, dealStatusID);
+			stmt.setInt(i++, goodsID);
+			stmt.setInt(i++, routeID);
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update to Deal table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
 }

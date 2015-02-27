@@ -105,16 +105,16 @@ public class MapsProcess {
 		try {
 			final JSONObject jObject = new JSONObject(jsonResult);
 			JSONArray routes = jObject.getJSONArray("routes");
-			    // Grab the first route
-			    JSONObject route = routes.getJSONObject(0);
-			    // Take all legs from the route
-			    JSONArray legs = route.getJSONArray("legs");
-			    // Grab first leg
-			    JSONObject leg = legs.getJSONObject(0);
+			// Grab the first route
+			JSONObject route = routes.getJSONObject(0);
+			// Take all legs from the route
+			JSONArray legs = route.getJSONArray("legs");
+			// Grab first leg
+			JSONObject leg = legs.getJSONObject(0);
 
-			    JSONObject start_location = leg.getJSONObject("start_location");
-			    latLng.setLatitude(start_location.getDouble("lat"));
-				latLng.setLongitude(start_location.getDouble("lng"));
+			JSONObject start_location = leg.getJSONObject("start_location");
+			latLng.setLatitude(start_location.getDouble("lat"));
+			latLng.setLongitude(start_location.getDouble("lng"));
 		} catch (JSONException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -128,16 +128,16 @@ public class MapsProcess {
 		try {
 			final JSONObject jObject = new JSONObject(jsonResult);
 			JSONArray routes = jObject.getJSONArray("routes");
-			    // Grab the first route
-			    JSONObject route = routes.getJSONObject(0);
-			    // Take all legs from the route
-			    JSONArray legs = route.getJSONArray("legs");
-			    // Grab first leg
-			    JSONObject leg = legs.getJSONObject(0);
+			// Grab the first route
+			JSONObject route = routes.getJSONObject(0);
+			// Take all legs from the route
+			JSONArray legs = route.getJSONArray("legs");
+			// Grab first leg
+			JSONObject leg = legs.getJSONObject(0);
 
-			    JSONObject end_location = leg.getJSONObject("end_location");
-			    latLng.setLatitude(end_location.getDouble("lat"));
-				latLng.setLongitude(end_location.getDouble("lng"));
+			JSONObject end_location = leg.getJSONObject("end_location");
+			latLng.setLatitude(end_location.getDouble("lat"));
+			latLng.setLongitude(end_location.getDouble("lng"));
 		} catch (JSONException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -201,7 +201,7 @@ public class MapsProcess {
 
 	public boolean checkDistance(int routeID, LatLng goodsStartLocation,
 			LatLng goodsFinishLocation, double maxAllowDistance) {
-		MatchingProcess matching = new MatchingProcess();
+		MatchingUtils matching = new MatchingUtils();
 
 		RouteDAO routeDao = new RouteDAO();
 		RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
@@ -257,6 +257,7 @@ public class MapsProcess {
 							src.getLatitude(), src.getLongitude(),
 							des.getLatitude(), des.getLongitude(),
 							maxAllowDistance));
+
 				}
 
 				System.out
@@ -291,6 +292,10 @@ public class MapsProcess {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
+		System.out.println("Goods Start: " + goodsStartLocation.getLatitude()
+				+ " , " + goodsStartLocation.getLongitude());
+		System.out.println("Goods Finish: " + goodsFinishLocation.getLatitude()
+				+ " , " + goodsFinishLocation.getLongitude());
 		System.out
 				.println("Angle between goods and route is larger than 90degree: "
 						+ angleBetween2vector);

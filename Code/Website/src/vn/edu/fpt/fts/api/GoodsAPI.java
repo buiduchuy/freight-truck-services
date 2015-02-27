@@ -15,19 +15,12 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.process.MatchingProcess;
 
 @Path("/Goods")
 public class GoodsAPI {
 	private final static String TAG = "GoodsAPI";
 	GoodsDAO goodsDao = new GoodsDAO();
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String Html() {
-		return "<html> " + "<title>" + "Web service" + "</title>"
-				+ "<body><h1>" + "WEB SERVICE IS ACTIVE" + "</body></h1>"
-				+ "</html> ";
-	}
 
 	@GET
 	@Path("get")
@@ -107,5 +100,23 @@ public class GoodsAPI {
 		goods = goodsDao.getGoodsByID(Integer.valueOf(params
 				.getFirst("goodsID")));
 		return goods;
+	}
+
+	@POST
+	@Path("getSuggestionGoods")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Goods> getSuggestionGoods(MultivaluedMap<String, String> params) {
+		MatchingProcess matchingProcess = new MatchingProcess();
+		List<Goods> list = new ArrayList<Goods>();
+		try {
+			list = matchingProcess.getSuggestionGoods(Integer.valueOf(params
+					.getFirst("routeID")));
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return list;
 	}
 }

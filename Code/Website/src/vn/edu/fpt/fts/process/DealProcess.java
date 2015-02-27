@@ -31,11 +31,6 @@ public class DealProcess {
 	RouteDAO routeDao = new RouteDAO();
 	DealOrderDAO dealOrderDao = new DealOrderDAO();
 
-	public static void main(String[] args) {
-		DealProcess dp = new DealProcess();
-		dp.declineDeal(30);
-	}
-
 	public String acceptDeal(int dealID) {
 
 		Deal deal = dealDao.getDealByID(dealID);
@@ -180,6 +175,12 @@ public class DealProcess {
 			// Insert new deal with accept status and CreateTime
 			int newDealID = dealDao.insertDeal(deal);
 
+			// Update other deal
+			int n = dealDao.changeStatusOfOtherDeal(Common.deal_cancel,
+					deal.getGoodsID(), deal.getRouteID());
+			System.out.println("Co " + n
+					+ " deal da thay doi trang thai la cancel");
+
 			// Deactivate goods of this deal
 			goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
 
@@ -200,7 +201,7 @@ public class DealProcess {
 			int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
 			ret = 1;
 			if (newDealOrderID == 0) {
-				System.out.println("Deal nay da xuat ra Order roi!!");
+				System.out.println("Deal nay da xuat Order roi!!");
 				ret = 0;
 			}
 		} catch (Exception e) {
@@ -223,6 +224,28 @@ public class DealProcess {
 			if (newDealID == 0) {
 				System.out.println("Decline deal FAIL!");
 				ret = 0;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return ret;
+	}
+
+	public int cancelDeal1(Deal deal) {
+		int ret = 0;
+		try {
+			Deal db_deal = dealDao.getDealByID(deal.getDealID());
+			// Dieu kien deal hien tai la deal cua nguoi do va deal dang pending
+			if (db_deal.getCreateBy().equalsIgnoreCase(deal.getCreateBy())
+					&& db_deal.getDealStatusID() == Common.deal_pending) {
+				// Update current deal
+				dealDao.updateDeal(deal);
+				ret = 1;
+			} else {
+				System.out
+						.println("Khong thoa man de doi trang thai deal thanh cancel");
 			}
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Goods;
 
@@ -383,7 +384,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public Goods getGoodsByID(int id) {
+	public Goods getGoodsByID(int goodsID) {
 
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -395,14 +396,146 @@ public class GoodsDAO {
 
 			stmt = con.prepareStatement(sql);
 			int i = 1;
-			stmt.setInt(i++, id);
+			stmt.setInt(i++, goodsID);
 
 			rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				Goods goods = new Goods();
 
-				goods.setGoodsID(id);
+				goods.setGoodsID(goodsID);
+				goods.setWeight(rs.getInt("Weight"));
+				goods.setPrice(rs.getDouble("Price"));
+				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());
+				goods.setPickupAddress(rs.getString("PickupAddress"));
+				goods.setDeliveryTime(rs.getTimestamp("DeliveryTime")
+						.toString());
+				goods.setDeliveryAddress(rs.getString("DeliveryAddress"));
+				goods.setPickupMarkerLongtitude(rs
+						.getFloat("PickupMarkerLongtitude"));
+				goods.setPickupMarkerLatidute(rs
+						.getFloat("PickupMarkerLatidute"));
+				goods.setDeliveryMarkerLongtitude(rs
+						.getFloat("DeliveryMarkerLongtitude"));
+				goods.setDeliveryMarkerLatidute(rs
+						.getFloat("DeliveryMarkerLatidute"));
+				goods.setNotes(rs.getString("Notes"));
+				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
+				goods.setActive(rs.getInt("Active"));
+				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+				return goods;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Goods table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public List<Goods> getListActiveGoods() {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Goods WHERE Active=?";
+			stm = con.prepareStatement(sql);
+			int i = 1;
+			stm.setInt(i++, Common.activate);
+			rs = stm.executeQuery();
+			List<Goods> list = new ArrayList<Goods>();
+			Goods goods;
+			while (rs.next()) {
+				goods = new Goods();
+
+				goods.setGoodsID(rs.getInt("GoodsID"));
+				goods.setWeight(rs.getInt("Weight"));
+				goods.setPrice(rs.getDouble("Price"));
+				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());
+				goods.setPickupAddress(rs.getString("PickupAddress"));
+				goods.setDeliveryTime(rs.getTimestamp("DeliveryTime")
+						.toString());
+				goods.setDeliveryAddress(rs.getString("DeliveryAddress"));
+				goods.setPickupMarkerLongtitude(rs
+						.getFloat("PickupMarkerLongtitude"));
+				goods.setPickupMarkerLatidute(rs
+						.getFloat("PickupMarkerLatidute"));
+				goods.setDeliveryMarkerLongtitude(rs
+						.getFloat("DeliveryMarkerLongtitude"));
+				goods.setDeliveryMarkerLatidute(rs
+						.getFloat("DeliveryMarkerLatidute"));
+				goods.setNotes(rs.getString("Notes"));
+				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
+				goods.setActive(rs.getInt("Active"));
+				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+
+				list.add(goods);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Can't load data from Goods table");
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public Goods getActiveGoodsByID(int goodsID) {
+
+		Connection con = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Goods WHERE GoodsID=? AND Active=?";
+
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, goodsID);
+			stmt.setInt(i++, Common.activate);
+
+			rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				Goods goods = new Goods();
+
+				goods.setGoodsID(goodsID);
 				goods.setWeight(rs.getInt("Weight"));
 				goods.setPrice(rs.getDouble("Price"));
 				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());
