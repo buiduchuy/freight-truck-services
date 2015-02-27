@@ -214,10 +214,7 @@ public class DealProcess {
 	public int declineDeal1(Deal deal) {
 		int ret = 0;
 		try {
-			// Update current deal
-			dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
-
-			// Insert new deal with decline status and CreateTime
+			// Insert new deal with decline status
 			int newDealID = dealDao.insertDeal(deal);
 			ret = 1;
 			if (newDealID != 0) {
