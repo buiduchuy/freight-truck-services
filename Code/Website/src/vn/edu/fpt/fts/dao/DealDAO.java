@@ -63,6 +63,7 @@ public class DealDAO {
 			if (rs != null && rs.next()) {
 				ret = (int) rs.getLong(1);
 			}
+			return ret;
 		} catch (SQLException e) {
 			// TODO: handle exception
 			ret = -1;
@@ -83,7 +84,7 @@ public class DealDAO {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
-		return ret;
+		return 0;
 	}
 
 	public List<Deal> getDealByGoodsID(int goodsId) {
@@ -590,4 +591,5 @@ public class DealDAO {
 		}
 		return cnt;
 	}
+	
 }

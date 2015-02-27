@@ -5,13 +5,17 @@ package vn.edu.fpt.fts.process;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
+import vn.edu.fpt.fts.dao.DealOrderDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
+import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Order;
 
 /**
@@ -19,11 +23,13 @@ import vn.edu.fpt.fts.pojo.Order;
  *
  */
 public class DealProcess {
+	private final static String TAG = "DealProcess";
 
 	DealDAO dealDao = new DealDAO();
 	OrderDAO orderDao = new OrderDAO();
 	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
+	DealOrderDAO dealOrderDao = new DealOrderDAO();
 
 	public static void main(String[] args) {
 		DealProcess dp = new DealProcess();
@@ -73,13 +79,21 @@ public class DealProcess {
 				order.setOwnerDeliveryStatus(false);
 				order.setCreateTime(deal.getCreateTime());
 				order.setOrderStatusID(1);
-				orderDao.insertOrder(order);
+				int newOrderID = orderDao.insertOrder(order);
+
+				// Insert into DealOrder Table
+				DealOrder dealOrder = new DealOrder();
+				dealOrder.setOrderID(newOrderID);
+				dealOrder.setDealID(dealID);
+
+				int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
+
+				if (newDealOrderID == 0) {
+					System.out.println("Deal nay da xuat ra Order roi!!");
+				}
 
 				// Change goods of this order to deactivate
 				goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
-
-				// Change route of this order to deactivate
-				routeDao.updateRouteStatus(deal.getRouteID(), Common.deactivate);
 
 				System.out
 						.println("Accept - Number of deals will be change to decline: "
@@ -155,5 +169,66 @@ public class DealProcess {
 
 	public int checkDuplicateDeal(int driverID) {
 		return 0;
+	}
+
+	public int acceptDeal1(Deal deal) {
+		int ret = 0;
+		try {
+			// Update current deal
+			dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
+
+			// Insert new deal with accept status and CreateTime
+			int newDealID = dealDao.insertDeal(deal);
+
+			// Deactivate goods of this deal
+			goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
+
+			// Insert new order
+			Order order = new Order();
+			order.setPrice(deal.getPrice());
+			order.setStaffDeliveryStatus(false);
+			order.setDriverDeliveryStatus(false);
+			order.setOwnerDeliveryStatus(false);
+			order.setCreateTime(deal.getCreateTime());
+			order.setOrderStatusID(Common.order_pending);
+			int newOrderID = orderDao.insertOrder(order);
+
+			// Insert into DealOrder Table
+			DealOrder dealOrder = new DealOrder();
+			dealOrder.setOrderID(newOrderID);
+			dealOrder.setDealID(newDealID);
+			int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
+			ret = 1;
+			if (newDealOrderID == 0) {
+				System.out.println("Deal nay da xuat ra Order roi!!");
+				ret = 0;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return ret;
+	}
+
+	public int declineDeal1(Deal deal) {
+		int ret = 0;
+		try {
+			// Update current deal
+			dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
+
+			// Insert new deal with decline status and CreateTime
+			int newDealID = dealDao.insertDeal(deal);
+			ret = 1;
+			if (newDealID != 0) {
+				System.out.println("Decline deal FAIL!");
+				ret = 0;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return ret;
 	}
 }

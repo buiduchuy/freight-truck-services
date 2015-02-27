@@ -29,8 +29,8 @@ public class MatchingProcess {
 	// }
 
 	// change coordinate of gmaps to 3D
-	public List<Double> ChangeCoordinateMapToCoordinate3D(Double longitude,
-			Double latitude) {
+	public List<Double> ChangeCoordinateMapToCoordinate3D(Double latitude,
+			Double longitude) {
 
 		// change from degree to radian
 		longitude = deg2rad(longitude);
@@ -80,12 +80,12 @@ public class MatchingProcess {
 			Double maxAllowDistance) {
 
 		// change from longitude and latitude to coordinate 3D
-		List<Double> coordGoods = ChangeCoordinateMapToCoordinate3D(longGoods,
-				latGoods);
-		List<Double> coordStart = ChangeCoordinateMapToCoordinate3D(longStart,
-				latStart);
-		List<Double> coordEnd = ChangeCoordinateMapToCoordinate3D(longEnd,
-				latEnd);
+		List<Double> coordGoods = ChangeCoordinateMapToCoordinate3D(latGoods,
+				longGoods);
+		List<Double> coordStart = ChangeCoordinateMapToCoordinate3D(latStart,
+				longStart);
+		List<Double> coordEnd = ChangeCoordinateMapToCoordinate3D(latEnd,
+				longEnd);
 
 		// length of the path from start to end
 		double lengthOfPath = Math.sqrt((coordStart.get(0) - coordEnd.get(0))
@@ -106,7 +106,7 @@ public class MatchingProcess {
 		vector2.add(coordGoods.get(0) - coordEnd.get(0));
 		vector2.add(coordGoods.get(1) - coordEnd.get(1));
 		vector2.add(coordGoods.get(2) - coordEnd.get(2));
-		
+
 		// distance from goods position to start point
 		Double length1 = Math.sqrt(vector1.get(0) * vector1.get(0)
 				+ vector1.get(1) * vector1.get(1) + vector1.get(2)
@@ -148,5 +148,47 @@ public class MatchingProcess {
 		if (result > maxAllowDistance)
 			return -1.0;
 		return result;
+	}
+
+	public Double angleBetween(Double latGoodsStart, Double longGoodsStart,
+			Double latGoodsEnd, Double longGoodsEnd, Double latRouteStart,
+			Double longRouteStart, Double latRouteEnd, Double longRouteEnd) {
+
+		List<Double> coordGoodsStart = ChangeCoordinateMapToCoordinate3D(
+				latGoodsStart, longGoodsStart);
+		List<Double> coordGoodsEnd = ChangeCoordinateMapToCoordinate3D(
+				latGoodsEnd, longGoodsEnd);
+		List<Double> coordRouteStart = ChangeCoordinateMapToCoordinate3D(
+				latRouteStart, longRouteStart);
+		List<Double> coordRouteEnd = ChangeCoordinateMapToCoordinate3D(
+				latRouteEnd, longRouteEnd);
+
+		List<Double> vectorOfGoods = new ArrayList<Double>();
+		vectorOfGoods.add(coordGoodsStart.get(0) - coordGoodsEnd.get(0));
+		vectorOfGoods.add(coordGoodsStart.get(1) - coordGoodsEnd.get(1));
+		vectorOfGoods.add(coordGoodsStart.get(2) - coordGoodsEnd.get(2));
+
+		List<Double> vectorOfRoute = new ArrayList<Double>();
+		vectorOfRoute.add(coordRouteStart.get(0) - coordRouteEnd.get(0));
+		vectorOfRoute.add(coordRouteStart.get(1) - coordRouteEnd.get(1));
+		vectorOfRoute.add(coordRouteStart.get(2) - coordRouteEnd.get(2));
+
+		Double lengthOfGoods = Math.sqrt(vectorOfGoods.get(0)
+				* vectorOfGoods.get(0) + vectorOfGoods.get(1)
+				* vectorOfGoods.get(1) + vectorOfGoods.get(2)
+				* vectorOfGoods.get(2));
+
+		Double lengthOfRoute = Math.sqrt(vectorOfRoute.get(0)
+				* vectorOfRoute.get(0) + vectorOfRoute.get(1)
+				* vectorOfRoute.get(1) + vectorOfRoute.get(2)
+				* vectorOfRoute.get(2));
+		Double theta = (vectorOfGoods.get(0) * vectorOfRoute.get(0)
+				+ vectorOfGoods.get(1) * vectorOfRoute.get(1) + 
+				vectorOfGoods.get(2) * vectorOfRoute.get(2))
+				/ (lengthOfGoods * lengthOfRoute);
+
+		Double angleInDegrees = Math.acos(theta) * 180.0 / Math.PI;
+
+		return angleInDegrees;
 	}
 }

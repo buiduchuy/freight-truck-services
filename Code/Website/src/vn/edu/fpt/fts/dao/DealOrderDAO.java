@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,12 +32,17 @@ public class DealOrderDAO {
 
 			String sql = "INSERT INTO DealOrder ( " + "DealID," + "OrderID"
 					+ ") VALUES (" + "?, " + "?)";
-			stmt = con.prepareStatement(sql);
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setInt(i++, bean.getDealID()); // DealID
 			stmt.setInt(i++, bean.getOrderID()); // OrderID
 
-			ret = stmt.executeUpdate();
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
 
 		} catch (SQLException e) {
 			// TODO: handle exception

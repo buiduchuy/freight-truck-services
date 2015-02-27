@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.process.DealProcess;
@@ -28,6 +29,7 @@ public class DealAPI {
 
 	private final static String TAG = "DealAPI";
 	DealDAO dealDao = new DealDAO();
+	DealProcess dealProcess = new DealProcess();
 
 	@GET
 	@Path("get")
@@ -77,34 +79,42 @@ public class DealAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createDeal(MultivaluedMap<String, String> params) {
-		Deal deal;
-		try {
-			deal = new Deal();
+		// Update current deal and create new deal
+		// Get current deal
+		Deal deal = dealDao.getDealByID(Integer.valueOf(params
+				.getFirst("dealID")));
+		// Update status
+		deal.setDealStatusID(Common.deal_decline);
 
-			deal.setPrice(Double.valueOf(params.getFirst("price")));
-			deal.setNotes(params.getFirst("notes"));
-			deal.setCreateTime(params.getFirst("createTime"));
-			deal.setCreateBy(params.getFirst("createBy"));
-			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
-			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
-			deal.setDealStatusID(Integer.valueOf(params
-					.getFirst("dealStatusID")));
-			if (!params.getFirst("refDealID").equals("")) {
-				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+		int ret = 0;
+
+		if (dealDao.updateDeal(deal) != 0) {
+			try {
+				deal = new Deal();
+
+				deal.setPrice(Double.valueOf(params.getFirst("price")));
+				deal.setNotes(params.getFirst("notes"));
+				deal.setCreateTime(params.getFirst("createTime"));
+				deal.setCreateBy(params.getFirst("createBy"));
+				deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
+				deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+				deal.setDealStatusID(Common.deal_pending);
+
+				if (!params.getFirst("refDealID").equals("")) {
+					deal.setRefDealID(Integer.valueOf(params
+							.getFirst("refDealID")));
+				}
+				deal.setActive(Integer.valueOf(params.getFirst("active")));
+				// Insert new deal with status pending
+				ret = dealDao.insertDeal(deal);
+
+			} catch (NumberFormatException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
-			deal.setActive(Integer.valueOf(params.getFirst("active")));
-
-			int ret = dealDao.insertDeal(deal);
-			if (ret <= 0) {
-				return "Fail";
-			}
-
-		} catch (NumberFormatException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return "Success";
+		return String.valueOf(ret);
 	}
 
 	@POST
@@ -129,33 +139,63 @@ public class DealAPI {
 	@Path("accept")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String acceptDeal(MultivaluedMap<String, String> params) {
+		Deal deal;
+		int ret = 0;
 		try {
-			int dealID = Integer.valueOf(params.getFirst("dealID"));
-			DealProcess dp = new DealProcess();
-			dp.acceptDeal(dealID);
-			return "Success";
+			deal = new Deal();
+
+			deal.setPrice(Double.valueOf(params.getFirst("price")));
+			deal.setNotes(params.getFirst("notes"));
+			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateBy(params.getFirst("createBy"));
+			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
+			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+			deal.setDealStatusID(Common.deal_accept);
+
+			if (!params.getFirst("refDealID").equals("")) {
+				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			}
+			deal.setActive(Integer.valueOf(params.getFirst("active")));
+			// Insert new deal with status pending
+			ret = dealProcess.acceptDeal1(deal);
+
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return "Fail";
+		return String.valueOf(ret);
 	}
 
 	@POST
 	@Path("decline")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String declineDeal(MultivaluedMap<String, String> params) {
+		Deal deal;
+		int ret = 0;
 		try {
-			int dealID = Integer.valueOf(params.getFirst("dealID"));
-			DealProcess dp = new DealProcess();
-			dp.declineDeal(dealID);
-			return "Success";
+			deal = new Deal();
+
+			deal.setPrice(Double.valueOf(params.getFirst("price")));
+			deal.setNotes(params.getFirst("notes"));
+			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateBy(params.getFirst("createBy"));
+			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
+			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+			deal.setDealStatusID(Common.deal_decline);
+
+			if (!params.getFirst("refDealID").equals("")) {
+				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			}
+			deal.setActive(Integer.valueOf(params.getFirst("active")));
+			// Insert new deal with status pending
+			ret = dealProcess.declineDeal1(deal);
+
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return "Fail";
+		return String.valueOf(ret);
 	}
 }

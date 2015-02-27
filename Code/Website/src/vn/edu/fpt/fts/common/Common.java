@@ -23,15 +23,17 @@ public final class Common {
 	public static final int activate = 1;
 
 	// Status of Deal
-	public static final int deal_waitForDriver = 1;
-	public static final int deal_waitForOwner = 2;
-	public static final int deal_accept = 3;
-	public static final int deal_decline = 4;
-	public static final int deal_cancel = 0;
+	public static final int deal_pending = 1;
+	public static final int deal_accept = 2;
+	public static final int deal_decline = 3;
+	public static final int deal_cancel = 4;
 
 	// Status of Order
-	public static final int order_delivered = 1;
-	public static final int order_notdelivered = 2;
+	public static final int order_pending = 1;
+	public static final int order_accept = 2;
+	public static final int order_decline = 3;
+
+	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";
 
 	public String changeFormatDate(String dateInput, String oldFormat,
 			String newFormat) {

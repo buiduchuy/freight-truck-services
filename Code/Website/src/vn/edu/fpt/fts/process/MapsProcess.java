@@ -33,7 +33,7 @@ import vn.edu.fpt.fts.pojo.RouteMarker;
  *
  */
 public class MapsProcess {
-	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";
+
 	private final static String TAG = "MapsProcess";
 
 	public String makeURL(String src, List<String> listMarker, String des) {
@@ -100,11 +100,57 @@ public class MapsProcess {
 		return null;
 	}
 
+	public LatLng parseJsonRouteStart(String jsonResult) {
+		LatLng latLng = new LatLng();
+		try {
+			final JSONObject jObject = new JSONObject(jsonResult);
+			JSONArray routes = jObject.getJSONArray("routes");
+			    // Grab the first route
+			    JSONObject route = routes.getJSONObject(0);
+			    // Take all legs from the route
+			    JSONArray legs = route.getJSONArray("legs");
+			    // Grab first leg
+			    JSONObject leg = legs.getJSONObject(0);
+
+			    JSONObject start_location = leg.getJSONObject("start_location");
+			    latLng.setLatitude(start_location.getDouble("lat"));
+				latLng.setLongitude(start_location.getDouble("lng"));
+		} catch (JSONException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return latLng;
+	}
+
+	public LatLng parseJsonRouteEnd(String jsonResult) {
+		LatLng latLng = new LatLng();
+		try {
+			final JSONObject jObject = new JSONObject(jsonResult);
+			JSONArray routes = jObject.getJSONArray("routes");
+			    // Grab the first route
+			    JSONObject route = routes.getJSONObject(0);
+			    // Take all legs from the route
+			    JSONArray legs = route.getJSONArray("legs");
+			    // Grab first leg
+			    JSONObject leg = legs.getJSONObject(0);
+
+			    JSONObject end_location = leg.getJSONObject("end_location");
+			    latLng.setLatitude(end_location.getDouble("lat"));
+				latLng.setLongitude(end_location.getDouble("lng"));
+		} catch (JSONException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return latLng;
+	}
+
 	public String getJSONFromUrl(String url) {
 		InputStream is = null;
 		String json = "";
 		try {
-			System.out.println(url);
+			System.out.println("URL: " + url);
 			long startTime = System.currentTimeMillis();
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPost httpPost = new HttpPost(url);
@@ -179,53 +225,75 @@ public class MapsProcess {
 				.getStartingAddress(), l_listRouteMarker, routeDao
 				.getRouteByID(routeID).getDestinationAddress()));
 
-		List<LatLng> list = parseJsonList(json);
-		try {
+		LatLng routeStart = parseJsonRouteStart(json);
+		LatLng routeEnd = parseJsonRouteEnd(json);
 
-			List<Double> b_goodsStart = new ArrayList<Double>();
-			List<Double> b_goodsFinish = new ArrayList<Double>();
-			for (int z = 0; z < list.size() - 1; z++) {
-				LatLng src = list.get(z);
-				LatLng des = list.get(z + 1);
-				b_goodsStart.add(matching.calDistance(
-						goodsStartLocation.getLatitude(),
-						goodsStartLocation.getLongitude(), src.getLatitude(),
-						src.getLongitude(), des.getLatitude(),
-						des.getLongitude(), maxAllowDistance));
-				b_goodsFinish.add(matching.calDistance(
-						goodsFinishLocation.getLatitude(),
-						goodsFinishLocation.getLongitude(), src.getLatitude(),
-						src.getLongitude(), des.getLatitude(),
-						des.getLongitude(), maxAllowDistance));
-			}
+		Double angleBetween2vector = matching.angleBetween(
+				goodsStartLocation.getLatitude(),
+				goodsStartLocation.getLongitude(),
+				goodsFinishLocation.getLatitude(),
+				goodsFinishLocation.getLongitude(), routeStart.getLatitude(),
+				routeStart.getLongitude(), routeEnd.getLatitude(),
+				routeEnd.getLongitude());
 
-			System.out.println("Distance from start of goods to route "
-					+ "with condition nearest " + maxAllowDistance + "km : ");
-			boolean b_distanceGoodsStart = false;
-			for (double distance : b_goodsStart) {
-				if (distance > -1.0 && distance <= maxAllowDistance) {
-					System.out.println(distance);
-					b_distanceGoodsStart = true;
+		if (angleBetween2vector > 0 && angleBetween2vector < 90) {
+			List<LatLng> list = parseJsonList(json);
+			try {
+
+				List<Double> l_goodsStart = new ArrayList<Double>();
+				List<Double> l_goodsFinish = new ArrayList<Double>();
+				for (int z = 0; z < list.size() - 1; z++) {
+					LatLng src = list.get(z);
+					LatLng des = list.get(z + 1);
+					l_goodsStart.add(matching.calDistance(
+							goodsStartLocation.getLatitude(),
+							goodsStartLocation.getLongitude(),
+							src.getLatitude(), src.getLongitude(),
+							des.getLatitude(), des.getLongitude(),
+							maxAllowDistance));
+					l_goodsFinish.add(matching.calDistance(
+							goodsFinishLocation.getLatitude(),
+							goodsFinishLocation.getLongitude(),
+							src.getLatitude(), src.getLongitude(),
+							des.getLatitude(), des.getLongitude(),
+							maxAllowDistance));
 				}
-			}
-			System.out.println("Distance from destination of goods to route "
-					+ "with condition nearest " + maxAllowDistance + "km : ");
-			boolean b_distanceGoodsFinish = false;
-			for (double distance : b_goodsFinish) {
-				if (distance > -1.0 && distance <= maxAllowDistance) {
-					System.out.println(distance);
-					b_distanceGoodsFinish = true;
-				}
-			}
 
-			if (b_distanceGoodsStart && b_distanceGoodsFinish) {
-				return true;
+				System.out
+						.println("Distance from start of goods to route "
+								+ "with condition nearest " + maxAllowDistance
+								+ " km:");
+				boolean b_distanceGoodsStart = false;
+				for (double distance : l_goodsStart) {
+					if (distance > -1.0 && distance <= maxAllowDistance) {
+						System.out.println(distance + " km");
+						b_distanceGoodsStart = true;
+					}
+				}
+				System.out
+						.println("Distance from destination of goods to route "
+								+ "with condition nearest " + maxAllowDistance
+								+ " km:");
+				boolean b_distanceGoodsFinish = false;
+				for (double distance : l_goodsFinish) {
+					if (distance > -1.0 && distance <= maxAllowDistance) {
+						System.out.println(distance + " km");
+						b_distanceGoodsFinish = true;
+					}
+				}
+
+				if (b_distanceGoodsStart && b_distanceGoodsFinish) {
+					return true;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
+		System.out
+				.println("Angle between goods and route is larger than 90degree: "
+						+ angleBetween2vector);
 		return false;
 	}
 
