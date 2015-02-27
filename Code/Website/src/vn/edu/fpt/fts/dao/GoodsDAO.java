@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.process.LatLng;
 
 public class GoodsDAO {
 	private final static String TAG = "GoodsDAO";
@@ -69,6 +70,49 @@ public class GoodsDAO {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public int updateLocationGoods(int goodsID, LatLng latLngSrc,
+			LatLng latLngDes) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE Goods SET " + " PickupMarkerLatidute = ?"
+					+ " ,PickupMarkerLongtitude = ?"
+					+ " ,DeliveryMarkerLatidute = ?"
+					+ " ,DeliveryMarkerLongtitude = ?" + " WHERE GoodsID = '"
+					+ goodsID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setDouble(i++, latLngSrc.getLatitude());
+			stmt.setDouble(i++, latLngSrc.getLongitude());
+			stmt.setDouble(i++, latLngDes.getLatitude());
+			stmt.setDouble(i++, latLngDes.getLongitude());
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out
+					.println("Can't update Location (4 columns) to Goods table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
 				if (stmt != null) {

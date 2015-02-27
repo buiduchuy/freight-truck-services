@@ -236,7 +236,7 @@ public class MapsProcess {
 				routeStart.getLongitude(), routeEnd.getLatitude(),
 				routeEnd.getLongitude());
 
-		if (angleBetween2vector > 0 && angleBetween2vector < 90) {
+		if (angleBetween2vector > 0.0 && angleBetween2vector < 90.0) {
 			List<LatLng> list = parseJsonList(json);
 			try {
 

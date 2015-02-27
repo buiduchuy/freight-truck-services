@@ -34,34 +34,36 @@ public class MAIN_PROCESS {
 		// Double latEnd = 10.9234099;
 		// Double longEnd = 107.4084806;
 
-//		GoodsDAO goodsDao = new GoodsDAO();
-//		LatLng goodsStartLocation = new LatLng();
-//
-//		LatLng goodsFinishLocation = new LatLng();
-//		Goods goods = goodsDao.getGoodsByID(79);
-//
-//		if (goods != null) {
-//			goodsFinishLocation.setLatitude(goods.getDeliveryMarkerLatidute());
-//			goodsFinishLocation.setLongitude(goods
-//					.getDeliveryMarkerLongtitude());
-//			goodsStartLocation.setLatitude(goods.getPickupMarkerLatidute());
-//			goodsStartLocation.setLongitude(goods.getPickupMarkerLongtitude());
-//			RouteDAO routeDao = new RouteDAO();
-//			List<Route> l_route = routeDao.getAllRoute();
-//			if (l_route.size() != 0) {
-//				for (int j = 0; j < l_route.size(); j++) {
-//					System.out.println(mapProcess.checkDistance(l_route.get(j)
-//							.getRouteID(), goodsStartLocation,
-//							goodsFinishLocation, 2));
-//				}
-//
-//			}
-//		}
+		// GoodsDAO goodsDao = new GoodsDAO();
+		// LatLng goodsStartLocation = new LatLng();
+		//
+		// LatLng goodsFinishLocation = new LatLng();
+		// Goods goods = goodsDao.getGoodsByID(79);
+		//
+		// if (goods != null) {
+		// goodsFinishLocation.setLatitude(goods.getDeliveryMarkerLatidute());
+		// goodsFinishLocation.setLongitude(goods
+		// .getDeliveryMarkerLongtitude());
+		// goodsStartLocation.setLatitude(goods.getPickupMarkerLatidute());
+		// goodsStartLocation.setLongitude(goods.getPickupMarkerLongtitude());
+		// RouteDAO routeDao = new RouteDAO();
+		// List<Route> l_route = routeDao.getAllRoute();
+		// if (l_route.size() != 0) {
+		// for (int j = 0; j < l_route.size(); j++) {
+		// System.out.println(mapProcess.checkDistance(l_route.get(j)
+		// .getRouteID(), goodsStartLocation,
+		// goodsFinishLocation, 2));
+		// }
+		//
+		// }
+		// }
 		List<Route> routeList = matchingProcess.getSuggestionRoute(11);
-		System.out.println(routeList.size());
-		
+		System.out.println("------------------- Number of Route: "
+				+ routeList.size());
+
 		List<Goods> goodsList = matchingProcess.getSuggestionGoods(8);
-		System.out.println(goodsList.size());
+		System.out.println("------------------- Number of Goods: "
+				+ goodsList.size());
 		// goodsStartLocation.setLatitude(21.0248455);
 		// goodsStartLocation.setLongitude(105.8287365);
 		//
