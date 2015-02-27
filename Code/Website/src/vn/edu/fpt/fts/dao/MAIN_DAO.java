@@ -3,6 +3,9 @@
  */
 package vn.edu.fpt.fts.dao;
 
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.pojo.Order;
+
 /**
  * @author Huy
  *
@@ -58,6 +61,16 @@ public class MAIN_DAO {
 
 		System.out.println(dealDao.getNumberOfDealParent(68, 5));
 
+		OrderDAO orderDao = new OrderDAO();
+		Order order = new Order();
+		order.setPrice(300);
+		order.setStaffDeliveryStatus(false);
+		order.setDriverDeliveryStatus(false);
+		order.setOwnerDeliveryStatus(false);
+		order.setCreateTime("2015-02-05");
+		order.setOrderStatusID(Common.order_pending);
+
+		System.out.println(orderDao.insertOrder(order));
 	}
 
 }

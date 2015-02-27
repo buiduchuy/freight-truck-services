@@ -212,7 +212,7 @@ public class RouteDAO {
 		return null;
 	}
 
-	public static int updateRoute(Route bean) {
+	public int updateRoute(Route bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;

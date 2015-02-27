@@ -39,6 +39,7 @@ public class RouteAPI {
 	public String createRoute(MultivaluedMap<String, String> params) {
 
 		Route route = new Route();
+		int ret = 0;
 
 		try {
 
@@ -52,12 +53,85 @@ public class RouteAPI {
 			route.setActive(Integer.valueOf(params.getFirst("active")));
 			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
 
-			int ret = routeDao.insertRoute(route);
+			ret = routeDao.insertRoute(route);
 
 			// ------------------------------------------------------------------
 			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 			RouteMarker routeMarker = new RouteMarker();
 			routeMarker.setRouteID(ret);
+			routeMarker.setRouteMarkerLocation(params
+					.getFirst("routeMarkerLocation1"));
+
+			routeMarkerDao.insertRouteMarker(routeMarker);
+
+			routeMarker.setRouteMarkerLocation(params
+					.getFirst("routeMarkerLocation2"));
+
+			routeMarkerDao.insertRouteMarker(routeMarker);
+
+			// ------------------------------------------------------------------
+			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+			RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
+
+			routeGoodsCategory.setRouteID(ret);
+
+			// Get params category true/false
+			if (Boolean.parseBoolean(params.getFirst("Food"))) {
+				routeGoodsCategory.setGoodsCategoryID(1);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
+				routeGoodsCategory.setGoodsCategoryID(2);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
+				routeGoodsCategory.setGoodsCategoryID(4);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
+				routeGoodsCategory.setGoodsCategoryID(5);
+				routeGoodsCategoryDao
+						.insertRouteGoodsCategory(routeGoodsCategory);
+			}
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return String.valueOf(ret);
+	}
+
+	@POST
+	@Path("Update")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateRoute(MultivaluedMap<String, String> params) {
+
+		Route route = new Route();
+		int ret = 0;
+		try {
+
+			route.setStartingAddress(params.getFirst("startingAddress"));
+			route.setDestinationAddress(params.getFirst("destinationAddress"));
+			route.setStartTime(params.getFirst("startTime"));
+			route.setFinishTime(params.getFirst("finishTime"));
+			route.setNotes(params.getFirst("notes"));
+			route.setWeight(Integer.valueOf(params.getFirst("weight")));
+			route.setCreateTime(params.getFirst("createTime"));
+			route.setActive(Integer.valueOf(params.getFirst("active")));
+			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
+
+			ret = routeDao.updateRoute(route);
+
+			// ------------------------------------------------------------------
+			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+			RouteMarker routeMarker = new RouteMarker();
+			routeMarker.setRouteID(route.getRouteID());
 			routeMarker.setRouteMarkerLocation(params
 					.getFirst("routeMarkerLocation1"));
 

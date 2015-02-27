@@ -110,4 +110,42 @@ public class RouteMarkerDAO {
 		}
 		return ret;
 	}
+
+	public int updateRouteMarker(RouteMarker routeMarker) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE RouteMarker SET "
+					+ " RouteMarkerLocation = ?," + " RouteID = ? "
+					+ " WHERE RouteMarkerID = '"
+					+ routeMarker.getRouteMarkerID() + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setString(i++, routeMarker.getRouteMarkerLocation()); // RouteMarkerLocation
+			stmt.setInt(i++, routeMarker.getRouteID()); // RouteID
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			System.out.println("Can't update Status to RouteMarker table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
 }

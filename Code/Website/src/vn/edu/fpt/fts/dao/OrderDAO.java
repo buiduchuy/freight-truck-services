@@ -34,15 +34,33 @@ public class OrderDAO {
 
 			String sql = "INSERT INTO [Order] (" + "Price,"
 					+ "StaffDeliveryStatus," + "DriverDeliveryStatus,"
-					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID"
+					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID,"
 					+ "Active" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
 					+ "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setBoolean(i++, bean.isStaffDeliveryStatus()); // StaffDeliveryStatus
-			stmt.setBoolean(i++, bean.isDriverDeliveryStatus()); // DriverDeliveryStatus
-			stmt.setBoolean(i++, bean.isOwnerDeliveryStatus()); // OwnerDeliveryStatus
+			if (bean.isStaffDeliveryStatus()) {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			if (bean.isDriverDeliveryStatus()) {
+				// DriverDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// DriverDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			if (bean.isOwnerDeliveryStatus()) {
+				// OwnerDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// OwnerDeliveryStatus
+				stmt.setString(i++, "false");
+			}
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
@@ -217,7 +235,7 @@ public class OrderDAO {
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
 				order.setActive(rs.getInt("Active"));
-				
+
 				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
 						.getInt("OrderID"));
 				if (dealOrder != null) {
