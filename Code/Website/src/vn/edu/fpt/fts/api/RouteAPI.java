@@ -21,7 +21,7 @@ import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 import vn.edu.fpt.fts.pojo.RouteMarker;
 import vn.edu.fpt.fts.process.MatchingProcess;
 
-@Path("/Route")
+@Path("Route")
 public class RouteAPI {
 	private final static String TAG = "RouteAPI";
 	RouteDAO routeDao = new RouteDAO();
@@ -61,17 +61,26 @@ public class RouteAPI {
 			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 			RouteMarker routeMarker = new RouteMarker();
 			routeMarker.setRouteID(ret);
-			routeMarker.setRouteMarkerLocation(params
-					.getFirst("routeMarkerLocation1"));
 
-			routeMarkerDao.insertRouteMarker(routeMarker);
+			String marker1 = params.getFirst("routeMarkerLocation1");
+			String marker2 = params.getFirst("routeMarkerLocation2");
 
-			routeMarker.setRouteMarkerLocation(params
-					.getFirst("routeMarkerLocation2"));
+			if (!marker1.isEmpty()) {
+				routeMarker.setNumbering(1);
+				routeMarker.setRouteMarkerLocation(marker1);
 
-			routeMarkerDao.insertRouteMarker(routeMarker);
+				routeMarkerDao.insertRouteMarker(routeMarker);
 
+			}
+
+			if (!marker2.isEmpty()) {
+				routeMarker.setNumbering(2);
+				routeMarker.setRouteMarkerLocation(marker2);
+
+				routeMarkerDao.insertRouteMarker(routeMarker);
+			}
 			// ------------------------------------------------------------------
+
 			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
 			RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
 
@@ -79,24 +88,26 @@ public class RouteAPI {
 
 			// Get params category true/false
 			if (Boolean.parseBoolean(params.getFirst("Food"))) {
-				routeGoodsCategory.setGoodsCategoryID(1);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				String goodsCategoryName = "Hàng thực phẩm";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
+
 			}
 			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
-				routeGoodsCategory.setGoodsCategoryID(2);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				String goodsCategoryName = "Hàng đông lạnh";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
+
 			}
 			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
-				routeGoodsCategory.setGoodsCategoryID(4);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				String goodsCategoryName = "Hàng dễ vỡ";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
 			}
 			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
-				routeGoodsCategory.setGoodsCategoryID(5);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				String goodsCategoryName = "Hàng dễ cháy nổ";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
 			}
 
 		} catch (NumberFormatException e) {
@@ -104,7 +115,6 @@ public class RouteAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
 		return String.valueOf(ret);
 	}
 
@@ -118,6 +128,10 @@ public class RouteAPI {
 		int ret = 0;
 		try {
 
+			// Truyền thêm routeID về
+			int routeID = Integer.valueOf(params.getFirst("routeID"));
+
+			route.setRouteID(routeID);
 			route.setStartingAddress(params.getFirst("startingAddress"));
 			route.setDestinationAddress(params.getFirst("destinationAddress"));
 			route.setStartTime(params.getFirst("startTime"));
@@ -133,43 +147,65 @@ public class RouteAPI {
 			// ------------------------------------------------------------------
 			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 			RouteMarker routeMarker = new RouteMarker();
-			routeMarker.setRouteID(route.getRouteID());
-			routeMarker.setRouteMarkerLocation(params
-					.getFirst("routeMarkerLocation1"));
+			routeMarker.setRouteID(routeID);
+			String marker1 = params.getFirst("routeMarkerLocation1");
+			String marker2 = params.getFirst("routeMarkerLocation2");
 
-			routeMarkerDao.insertRouteMarker(routeMarker);
+			if (!marker1.isEmpty()) {
+				routeMarker.setNumbering(1);
+				routeMarker.setRouteMarkerLocation(marker1);
+				routeMarkerDao
+						.updateRouteMarkerByNumeringAndRouteID(routeMarker);
+			}
 
-			routeMarker.setRouteMarkerLocation(params
-					.getFirst("routeMarkerLocation2"));
-
-			routeMarkerDao.insertRouteMarker(routeMarker);
-
+			if (!marker2.isEmpty()) {
+				routeMarker.setNumbering(2);
+				routeMarker.setRouteMarkerLocation(marker2);
+				routeMarkerDao
+						.updateRouteMarkerByNumeringAndRouteID(routeMarker);
+			}
 			// ------------------------------------------------------------------
-			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
-			RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
 
-			routeGoodsCategory.setRouteID(ret);
+			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
 
 			// Get params category true/false
+			String goodsCategoryName = "";
 			if (Boolean.parseBoolean(params.getFirst("Food"))) {
-				routeGoodsCategory.setGoodsCategoryID(1);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				goodsCategoryName = "Hàng thực phẩm";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
+
+			} else {
+				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
+						goodsCategoryName);
 			}
+
 			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
-				routeGoodsCategory.setGoodsCategoryID(2);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				goodsCategoryName = "Hàng đông lạnh";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
+
+			} else {
+				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
+						goodsCategoryName);
 			}
+
 			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
-				routeGoodsCategory.setGoodsCategoryID(4);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				goodsCategoryName = "Hàng dễ vỡ";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
+			} else {
+				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
+						goodsCategoryName);
 			}
+
 			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
-				routeGoodsCategory.setGoodsCategoryID(5);
-				routeGoodsCategoryDao
-						.insertRouteGoodsCategory(routeGoodsCategory);
+				goodsCategoryName = "Hàng dễ cháy nổ";
+				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+						goodsCategoryName);
+			} else {
+				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
+						goodsCategoryName);
 			}
 
 			if (ret <= 0) {

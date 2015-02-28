@@ -22,7 +22,7 @@ import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 public class RouteGoodsCategoryDAO {
 	private final static String TAG = "RouteGoodsCategory";
 
-	public int insertRouteGoodsCategory(RouteGoodsCategory bean) {
+	public int insertRouteGoodsCategory(int routeID, String goodsCategoryName) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -30,18 +30,18 @@ public class RouteGoodsCategoryDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO RouteGoodsCategory ( " + "RouteID,"
-					+ "GoodsCategoryID" + ") VALUES (" + "?, " + "?)";
+			String sql = "INSERT INTO RouteGoodsCategory ( "
+					+ "RouteID,"
+					+ "GoodsCategoryID"
+					+ ") VALUES ("
+					+ routeID
+					+ ", (SELECT GoodsCategoryID FROM GoodsCategory WHERE Name = N'"
+					+ goodsCategoryName + "'))";
 			stmt = con.prepareStatement(sql);
-			int i = 1;
-			stmt.setInt(i++, bean.getRouteID()); // RouteID
-			stmt.setInt(i++, bean.getGoodsCategoryID()); // GoodsCategoryID
-
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
 			System.out.println("Can't insert to RouteGoodsCategory table");
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
@@ -107,12 +107,46 @@ public class RouteGoodsCategoryDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out
-						.println("Can't load data from RouteGoodsCategory table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return null;
+	}
+
+	public int deleteRouteGoodsCategory(int routeID, String goodsCategoryName) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		int ret = 0;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "DELETE FROM RouteGoodsCategory "
+					+ " WHERE RouteID = '"
+					+ routeID
+					+ "' AND GoodsCategoryID = "
+					+ "(SELECT GoodsCategoryID FROM GoodsCategory WHERE Name = N'"
+					+ goodsCategoryName + "')";
+			stm = con.prepareStatement(sql);
+			ret = stm.executeUpdate();
+		} catch (SQLException e) {
+			System.out
+					.println("Can't delete data from RouteGoodsCategory table");
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
 	}
 
 }

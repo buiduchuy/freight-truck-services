@@ -2,8 +2,6 @@ package vn.edu.fpt.fts.pojo;
 
 import java.util.List;
 
-
-
 /**
  * @author Huy
  *
@@ -28,6 +26,7 @@ public class Route implements java.io.Serializable {
 	private int active;
 	private int driverID;
 
+	private Driver driver;
 	private List<RouteMarker> routeMarkers;
 	private List<Vehicle> vehicles;
 	private List<RouteGoodsCategory> routeGoodsCategory;
@@ -39,7 +38,7 @@ public class Route implements java.io.Serializable {
 
 	public Route(String startingAddress, String destinationAddress,
 			String startTime, String finishTime, String notes, int weight,
-			String createTime, int active, int driverID,
+			String createTime, int active, int driverID, Driver driver,
 			List<RouteMarker> routeMarkers, List<Vehicle> vehicles,
 			List<RouteGoodsCategory> routeGoodsCategory,
 			List<GoodsCategory> goodsCategory) {
@@ -53,6 +52,7 @@ public class Route implements java.io.Serializable {
 		this.createTime = createTime;
 		this.active = active;
 		this.driverID = driverID;
+		this.driver = driver;
 		this.routeMarkers = routeMarkers;
 		this.vehicles = vehicles;
 		this.routeGoodsCategory = routeGoodsCategory;
@@ -62,7 +62,7 @@ public class Route implements java.io.Serializable {
 	public Route(int routeID, String startingAddress,
 			String destinationAddress, String startTime, String finishTime,
 			String notes, int weight, String createTime, int active,
-			int driverID, List<RouteMarker> routeMarkers,
+			int driverID, Driver driver, List<RouteMarker> routeMarkers,
 			List<Vehicle> vehicles,
 			List<RouteGoodsCategory> routeGoodsCategory,
 			List<GoodsCategory> goodsCategory) {
@@ -77,6 +77,7 @@ public class Route implements java.io.Serializable {
 		this.createTime = createTime;
 		this.active = active;
 		this.driverID = driverID;
+		this.driver = driver;
 		this.routeMarkers = routeMarkers;
 		this.vehicles = vehicles;
 		this.routeGoodsCategory = routeGoodsCategory;
@@ -161,6 +162,14 @@ public class Route implements java.io.Serializable {
 
 	public void setDriverID(int driverID) {
 		this.driverID = driverID;
+	}
+
+	public Driver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(Driver driver) {
+		this.driver = driver;
 	}
 
 	public List<RouteMarker> getRouteMarkers() {

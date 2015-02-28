@@ -92,6 +92,7 @@ public class RouteDAO {
 			List<Route> list = new ArrayList<Route>();
 			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
 			VehicleDAO vehicleDAO = new VehicleDAO();
+			DriverDAO driverDao = new DriverDAO();
 			Route route;
 			while (rs.next()) {
 				route = new Route();
@@ -105,7 +106,10 @@ public class RouteDAO {
 				route.setWeight(rs.getInt("Weight"));
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(rs.getInt("Active"));
+
 				route.setDriverID(rs.getInt("DriverID"));
+				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
+
 				route.setRouteMarkers(routeMarkderDAO
 						.getAllRouteMarkerByRouteID(route.getRouteID()));
 				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
@@ -159,6 +163,7 @@ public class RouteDAO {
 
 			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
 			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+			DriverDAO driverDao = new DriverDAO();
 
 			while (rs.next()) {
 				route = new Route();
@@ -172,7 +177,10 @@ public class RouteDAO {
 				route.setWeight(rs.getInt("Weight"));
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(rs.getInt("Active"));
+				
 				route.setDriverID(rs.getInt("DriverID"));
+				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
+
 				route.setRouteMarkers(routeMarkerDao
 						.getAllRouteMarkerByRouteID(routeID));
 
@@ -365,12 +373,12 @@ public class RouteDAO {
 		try {
 			con = DBAccess.makeConnection();
 			String sql = "SELECT * FROM Route where RouteID=? AND Active=?";
-			
+
 			stm = con.prepareStatement(sql);
 			int i = 1;
 			stm.setInt(i++, routeID);
 			stm.setInt(i++, Common.activate);
-			
+
 			rs = stm.executeQuery();
 			Route route;
 			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();

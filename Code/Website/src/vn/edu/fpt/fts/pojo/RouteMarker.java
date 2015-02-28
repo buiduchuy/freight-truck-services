@@ -19,17 +19,27 @@ public class RouteMarker implements java.io.Serializable {
 	private int routeMarkerID;
 	private String routeMarkerLocation;
 	private int routeID;
+	private int numbering;
 
 	public RouteMarker() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public RouteMarker(int routeMarkerID, String routeMarkerLocation,
-			int routeID) {
+			int routeID, int numbering) {
 		super();
 		this.routeMarkerID = routeMarkerID;
 		this.routeMarkerLocation = routeMarkerLocation;
 		this.routeID = routeID;
+		this.numbering = numbering;
+	}
+
+	public int getNumbering() {
+		return numbering;
+	}
+
+	public void setNumbering(int numbering) {
+		this.numbering = numbering;
 	}
 
 	public int getRouteMarkerID() {

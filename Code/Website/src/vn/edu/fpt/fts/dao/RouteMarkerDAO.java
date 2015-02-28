@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,6 +45,7 @@ public class RouteMarkerDAO {
 				routeMarker.setRouteID(rs.getInt("RouteID"));
 				routeMarker.setRouteMarkerLocation(rs
 						.getString("RouteMarkerLocation"));
+				routeMarker.setNumbering(rs.getInt("Numbering"));
 
 				list.add(routeMarker);
 			}
@@ -81,12 +83,20 @@ public class RouteMarkerDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO RouteMarker ( " + "RouteMarkerLocation,"
-					+ "RouteID" + ") VALUES (" + "?, " + "?)";
-			stmt = con.prepareStatement(sql);
+					+ "RouteID," + "Numbering" + ") VALUES (" + "?, " + "?, "
+					+ "?)";
+			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setString(i++, bean.getRouteMarkerLocation()); // RouteMarkerLocation
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
-			ret = stmt.executeUpdate();
+			stmt.setInt(i++, bean.getNumbering()); // Numbering
+
+			stmt.executeUpdate();
+
+			ResultSet rs = stmt.getGeneratedKeys();
+			if (rs != null && rs.next()) {
+				ret = (int) rs.getLong(1);
+			}
 
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -111,26 +121,25 @@ public class RouteMarkerDAO {
 		return ret;
 	}
 
-	public int updateRouteMarker(RouteMarker routeMarker) {
+	public int updateRouteMarkerByNumeringAndRouteID(RouteMarker routeMarker) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE RouteMarker SET "
-					+ " RouteMarkerLocation = ?," + " RouteID = ? "
-					+ " WHERE RouteMarkerID = '"
-					+ routeMarker.getRouteMarkerID() + "' ";
+			String sql = "UPDATE RouteMarker SET " + " RouteMarkerLocation = ?"
+					+ " WHERE Numbering = '" + routeMarker.getRouteMarkerID()
+					+ "' AND RouteID = '" + routeMarker.getRouteID() + "'";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 			stmt.setString(i++, routeMarker.getRouteMarkerLocation()); // RouteMarkerLocation
-			stmt.setInt(i++, routeMarker.getRouteID()); // RouteID
 
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update Status to RouteMarker table");
+			System.out
+					.println("Can't update RouteMarkerLocation to RouteMarker table");
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {

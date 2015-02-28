@@ -17,7 +17,7 @@ import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.process.MatchingProcess;
 
-@Path("/Goods")
+@Path("Goods")
 public class GoodsAPI {
 	private final static String TAG = "GoodsAPI";
 	GoodsDAO goodsDao = new GoodsDAO();
@@ -61,6 +61,54 @@ public class GoodsAPI {
 			System.out.println(goodsParams.getFirst("deliveryAddress"));
 
 			ret = goodsDao.insertGoods(goods);
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return String.valueOf(ret);
+	}
+
+	@POST
+	@Path("Update")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String updateGoods(MultivaluedMap<String, String> goodsParams) {
+		Goods goods = new Goods();
+		int ret = 0;
+		try {
+
+			// Truyền thêm goodsID về
+			goods.setGoodsID(Integer.valueOf(goodsParams.getFirst("goodsID")));
+
+			goods.setWeight(Integer.valueOf(goodsParams.getFirst("weight")));
+			goods.setPrice(Double.valueOf(goodsParams.getFirst("price")));
+			goods.setPickupTime(goodsParams.getFirst("pickupTime"));
+			goods.setPickupAddress(goodsParams.getFirst("pickupAddress"));
+			goods.setDeliveryTime(goodsParams.getFirst("deliveryTime"));
+			goods.setDeliveryAddress(goodsParams.getFirst("deliveryAddress"));
+			goods.setPickupMarkerLongtitude(Float.valueOf(goodsParams
+					.getFirst("pickupMarkerLongtitude")));
+			goods.setPickupMarkerLatidute(Float.valueOf(goodsParams
+					.getFirst("pickupMarkerLatidute")));
+			goods.setDeliveryMarkerLongtitude(Float.valueOf(goodsParams
+					.getFirst("deliveryMarkerLongtitude")));
+			goods.setDeliveryMarkerLatidute(Float.valueOf(goodsParams
+					.getFirst("deliveryMarkerLatidute")));
+			goods.setNotes(goodsParams.getFirst("notes"));
+			goods.setCreateTime(goodsParams.getFirst("createTime"));
+			goods.setActive(Integer.valueOf(goodsParams.getFirst("active")));
+			goods.setOwnerID(Integer.valueOf(goodsParams.getFirst("ownerID")));
+			goods.setGoodsCategoryID(Integer.valueOf(goodsParams
+					.getFirst("goodsCategoryID")));
+			System.out.println(goodsParams.getFirst("deliveryAddress"));
+
+			ret = goodsDao.updateGoods(goods);
+
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();

@@ -23,18 +23,10 @@ import vn.edu.fpt.fts.pojo.Order;
  * @author Huy
  *
  */
-@Path("/Order")
+@Path("Order")
 public class OrderAPI {
 	private final static String TAG = "GoodsCategoryAPI";
 	OrderDAO orderDao = new OrderDAO();
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String Html() {
-		return "<html> " + "<title>" + "Web service" + "</title>"
-				+ "<body><h1>" + "WEB SERVICE IS ACTIVE" + "</body></h1>"
-				+ "</html> ";
-	}
 
 	@GET
 	@Path("get")

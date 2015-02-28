@@ -26,6 +26,8 @@ public class Goods implements java.io.Serializable {
 	private int OwnerID;
 	private int GoodsCategoryID;
 
+	private Owner owner;
+
 	private GoodsCategory goodsCategory;
 
 	public Goods(int weight, double price, String pickupTime,
@@ -33,7 +35,7 @@ public class Goods implements java.io.Serializable {
 			float pickupMarkerLongtitude, float pickupMarkerLatidute,
 			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
-			int goodsCategoryID, GoodsCategory goodsCategory) {
+			int goodsCategoryID, GoodsCategory goodsCategory, Owner owner) {
 		super();
 		Weight = weight;
 		Price = price;
@@ -51,6 +53,7 @@ public class Goods implements java.io.Serializable {
 		OwnerID = ownerID;
 		GoodsCategoryID = goodsCategoryID;
 		this.goodsCategory = goodsCategory;
+		this.owner = owner;
 	}
 
 	public Goods(int goodsID, int weight, double price, String pickupTime,
@@ -58,7 +61,7 @@ public class Goods implements java.io.Serializable {
 			float pickupMarkerLongtitude, float pickupMarkerLatidute,
 			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
-			int goodsCategoryID, GoodsCategory goodsCategory) {
+			int goodsCategoryID, GoodsCategory goodsCategory, Owner owner) {
 		super();
 		GoodsID = goodsID;
 		Weight = weight;
@@ -77,6 +80,7 @@ public class Goods implements java.io.Serializable {
 		OwnerID = ownerID;
 		GoodsCategoryID = goodsCategoryID;
 		this.goodsCategory = goodsCategory;
+		this.owner = owner;
 	}
 
 	public Goods(int weight, String notes, int goodsCategoryID) {
@@ -282,6 +286,14 @@ public class Goods implements java.io.Serializable {
 
 	public void setGoodsCategory(GoodsCategory goodsCategory) {
 		this.goodsCategory = goodsCategory;
+	}
+
+	public Owner getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Owner owner) {
+		this.owner = owner;
 	}
 
 }

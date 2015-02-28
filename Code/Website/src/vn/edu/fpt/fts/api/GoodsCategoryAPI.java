@@ -15,19 +15,11 @@ import javax.ws.rs.core.MultivaluedMap;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 
-@Path("/GoodsCategory")
+@Path("GoodsCategory")
 public class GoodsCategoryAPI {
 
 	private final static String TAG = "GoodsCategoryAPI";
 	GoodsCategoryDAO goodsCategoryDAO = new GoodsCategoryDAO();
-
-	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String Html() {
-		return "<html> " + "<title>" + "Web service" + "</title>"
-				+ "<body><h1>" + "WEB SERVICE IS ACTIVE" + "</body></h1>"
-				+ "</html> ";
-	}
 
 	@GET
 	@Path("get")

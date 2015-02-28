@@ -3,7 +3,6 @@
  */
 package vn.edu.fpt.fts.api;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.OwnerDAO;
-import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 
 /**
@@ -53,15 +51,6 @@ public class OwnerAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return null;
-	}
-
-	@POST
-	@Path("getSuggestionRoute")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Goods> getSuggestionGoods(MultivaluedMap<String, String> params) {
-
 		return null;
 	}
 

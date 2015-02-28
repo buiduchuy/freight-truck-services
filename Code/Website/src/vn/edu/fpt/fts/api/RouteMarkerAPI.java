@@ -31,21 +31,19 @@ public class RouteMarkerAPI {
 	public String createRouteMarker(MultivaluedMap<String, String> goodsParams) {
 		RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 		RouteMarker routeMarker = new RouteMarker();
+		int ret = 0;
 		try {
 			routeMarker.setRouteMarkerLocation(goodsParams
 					.getFirst("routeMarkerLocation"));
 			routeMarker.setRouteID(Integer.valueOf(goodsParams
 					.getFirst("routeId")));
-			int ret = routeMarkerDao.insertRouteMarker(routeMarker);
-			if (ret <= 0) {
-				return "Fail";
-			}
+			ret = routeMarkerDao.insertRouteMarker(routeMarker);
 
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return "Success";
+		return String.valueOf(ret);
 	}
 }

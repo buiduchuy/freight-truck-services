@@ -22,7 +22,7 @@ import vn.edu.fpt.fts.pojo.Owner;
  * @author Huy
  *
  */
-@Path("/Account")
+@Path("Account")
 public class AccountAPI {
 
 	// private final static String TAG = "AccountAPI";
@@ -52,6 +52,7 @@ public class AccountAPI {
 	public String checkDriverLogin(MultivaluedMap<String, String> goodsParams) {
 		AccountDAO accountDao = new AccountDAO();
 		DriverDAO driverDao = new DriverDAO();
+		int ret = 0;
 
 		Driver driver = new Driver();
 
@@ -61,9 +62,9 @@ public class AccountAPI {
 
 		if (account != null) {
 			driver = driverDao.getDriverByEmail(account.getEmail());
-			return String.valueOf(driver.getDriverID());
+			ret = driver.getDriverID();
 		}
-		return "0";
+		return String.valueOf(ret);
 	}
 
 	@POST
@@ -73,6 +74,7 @@ public class AccountAPI {
 	public String checkOwnerLogin(MultivaluedMap<String, String> goodsParams) {
 		AccountDAO accountDao = new AccountDAO();
 		OwnerDAO ownerDao = new OwnerDAO();
+		int ret = 0;
 
 		Owner owner = new Owner();
 
@@ -82,9 +84,19 @@ public class AccountAPI {
 
 		if (account != null) {
 			owner = ownerDao.getOwnerByEmail(account.getEmail());
-			return String.valueOf(owner.getOwnerID());
+			ret = owner.getOwnerID();
 		}
-		return "0";
+		return String.valueOf(ret);
+	}
+
+	@POST
+	@Path("Create")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String createAccount(MultivaluedMap<String, String> goodsParams) {
+		int ret = 0;
+
+		return String.valueOf(ret);
 	}
 
 }

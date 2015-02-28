@@ -233,6 +233,8 @@ public class GoodsDAO {
 			stm = con.prepareStatement(sql);
 			rs = stm.executeQuery();
 			List<Goods> list = new ArrayList<Goods>();
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			OwnerDAO ownerDao = new OwnerDAO();
 			Goods goods;
 			while (rs.next()) {
 				goods = new Goods();
@@ -256,8 +258,13 @@ public class GoodsDAO {
 				goods.setNotes(rs.getString("Notes"));
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
+
 				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
+
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+				goods.setGoodsCategory(goodsCategoryDao.getGoodsCategoryByID(rs
+						.getInt("GoodsCategoryID")));
 
 				list.add(goods);
 			}
@@ -301,6 +308,7 @@ public class GoodsDAO {
 
 			rs = stm.executeQuery();
 			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			OwnerDAO ownerDao = new OwnerDAO();
 			List<Goods> list = new ArrayList<Goods>();
 			Goods goods;
 			while (rs.next()) {
@@ -325,10 +333,11 @@ public class GoodsDAO {
 				goods.setNotes(rs.getString("Notes"));
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
+
 				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
 
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
-
 				goods.setGoodsCategory(goodsCategoryDao.getGoodsCategoryByID(rs
 						.getInt("GoodsCategoryID")));
 
@@ -375,6 +384,8 @@ public class GoodsDAO {
 			stm.setString(i++, createTime);
 
 			rs = stm.executeQuery();
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			OwnerDAO ownerDao = new OwnerDAO();
 			List<Goods> list = new ArrayList<Goods>();
 			Goods goods;
 			while (rs.next()) {
@@ -399,8 +410,13 @@ public class GoodsDAO {
 				goods.setNotes(rs.getString("Notes"));
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
+
 				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
+
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+				goods.setGoodsCategory(goodsCategoryDao.getGoodsCategoryByID(rs
+						.getInt("GoodsCategoryID")));
 
 				list.add(goods);
 			}
@@ -443,7 +459,8 @@ public class GoodsDAO {
 			stmt.setInt(i++, goodsID);
 
 			rs = stmt.executeQuery();
-
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			OwnerDAO ownerDao = new OwnerDAO();
 			while (rs.next()) {
 				Goods goods = new Goods();
 
@@ -466,8 +483,14 @@ public class GoodsDAO {
 				goods.setNotes(rs.getString("Notes"));
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
+
 				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
+
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+				goods.setGoodsCategory(goodsCategoryDao.getGoodsCategoryByID(rs
+						.getInt("GoodsCategoryID")));
+
 				return goods;
 			}
 		} catch (SQLException e) {
