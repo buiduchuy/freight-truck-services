@@ -58,7 +58,7 @@ public class RouteList extends Fragment {
 
 	Calendar cal = Calendar.getInstance();
 	ArrayList<ListItem> list;
-	HashMap<Long, Integer> map;
+	ArrayList<String> map;
 	ListItemAdapter2 adapter;
 	ListView list1;
 	View myFragmentView;
@@ -69,7 +69,7 @@ public class RouteList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
-		map = new HashMap<Long, Integer>();
+		map = new ArrayList<String>();
 		getActivity().setTitle("Danh sách lộ trình");
 		WebService ws = new WebService(WebService.GET_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
@@ -81,7 +81,7 @@ public class RouteList extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				int id = map.get(arg3);
+				int id = Integer.parseInt(map.get((int) arg3));
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				CurrentRoute frag = new CurrentRoute();
@@ -184,23 +184,44 @@ public class RouteList extends Fragment {
 					JSONArray array = obj.getJSONArray("route");
 					for (int i = array.length() - 1; i >= 0; i--) {
 						JSONObject item = array.getJSONObject(i);
+						if (item.getString("driverID").equals(
+								getActivity().getIntent().getStringExtra(
+										"driverID")) && item.getString("active").equals("1")) {
+							Object intervent;
 
-						Object intervent;
+							String[] start = item.getString("startingAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title = start[start.length - 1].trim();
 
-						String[] start = item.getString("startingAddress")
-								.replaceAll("(?i), Vietnam", "")
-								.replaceAll("(?i), Viet Nam", "")
-								.replaceAll("(?i), Việt Nam", "").split(",");
-						title = start[start.length - 1].trim();
+							if (item.has("routeMarkers")) {
+								intervent = item.get("routeMarkers");
 
-						if (item.has("routeMarkers")) {
-							intervent = item.get("routeMarkers");
-
-							if (intervent instanceof JSONArray) {
-								JSONArray catArray = item
-										.getJSONArray("routeMarkers");
-								for (int j = 0; j < catArray.length(); j++) {
-									JSONObject cat = catArray.getJSONObject(j);
+								if (intervent instanceof JSONArray) {
+									JSONArray catArray = item
+											.getJSONArray("routeMarkers");
+									for (int j = 0; j < catArray.length(); j++) {
+										JSONObject cat = catArray
+												.getJSONObject(j);
+										String[] point = cat
+												.getString(
+														"routeMarkerLocation")
+												.replaceAll("(?i), Vietnam", "")
+												.replaceAll("(?i), Viet Nam",
+														"")
+												.replaceAll("(?i), Việt Nam",
+														"").split(",");
+										if (!point[point.length - 1].equals("")) {
+											title += " - "
+													+ point[point.length - 1]
+															.trim();
+										}
+									}
+								} else if (intervent instanceof JSONObject) {
+									JSONObject cat = item
+											.getJSONObject("routeMarkers");
 									String[] point = cat
 											.getString("routeMarkerLocation")
 											.replaceAll("(?i), Vietnam", "")
@@ -213,48 +234,35 @@ public class RouteList extends Fragment {
 														.trim();
 									}
 								}
-							} else if (intervent instanceof JSONObject) {
-								JSONObject cat = item
-										.getJSONObject("routeMarkers");
-								String[] point = cat
-										.getString("routeMarkerLocation")
-										.replaceAll("(?i), Vietnam", "")
-										.replaceAll("(?i), Viet Nam", "")
-										.replaceAll("(?i), Việt Nam", "")
-										.split(",");
-								if (!point[point.length - 1].equals("")) {
-									title += " - "
-											+ point[point.length - 1].trim();
-								}
 							}
-						}
 
-						String[] end = item.getString("destinationAddress")
-								.replaceAll("(?i), Vietnam", "")
-								.replaceAll("(?i), Viet Nam", "")
-								.replaceAll("(?i), Việt Nam", "").split(",");
-						title += " - " + end[end.length - 1].trim();
-						SimpleDateFormat format = new SimpleDateFormat(
-								"yyyy-MM-dd hh:mm:ss");
-						try {
-							Date startDate = format.parse(item
-									.getString("startTime"));
-							format.applyPattern("dd/MM/yyyy");
-							String sd = format.format(startDate);
-							format.applyPattern("yyyy-MM-dd hh:mm:ss");
-							Date finishDate = format.parse(item
-									.getString("finishTime"));
-							format.applyPattern("dd/MM/yyyy");
-							String fd = format.format(finishDate);
-							description = sd + " - " + fd;
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							String[] end = item.getString("destinationAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title += " - " + end[end.length - 1].trim();
+							SimpleDateFormat format = new SimpleDateFormat(
+									"yyyy-MM-dd hh:mm:ss");
+							try {
+								Date startDate = format.parse(item
+										.getString("startTime"));
+								format.applyPattern("dd/MM/yyyy");
+								String sd = format.format(startDate);
+								format.applyPattern("yyyy-MM-dd hh:mm:ss");
+								Date finishDate = format.parse(item
+										.getString("finishTime"));
+								format.applyPattern("dd/MM/yyyy");
+								String fd = format.format(finishDate);
+								description = sd + " - " + fd;
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							ListItem itm = new ListItem(title, description, "");
+							list.add(itm);
+							map.add(item.getString("routeID"));
 						}
-						ListItem itm = new ListItem(title, description, "");
-						list.add(itm);
-						map.put(Long.valueOf(i),
-								Integer.parseInt(item.getString("routeID")));
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

@@ -130,6 +130,18 @@
             android:name=".CancelOffer"
             android:label="@string/title_activity_cancel_offer" >
         </activity>
+        <activity
+            android:name=".DealHistory"
+            android:label="@string/title_activity_deal_history" >
+        </activity>
+        <activity
+            android:name=".Notification"
+            android:label="@string/title_activity_notification" >
+        </activity>
+        <activity
+            android:name=".DealHistoryDetail"
+            android:label="@string/title_activity_deal_history_detail" >
+        </activity>
     </application>
 
 </manifest>

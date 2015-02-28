@@ -161,7 +161,7 @@ public class HistoryDetail extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText(obj.getString("price") + " đồng");
+				price.setText(obj.getString("price") + " ngàn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("driverDeliveryStatus").equals("true")) {

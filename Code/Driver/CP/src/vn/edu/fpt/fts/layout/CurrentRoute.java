@@ -88,18 +88,18 @@ public class CurrentRoute extends Fragment {
 		ws.addNameValuePair("routeID", id);
 		ws.execute(new String[] { SERVICE_URL });
 		viewSuggest.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				FragmentManager mng = getActivity().getSupportFragmentManager();
-	    		FragmentTransaction trs = mng.beginTransaction();
-	    		SystemSuggest frag = new SystemSuggest();
-	    		Bundle bundle = new Bundle();
-	    		bundle.putString("routeID", String.valueOf(id));
-	    		frag.setArguments(bundle);
-	    		trs.replace(R.id.content_frame, frag);
-	    		trs.addToBackStack(null);
-	    		trs.commit();
+				FragmentTransaction trs = mng.beginTransaction();
+				SystemSuggest frag = new SystemSuggest();
+				Bundle bundle = new Bundle();
+				bundle.putString("routeID", String.valueOf(id));
+				frag.setArguments(bundle);
+				trs.replace(R.id.content_frame, frag);
+				trs.addToBackStack(null);
+				trs.commit();
 			}
 		});
 		return v;
@@ -190,33 +190,43 @@ public class CurrentRoute extends Fragment {
 				Object intervent;
 				startPoint.setText(obj.getString("startingAddress"));
 
-				intervent = obj.get("routeMarkers");
-				if (intervent instanceof JSONArray) {
-					JSONArray catArray = obj.getJSONArray("routeMarkers");
-					for (int j = 0; j < catArray.length(); j++) {
-						JSONObject cat = catArray.getJSONObject(j);
-						if (j == 0) {
-							if(!cat.getString("routeMarkerLocation").equals("")) {
-								point1.setText(cat.getString("routeMarkerLocation"));
-							}
-							else {
-								point1.setText("Không có");
-							}
-							point2.setText("Không có");
-						} else if (j == 1) {
-							if(!cat.getString("routeMarkerLocation").equals("")) {
-								point2.setText(cat.getString("routeMarkerLocation"));
+				if (obj.has("routeMarkers")) {
+					intervent = obj.get("routeMarkers");
+					if (intervent instanceof JSONArray) {
+						JSONArray catArray = obj.getJSONArray("routeMarkers");
+						for (int j = 0; j < catArray.length(); j++) {
+							JSONObject cat = catArray.getJSONObject(j);
+							if (j == 0) {
+								if (!cat.getString("routeMarkerLocation")
+										.equals("")) {
+									point1.setText(cat
+											.getString("routeMarkerLocation"));
+								} else {
+									point1.setText("Không có");
+								}
+								point2.setText("Không có");
+							} else if (j == 1) {
+								if (!cat.getString("routeMarkerLocation")
+										.equals("")) {
+									point2.setText(cat
+											.getString("routeMarkerLocation"));
+								}
 							}
 						}
+					} else if (intervent instanceof JSONObject) {
+						JSONObject cat = obj.getJSONObject("routeMarkers");
+						point1.setText(cat.getString("routeMarkerLocation"));
+						point2.setText("Không có");
 					}
-				} else if (intervent instanceof JSONObject) {
-					JSONObject cat = obj.getJSONObject("routeMarkers");
-					point1.setText(cat.getString("routeMarkerLocation"));
+				}
+				else {
+					point1.setText("Không có");
 					point2.setText("Không có");
 				}
 
 				endPoint.setText(obj.getString("destinationAddress"));
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				SimpleDateFormat format = new SimpleDateFormat(
+						"yyyy-MM-dd hh:mm:ss");
 				Date startD = null;
 				try {
 					startD = format.parse(obj.getString("startTime"));

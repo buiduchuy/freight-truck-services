@@ -52,15 +52,16 @@ public class SystemSuggest extends Fragment {
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
 	ListView list1;
 	View myFragmentView;
-	private static final String SERVICE_URL = Constant.SERVICE_URL + "Goods/get";
+	private static final String SERVICE_URL = Constant.SERVICE_URL + "Goods/getSuggestionGoods";
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		list = new ArrayList<ListItem>();
 		getActivity().setTitle("Gợi ý hệ thống");
-		WebService ws = new WebService(WebService.GET_TASK,
+		WebService ws = new WebService(WebService.POST_TASK,
 				getActivity(), "Đang lấy dữ liệu ...");
+		ws.addNameValuePair("routeID", getArguments().getString("routeID"));
 		ws.execute(new String[] { SERVICE_URL });
 		myFragmentView = inflater.inflate(
 				R.layout.activity_system_suggest, container, false);
@@ -170,7 +171,7 @@ public class SystemSuggest extends Fragment {
 				JSONArray array = obj.getJSONArray("goods");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject item = array.getJSONObject(i);
-					list.add(new ListItem("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn",  item.getString("price") + " đồng", ""));
+					list.add(new ListItem("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn",  item.getString("price") + " ngàn đồng", ""));
 					map.put(Long.valueOf(i), Integer.parseInt(item.getString("goodsID")));
 				}
 				adapter = new ListItemAdapter2(getActivity(), list);

@@ -176,33 +176,37 @@ public class Deals extends Fragment {
 						JSONObject item = array.getJSONObject(i);
 						if (item.getString("createBy").equalsIgnoreCase(
 								"driver")
-								&& item.getString("dealStatusID").equals("2")) {
+								&& item.getString("dealStatusID").equals("1")) {
 							JSONObject gd = item.getJSONObject("goods");
-							String title = "";
-							String[] start = gd.getString("pickupAddress")
-									.replaceAll("(?i), Vietnam", "")
-									.replaceAll("(?i), Viet Nam", "")
-									.replaceAll("(?i), Việt Nam", "")
-									.split(",");
-							title = start[start.length - 1].trim();
+							if (gd.getString("active").equals("1")) {
+								String title = "";
+								String[] start = gd.getString("pickupAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title = start[start.length - 1].trim();
 
-							String[] end = gd.getString("deliveryAddress")
-									.replaceAll("(?i), Vietnam", "")
-									.replaceAll("(?i), Viet Nam", "")
-									.replaceAll("(?i), Việt Nam", "")
-									.split(",");
-							title += " - " + end[end.length - 1].trim();
-							SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-							Date createDate = format.parse(item.getString("createTime"));
-							format.applyPattern("dd/MM/yyyy");
-							String createD = format.format(createDate);
-							list.add(new ListItem(count + ". " + title,
-									"Giá đề nghị: "
-											+ (int) Double.parseDouble(item
-													.getString("price"))
-											+ " đồng", createD));
-							count++;
-							map.add(item.getString("dealID"));
+								String[] end = gd.getString("deliveryAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title += " - " + end[end.length - 1].trim();
+								SimpleDateFormat format = new SimpleDateFormat(
+										"yyyy-MM-dd hh:mm:ss");
+								Date createDate = format.parse(item
+										.getString("createTime"));
+								format.applyPattern("dd/MM/yyyy");
+								String createD = format.format(createDate);
+								list.add(new ListItem(count + ". " + title,
+										"Giá đề nghị: "
+												+ (int) Double.parseDouble(item
+														.getString("price"))
+												+ " ngàn đồng", createD));
+								count++;
+								map.add(item.getString("dealID"));
+							}
 						}
 					}
 				} catch (JSONException e) {

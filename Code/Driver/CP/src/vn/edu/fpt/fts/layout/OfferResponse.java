@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.http.HttpResponse;
@@ -198,7 +199,7 @@ public class OfferResponse extends Fragment {
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
 				price.setText((int) Double.parseDouble(obj.getString("price"))
-						+ " đồng");
+						+ " ngàn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (good.has("notes")) {
 					if (good.getString("notes").equals("")
@@ -370,10 +371,10 @@ public class OfferResponse extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Đề nghị đã được chấp nhận.",
 						Toast.LENGTH_SHORT).show();
-			} else if (response.equals("Fail")) {
+			} else {
 				Toast.makeText(getActivity(),
 						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
 						.show();
@@ -532,10 +533,10 @@ public class OfferResponse extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Đề nghị đã được từ chối.",
 						Toast.LENGTH_SHORT).show();
-			} else if (response.equals("Fail")) {
+			} else {
 				Toast.makeText(getActivity(),
 						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
 						.show();
@@ -627,13 +628,31 @@ public class OfferResponse extends Fragment {
 		case R.id.action_accept:
 			WebService2 ws = new WebService2(WebService.POST_TASK,
 					getActivity(), "Đang xử lý ...");
-			ws.addNameValuePair("dealID", id);
+			ws.addNameValuePair("refDealID", id);
+			ws.addNameValuePair("active", "1");
+			ws.addNameValuePair("price", price.getText().toString().replace(" ngàn đồng", ""));
+			ws.addNameValuePair("notes", note.getText().toString());
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+			String createTime = format.format(Calendar.getInstance().getTime());
+			ws.addNameValuePair("createTime", createTime);
+			ws.addNameValuePair("createBy", "driver");
+			ws.addNameValuePair("routeID", routeID);
+			ws.addNameValuePair("goodsID", goodID);
 			ws.execute(new String[] { SERVICE_URL2 });
 			return true;
 		case R.id.action_decline:
 			WebService3 ws2 = new WebService3(WebService.POST_TASK,
 					getActivity(), "Đang xử lý ...");
-			ws2.addNameValuePair("dealID", id);
+			ws2.addNameValuePair("refDealID", id);
+			ws2.addNameValuePair("active", "1");
+			ws2.addNameValuePair("price", price.getText().toString().replace(" ngàn đồng", ""));
+			ws2.addNameValuePair("notes", note.getText().toString());
+			SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+			String createTime2 = format2.format(Calendar.getInstance().getTime());
+			ws2.addNameValuePair("createTime", createTime2);
+			ws2.addNameValuePair("createBy", "driver");
+			ws2.addNameValuePair("routeID", routeID);
+			ws2.addNameValuePair("goodsID", goodID);
 			ws2.execute(new String[] { SERVICE_URL3 });
 			return true;
 		default:

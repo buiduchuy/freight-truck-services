@@ -2,6 +2,8 @@ package vn.edu.fpt.fts.layout;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.internal.hi;
+
 import vn.edu.fpt.fts.drawer.NavDrawerAdapter;
 import vn.edu.fpt.fts.drawer.NavDrawerItem;
 import android.content.Intent;
@@ -107,10 +109,20 @@ public class MainActivity extends FragmentActivity {
 				fragment = new TabDeals();
 				break;
 			case 2:
-				fragment = new History();
+				fragment = new DealHistory();
 				break;
 			case 3:
+				fragment = new History();
+				break;
+			case 4:
+				fragment = new Notification();
+				break;
+			case 5:
 				fragment = new SuggestList();
+				break;
+			case 6:
+				fragment = new SuggestList();
+				break;
 			default:
 				break;
 			}

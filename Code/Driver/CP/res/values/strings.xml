@@ -38,25 +38,31 @@
     <string name="pass">Mật khẩu</string>
     <string name="login">Đăng nhập</string>
     <string name="sendPlace">Địa điểm giao hàng:</string>
-	<string name="receivePlace">Địa điểm nhận hàng:</string>
-	<string name="sentTime">Thời gian giao hàng:</string>
-	<string name="receiveTime">Thời gian nhận hàng:</string>
-	<string name="kg">kg</string>
-	<string name="price">Giá giao dịch:</string>
-	<string name="sendStatus">Trạng thái giao hàng:</string>
-	<string name="sendWeight">Khối lượng hàng:</string>
-	<string name="noOrder">Không có hóa đơn nào</string>
-	<string name="noRoute">Không có lộ trình nào</string>
-	<string name="noOffer">Không có đề nghị nào</string>
-	<string name="noSuggest">Không có gợi ý nào</string>
-	<string name="note">Ghi chú:</string>
-	<string name="note2">Ghi chú</string>
-	<string name="suggestPrice">Giá đề nghị (ngàn đồng):</string>
-	<string name="suggest">Xem gợi ý</string>
+    <string name="receivePlace">Địa điểm nhận hàng:</string>
+    <string name="sentTime">Thời gian giao hàng:</string>
+    <string name="receiveTime">Thời gian nhận hàng:</string>
+    <string name="kg">kg</string>
+    <string name="price">Giá giao dịch:</string>
+    <string name="sendStatus">Trạng thái giao hàng:</string>
+    <string name="sendWeight">Khối lượng hàng:</string>
+    <string name="noOrder">Không có hóa đơn nào</string>
+    <string name="noRoute">Không có lộ trình nào</string>
+    <string name="noOffer">Không có đề nghị nào</string>
+    <string name="noSuggest">Không có gợi ý nào</string>
+    <string name="note">Ghi chú:</string>
+    <string name="note2">Ghi chú</string>
+    <string name="suggestPrice">Giá đề nghị (ngàn đồng):</string>
+    <string name="suggest">Xem gợi ý</string>
+    <string name="send">GỬI</string>
+    <string name="save">LƯU</string>
+    <string name="status">Trạng thái:</string>
+
     <string-array name="navigation_drawer_items_array">
         <item>Danh sách lộ trình</item>
         <item>Đề nghị</item>
+        <item>Lịch sử giao dịch</item>
         <item>Hóa đơn</item>
+        <item>Thông báo</item>
         <item>Tài khoản</item>
         <item>Đăng xuất</item>
     </string-array>
@@ -64,7 +70,9 @@
     <array name="nav_drawer_icons">
         <item>@drawable/ic_action_place</item>
         <item>@drawable/ic_action_sort_by_size</item>
+        <item>@drawable/ic_action_event</item>
         <item>@drawable/ic_action_copy</item>
+        <item>@drawable/ic_action_alarms</item>
         <item>@drawable/ic_action_accounts</item>
         <item>@drawable/ic_action_not_secure</item>
     </array>
@@ -87,5 +95,8 @@
     <string name="title_activity_suggest_list">SuggestList</string>
     <string name="title_activity_cancel_offer">CancelOffer</string>
     <string name="title_activity_login">FTS Driver</string>
+    <string name="title_activity_deal_history">DealHistory</string>
+    <string name="title_activity_notification">Notification</string>
+    <string name="title_activity_deal_history_detail">DealHistoryDetail</string>
 
 </resources>

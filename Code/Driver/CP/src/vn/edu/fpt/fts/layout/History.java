@@ -27,6 +27,7 @@ import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import vn.edu.fpt.fts.drawer.ListItemAdapter2;
+import android.R.anim;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -46,7 +47,7 @@ import android.widget.ListView;
 public class History extends Fragment {
 
 	ArrayList<ListItem> list;
-	HashMap<Long, Integer> map;
+	ArrayList<String> map;
 	ListView list1;
 	ListItemAdapter2 adapter;
 	View myFragmentView;
@@ -57,11 +58,11 @@ public class History extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
-		map = new HashMap<Long, Integer>();
+		map = new ArrayList<String>();
 		getActivity().setTitle("Lịch sử giao dịch");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
-		ws.addNameValuePair("driverID", "6");
+		ws.addNameValuePair("driverID", getActivity().getIntent().getStringExtra("driverID"));
 		ws.execute(new String[] { SERVICE_URL });
 		myFragmentView = inflater.inflate(R.layout.activity_history, container,
 				false);
@@ -70,7 +71,7 @@ public class History extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				int id = map.get(arg3);
+				int id = Integer.parseInt(map.get((int) arg3));
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				HistoryDetail frag = new HistoryDetail();
@@ -171,6 +172,7 @@ public class History extends Fragment {
 					Object invervent = obj.get("order");
 					if (invervent instanceof JSONArray) {
 						JSONArray array = obj.getJSONArray("order");
+						int count = 1;
 						for (int i = array.length() - 1; i >= 0; i--) {
 							JSONObject item = array.getJSONObject(i);
 							String status = "";
@@ -182,10 +184,10 @@ public class History extends Fragment {
 							} else {
 								status = "Chưa giao hàng";
 							}
-							list.add(new ListItem((i + 1) + ". " + price
+							list.add(new ListItem(count + ". " + price
 									+ " đồng", status, ""));
-							map.put(Long.valueOf(i),
-									Integer.parseInt(item.getString("orderID")));
+							count++;
+							map.add(item.getString("orderID"));
 						}
 					} else if (invervent instanceof JSONObject) {
 						JSONObject item = obj.getJSONObject("order");
@@ -198,9 +200,8 @@ public class History extends Fragment {
 						} else {
 							status = "Chưa giao hàng";
 						}
-						list.add(new ListItem("1. " + price + " đồng", status, ""));
-						map.put(Long.valueOf(0),
-								Integer.parseInt(item.getString("orderID")));
+						list.add(new ListItem("1. " + price + " ngàn đồng", status, ""));
+						map.add(item.getString("orderID"));
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

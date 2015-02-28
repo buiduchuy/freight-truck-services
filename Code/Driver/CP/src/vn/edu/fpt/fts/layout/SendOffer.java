@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -26,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.helper.Common;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -34,6 +36,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,7 +48,6 @@ import android.widget.Toast;
 
 public class SendOffer extends Fragment {
 
-	Button button;
 	EditText price;
 	EditText note;
 	TextView startPlace, endPlace, startTime, endTime, pr, nte, weight;
@@ -51,6 +55,13 @@ public class SendOffer extends Fragment {
 			+ "Deal/Create";
 	private static final String SERVICE_URL2 = Constant.SERVICE_URL
 			+ "Goods/getGoodsByID";
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -59,7 +70,6 @@ public class SendOffer extends Fragment {
 		View v = inflater.inflate(R.layout.activity_send_offer, container,
 				false);
 
-		button = (Button) v.findViewById(R.id.button1);
 		price = (EditText) v.findViewById(R.id.editText1);
 		note = (EditText) v.findViewById(R.id.editText2);
 		startPlace = (TextView) v.findViewById(R.id.textView2);
@@ -75,47 +85,6 @@ public class SendOffer extends Fragment {
 		ws2.addNameValuePair("goodsID", getArguments().getString("goodID"));
 		ws2.execute(SERVICE_URL2);
 
-		button.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Calendar calendar = Calendar.getInstance();
-				String current = String.valueOf(calendar.get(Calendar.YEAR))
-						+ "-"
-						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
-						+ "-"
-						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
-						+ " " + String.valueOf(calendar.get(Calendar.HOUR))
-						+ ":" + String.valueOf(calendar.get(Calendar.MINUTE))
-						+ ":" + String.valueOf(calendar.get(Calendar.SECOND));
-				String pr = price.getText().toString();
-				if (pr.equals("")) {
-					Toast.makeText(getActivity(),
-							"Giá đề nghị không được để trống",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					WebService ws = new WebService(WebService.POST_TASK,
-							getActivity(), "Đang xử lý ...");
-					ws.addNameValuePair("price", pr);
-					ws.addNameValuePair("notes", note.getText().toString());
-					ws.addNameValuePair("createTime", current);
-					ws.addNameValuePair("createBy", "driver");
-					ws.addNameValuePair("routeID",
-							getArguments().getString("routeID"));
-					ws.addNameValuePair("goodsID",
-							getArguments().getString("goodID"));
-					if (getArguments().getString("refID") == null) {
-						ws.addNameValuePair("refDealID", "0");
-					} else {
-						ws.addNameValuePair("refDealID", getArguments()
-								.getString("refID"));
-					}
-					ws.addNameValuePair("dealStatusID", "2");
-					ws.addNameValuePair("active", "1");
-					ws.execute(new String[] { SERVICE_URL });
-				}
-			}
-		});
 		return v;
 	}
 
@@ -357,7 +326,7 @@ public class SendOffer extends Fragment {
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
 				pr.setText((int) Double.parseDouble(good.getString("price"))
-						+ " đồng");
+						+ " ngàn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (good.has("notes")) {
 					if (good.getString("notes").equals("")
@@ -442,6 +411,59 @@ public class SendOffer extends Fragment {
 			// Return full string
 			return total.toString();
 		}
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
+		MenuItem item = menu.add(Menu.NONE, R.id.action_send, 99,
+				R.string.send);
+		item.setActionView(R.layout.actionbar_send);
+		item.getActionView().setOnClickListener(new View.OnClickListener() {
 
+			@Override
+			public void onClick(View v) {
+				Calendar calendar = Calendar.getInstance();
+				String current = String.valueOf(calendar.get(Calendar.YEAR))
+						+ "-"
+						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
+						+ "-"
+						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
+						+ " " + String.valueOf(calendar.get(Calendar.HOUR))
+						+ ":" + String.valueOf(calendar.get(Calendar.MINUTE))
+						+ ":" + String.valueOf(calendar.get(Calendar.SECOND));
+				String pr = price.getText().toString();
+				if (pr.equals("")) {
+					Toast.makeText(getActivity(),
+							"Giá đề nghị không được để trống",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					WebService ws = new WebService(WebService.POST_TASK,
+							getActivity(), "Đang xử lý ...");
+					ws.addNameValuePair("price", pr);
+					ws.addNameValuePair("notes", note.getText().toString());
+					ws.addNameValuePair("createTime", current);
+					ws.addNameValuePair("createBy", "driver");
+					ws.addNameValuePair("routeID",
+							getArguments().getString("routeID"));
+					ws.addNameValuePair("goodsID",
+							getArguments().getString("goodID"));
+					if (getArguments().getString("refID") == null) {
+						ws.addNameValuePair("refDealID", "0");
+					} else {
+						ws.addNameValuePair("refDealID", getArguments()
+								.getString("refID"));
+					}
+					ws.addNameValuePair("dealStatusID", "2");
+					ws.addNameValuePair("active", "1");
+					ws.execute(new String[] { SERVICE_URL });
+				}
+			}
+		});
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT
+				| MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item.setIcon(R.drawable.ic_action_accept);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 }

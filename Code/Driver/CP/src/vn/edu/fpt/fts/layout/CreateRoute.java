@@ -576,7 +576,7 @@ public class CreateRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Tạo mới thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -707,7 +707,7 @@ public class CreateRoute extends Fragment {
 				String fd = String.valueOf(food.isChecked());
 				String load = payload.getText().toString();
 				Calendar calendar = Calendar.getInstance();
-				SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 				String current = String.valueOf(calendar.get(Calendar.YEAR))
 						+ "-"
 						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)

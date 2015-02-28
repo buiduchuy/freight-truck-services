@@ -6,6 +6,6 @@
         android:id="@+id/action_cancelOffer"
         android:showAsAction="always|withText"
         android:actionLayout="@layout/actionbar_create"
-        android:title="@string/create2"/>
+        android:title="@string/decline"/>
 
 </menu>
