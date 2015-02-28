@@ -42,7 +42,7 @@ public class RouteGoodsCategoryDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.out.println("Can't insert to RouteGoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 

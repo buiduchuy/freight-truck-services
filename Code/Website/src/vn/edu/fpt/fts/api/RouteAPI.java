@@ -1,7 +1,9 @@
 package vn.edu.fpt.fts.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +15,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.dao.RouteGoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.RouteMarkerDAO;
@@ -20,11 +24,14 @@ import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 import vn.edu.fpt.fts.pojo.RouteMarker;
 import vn.edu.fpt.fts.process.MatchingProcess;
+import vn.edu.fpt.fts.process.RouteProcess;
 
 @Path("Route")
 public class RouteAPI {
 	private final static String TAG = "RouteAPI";
 	RouteDAO routeDao = new RouteDAO();
+	DealDAO dealDao = new DealDAO();
+	RouteProcess routeProcess = new RouteProcess();
 
 	@GET
 	@Path("get")
@@ -65,20 +72,15 @@ public class RouteAPI {
 			String marker1 = params.getFirst("routeMarkerLocation1");
 			String marker2 = params.getFirst("routeMarkerLocation2");
 
-			if (!marker1.isEmpty()) {
-				routeMarker.setNumbering(1);
-				routeMarker.setRouteMarkerLocation(marker1);
+			routeMarker.setNumbering(1);
+			routeMarker.setRouteMarkerLocation(marker1);
 
-				routeMarkerDao.insertRouteMarker(routeMarker);
+			routeMarkerDao.insertRouteMarker(routeMarker);
 
-			}
+			routeMarker.setNumbering(2);
+			routeMarker.setRouteMarkerLocation(marker2);
 
-			if (!marker2.isEmpty()) {
-				routeMarker.setNumbering(2);
-				routeMarker.setRouteMarkerLocation(marker2);
-
-				routeMarkerDao.insertRouteMarker(routeMarker);
-			}
+			routeMarkerDao.insertRouteMarker(routeMarker);
 			// ------------------------------------------------------------------
 
 			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
@@ -87,25 +89,26 @@ public class RouteAPI {
 			routeGoodsCategory.setRouteID(ret);
 
 			// Get params category true/false
+			String goodsCategoryName = "";
 			if (Boolean.parseBoolean(params.getFirst("Food"))) {
-				String goodsCategoryName = "Hàng thực phẩm";
+				goodsCategoryName = "Hàng thực phẩm";
 				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
 						goodsCategoryName);
 
 			}
 			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
-				String goodsCategoryName = "Hàng đông lạnh";
+				goodsCategoryName = "Hàng đông lạnh";
 				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
 						goodsCategoryName);
 
 			}
 			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
-				String goodsCategoryName = "Hàng dễ vỡ";
+				goodsCategoryName = "Hàng dễ vỡ";
 				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
 						goodsCategoryName);
 			}
 			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
-				String goodsCategoryName = "Hàng dễ cháy nổ";
+				goodsCategoryName = "Hàng dễ cháy nổ";
 				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
 						goodsCategoryName);
 			}
@@ -123,14 +126,15 @@ public class RouteAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateRoute(MultivaluedMap<String, String> params) {
+		int ret = 0;
 
 		Route route = new Route();
-		int ret = 0;
-		try {
+		List<RouteMarker> listRouteMarker = new ArrayList<RouteMarker>();
+		Map<String, Boolean> routeGoodsCategoryMap = new HashMap<String, Boolean>();
 
+		try {
 			// Truyền thêm routeID về
 			int routeID = Integer.valueOf(params.getFirst("routeID"));
-
 			route.setRouteID(routeID);
 			route.setStartingAddress(params.getFirst("startingAddress"));
 			route.setDestinationAddress(params.getFirst("destinationAddress"));
@@ -142,82 +146,61 @@ public class RouteAPI {
 			route.setActive(Integer.valueOf(params.getFirst("active")));
 			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
 
-			ret = routeDao.updateRoute(route);
+			// RouteMarker
+			RouteMarker routeMarker1 = new RouteMarker();
+			RouteMarker routeMarker2 = new RouteMarker();
 
-			// ------------------------------------------------------------------
-			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
-			RouteMarker routeMarker = new RouteMarker();
-			routeMarker.setRouteID(routeID);
-			String marker1 = params.getFirst("routeMarkerLocation1");
-			String marker2 = params.getFirst("routeMarkerLocation2");
+			routeMarker1.setRouteID(routeID);
+			routeMarker1.setNumbering(1);
+			routeMarker1.setRouteMarkerLocation(params
+					.getFirst("routeMarkerLocation1"));
+			listRouteMarker.add(routeMarker1);
 
-			if (!marker1.isEmpty()) {
-				routeMarker.setNumbering(1);
-				routeMarker.setRouteMarkerLocation(marker1);
-				routeMarkerDao
-						.updateRouteMarkerByNumeringAndRouteID(routeMarker);
-			}
+			routeMarker2.setRouteID(routeID);
+			routeMarker2.setNumbering(2);
+			routeMarker2.setRouteMarkerLocation(params
+					.getFirst("routeMarkerLocation2"));
+			listRouteMarker.add(routeMarker2);
 
-			if (!marker2.isEmpty()) {
-				routeMarker.setNumbering(2);
-				routeMarker.setRouteMarkerLocation(marker2);
-				routeMarkerDao
-						.updateRouteMarkerByNumeringAndRouteID(routeMarker);
-			}
-			// ------------------------------------------------------------------
+			// RouteGoodsCategory
 
-			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+			routeGoodsCategoryMap.put("Food",
+					Boolean.parseBoolean(params.getFirst("Food")));
+			routeGoodsCategoryMap.put("Freeze",
+					Boolean.parseBoolean(params.getFirst("Freeze")));
+			routeGoodsCategoryMap.put("Broken",
+					Boolean.parseBoolean(params.getFirst("Broken")));
+			routeGoodsCategoryMap.put("Flame",
+					Boolean.parseBoolean(params.getFirst("Flame")));
 
-			// Get params category true/false
-			String goodsCategoryName = "";
-			if (Boolean.parseBoolean(params.getFirst("Food"))) {
-				goodsCategoryName = "Hàng thực phẩm";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
+			// Update
+			ret = routeProcess.updateRoute(route, routeGoodsCategoryMap,
+					listRouteMarker);
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return String.valueOf(ret);
+	}
 
-			} else {
-				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
-						goodsCategoryName);
-			}
-
-			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
-				goodsCategoryName = "Hàng đông lạnh";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
-
-			} else {
-				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
-						goodsCategoryName);
-			}
-
-			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
-				goodsCategoryName = "Hàng dễ vỡ";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
-			} else {
-				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
-						goodsCategoryName);
-			}
-
-			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
-				goodsCategoryName = "Hàng dễ cháy nổ";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
-			} else {
-				routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
-						goodsCategoryName);
-			}
-
-			if (ret <= 0) {
-				return "Fail";
+	@POST
+	@Path("deactiveRoute")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String deactiveRoute(MultivaluedMap<String, String> params) {
+		int ret = 0;
+		try {
+			int routeID = Integer.valueOf(params.getFirst("routeID"));
+			if (dealDao.getDealByRouteID(routeID).size() == 0) {
+				ret = routeDao.updateRouteStatus(routeID, Common.deactivate);
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
-		return "Success";
+		return String.valueOf(ret);
 	}
 
 	@POST

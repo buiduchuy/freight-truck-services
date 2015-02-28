@@ -175,7 +175,7 @@ public class RouteDAO {
 				route.setWeight(rs.getInt("Weight"));
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(rs.getInt("Active"));
-				
+
 				route.setDriverID(rs.getInt("DriverID"));
 				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
 
@@ -282,7 +282,7 @@ public class RouteDAO {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			System.out.println("Can't load data from Route table");
+			System.out.println("Can't update data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {

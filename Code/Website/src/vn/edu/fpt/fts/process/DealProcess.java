@@ -10,11 +10,13 @@ import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
+import vn.edu.fpt.fts.dao.DealNotificationDAO;
 import vn.edu.fpt.fts.dao.DealOrderDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
+import vn.edu.fpt.fts.pojo.DealNotification;
 import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Order;
 
@@ -30,6 +32,7 @@ public class DealProcess {
 	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
 	DealOrderDAO dealOrderDao = new DealOrderDAO();
+	DealNotificationDAO dealNotiDao = new DealNotificationDAO();
 
 	public String acceptDeal(int dealID) {
 
@@ -170,7 +173,7 @@ public class DealProcess {
 		int ret = 0;
 		try {
 			// Update current deal
-			//dealDao.changeDealStatus(deal.getDealID(), Common.deal_accept);
+			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_accept);
 
 			// Insert new deal with accept status and CreateTime
 			int newDealID = dealDao.insertDeal(deal);
@@ -204,6 +207,25 @@ public class DealProcess {
 				System.out.println("Deal nay da xuat Order roi!!");
 				ret = 0;
 			}
+
+			// Insert Notification
+			DealNotification dealNoti = new DealNotification();
+			String msg = "";
+			if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+				msg = "Chủ hàng " + deal.getGoods().getOwner().getEmail()
+						+ " đã đồng ý đề nghị của bạn với giá tiền "
+						+ deal.getPrice() + " nghìn đồng.";
+			} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+				msg = "Tài xế " + deal.getRoute().getDriver().getEmail()
+						+ " đã đồng ý đề nghị của bạn với giá tiền "
+						+ deal.getPrice() + " nghìn đồng.";
+			}
+			dealNoti.setMessage(msg);
+			dealNoti.setActive(Common.activate);
+			dealNoti.setCreateTime(deal.getCreateTime());
+			dealNoti.setDealID(newDealID);
+			dealNotiDao.insertDealNotification(dealNoti);
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -216,7 +238,7 @@ public class DealProcess {
 		int ret = 0;
 		try {
 			// Update current deal
-			//dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
+			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
 
 			// Insert new deal with decline status
 			int newDealID = dealDao.insertDeal(deal);
@@ -225,6 +247,24 @@ public class DealProcess {
 				System.out.println("Decline deal FAIL!");
 				ret = 0;
 			}
+
+			// Insert Notification
+			DealNotification dealNoti = new DealNotification();
+			String msg = "";
+			if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+				msg = "Chủ hàng " + deal.getGoods().getOwner().getEmail()
+						+ " đã từ chối đề nghị của bạn với giá tiền "
+						+ deal.getPrice() + " nghìn đồng.";
+			} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+				msg = "Tài xế " + deal.getRoute().getDriver().getEmail()
+						+ " đã từ chối đề nghị của bạn với giá tiền "
+						+ deal.getPrice() + " nghìn đồng.";
+			}
+			dealNoti.setMessage(msg);
+			dealNoti.setActive(Common.activate);
+			dealNoti.setCreateTime(deal.getCreateTime());
+			dealNoti.setDealID(newDealID);
+			dealNotiDao.insertDealNotification(dealNoti);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -241,12 +281,28 @@ public class DealProcess {
 			if (db_deal.getCreateBy().equalsIgnoreCase(deal.getCreateBy())
 					&& db_deal.getDealStatusID() == Common.deal_pending) {
 				// Update current deal
-				dealDao.updateDeal(deal);
-				ret = 1;
+				ret = dealDao.updateDeal(deal);
+
+				// Insert Notification
+				DealNotification dealNoti = new DealNotification();
+				String msg = "";
+				if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+					msg = "Bạn đã hủy thương lượng với tài xế"
+							+ deal.getRoute().getDriver().getEmail();
+				} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+					msg = "Bạn đã hủy thương lượng với chủ hàng"
+							+ deal.getGoods().getOwner().getEmail();
+				}
+				dealNoti.setMessage(msg);
+				dealNoti.setActive(Common.activate);
+				dealNoti.setCreateTime(deal.getCreateTime());
+				dealNoti.setDealID(deal.getDealID());
+				dealNotiDao.insertDealNotification(dealNoti);
 			} else {
 				System.out
 						.println("Khong thoa man de doi trang thai deal thanh cancel");
 			}
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

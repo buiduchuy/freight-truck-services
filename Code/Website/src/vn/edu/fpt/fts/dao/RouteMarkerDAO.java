@@ -126,7 +126,7 @@ public class RouteMarkerDAO {
 		try {
 			con = DBAccess.makeConnection();
 			String sql = "UPDATE RouteMarker SET " + " RouteMarkerLocation = ?"
-					+ " WHERE Numbering = '" + routeMarker.getRouteMarkerID()
+					+ " WHERE Numbering = '" + routeMarker.getNumbering()
 					+ "' AND RouteID = '" + routeMarker.getRouteID() + "'";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
