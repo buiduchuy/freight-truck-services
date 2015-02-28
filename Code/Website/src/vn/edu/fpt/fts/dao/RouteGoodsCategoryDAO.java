@@ -42,8 +42,8 @@ public class RouteGoodsCategoryDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't insert to RouteGoodsCategory table");
 			e.printStackTrace();
+			System.out.println("Can't insert to RouteGoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -91,8 +91,8 @@ public class RouteGoodsCategoryDAO {
 			return list;
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from RouteGoodsCategory table");
 			e.printStackTrace();
+			System.out.println("Can't load data from RouteGoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -129,9 +129,9 @@ public class RouteGoodsCategoryDAO {
 			stm = con.prepareStatement(sql);
 			ret = stm.executeUpdate();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			System.out
 					.println("Can't delete data from RouteGoodsCategory table");
-			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {

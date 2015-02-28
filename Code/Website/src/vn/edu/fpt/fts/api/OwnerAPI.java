@@ -44,7 +44,7 @@ public class OwnerAPI {
 		Owner owner;
 		try {
 			owner = ownerDao.getOwnerById(Integer.valueOf(params
-					.getFirst("driverID")));
+					.getFirst("ownerID")));
 			return owner;
 		} catch (Exception e) {
 			// TODO: handle exception

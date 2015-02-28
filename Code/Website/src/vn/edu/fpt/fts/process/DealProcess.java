@@ -176,7 +176,7 @@ public class DealProcess {
 			int newDealID = dealDao.insertDeal(deal);
 
 			// Update other deal
-			int n = dealDao.changeStatusOfOtherDeal(Common.deal_cancel,
+			int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
 					deal.getGoodsID(), deal.getRouteID());
 			System.out.println("Co " + n
 					+ " deal da thay doi trang thai la cancel");

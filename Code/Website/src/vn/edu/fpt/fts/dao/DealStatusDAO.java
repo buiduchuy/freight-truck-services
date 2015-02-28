@@ -45,8 +45,8 @@ public class DealStatusDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Vehicle table");
 			e.printStackTrace();
+			System.out.println("Can't load data from DealStatus table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -61,7 +61,6 @@ public class DealStatusDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from DealStatus table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}

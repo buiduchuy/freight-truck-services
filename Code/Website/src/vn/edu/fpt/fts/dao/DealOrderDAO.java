@@ -46,9 +46,8 @@ public class DealOrderDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
-			System.out.println("Can't insert to DealOrder table");
 			e.printStackTrace();
+			System.out.println("Can't insert to DealOrder table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -93,8 +92,8 @@ public class DealOrderDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Vehicle table");
 			e.printStackTrace();
+			System.out.println("Can't load data from DealOrder table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -109,7 +108,6 @@ public class DealOrderDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from DealStatus table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -142,8 +140,8 @@ public class DealOrderDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Vehicle table");
 			e.printStackTrace();
+			System.out.println("Can't load data from DealOrder table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -158,7 +156,6 @@ public class DealOrderDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from DealStatus table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -191,8 +188,8 @@ public class DealOrderDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Vehicle table");
 			e.printStackTrace();
+			System.out.println("Can't load data from DealOrder table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -207,7 +204,6 @@ public class DealOrderDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from DealStatus table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}

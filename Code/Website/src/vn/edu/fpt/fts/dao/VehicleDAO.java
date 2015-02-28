@@ -47,8 +47,8 @@ public class VehicleDAO {
 			}
 			return list;
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Vehicle table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Vehicle table");
 			Logger.getLogger(VehicleDAO.class.getName()).log(Level.SEVERE,
 					null, e);
 		} finally {
@@ -64,7 +64,6 @@ public class VehicleDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Vehicle table");
 				Logger.getLogger(VehicleDAO.class.getName()).log(Level.SEVERE,
 						null, e);
 			}

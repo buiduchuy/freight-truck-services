@@ -74,9 +74,8 @@ public class OrderDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
-			System.out.println("Can't insert to Order table");
 			e.printStackTrace();
+			System.out.println("Can't insert to Order table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -122,8 +121,8 @@ public class OrderDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update to Deal table");
 			e.printStackTrace();
+			System.out.println("Can't update to Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -183,6 +182,7 @@ public class OrderDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Order table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -197,7 +197,6 @@ public class OrderDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Order table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -248,6 +247,7 @@ public class OrderDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Order table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -262,7 +262,6 @@ public class OrderDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Order table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
