@@ -46,6 +46,7 @@ public class OrderStatusDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from OrderStatus table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -60,7 +61,6 @@ public class OrderStatusDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from OrderStatus table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -92,8 +92,8 @@ public class OrderStatusDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from OrderStatus table");
 			e.printStackTrace();
+			System.out.println("Can't load data from OrderStatus table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -108,7 +108,6 @@ public class OrderStatusDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from OrderStatus table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}

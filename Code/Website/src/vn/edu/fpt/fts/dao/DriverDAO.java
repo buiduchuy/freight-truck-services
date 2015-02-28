@@ -29,7 +29,7 @@ public class DriverDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "SELECT * FROM [Driver] WHERE DriverId=?";
+			String sql = "SELECT * FROM [Driver] WHERE DriverID=?";
 			stmt = con.prepareStatement(sql);
 			stmt.setInt(1, Id);
 			rs = stmt.executeQuery();
@@ -56,10 +56,7 @@ public class DriverDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			System.out.println("Columns with Integer type are null");
+			System.out.println("Can't load data from Driver table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -116,6 +113,7 @@ public class DriverDAO {
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Driver table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -130,7 +128,6 @@ public class DriverDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Driver table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -171,10 +168,7 @@ public class DriverDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			System.out.println("Columns with Integer type are null");
+			System.out.println("Can't load data from Driver table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {

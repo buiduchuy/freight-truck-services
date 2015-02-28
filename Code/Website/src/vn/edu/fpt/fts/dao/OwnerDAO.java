@@ -45,9 +45,8 @@ public class OwnerDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
-			System.out.println("Can't insert to Owner table");
 			e.printStackTrace();
+			System.out.println("Can't insert to Owner table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -99,10 +98,7 @@ public class OwnerDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			System.out.println("Columns with Integer type are null");
+			System.out.println("Can't load data from Owner table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -153,10 +149,7 @@ public class OwnerDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			System.out.println("Columns with Integer type are null");
+			System.out.println("Can't load data from Owner table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {

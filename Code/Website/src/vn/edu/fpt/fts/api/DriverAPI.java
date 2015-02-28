@@ -3,7 +3,6 @@
  */
 package vn.edu.fpt.fts.api;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +15,6 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.pojo.Driver;
-import vn.edu.fpt.fts.pojo.Goods;
 
 /**
  * @author Huy
@@ -48,21 +46,11 @@ public class DriverAPI {
 			driver = driverDao.getDriverById(Integer.valueOf(params
 					.getFirst("driverID")));
 			return driver;
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return null;
 	}
-
-	@POST
-	@Path("getSuggestionGoods")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Goods> getSuggestionGoods(MultivaluedMap<String, String> params) {
-
-		return null;
-	}
-
 }

@@ -33,6 +33,7 @@ public class RoleDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Role table");
 			Logger.getLogger(RoleDAO.class.getName())
 					.log(Level.SEVERE, null, e);
 		} finally {

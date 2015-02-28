@@ -58,9 +58,8 @@ public class RouteDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
-			System.out.println("Can't insert to Route table");
 			e.printStackTrace();
+			System.out.println("Can't insert to Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -118,8 +117,8 @@ public class RouteDAO {
 			}
 			return list;
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -134,7 +133,6 @@ public class RouteDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Route table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -199,8 +197,8 @@ public class RouteDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -215,7 +213,6 @@ public class RouteDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Route table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -249,8 +246,8 @@ public class RouteDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update to Route table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -284,8 +281,8 @@ public class RouteDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update Status to Route table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -341,8 +338,8 @@ public class RouteDAO {
 			}
 			return list;
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -357,7 +354,6 @@ public class RouteDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Route table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -421,8 +417,8 @@ public class RouteDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from Route table");
 			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -437,7 +433,6 @@ public class RouteDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Route table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}

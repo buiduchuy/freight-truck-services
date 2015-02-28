@@ -42,8 +42,8 @@ public class GoodsCategoryDAO {
 			}
 			return list;
 		} catch (SQLException e) {
-			System.out.println("Can't load data from GoodsCategory table");
 			e.printStackTrace();
+			System.out.println("Can't load data from GoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -58,7 +58,6 @@ public class GoodsCategoryDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from GoodsCategory table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -82,9 +81,8 @@ public class GoodsCategoryDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
-			System.out.println("Can't insert to GoodsCategory table");
 			e.printStackTrace();
+			System.out.println("Can't insert to GoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -129,8 +127,8 @@ public class GoodsCategoryDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Can't load data from GoodsCategory table");
 			e.printStackTrace();
+			System.out.println("Can't load data from GoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -145,7 +143,6 @@ public class GoodsCategoryDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from GoodsCategory table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}

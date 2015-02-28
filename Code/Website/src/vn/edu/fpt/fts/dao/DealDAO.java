@@ -66,9 +66,8 @@ public class DealDAO {
 			return ret;
 		} catch (SQLException e) {
 			// TODO: handle exception
-			ret = -1;
-			System.out.println("Can't insert to Deal table");
 			e.printStackTrace();
+			System.out.println("Can't insert to Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -84,7 +83,7 @@ public class DealDAO {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
-		return 0;
+		return ret;
 	}
 
 	public List<Deal> getDealByGoodsID(int goodsId) {
@@ -125,6 +124,7 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -139,7 +139,6 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -184,6 +183,7 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -198,7 +198,6 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -248,6 +247,7 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -262,7 +262,6 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -303,6 +302,7 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -317,7 +317,6 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -371,6 +370,7 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -385,7 +385,6 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -438,6 +437,7 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -452,7 +452,6 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
@@ -495,8 +494,8 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update to Deal table");
 			e.printStackTrace();
+			System.out.println("Can't update to Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -514,7 +513,7 @@ public class DealDAO {
 		return ret;
 	}
 
-	public int changeDealStatus(int dealID, int dealStatus) {
+	public int updateDealStatus(int dealID, int dealStatus) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -531,8 +530,8 @@ public class DealDAO {
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			System.out.println("Can't update to Deal table");
 			e.printStackTrace();
+			System.out.println("Can't update DealStatus to Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -571,6 +570,7 @@ public class DealDAO {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -585,14 +585,13 @@ public class DealDAO {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				System.out.println("Can't load data from Deal table");
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return cnt;
 	}
 
-	public int changeStatusOfOtherDeal(int dealStatusID, int goodsID,
+	public int updateStatusOfOtherDeal(int dealStatusID, int goodsID,
 			int routeID) {
 		Connection con = null;
 		PreparedStatement stmt = null;
