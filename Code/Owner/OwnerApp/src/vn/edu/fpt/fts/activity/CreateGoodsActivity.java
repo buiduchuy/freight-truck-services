@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +28,8 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
+import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -610,10 +612,10 @@ public class CreateGoodsActivity extends Activity {
 			this.processMessage = processMessage;
 		}
 
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
-		}
+//		public void addNameValuePair(String name, String value) {
+//
+//			params.add(new BasicNameValuePair(name, value));
+//		}
 
 		private void showProgressDialog() {
 

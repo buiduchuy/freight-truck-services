@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="vn.edu.fpt.fts.ownerapp.DealFragment" >
+    tools:context="vn.edu.fpt.fts.fragment.DealFragment" >
 
     <ListView
         android:id="@+id/listview_deal_list"

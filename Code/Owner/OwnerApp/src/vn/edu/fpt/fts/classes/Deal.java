@@ -1,6 +1,12 @@
 package vn.edu.fpt.fts.classes;
 
-public class Deal {
+import java.io.Serializable;
+
+public class Deal implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 405640420847399568L;
 	private int dealID;
 	private double price;
 	private String notes;
@@ -11,39 +17,40 @@ public class Deal {
 	private int dealStatusID;
 	private int refDealID;
 	private int active;
-	
+
 	public Deal() {
 		// TODO Auto-generated constructor stub
 	}
 
-	//not have refDealID
-		public Deal(double price, String notes, String createTime, String createBy,
-				int routeID, int goodsID, int dealStatusID, int active) {
-			super();
-			this.price = price;
-			this.notes = notes;
-			this.createTime = createTime;
-			this.createBy = createBy;
-			this.routeID = routeID;
-			this.goodsID = goodsID;
-			this.dealStatusID = dealStatusID;
-			this.active = active;
-		}
+	// not have refDealID
+	public Deal(double price, String notes, String createTime, String createBy,
+			int routeID, int goodsID, int dealStatusID, int active) {
+		super();
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.createBy = createBy;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.dealStatusID = dealStatusID;
+		this.active = active;
+	}
 
-		public Deal(double price, String notes, String createTime, String createBy,
-				int routeID, int goodsID, int refDealID, int dealStatusID,
-				int active) {
-			super();
-			this.price = price;
-			this.notes = notes;
-			this.createTime = createTime;
-			this.createBy = createBy;
-			this.routeID = routeID;
-			this.goodsID = goodsID;
-			this.refDealID = refDealID;
-			this.dealStatusID = dealStatusID;
-			this.active = active;
-		}
+	public Deal(double price, String notes, String createTime, String createBy,
+			int routeID, int goodsID, int refDealID, int dealStatusID,
+			int active) {
+		super();
+		this.price = price;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.createBy = createBy;
+		this.routeID = routeID;
+		this.goodsID = goodsID;
+		this.refDealID = refDealID;
+		this.dealStatusID = dealStatusID;
+		this.active = active;
+	}
+
 	public int getDealID() {
 		return dealID;
 	}
@@ -123,6 +130,5 @@ public class Deal {
 	public void setActive(int active) {
 		this.active = active;
 	}
-	
-	
+
 }

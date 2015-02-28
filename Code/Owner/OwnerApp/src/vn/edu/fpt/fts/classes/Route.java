@@ -3,6 +3,10 @@ package vn.edu.fpt.fts.classes;
 import java.io.Serializable;
 
 public class Route implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2522332245816658584L;
 	private int RouteID;
 	private String startingAddress;
 	private String destinationAddress;

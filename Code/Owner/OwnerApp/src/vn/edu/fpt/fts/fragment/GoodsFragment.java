@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.fragment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,99 +23,73 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.adapter.Model;
-import vn.edu.fpt.fts.adapter.ModelAdapter;
-import vn.edu.fpt.fts.classes.Route;
+import vn.edu.fpt.fts.activity.GoodsDetailActivity;
 import vn.edu.fpt.fts.common.Common;
-import android.app.Activity;
+import vn.edu.fpt.fts.ownerapp.R;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-public class SuggestActivity extends Activity {
-	private List<Route> list = new ArrayList<Route>();
+public class GoodsFragment extends Fragment {	
 	private ListView listView;
-	private ModelAdapter adapter;
-	private String goodsID;
-
+	private ArrayAdapter<String> adapter;
+	private String ownerid;
+	private List<String> goodsID, goodsCategoryID;
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_suggest);
-		goodsID = getIntent().getStringExtra("goodsID");
-		
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
-				SuggestActivity.this, "Đang xử lý...");
-		String url = Common.IP_URL + Common.Service_Route_Get;
+	public View onCreateView(LayoutInflater inflater,
+			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		View rootView = inflater.inflate(R.layout.fragment_goods, container,
+				false);
+
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
+				getActivity(), "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_Goods_Get;
+		SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+		ownerid = preferences.getString("ownerID", "");
+		wst.addNameValuePair("ownerID", ownerid);
 		wst.execute(new String[] { url });
 
-		listView = (ListView) findViewById(R.id.listview_suggest);
+		goodsID = new ArrayList<String>();
+		goodsCategoryID = new ArrayList<String>();
+		
+		listView = (ListView) rootView.findViewById(R.id.listview_goods);
+		
+
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				int pos = listView.getPositionForView(view);
-				Route route = list.get(pos);
-				int routeId = route.getRouteID();
-				Intent intent = new Intent(SuggestActivity.this,
-						SuggestDetailActivity.class);				
-				intent.putExtra("route", routeId);
-				intent.putExtra("goodsID", goodsID);
+				
+				Intent intent = new Intent(view.getContext(),
+						GoodsDetailActivity.class);
+//				String tmp = goodsCategoryID.get(pos);
+//				String tmp2 = goodsID.get(pos);
+				
+				
+				intent.putExtra("goodsID", goodsID.get(pos));
+				intent.putExtra("goodsCategoryID", goodsCategoryID.get(pos));
+				
 				startActivity(intent);
 			}
 		});
 
-	}
-
-	private ArrayList<Model> generateData() {
-		// TODO Auto-generated method stub
-		ArrayList<Model> models = new ArrayList<Model>();
-
-		for (Route route : list) {
-			String start = route.getStartingAddress().replace(", Vietnam", "");
-			String[] strings = start.split(",");
-			String end = route.getDestinationAddress().replace(", Vietnam", "");
-			String[] strings2 = end.split(",");
-			models.add(new Model(strings[strings.length - 1] + " - "
-					+ strings2[strings2.length - 1], "1"));
-		}
-
-		return models;
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.suggest, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		if (id == R.id.action_homepage) {
-			Intent intent = new Intent(SuggestActivity.this, MainActivity.class);
-			startActivity(intent);
-		}
-		return super.onOptionsItemSelected(item);
+		return rootView;
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -202,43 +176,52 @@ public class SuggestActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {
-				// android.os.Debug.waitForDebugger();
+			try {				
 				JSONObject jsonObject = new JSONObject(response);
-				JSONArray array = jsonObject.getJSONArray("route");
-
+				JSONArray array = jsonObject.getJSONArray("goods");				
+				String[] result = new String[array.length()];
 				for (int i = 0; i < array.length(); i++) {
-					Route route = new Route();
+//					Goods goods = new Goods();					
+//					goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
+//					goods.setWeight(Integer.parseInt(jsonObject2.getString("weight")));
+//					goods.setPrice(Double.parseDouble(jsonObject2.getString("price")));
+//					goods.setPickupTime(jsonObject2.getString("pickupTime"));
+//					goods.setPickupAddress(jsonObject2.getString("pickupAddress"));
+//					goods.setDeliveryTime(jsonObject2.getString("deliveryTime"));
+//					goods.setDeliveryAddress(jsonObject2.getString("deliveryAddress"));
+//					try {goods.setPickupMarkerLongtitude(Float.parseFloat(jsonObject2.getString("pickupMarkerLongtitude")));} catch (JSONException e) {goods.setPickupMarkerLongtitude(0);}
+//					try {goods.setPickupMarkerLatidute(Float.parseFloat(jsonObject2.getString("pickupMarkerLatidute")));} catch (JSONException e) {goods.setPickupMarkerLatidute(0);}
+//					try {goods.setDeliveryMarkerLongtitude(Float.parseFloat(jsonObject2.getString("deliveryMarkerLongtitude")));} catch (JSONException e) {goods.setDeliveryMarkerLongtitude(0);}
+//					try {goods.setDeliveryMarkerLatidute(Float.parseFloat(jsonObject2.getString("deliveryMarkerLatidute")));} catch (JSONException e) {goods.setDeliveryMarkerLatidute(0);}
+//					try {goods.setNotes(jsonObject2.getString("notes"));} catch (JSONException e) {goods.setNotes("");}
+//					goods.setCreateTime(jsonObject2.getString("createTime"));
+//					goods.setActive(Integer.parseInt(jsonObject2.getString("active")));
+//					goods.setOwnerID(Integer.parseInt(jsonObject2.getString("ownerID")));
+//					goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
+//					list.add(goods);
 					JSONObject jsonObject2 = array.getJSONObject(i);
-					route.setRouteID(Integer.parseInt(jsonObject2
-							.getString("routeID")));
-					route.setStartingAddress(jsonObject2
-							.getString("startingAddress"));
-					route.setDestinationAddress(jsonObject2
-							.getString("destinationAddress"));
-					route.setStartTime(jsonObject2.getString("startTime"));
-					route.setFinishTime(jsonObject2.getString("finishTime"));
-					try {
-						route.setNotes(jsonObject2.getString("notes"));
-					} catch (JSONException e) {
-						route.setNotes("");
-					}
-					route.setWeight(Integer.parseInt(jsonObject2
-							.getString("weight")));
-					route.setCreateTime(jsonObject2.getString("createTime"));
-					route.setActive(Integer.parseInt(jsonObject2
-							.getString("active")));
-					route.setDriverID(Integer.parseInt(jsonObject2
-							.getString("driverID")));
-					list.add(route);
+//					String a = jsonObject2.getString("goodsID");
+					
+					
+					goodsID.add(jsonObject2.getString("goodsID"));
+					goodsCategoryID.add(jsonObject2.getString("goodsCategoryID"));
+					
+					JSONObject jsonObject3 = jsonObject2.getJSONObject("goodsCategory");
+					result[i] = jsonObject3.getString("name");
+					
 				}
-				pDlg.dismiss();
+				adapter = new ArrayAdapter<String>(
+						getActivity(), android.R.layout.simple_list_item_1,
+						result);
+				listView.setAdapter(adapter);
 			} catch (JSONException e) {
+				// TODO Auto-generated catch block
 				Log.e(TAG, e.getLocalizedMessage());
 			}
-			adapter = new ModelAdapter(SuggestActivity.this, generateData());
+			pDlg.dismiss();
+			
+			
 
-			listView.setAdapter(adapter);
 		}
 
 		// Establish connection and socket (data retrieval) timeouts

@@ -1,7 +1,7 @@
 package vn.edu.fpt.fts.adapter;
 
-import vn.edu.fpt.fts.ownerapp.GoodsFragment;
-import vn.edu.fpt.fts.ownerapp.TrackFragment;
+import vn.edu.fpt.fts.fragment.GoodsFragment;
+import vn.edu.fpt.fts.fragment.TrackFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

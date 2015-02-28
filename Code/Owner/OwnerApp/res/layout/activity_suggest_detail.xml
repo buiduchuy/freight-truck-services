@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="vn.edu.fpt.fts.ownerapp.SuggestDetailActivity" >
+    tools:context="vn.edu.fpt.fts.activity.SuggestDetailActivity" >
 
     <LinearLayout
         android:id="@+id/linearlayout_suggest_detail"

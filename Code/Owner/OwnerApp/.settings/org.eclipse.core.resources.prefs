@@ -1,9 +1,9 @@
 eclipse.preferences.version=1
-encoding//src/vn/edu/fpt/fts/ownerapp/CreateGoodsActivity.java=UTF-8
-encoding//src/vn/edu/fpt/fts/ownerapp/CreateGoodsMapFragment.java=UTF-8
-encoding//src/vn/edu/fpt/fts/ownerapp/DealFragment.java=UTF-8
-encoding//src/vn/edu/fpt/fts/ownerapp/GoodsDetailActivity.java=UTF-8
-encoding//src/vn/edu/fpt/fts/ownerapp/GoodsFragment.java=UTF-8
-encoding//src/vn/edu/fpt/fts/ownerapp/MainActivity.java=UTF-8
-encoding//src/vn/edu/fpt/fts/ownerapp/TrackFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/activity/CreateGoodsActivity.java=UTF-8
+encoding//src/vn/edu/fpt/fts/activity/GoodsDetailActivity.java=UTF-8
+encoding//src/vn/edu/fpt/fts/activity/MainActivity.java=UTF-8
+encoding//src/vn/edu/fpt/fts/fragment/CreateGoodsMapFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/fragment/DealFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/fragment/GoodsFragment.java=UTF-8
+encoding//src/vn/edu/fpt/fts/fragment/TrackFragment.java=UTF-8
 encoding/<project>=UTF-8

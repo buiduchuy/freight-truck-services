@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -23,75 +22,98 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.adapter.Model;
 import vn.edu.fpt.fts.adapter.ModelAdapter;
-import vn.edu.fpt.fts.classes.Goods;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.ownerapp.R;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class GoodsFragment extends Fragment {	
+public class SuggestActivity extends Activity {
+	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
-	private ArrayAdapter<String> adapter;
-	private String ownerid;
-	private List<String> goodsID, goodsCategoryID;
-	@Override
-	public View onCreateView(LayoutInflater inflater,
-			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		View rootView = inflater.inflate(R.layout.fragment_goods, container,
-				false);
+	private ModelAdapter adapter;
+	private String goodsID;
 
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
-				getActivity(), "Đang xử lý...");
-		String url = Common.IP_URL + Common.Service_Goods_Get;
-		SharedPreferences preferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-		ownerid = preferences.getString("ownerID", "");
-		wst.addNameValuePair("ownerID", ownerid);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_suggest);
+		goodsID = getIntent().getStringExtra("goodsID");
+		
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
+				SuggestActivity.this, "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_Route_Get;
 		wst.execute(new String[] { url });
 
-		goodsID = new ArrayList<String>();
-		goodsCategoryID = new ArrayList<String>();
-		
-		listView = (ListView) rootView.findViewById(R.id.listview_goods);
-		
-
+		listView = (ListView) findViewById(R.id.listview_suggest);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
 				int pos = listView.getPositionForView(view);
-				
-				Intent intent = new Intent(view.getContext(),
-						GoodsDetailActivity.class);
-				String tmp = goodsCategoryID.get(pos);
-				String tmp2 = goodsID.get(pos);
-				
-				
-				intent.putExtra("goodsID", goodsID.get(pos));
-				intent.putExtra("goodsCategoryID", goodsCategoryID.get(pos));
-				
+				Route route = list.get(pos);
+				int routeId = route.getRouteID();
+				Intent intent = new Intent(SuggestActivity.this,
+						SuggestDetailActivity.class);				
+				intent.putExtra("route", routeId);
+				intent.putExtra("goodsID", goodsID);
 				startActivity(intent);
 			}
 		});
 
-		return rootView;
+	}
+
+	private ArrayList<Model> generateData() {
+		// TODO Auto-generated method stub
+		ArrayList<Model> models = new ArrayList<Model>();
+
+		for (Route route : list) {
+			String start = route.getStartingAddress().replace(", Vietnam", "");
+			String[] strings = start.split(",");
+			String end = route.getDestinationAddress().replace(", Vietnam", "");
+			String[] strings2 = end.split(",");
+			models.add(new Model(strings[strings.length - 1] + " - "
+					+ strings2[strings2.length - 1], "1"));
+		}
+
+		return models;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.suggest, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		if (id == R.id.action_homepage) {
+			Intent intent = new Intent(SuggestActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -121,11 +143,6 @@ public class GoodsFragment extends Fragment {
 			this.taskType = taskType;
 			this.mContext = mContext;
 			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
 		}
 
 		private void showProgressDialog() {
@@ -178,52 +195,43 @@ public class GoodsFragment extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {				
+			try {
+				// android.os.Debug.waitForDebugger();
 				JSONObject jsonObject = new JSONObject(response);
-				JSONArray array = jsonObject.getJSONArray("goods");				
-				String[] result = new String[array.length()];
+				JSONArray array = jsonObject.getJSONArray("route");
+
 				for (int i = 0; i < array.length(); i++) {
-//					Goods goods = new Goods();					
-//					goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
-//					goods.setWeight(Integer.parseInt(jsonObject2.getString("weight")));
-//					goods.setPrice(Double.parseDouble(jsonObject2.getString("price")));
-//					goods.setPickupTime(jsonObject2.getString("pickupTime"));
-//					goods.setPickupAddress(jsonObject2.getString("pickupAddress"));
-//					goods.setDeliveryTime(jsonObject2.getString("deliveryTime"));
-//					goods.setDeliveryAddress(jsonObject2.getString("deliveryAddress"));
-//					try {goods.setPickupMarkerLongtitude(Float.parseFloat(jsonObject2.getString("pickupMarkerLongtitude")));} catch (JSONException e) {goods.setPickupMarkerLongtitude(0);}
-//					try {goods.setPickupMarkerLatidute(Float.parseFloat(jsonObject2.getString("pickupMarkerLatidute")));} catch (JSONException e) {goods.setPickupMarkerLatidute(0);}
-//					try {goods.setDeliveryMarkerLongtitude(Float.parseFloat(jsonObject2.getString("deliveryMarkerLongtitude")));} catch (JSONException e) {goods.setDeliveryMarkerLongtitude(0);}
-//					try {goods.setDeliveryMarkerLatidute(Float.parseFloat(jsonObject2.getString("deliveryMarkerLatidute")));} catch (JSONException e) {goods.setDeliveryMarkerLatidute(0);}
-//					try {goods.setNotes(jsonObject2.getString("notes"));} catch (JSONException e) {goods.setNotes("");}
-//					goods.setCreateTime(jsonObject2.getString("createTime"));
-//					goods.setActive(Integer.parseInt(jsonObject2.getString("active")));
-//					goods.setOwnerID(Integer.parseInt(jsonObject2.getString("ownerID")));
-//					goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
-//					list.add(goods);
+					Route route = new Route();
 					JSONObject jsonObject2 = array.getJSONObject(i);
-					String a = jsonObject2.getString("goodsID");
-					
-					
-					goodsID.add(jsonObject2.getString("goodsID"));
-					goodsCategoryID.add(jsonObject2.getString("goodsCategoryID"));
-					
-					JSONObject jsonObject3 = jsonObject2.getJSONObject("goodsCategory");
-					result[i] = jsonObject3.getString("name");
-					
+					route.setRouteID(Integer.parseInt(jsonObject2
+							.getString("routeID")));
+					route.setStartingAddress(jsonObject2
+							.getString("startingAddress"));
+					route.setDestinationAddress(jsonObject2
+							.getString("destinationAddress"));
+					route.setStartTime(jsonObject2.getString("startTime"));
+					route.setFinishTime(jsonObject2.getString("finishTime"));
+					try {
+						route.setNotes(jsonObject2.getString("notes"));
+					} catch (JSONException e) {
+						route.setNotes("");
+					}
+					route.setWeight(Integer.parseInt(jsonObject2
+							.getString("weight")));
+					route.setCreateTime(jsonObject2.getString("createTime"));
+					route.setActive(Integer.parseInt(jsonObject2
+							.getString("active")));
+					route.setDriverID(Integer.parseInt(jsonObject2
+							.getString("driverID")));
+					list.add(route);
 				}
-				adapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_list_item_1,
-						result);
-				listView.setAdapter(adapter);
+				pDlg.dismiss();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				Log.e(TAG, e.getLocalizedMessage());
 			}
-			pDlg.dismiss();
-			
-			
+			adapter = new ModelAdapter(SuggestActivity.this, generateData());
 
+			listView.setAdapter(adapter);
 		}
 
 		// Establish connection and socket (data retrieval) timeouts

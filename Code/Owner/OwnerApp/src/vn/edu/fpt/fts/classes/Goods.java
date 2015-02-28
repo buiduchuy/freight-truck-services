@@ -2,7 +2,12 @@ package vn.edu.fpt.fts.classes;
 
 import java.io.Serializable;
 
-public class Goods implements Serializable{
+public class Goods implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4759618228944326900L;
 	private int GoodsID;
 	private int Weight;
 	private double Price;
@@ -20,11 +25,11 @@ public class Goods implements Serializable{
 	private int OwnerID;
 	private int GoodsCategoryID;
 	private String GoodsCategory;
-	
+
 	public Goods() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Goods(int goodsID, int weight, double price, String pickupTime,
 			String pickupAddress, String deliveryTime, String deliveryAddress,
 			float pickupMarkerLongtitude, float pickupMarkerLatidute,
@@ -186,6 +191,5 @@ public class Goods implements Serializable{
 	public void setGoodsCategory(String goodsCategory) {
 		GoodsCategory = goodsCategory;
 	}
-	
-	
+
 }
