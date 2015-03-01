@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.fragment;
 
 
 import java.io.BufferedReader;
@@ -22,6 +22,8 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import vn.edu.fpt.fts.ownerapp.R;
 
 import android.app.ProgressDialog;
 import android.content.Context;

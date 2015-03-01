@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.ownerapp.R;
 
 import android.R.anim;
 import android.app.Activity;

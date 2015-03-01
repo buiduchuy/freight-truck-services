@@ -84,6 +84,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Trả giá đề nghị" />
+        <Button
+            android:visibility="gone"
+            android:id="@+id/button_cancel"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Hủy đề nghị" />
 
         <RelativeLayout
             android:layout_width="match_parent"

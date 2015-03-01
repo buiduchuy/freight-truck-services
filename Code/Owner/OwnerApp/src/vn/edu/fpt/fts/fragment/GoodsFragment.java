@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.fragment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,10 +23,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.activity.GoodsDetailActivity;
 import vn.edu.fpt.fts.adapter.ModelAdapter;
 import vn.edu.fpt.fts.classes.Goods;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.ownerapp.R;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +27,7 @@ import vn.edu.fpt.fts.adapter.Model;
 import vn.edu.fpt.fts.adapter.ModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -54,7 +55,7 @@ public class SuggestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
 		goodsID = getIntent().getStringExtra("goodsID");
-		
+
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Suggest_Route;
@@ -71,7 +72,7 @@ public class SuggestActivity extends Activity {
 				Route route = list.get(pos);
 				int routeId = route.getRouteID();
 				Intent intent = new Intent(SuggestActivity.this,
-						SuggestDetailActivity.class);				
+						SuggestDetailActivity.class);
 				intent.putExtra("route", routeId);
 				intent.putExtra("goodsID", goodsID);
 				startActivity(intent);
@@ -86,8 +87,10 @@ public class SuggestActivity extends Activity {
 
 		for (Route route : list) {
 			String start = route.getStartingAddress().replace(", Vietnam", "");
+			start = route.getStartingAddress().replace(", Việt Nam", "");
 			String[] strings = start.split(",");
 			String end = route.getDestinationAddress().replace(", Vietnam", "");
+			end = route.getDestinationAddress().replace(", Việt Nam", "");
 			String[] strings2 = end.split(",");
 			models.add(new Model(strings[strings.length - 1] + " - "
 					+ strings2[strings2.length - 1], "1"));
@@ -203,43 +206,88 @@ public class SuggestActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {
-				// android.os.Debug.waitForDebugger();
-				JSONObject jsonObject = new JSONObject(response);
-				JSONArray array = jsonObject.getJSONArray("route");
+			if (response == "null") {
+				pDlg.dismiss();
+				Toast.makeText(SuggestActivity.this,
+						"Không tìm thấy lộ trình phù hợp", Toast.LENGTH_LONG)
+						.show();
 
-				for (int i = 0; i < array.length(); i++) {
-					Route route = new Route();
-					JSONObject jsonObject2 = array.getJSONObject(i);
-					route.setRouteID(Integer.parseInt(jsonObject2
-							.getString("routeID")));
-					route.setStartingAddress(jsonObject2
-							.getString("startingAddress"));
-					route.setDestinationAddress(jsonObject2
-							.getString("destinationAddress"));
-					route.setStartTime(jsonObject2.getString("startTime"));
-					route.setFinishTime(jsonObject2.getString("finishTime"));
-					try {
-						route.setNotes(jsonObject2.getString("notes"));
-					} catch (JSONException e) {
-						route.setNotes("");
+			} else {
+				try {
+					// android.os.Debug.waitForDebugger();
+					JSONObject jsonObject = new JSONObject(response);
+					Object object = jsonObject.getJSONObject("route");
+					if (object instanceof JSONArray) {
+						JSONArray array = jsonObject.getJSONArray("route");
+
+						for (int i = 0; i < array.length(); i++) {
+							Route route = new Route();
+							JSONObject jsonObject2 = array.getJSONObject(i);
+							route.setRouteID(Integer.parseInt(jsonObject2
+									.getString("routeID")));
+							route.setStartingAddress(jsonObject2
+									.getString("startingAddress"));
+							route.setDestinationAddress(jsonObject2
+									.getString("destinationAddress"));
+							route.setStartTime(jsonObject2
+									.getString("startTime"));
+							route.setFinishTime(jsonObject2
+									.getString("finishTime"));
+							try {
+								route.setNotes(jsonObject2.getString("notes"));
+							} catch (JSONException e) {
+								route.setNotes("");
+							}
+							route.setWeight(Integer.parseInt(jsonObject2
+									.getString("weight")));
+							route.setCreateTime(jsonObject2
+									.getString("createTime"));
+							route.setActive(Integer.parseInt(jsonObject2
+									.getString("active")));
+							route.setDriverID(Integer.parseInt(jsonObject2
+									.getString("driverID")));
+							list.add(route);
+						}
+					} else if (object instanceof JSONObject) {
+						Route route = new Route();
+						JSONObject jsonObject2 = jsonObject
+								.getJSONObject("route");
+						route.setRouteID(Integer.parseInt(jsonObject2
+								.getString("routeID")));
+						route.setStartingAddress(jsonObject2
+								.getString("startingAddress"));
+						route.setDestinationAddress(jsonObject2
+								.getString("destinationAddress"));
+						route.setStartTime(jsonObject2.getString("startTime"));
+						route.setFinishTime(jsonObject2.getString("finishTime"));
+						try {
+							route.setNotes(jsonObject2.getString("notes"));
+						} catch (JSONException e) {
+							route.setNotes("");
+						}
+						route.setWeight(Integer.parseInt(jsonObject2
+								.getString("weight")));
+						route.setCreateTime(jsonObject2.getString("createTime"));
+						route.setActive(Integer.parseInt(jsonObject2
+								.getString("active")));
+						route.setDriverID(Integer.parseInt(jsonObject2
+								.getString("driverID")));
+						list.add(route);
 					}
-					route.setWeight(Integer.parseInt(jsonObject2
-							.getString("weight")));
-					route.setCreateTime(jsonObject2.getString("createTime"));
-					route.setActive(Integer.parseInt(jsonObject2
-							.getString("active")));
-					route.setDriverID(Integer.parseInt(jsonObject2
-							.getString("driverID")));
-					list.add(route);
+
+				} catch (JSONException e) {
+					Log.e(TAG, e.getLocalizedMessage());
+					Toast.makeText(SuggestActivity.this,
+							"Không tìm thấy lộ trình phù hợp",
+							Toast.LENGTH_LONG).show();
 				}
 				pDlg.dismiss();
-			} catch (JSONException e) {
-				Log.e(TAG, e.getLocalizedMessage());
-			}
-			adapter = new ModelAdapter(SuggestActivity.this, generateData());
+				adapter = new ModelAdapter(SuggestActivity.this, generateData());
 
-			listView.setAdapter(adapter);
+				listView.setAdapter(adapter);
+
+			}
+
 		}
 
 		// Establish connection and socket (data retrieval) timeouts

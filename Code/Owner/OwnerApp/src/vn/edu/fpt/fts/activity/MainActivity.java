@@ -1,6 +1,7 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.activity;
 
 import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
+import vn.edu.fpt.fts.ownerapp.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
