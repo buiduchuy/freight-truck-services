@@ -95,20 +95,99 @@ public class OrderAPI {
 		List<Order> listOrderByDriver = new ArrayList<Order>();
 
 		list = orderDao.getAllOrder();
-
-		int driverID = Integer.valueOf(params.getFirst("driverID"));
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getDeal() != null) {
-				if (list.get(i).getDeal().getRoute() != null) {
-					if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
-						listOrderByDriver.add(list.get(i));
+		try {
+			int driverID = Integer.valueOf(params.getFirst("driverID"));
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getDeal() != null) {
+					if (list.get(i).getDeal().getRoute() != null) {
+						if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
+							listOrderByDriver.add(list.get(i));
+						}
 					}
 				}
 			}
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return listOrderByDriver;
 	}
-	
-	
+
+	@POST
+	@Path("getOrderByOwnerID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Order> getOrderByOwnerID(MultivaluedMap<String, String> params) {
+		List<Order> list = new ArrayList<Order>();
+		List<Order> listOrderByOwner = new ArrayList<Order>();
+
+		list = orderDao.getAllOrder();
+		try {
+			int ownerID = Integer.valueOf(params.getFirst("ownerID"));
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getDeal() != null) {
+					if (list.get(i).getDeal().getGoods() != null) {
+						if (list.get(i).getDeal().getGoods().getOwnerID() == ownerID) {
+							listOrderByOwner.add(list.get(i));
+						}
+					}
+				}
+			}
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return listOrderByOwner;
+	}
+
+	@POST
+	@Path("driverConfirmDelivery")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String driverConfirmDelivery(MultivaluedMap<String, String> params) {
+		int ret = 0;
+		try {
+			int orderID = Integer.valueOf(params.getFirst("orderID"));
+			Boolean b_drive = Boolean.valueOf(params
+					.getFirst("driverDeliveryStatus"));
+			if (orderDao.getOrderByID(orderID) != null) {
+				ret = orderDao
+						.updateDriverDeliveryStatusOrder(orderID, b_drive);
+			}
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return String.valueOf(ret);
+	}
+
+	@POST
+	@Path("ownerConfirmDelivery")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String ownerConfirmDelivery(MultivaluedMap<String, String> params) {
+		int ret = 0;
+		try {
+			int orderID = Integer.valueOf(params.getFirst("orderID"));
+			Boolean b_owner = Boolean.valueOf(params
+					.getFirst("ownerConfirmDelivery"));
+			if (orderDao.getOrderByID(orderID) != null) {
+				ret = orderDao.updateOwnerDeliveryStatusOrder(orderID, b_owner);
+			}
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return String.valueOf(ret);
+	}
 
 }

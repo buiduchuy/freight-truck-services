@@ -110,9 +110,27 @@ public class OrderDAO {
 			int i = 1;
 
 			stmt.setDouble(i++, bean.getPrice()); // Price
-			stmt.setBoolean(i++, bean.isStaffDeliveryStatus()); // StaffDeliveryStatus
-			stmt.setBoolean(i++, bean.isDriverDeliveryStatus()); // DriverDeliveryStatus
-			stmt.setBoolean(i++, bean.isOwnerDeliveryStatus()); // OwnerDeliveryStatus
+			if (bean.isStaffDeliveryStatus()) {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			if (bean.isDriverDeliveryStatus()) {
+				// DriverDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// DriverDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			if (bean.isOwnerDeliveryStatus()) {
+				// OwnerDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// OwnerDeliveryStatus
+				stmt.setString(i++, "false");
+			}
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
@@ -122,7 +140,7 @@ public class OrderDAO {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			System.out.println("Can't update to Deal table");
+			System.out.println("Can't update to Order table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -140,7 +158,136 @@ public class OrderDAO {
 		return ret;
 	}
 
-	public Order getOrderByID(int orderId) {
+	public int updateOwnerDeliveryStatusOrder(int orderID,
+			Boolean ownerDeliveryStatus) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE [Order] SET " + " OwnerDeliveryStatus = ?"
+					+ " WHERE OrderID = '" + orderID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+
+			if (ownerDeliveryStatus) {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out
+					.println("Can't update OwnerDeliveryStatus to Order table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public int updateDriverDeliveryStatusOrder(int orderID,
+			Boolean driverDeliveryStatus) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE [Order] SET " + " DriverDeliveryStatus = ?"
+					+ " WHERE OrderID = '" + orderID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+
+			if (driverDeliveryStatus) {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out
+					.println("Can't update DriverDeliveryStatus to Order table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public int updateStaffDeliveryStatusOrder(int orderID,
+			Boolean staffDeliveryStatus) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE [Order] SET " + " StaffDeliveryStatus = ?"
+					+ " WHERE OrderID = '" + orderID + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+
+			if (staffDeliveryStatus) {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "true");
+			} else {
+				// StaffDeliveryStatus
+				stmt.setString(i++, "false");
+			}
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out
+					.println("Can't update to StaffDeliveryStatus Order table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
+	public Order getOrderByID(int orderID) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -152,7 +299,7 @@ public class OrderDAO {
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
-			stm.setInt(i++, orderId);
+			stm.setInt(i++, orderID);
 
 			rs = stm.executeQuery();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
