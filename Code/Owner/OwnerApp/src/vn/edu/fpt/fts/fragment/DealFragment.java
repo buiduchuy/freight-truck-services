@@ -74,7 +74,9 @@ public class DealFragment extends Fragment {
 				// TODO Auto-generated method stub
 				int pos = listView.getPositionForView(view);
 				int dealID = list.get(pos).getDealID();
+				int refDealID = list.get(pos).getRefDealID();
 				int dealStatus = list.get(pos).getDealStatusID();
+				String createBy = list.get(pos).getCreateBy();
 				int routeID = list.get(pos).getRouteID();
 				int goodsID = list.get(pos).getGoodsID();
 				double price = list.get(pos).getPrice();
@@ -82,7 +84,9 @@ public class DealFragment extends Fragment {
 				Intent intent = new Intent(getActivity(),
 						DealDetailActivity.class);
 				intent.putExtra("dealID", dealID);
+				intent.putExtra("refDealID", refDealID);
 				intent.putExtra("dealStatus", dealStatus);
+				intent.putExtra("createBy", createBy);
 				intent.putExtra("routeID", routeID);
 				intent.putExtra("goodsID", goodsID);
 				intent.putExtra("price", price);
@@ -105,7 +109,7 @@ public class DealFragment extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

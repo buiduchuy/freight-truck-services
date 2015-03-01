@@ -46,9 +46,9 @@ import android.widget.Toast;
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote;
-	private int dealID, dealStatus, routeID, goodsID;
+	private int dealID, dealStatus, routeID, goodsID, refDealID;
 	private double price;
-	private String note;
+	private String note, createBy;
 	private Button btn_counter, btnAccept, btnDecline, btnCancel;
 	private EditText etPrice, etNote;
 
@@ -76,13 +76,15 @@ public class DealDetailActivity extends Activity {
 		
 
 		dealID = getIntent().getIntExtra("dealID", 0);
+		refDealID = getIntent().getIntExtra("refDealID", 0);
 		dealStatus = getIntent().getIntExtra("dealStatus", 0);
 		routeID = getIntent().getIntExtra("routeID", 0);
 		goodsID = getIntent().getIntExtra("goodsID", 0);
 		price = getIntent().getDoubleExtra("price", 0.0);
 		note = getIntent().getStringExtra("note");
+		createBy = getIntent().getStringExtra("createBy");
 		
-		if (dealStatus == 1) {
+		if (dealStatus == 1 && createBy == "driver") {
 			btn_counter.setVisibility(View.GONE);
 			btnAccept.setVisibility(View.GONE);
 			btnDecline.setVisibility(View.GONE);
@@ -106,14 +108,18 @@ public class DealDetailActivity extends Activity {
 				WebServiceTask2 wst2 = new WebServiceTask2(
 						WebServiceTask2.POST_TASK, DealDetailActivity.this,
 						"Đang xử lý...");
+				wst2.addNameValuePair("dealID", dealID + "");
 				wst2.addNameValuePair("price", etPrice.getText().toString());
 				wst2.addNameValuePair("notes", etNote.getText().toString());
 				wst2.addNameValuePair("createTime", formatDate(calendar));
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeID + "");
 				wst2.addNameValuePair("goodsID", goodsID + "");
-				wst2.addNameValuePair("dealStatusID", "1");
-				wst2.addNameValuePair("refDealID", dealID + "");
+				if (refDealID == 0) {
+					wst2.addNameValuePair("refDealID", dealID + "");
+				} else {
+					wst2.addNameValuePair("refDealID", refDealID + "");
+				}				
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
 				wst2.execute(new String[] { url });
@@ -128,15 +134,19 @@ public class DealDetailActivity extends Activity {
 				Calendar calendar = Calendar.getInstance();
 				WebServiceTask3 wst3 = new WebServiceTask3(
 						WebServiceTask3.POST_TASK, DealDetailActivity.this,
-						"Đang xử lý...");
-				wst3.addNameValuePair("price", etPrice.getText().toString());
-				wst3.addNameValuePair("notes", etNote.getText().toString());
+						"Đang xử lý...");				
+				wst3.addNameValuePair("dealID", dealID + "");
+				wst3.addNameValuePair("price", price + "");
+				wst3.addNameValuePair("notes", note + "");
 				wst3.addNameValuePair("createTime", formatDate(calendar));
 				wst3.addNameValuePair("createBy", "owner");
 				wst3.addNameValuePair("routeID", routeID + "");
-				wst3.addNameValuePair("goodsID", goodsID + "");
-				wst3.addNameValuePair("dealStatusID", "1");
-				wst3.addNameValuePair("refDealID", dealID + "");
+				wst3.addNameValuePair("goodsID", goodsID + "");				
+				if (refDealID == 0) {
+					wst3.addNameValuePair("refDealID", dealID + "");
+				} else {
+					wst3.addNameValuePair("refDealID", refDealID + "");
+				}	
 				wst3.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Accept;
 				wst3.execute(new String[] { url });
@@ -148,8 +158,21 @@ public class DealDetailActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				Calendar calendar = Calendar.getInstance();
 				WebServiceTask4 wst4 = new WebServiceTask4(WebServiceTask4.POST_TASK, DealDetailActivity.this, "Đang xử lý...");
 				wst4.addNameValuePair("dealID", dealID + "");
+				wst4.addNameValuePair("price", etPrice.getText().toString());
+				wst4.addNameValuePair("notes", etNote.getText().toString());
+				wst4.addNameValuePair("createTime", formatDate(calendar));
+				wst4.addNameValuePair("createBy", "owner");
+				wst4.addNameValuePair("routeID", routeID + "");
+				wst4.addNameValuePair("goodsID", goodsID + "");				
+				if (refDealID == 0) {
+					wst4.addNameValuePair("refDealID", dealID + "");
+				} else {
+					wst4.addNameValuePair("refDealID", refDealID + "");
+				}	
+				wst4.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Cancel;
 				wst4.execute(new String[] { url });
 			}
@@ -196,7 +219,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -406,7 +429,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -479,7 +502,7 @@ public class DealDetailActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(DealDetailActivity.this,
 						"Gửi đề nghị thành công", Toast.LENGTH_LONG).show();
 
@@ -568,7 +591,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -730,7 +753,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

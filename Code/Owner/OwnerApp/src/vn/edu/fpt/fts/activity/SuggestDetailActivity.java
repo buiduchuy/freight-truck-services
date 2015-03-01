@@ -88,13 +88,13 @@ public class SuggestDetailActivity extends Activity {
 				WebServiceTask2 wst2 = new WebServiceTask2(
 						WebServiceTask2.POST_TASK, SuggestDetailActivity.this,
 						"Đang xử lý...");
+				wst2.addNameValuePair("dealID", "0");
 				wst2.addNameValuePair("price", etPrice.getText().toString());
 				wst2.addNameValuePair("notes", etNote.getText().toString());
 				wst2.addNameValuePair("createTime", formatDate(calendar));
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeid + "");
-				wst2.addNameValuePair("goodsID", goodsID + "");
-				wst2.addNameValuePair("dealStatusID", "1");
+				wst2.addNameValuePair("goodsID", goodsID + "");				
 				wst2.addNameValuePair("refDealID", "0");
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
@@ -426,7 +426,7 @@ public class SuggestDetailActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(SuggestDetailActivity.this,
 						"Gửi đề nghị thành công", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(SuggestDetailActivity.this, SuggestActivity.class);
