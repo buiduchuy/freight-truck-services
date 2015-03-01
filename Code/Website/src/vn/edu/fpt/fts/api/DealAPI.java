@@ -79,13 +79,14 @@ public class DealAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createDeal(MultivaluedMap<String, String> params) {
-		// Get current deal
 		Deal deal;
 		int ret = 0;
 
 		try {
 			deal = new Deal();
-			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			if (!params.getFirst("dealID").equals("")) {
+				deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			}
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
 			deal.setCreateTime(params.getFirst("createTime"));
