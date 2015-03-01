@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="vn.edu.fpt.fts.activity.CreateGoodsActivity" >
+    tools:context="vn.edu.fpt.fts.ownerapp.CreateGoodsActivity" >
 
     <LinearLayout
         android:id="@+id/linearlayout_create_goods"
@@ -37,7 +37,7 @@
                     android:id="@+id/edittext_weight"
                     android:layout_width="250dp"
                     android:layout_height="wrap_content"
-                    android:hint="Khối lượng"
+                    android:hint="Khối lượng (kg)"
                     android:imeOptions="actionDone"
                     android:inputType="numberDecimal" 
                     />
@@ -113,7 +113,7 @@
                     android:id="@+id/edittext_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Giá tiền" 
+                    android:hint="Giá tiền (nghìn đồng)" 
                     android:inputType="numberDecimal"
                     android:imeOptions="actionDone"/>
             </TableRow>
