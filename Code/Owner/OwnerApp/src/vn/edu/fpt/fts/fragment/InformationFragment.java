@@ -1,6 +1,5 @@
-package vn.edu.fpt.fts.fragment;
+package vn.edu.fpt.fts.ownerapp;
 
-import vn.edu.fpt.fts.ownerapp.R;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

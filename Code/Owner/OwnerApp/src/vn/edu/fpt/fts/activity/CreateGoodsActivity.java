@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.activity;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,8 +28,6 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
-import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -275,6 +273,13 @@ public class CreateGoodsActivity extends Activity {
 	}
 	
 	@Override
+	protected void onNewIntent(Intent intent) {
+		// TODO Auto-generated method stub
+		super.onNewIntent(intent);
+		setIntent(intent);
+	}
+	
+	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
@@ -300,6 +305,18 @@ public class CreateGoodsActivity extends Activity {
 		etWeight.setText(savedInstanceState.getString("weight"));
 		actPickupAddr.setText(savedInstanceState.getString("pickup"));
 		actDeliverAddr.setText(savedInstanceState.getString("deliver"));
+		
+		Bundle bundle = getIntent().getBundleExtra("info");
+		if (bundle != null) {
+			String flag = bundle.getString("flag");
+			if (flag.equals("pickup")) {
+				pickupLat = bundle.getDouble("lat");
+				pickupLng = bundle.getDouble("lng");
+			} else if (flag.equals("delivery")) {
+				deliverLat = bundle.getDouble("lat");
+				deliverLng = bundle.getDouble("lng");
+			}
+		}
 	}
 
 	@Override
@@ -326,7 +343,7 @@ public class CreateGoodsActivity extends Activity {
 	}
 
 	private void updateLabel(EditText et, Calendar calendar) {
-		String format = "MM/dd/yy";
+		String format = "dd/MM/yy";
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		et.setText(sdf.format(calendar.getTime()));
 	}
@@ -612,10 +629,10 @@ public class CreateGoodsActivity extends Activity {
 			this.processMessage = processMessage;
 		}
 
-//		public void addNameValuePair(String name, String value) {
-//
-//			params.add(new BasicNameValuePair(name, value));
-//		}
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
 
 		private void showProgressDialog() {
 

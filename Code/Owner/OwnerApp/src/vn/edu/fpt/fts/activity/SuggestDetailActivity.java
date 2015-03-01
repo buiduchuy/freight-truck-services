@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.activity;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,9 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.adapter.ModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -41,6 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +50,9 @@ public class SuggestDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category;
 	private EditText etPrice, etNote;
 	private Button btnSend;
-	private String goodsID;
+	private String goodsID, ownerID;
 
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest_detail);
@@ -65,7 +67,7 @@ public class SuggestDetailActivity extends Activity {
 
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
-		preferences.getString("ownerID", "");
+		ownerID = preferences.getString("ownerID", "");
 
 		startAddr = (TextView) this.findViewById(R.id.textview_startAddr);
 		destAddr = (TextView) this.findViewById(R.id.textview_destAddr);

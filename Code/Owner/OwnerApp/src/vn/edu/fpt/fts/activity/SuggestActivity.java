@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.activity;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -26,7 +27,6 @@ import vn.edu.fpt.fts.adapter.Model;
 import vn.edu.fpt.fts.adapter.ModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,7 +38,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class SuggestActivity extends Activity {
@@ -53,9 +55,10 @@ public class SuggestActivity extends Activity {
 		setContentView(R.layout.activity_suggest);
 		goodsID = getIntent().getStringExtra("goodsID");
 		
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.GET_TASK,
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestActivity.this, "Đang xử lý...");
-		String url = Common.IP_URL + Common.Service_Route_Get;
+		String url = Common.IP_URL + Common.Service_Suggest_Route;
+		wst.addNameValuePair("goodsID", goodsID);
 		wst.execute(new String[] { url });
 
 		listView = (ListView) findViewById(R.id.listview_suggest);
@@ -143,6 +146,11 @@ public class SuggestActivity extends Activity {
 			this.taskType = taskType;
 			this.mContext = mContext;
 			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
 		}
 
 		private void showProgressDialog() {

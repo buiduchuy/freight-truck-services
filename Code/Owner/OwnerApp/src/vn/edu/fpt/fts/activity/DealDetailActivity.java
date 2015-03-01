@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.activity;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -45,8 +44,7 @@ import android.widget.Toast;
 
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
-//			goodscate, goodsweight, goodspickup, goodsdeliver, 
-			tvPrice, tvNote;
+			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote;
 	private int dealID, dealStatus, routeID, goodsID;
 	private double price;
 	private String note;

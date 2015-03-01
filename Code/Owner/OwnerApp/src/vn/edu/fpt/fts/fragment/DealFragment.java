@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.fragment;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,10 +23,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.activity.DealDetailActivity;
 import vn.edu.fpt.fts.classes.Deal;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -183,7 +181,7 @@ public class DealFragment extends Fragment {
 				Object obj = jsonObject.get("deal");
 				String[] price = null;
 				if (obj instanceof JSONArray) {
-					JSONArray array = jsonObject.getJSONArray("deal");					
+					JSONArray array = jsonObject.getJSONArray("deal");
 					list = new ArrayList<Deal>();
 
 					for (int i = 0; i < array.length(); i++) {
@@ -193,11 +191,13 @@ public class DealFragment extends Fragment {
 								.getString("dealStatusID"));
 						int check2 = Integer.parseInt(jsonObject2
 								.getString("active"));
-						if (check != 3 && check != 4 && check2 != 0) {
+						if (check != 3 && check != 4 && check2 != 0
+								&& check2 != 2) {
 							deal.setActive(Integer.parseInt(jsonObject2
 									.getString("active")));
 							deal.setCreateBy(jsonObject2.getString("createBy"));
-							deal.setCreateTime(jsonObject2.getString("createTime"));
+							deal.setCreateTime(jsonObject2
+									.getString("createTime"));
 							deal.setDealID(Integer.parseInt(jsonObject2
 									.getString("dealID")));
 							deal.setDealStatusID(Integer.parseInt(jsonObject2
@@ -213,10 +213,10 @@ public class DealFragment extends Fragment {
 									.getString("routeID")));
 							list.add(deal);
 						}
-						
+
 					}
 				} else if (obj instanceof JSONObject) {
-//					price = new String[1];
+					// price = new String[1];
 					JSONObject jsonObject2 = jsonObject.getJSONObject("deal");
 					list = new ArrayList<Deal>();
 					Deal deal = new Deal();
@@ -224,7 +224,7 @@ public class DealFragment extends Fragment {
 							.getString("dealStatusID"));
 					int check2 = Integer.parseInt(jsonObject2
 							.getString("active"));
-					if (check != 3 && check != 4 && check2 != 0) {
+					if (check != 3 && check != 4 && check2 != 0 && check2 != 2) {
 						deal.setActive(Integer.parseInt(jsonObject2
 								.getString("active")));
 						deal.setCreateBy(jsonObject2.getString("createBy"));
@@ -246,26 +246,30 @@ public class DealFragment extends Fragment {
 					}
 				}
 
-//				for (Deal d : list) {
-//					if (d.getDealStatusID() == 3 || d.getDealStatusID() == 4
-//							|| d.getActive() == 0) {
-//						list.remove(d);
-//					}
-//				}
-				price = new String[list.size()];
-//				int size = list.size();
-				for (int i = 0; i < list.size(); i++) {
-					price[i] = (int) list.get(i).getPrice() + "";
-				}
-//				String a = price[0];
-				if (price[0] == null) {
-					Toast.makeText(getActivity(),
-							"Giao dịch không thể tải được", Toast.LENGTH_LONG)
-							.show();
-				} else {
-					adapter = new ArrayAdapter<String>(getActivity(),
-							android.R.layout.simple_list_item_1, price);
-					listView.setAdapter(adapter);
+				// for (Deal d : list) {
+				// if (d.getDealStatusID() == 3 || d.getDealStatusID() == 4
+				// || d.getActive() == 0) {
+				// list.remove(d);
+				// }
+				// }
+				int size = list.size();
+				if (size != 0) {
+					price = new String[list.size()];
+
+					for (int i = 0; i < list.size(); i++) {
+						price[i] = (int) list.get(i).getPrice() + "";
+					}
+					// String a = price[0];
+
+					if (price[0] == null) {
+						Toast.makeText(getActivity(),
+								"Giao dịch không thể tải được",
+								Toast.LENGTH_LONG).show();
+					} else {
+						adapter = new ArrayAdapter<String>(getActivity(),
+								android.R.layout.simple_list_item_1, price);
+						listView.setAdapter(adapter);
+					}
 				}
 
 			} catch (JSONException e) {

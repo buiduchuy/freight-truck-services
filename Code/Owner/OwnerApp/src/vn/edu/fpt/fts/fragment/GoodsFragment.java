@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.fragment;
+package vn.edu.fpt.fts.ownerapp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,13 +23,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.activity.GoodsDetailActivity;
+import vn.edu.fpt.fts.adapter.ModelAdapter;
+import vn.edu.fpt.fts.classes.Goods;
+import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -78,8 +80,8 @@ public class GoodsFragment extends Fragment {
 				
 				Intent intent = new Intent(view.getContext(),
 						GoodsDetailActivity.class);
-//				String tmp = goodsCategoryID.get(pos);
-//				String tmp2 = goodsID.get(pos);
+				String tmp = goodsCategoryID.get(pos);
+				String tmp2 = goodsID.get(pos);
 				
 				
 				intent.putExtra("goodsID", goodsID.get(pos));
@@ -200,14 +202,19 @@ public class GoodsFragment extends Fragment {
 //					goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
 //					list.add(goods);
 					JSONObject jsonObject2 = array.getJSONObject(i);
-//					String a = jsonObject2.getString("goodsID");
+					String a = jsonObject2.getString("goodsID");
 					
 					
 					goodsID.add(jsonObject2.getString("goodsID"));
 					goodsCategoryID.add(jsonObject2.getString("goodsCategoryID"));
 					
+					String createTime = jsonObject2.getString("createTime");
+					String tmp[] = createTime.split(" ");
+					createTime = tmp[0].replace("-", "") + jsonObject2.getString("goodsID");
+					
+					
 					JSONObject jsonObject3 = jsonObject2.getJSONObject("goodsCategory");
-					result[i] = jsonObject3.getString("name");
+					result[i] = jsonObject3.getString("name") + " " + "#" + createTime;
 					
 				}
 				adapter = new ArrayAdapter<String>(
