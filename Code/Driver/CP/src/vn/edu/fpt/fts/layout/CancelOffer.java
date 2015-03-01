@@ -57,6 +57,8 @@ public class CancelOffer extends Fragment {
 			+ "Deal/cancel";
 
 	TextView startPlace, endPlace, startTime, endTime, price, note, weight;
+	TextView startPoint, point1, point2, endPoint, startDate, endDate, payload,
+			cantLoad;
 	String routeID, goodID, refID;
 
 	@Override
@@ -83,6 +85,14 @@ public class CancelOffer extends Fragment {
 		price = (TextView) v.findViewById(R.id.textView10);
 		note = (TextView) v.findViewById(R.id.textView12);
 		weight = (TextView) v.findViewById(R.id.textView14);
+		startPoint = (TextView) v.findViewById(R.id.textView18);
+		point1 = (TextView) v.findViewById(R.id.textView20);
+		point2 = (TextView) v.findViewById(R.id.textView22);
+		endPoint = (TextView) v.findViewById(R.id.textView24);
+		startDate = (TextView) v.findViewById(R.id.textView26);
+		endDate = (TextView) v.findViewById(R.id.textView28);
+		payload = (TextView) v.findViewById(R.id.textView30);
+		cantLoad = (TextView) v.findViewById(R.id.textView32);
 		return v;
 	}
 
@@ -181,12 +191,12 @@ public class CancelOffer extends Fragment {
 				price.setText((int) Double.parseDouble(obj.getString("price"))
 						+ " ngàn đồng");
 				weight.setText(good.getString("weight") + " kg");
-				if (good.has("notes")) {
-					if (good.getString("notes").equals("")
-							|| good.getString("notes").equalsIgnoreCase("null")) {
+				if (obj.has("notes")) {
+					if (obj.getString("notes").equals("")
+							|| obj.getString("notes").equalsIgnoreCase("null")) {
 						note.setText("Không có");
 					} else {
-						note.setText(good.getString("notes"));
+						note.setText(obj.getString("notes"));
 					}
 				} else {
 					note.setText("Không có");
@@ -194,6 +204,86 @@ public class CancelOffer extends Fragment {
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
 				refID = obj.getString("refDealID");
+
+				obj = obj.getJSONObject("route");
+				Object intervent;
+				startPoint.setText(obj.getString("startingAddress"));
+
+				if (obj.has("routeMarkers")) {
+					intervent = obj.get("routeMarkers");
+					if (intervent instanceof JSONArray) {
+						JSONArray catArray = obj.getJSONArray("routeMarkers");
+						for (int j = 0; j < catArray.length(); j++) {
+							JSONObject cat = catArray.getJSONObject(j);
+							if (j == 0) {
+								if (!cat.getString("routeMarkerLocation")
+										.equals("")) {
+									point1.setText(cat
+											.getString("routeMarkerLocation"));
+								} else {
+									point1.setText("Không có");
+								}
+								point2.setText("Không có");
+							} else if (j == 1) {
+								if (!cat.getString("routeMarkerLocation")
+										.equals("")) {
+									point2.setText(cat
+											.getString("routeMarkerLocation"));
+								}
+							}
+						}
+					} else if (intervent instanceof JSONObject) {
+						JSONObject cat = obj.getJSONObject("routeMarkers");
+						point1.setText(cat.getString("routeMarkerLocation"));
+						point2.setText("Không có");
+					}
+				} else {
+					point1.setText("Không có");
+					point2.setText("Không có");
+				}
+
+				endPoint.setText(obj.getString("destinationAddress"));
+				format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				Date startD = null;
+				try {
+					startD = format.parse(obj.getString("startTime"));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				format.applyPattern("dd/MM/yyyy hh:mm");
+				startDate.setText(format.format(startD));
+				Date endD = null;
+				try {
+					format.applyPattern("yyyy-MM-dd hh:mm:ss");
+					endD = format.parse(obj.getString("finishTime"));
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				format.applyPattern("dd/MM/yyyy");
+				endDate.setText(format.format(endD));
+				payload.setText(obj.getString("weight") + " kg");
+
+				String cLoad = "";
+				if (obj.has("goodsCategory")) {
+					intervent = obj.get("goodsCategory");
+					if (intervent instanceof JSONArray) {
+						JSONArray goodArray = obj.getJSONArray("goodsCategory");
+						for (int j = 0; j < goodArray.length(); j++) {
+							good = goodArray.getJSONObject(j);
+							cLoad += good.getString("name") + ", ";
+						}
+						cLoad = cLoad.substring(0, cLoad.length() - 2);
+					} else if (intervent instanceof JSONObject) {
+						good = obj.getJSONObject("goodsCategory");
+						cLoad += good.getString("name");
+					}
+				} else {
+					cLoad += "không có loại hàng nào";
+				}
+
+				cantLoad.setText(cLoad);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

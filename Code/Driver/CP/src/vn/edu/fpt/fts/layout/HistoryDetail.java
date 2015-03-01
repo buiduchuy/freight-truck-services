@@ -46,7 +46,7 @@ import android.widget.TextView;
 public class HistoryDetail extends Fragment {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByID";
-	TextView startPlace, endPlace, startTime, endTime, price, status, weight;
+	TextView startPlace, endPlace, startTime, endTime, price, status, weight, phone;
 	Button button;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +61,7 @@ public class HistoryDetail extends Fragment {
 		price = (TextView) myFragmentView.findViewById(R.id.textView10);
 		status = (TextView) myFragmentView.findViewById(R.id.textView12);
 		weight = (TextView) myFragmentView.findViewById(R.id.textView14);
+		phone = (TextView) myFragmentView.findViewById(R.id.textView16);
 		button = (Button) myFragmentView.findViewById(R.id.button1);
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
@@ -171,6 +172,7 @@ public class HistoryDetail extends Fragment {
 					stat = "Chưa giao hàng";
 				}
 				status.setText(stat);
+				phone.setText(good.getJSONObject("owner").getString("phone"));
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

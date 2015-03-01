@@ -52,19 +52,20 @@ public class SystemSuggest extends Fragment {
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
 	ListView list1;
 	View myFragmentView;
-	private static final String SERVICE_URL = Constant.SERVICE_URL + "Goods/getSuggestionGoods";
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Goods/getSuggestionGoods";
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		list = new ArrayList<ListItem>();
 		getActivity().setTitle("Gợi ý hệ thống");
-		WebService ws = new WebService(WebService.POST_TASK,
-				getActivity(), "Đang lấy dữ liệu ...");
+		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
+				"Đang lấy dữ liệu ...");
 		ws.addNameValuePair("routeID", getArguments().getString("routeID"));
 		ws.execute(new String[] { SERVICE_URL });
-		myFragmentView = inflater.inflate(
-				R.layout.activity_system_suggest, container, false);
+		myFragmentView = inflater.inflate(R.layout.activity_system_suggest,
+				container, false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.listView4);
 		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 			@Override
@@ -75,9 +76,9 @@ public class SystemSuggest extends Fragment {
 				FragmentTransaction trs = mng.beginTransaction();
 				SendOffer frag = new SendOffer();
 				Bundle bundle = new Bundle();
-	    		bundle.putString("goodID", String.valueOf(id));
-	    		bundle.putString("routeID", getArguments().getString("routeID"));
-	    		frag.setArguments(bundle);
+				bundle.putString("goodID", String.valueOf(id));
+				bundle.putString("routeID", getArguments().getString("routeID"));
+				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
@@ -97,7 +98,7 @@ public class SystemSuggest extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -168,15 +169,32 @@ public class SystemSuggest extends Fragment {
 			JSONObject obj;
 			try {
 				obj = new JSONObject(response);
-				JSONArray array = obj.getJSONArray("goods");
-				for (int i = 0; i < array.length(); i++) {
-					JSONObject item = array.getJSONObject(i);
-					list.add(new ListItem("Hàng " + String.valueOf(i+1) +  ": " + item.getString("weight") + " tấn",  item.getString("price") + " ngàn đồng", ""));
-					map.put(Long.valueOf(i), Integer.parseInt(item.getString("goodsID")));
+				if (obj.has("goods")) {
+					Object intervent = obj.get("goods");
+					if (intervent instanceof JSONArray) {
+						JSONArray array = obj.getJSONArray("goods");
+						for (int i = 0; i < array.length(); i++) {
+							JSONObject item = array.getJSONObject(i);
+							list.add(new ListItem("Hàng "
+									+ String.valueOf(i + 1) + ": "
+									+ item.getString("weight") + " tấn", item
+									.getString("price") + " ngàn đồng", ""));
+							map.put(Long.valueOf(i),
+									Integer.parseInt(item.getString("goodsID")));
+						}
+					} else if (intervent instanceof JSONObject) {
+						JSONObject item = obj.getJSONObject("goods");
+
+						list.add(new ListItem("Hàng 1: " + item.getString("weight") + " tấn",
+								item.getString("price") + " ngàn đồng", ""));
+						map.put(Long.valueOf(0),
+								Integer.parseInt(item.getString("goodsID")));
+					}
+					adapter = new ListItemAdapter2(getActivity(), list);
+					list1.setEmptyView(myFragmentView
+							.findViewById(R.id.emptyElement));
+					list1.setAdapter(adapter);
 				}
-				adapter = new ListItemAdapter2(getActivity(), list);
-				list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
-				list1.setAdapter(adapter);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

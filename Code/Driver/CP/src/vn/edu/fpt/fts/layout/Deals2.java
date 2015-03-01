@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
+import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -50,7 +52,7 @@ import android.widget.ListView;
 public class Deals2 extends Fragment {
 
 	ArrayList<ListItem> list;
-	ListItemAdapter adapter;
+	ListItemAdapter3 adapter;
 	@SuppressLint("UseSparseArrays")
 	ArrayList<String> map;
 	View myFragmentView;
@@ -180,16 +182,42 @@ public class Deals2 extends Fragment {
 								.equalsIgnoreCase("owner")
 								&& item.getString("dealStatusID").equals("1")) {
 							JSONObject gd = item.getJSONObject("goods");
+							JSONObject rt = item.getJSONObject("route");
 							if (gd.getString("active").equals("1")) {
 								String title = "";
-								String[] start = gd.getString("pickupAddress")
+								String[] start = rt
+										.getString("startingAddress")
 										.replaceAll("(?i), Vietnam", "")
 										.replaceAll("(?i), Viet Nam", "")
 										.replaceAll("(?i), Việt Nam", "")
 										.split(",");
 								title = start[start.length - 1].trim();
 
-								String[] end = gd.getString("deliveryAddress")
+								if (obj.has("routeMarkers")) {
+									Object intervent = obj.get("routeMarkers");
+									if (intervent instanceof JSONArray) {
+										JSONArray catArray = obj
+												.getJSONArray("routeMarkers");
+										for (int j = 0; j < catArray.length(); j++) {
+											JSONObject cat = catArray
+													.getJSONObject(j);
+											if (!cat.getString(
+													"routeMarkerLocation")
+													.equals("")) {
+												title += " - "
+														+ cat.getString("routeMarkerLocation");
+											}
+										}
+									} else if (intervent instanceof JSONObject) {
+										JSONObject cat = obj
+												.getJSONObject("routeMarkers");
+										title += " - "
+												+ cat.getString("routeMarkerLocation");
+									}
+								}
+
+								String[] end = rt
+										.getString("destinationAddress")
 										.replaceAll("(?i), Vietnam", "")
 										.replaceAll("(?i), Viet Nam", "")
 										.replaceAll("(?i), Việt Nam", "")
@@ -200,15 +228,29 @@ public class Deals2 extends Fragment {
 										"yyyy-MM-dd hh:mm:ss");
 								Date createDate = format.parse(item
 										.getString("createTime"));
+								Calendar cal = Calendar.getInstance();
+								cal.setTime(createDate);
+								cal.add(Calendar.MONTH, 3);
+								Date timeout = cal.getTime();
 								format.applyPattern("dd/MM/yyyy");
 								String createD = format.format(createDate);
-								list.add(new ListItem(count + ". " + title,
-										"Giá đề nghị: "
-												+ (int) Double.parseDouble(item
-														.getString("price"))
-												+ " ngàn đồng", createD));
-								count++;
-								map.add(item.getString("dealID"));
+								if (Calendar.getInstance().getTime()
+										.before(timeout)) {
+									JSONObject owner = item.getJSONObject(
+											"goods").getJSONObject("owner");
+									list.add(new ListItem(
+											owner.getString("firstName")
+													+ " "
+													+ owner.getString("lastName")
+													+ " gửi đề nghị cho lộ trình:",
+											title,
+											"Giá đề nghị: "
+													+ (int) Double.parseDouble(item
+															.getString("price"))
+													+ " ngàn đồng", createD));
+									count++;
+									map.add(item.getString("dealID"));
+								}
 							}
 						}
 					}
@@ -220,7 +262,7 @@ public class Deals2 extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter(getActivity(), list);
+			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();
