@@ -628,4 +628,66 @@ public class DealDAO {
 		}
 		return ret;
 	}
+
+	public Deal getLastDealByGoodsAndRouteID(int routeID, int goodsID) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT TOP 1 * FROM Deal WHERE RouteID = " + routeID
+					+ " AND GoodsID = " + goodsID + " ORDER BY DealID DESC";
+
+			stm = con.prepareStatement(sql);
+
+			rs = stm.executeQuery();
+
+			GoodsDAO goodsDao = new GoodsDAO();
+			RouteDAO routeDao = new RouteDAO();
+			DealStatusDAO dealStatusDao = new DealStatusDAO();
+
+			while (rs.next()) {
+				Deal deal = new Deal();
+
+				deal.setDealID(rs.getInt("DealID"));
+				deal.setPrice(rs.getDouble("Price"));
+				deal.setNotes(rs.getString("Notes"));
+				deal.setCreateTime(rs.getString("CreateTime"));
+				deal.setCreateBy(rs.getString("CreateBy"));
+				deal.setRouteID(rs.getInt("RouteID"));
+				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
+				deal.setDealStatusID(rs.getInt("DealStatusID"));
+				deal.setActive(rs.getInt("Active"));
+
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
+				return deal;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
 }

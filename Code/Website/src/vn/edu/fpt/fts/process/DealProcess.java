@@ -165,10 +165,6 @@ public class DealProcess {
 
 	}
 
-	public int checkDuplicateDeal(int driverID) {
-		return 0;
-	}
-
 	public int acceptDeal1(Deal deal) {
 		int ret = 0;
 		try {
@@ -307,6 +303,39 @@ public class DealProcess {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return ret;
+	}
+
+	public int sendDeal(Deal deal) {
+		int ret = 0;
+		Deal db_deal = dealDao.getLastDealByGoodsAndRouteID(deal.getRouteID(),
+				deal.getGoodsID());
+
+		if (db_deal == null) {
+			// Not exist will insert new deal
+			ret = dealDao.insertDeal(deal);
+
+		} else {
+			int db_dealStatusID = db_deal.getDealStatusID();
+
+			if (db_dealStatusID == Common.deal_pending) {
+
+				// Get current deal
+				Deal currentDeal = dealDao.getDealByID(deal.getDealID());
+				// Update status
+				currentDeal.setDealStatusID(Common.deal_decline);
+				if (dealDao.updateDeal(currentDeal) != 0) {
+					// Insert new deal with pending status
+					ret = dealDao.insertDeal(deal);
+				}
+			} else if (db_dealStatusID == Common.deal_accept) {
+				ret = 0;
+			} else if (db_dealStatusID == Common.deal_decline) {
+				ret = dealDao.insertDeal(deal);
+			} else if (db_dealStatusID == Common.deal_cancel) {
+				ret = dealDao.insertDeal(deal);
+			}
 		}
 		return ret;
 	}

@@ -79,40 +79,32 @@ public class DealAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createDeal(MultivaluedMap<String, String> params) {
-		// Update current deal and create new deal
 		// Get current deal
-		Deal deal = dealDao.getDealByID(Integer.valueOf(params
-				.getFirst("dealID")));
-		// Update status
-		deal.setDealStatusID(Common.deal_decline);
-
+		Deal deal;
 		int ret = 0;
 
-		if (dealDao.updateDeal(deal) != 0) {
-			try {
-				deal = new Deal();
+		try {
+			deal = new Deal();
+			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			deal.setPrice(Double.valueOf(params.getFirst("price")));
+			deal.setNotes(params.getFirst("notes"));
+			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateBy(params.getFirst("createBy"));
+			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
+			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
+			deal.setDealStatusID(Common.deal_pending);
 
-				deal.setPrice(Double.valueOf(params.getFirst("price")));
-				deal.setNotes(params.getFirst("notes"));
-				deal.setCreateTime(params.getFirst("createTime"));
-				deal.setCreateBy(params.getFirst("createBy"));
-				deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
-				deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
-				deal.setDealStatusID(Common.deal_pending);
-
-				if (!params.getFirst("refDealID").equals("")) {
-					deal.setRefDealID(Integer.valueOf(params
-							.getFirst("refDealID")));
-				}
-				deal.setActive(Integer.valueOf(params.getFirst("active")));
-				// Insert new deal with status pending
-				ret = dealDao.insertDeal(deal);
-
-			} catch (NumberFormatException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			if (!params.getFirst("refDealID").equals("")) {
+				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			}
+			deal.setActive(Integer.valueOf(params.getFirst("active")));
+			// Insert new deal with status pending
+			ret = dealProcess.sendDeal(deal);
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return String.valueOf(ret);
 	}
@@ -147,7 +139,7 @@ public class DealAPI {
 		try {
 			deal = new Deal();
 
-			//deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			// deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
 			deal.setCreateTime(params.getFirst("createTime"));
@@ -160,7 +152,7 @@ public class DealAPI {
 				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			}
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
-			// Insert new deal with status pending
+			// Insert new deal with status accept
 			ret = dealProcess.acceptDeal1(deal);
 
 		} catch (NumberFormatException e) {
@@ -181,7 +173,7 @@ public class DealAPI {
 		try {
 			deal = new Deal();
 
-			//deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			// deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
 			deal.setCreateTime(params.getFirst("createTime"));
@@ -194,7 +186,7 @@ public class DealAPI {
 				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			}
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
-			// Insert new deal with status pending
+			// Insert new deal with status decline
 			ret = dealProcess.declineDeal1(deal);
 
 		} catch (NumberFormatException e) {
