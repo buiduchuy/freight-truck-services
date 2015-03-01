@@ -29,20 +29,21 @@ public class RouteGoodsCategoryDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-
-			String sql = "INSERT INTO RouteGoodsCategory ( "
-					+ "RouteID,"
-					+ "GoodsCategoryID"
-					+ ") VALUES ("
+			String sql = "INSERT INTO RouteGoodsCategory (RouteID, GoodsCategoryID) SELECT "
 					+ routeID
 					+ ", (SELECT GoodsCategoryID FROM GoodsCategory WHERE Name = N'"
+					+ goodsCategoryName
+					+ "') WHERE NOT EXISTS (SELECT * from RouteGoodsCategory WHERE RouteID ="
+					+ routeID
+					+ " AND GoodsCategoryID = (SELECT GoodsCategoryID FROM GoodsCategory WHERE Name = N'"
 					+ goodsCategoryName + "'))";
+
 			stmt = con.prepareStatement(sql);
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
-			//e.printStackTrace();
+			// e.printStackTrace();
 			System.out.println("Can't insert to RouteGoodsCategory table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
