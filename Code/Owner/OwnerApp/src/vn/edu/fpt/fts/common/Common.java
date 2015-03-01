@@ -2,7 +2,7 @@ package vn.edu.fpt.fts.common;
 
 public final class Common {
 //	public static final String IP_URL = "http://192.168.43.10:8080/FTS/api/";
-	public static final String IP_URL = "http://137.116.128.218:8080/FTS/api/";
+	public static final String IP_URL = "http://fts2015.cloudapp.net:8080/FTS/api/";
 	public static final String Service_Goods_Create = "Goods/Create";
 	public static final String Service_Login = "Account/OwnerLogin";
 	public static final String Service_GoodsCategory_Get = "GoodsCategory/get";
