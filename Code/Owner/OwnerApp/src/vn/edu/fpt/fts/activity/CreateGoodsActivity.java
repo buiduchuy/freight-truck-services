@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,12 +28,16 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
+import vn.edu.fpt.fts.ownerapp.R;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -238,6 +242,19 @@ public class CreateGoodsActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// Chi viec goi ham postData
+				Geocoder geocoder = new Geocoder(getBaseContext());
+				try {			
+					List<Address> list = geocoder.getFromLocationName(
+							actPickupAddr.getText().toString(), 1);
+					pickupLng = list.get(0).getLongitude();
+					pickupLat = list.get(0).getLatitude();
+					List<Address> list2 = geocoder.getFromLocationName(
+							actDeliverAddr.getText().toString(), 1);
+					deliverLng = list2.get(0).getLongitude();
+					deliverLat = list2.get(0).getLatitude();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 				postData(v);
 			}
 		});
@@ -254,6 +271,8 @@ public class CreateGoodsActivity extends Activity {
 				deliverLng = bundle.getDouble("lng");
 			}
 		}
+		
+		
 
 		// set owner id
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",

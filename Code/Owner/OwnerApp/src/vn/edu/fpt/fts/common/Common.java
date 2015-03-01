@@ -13,4 +13,7 @@ public final class Common {
 	public static final String Service_Deal_GetByGoodsID = "Deal/getDealByGoodsID";
 	public static final String Service_Goods_GetByID = "Route/getRouteByID";
 	public static final String Service_Deal_Accept = "Deal/accept";
+	public static final String Service_Deal_Decline = "Deal/decline";
+	public static final String Service_Deal_Cancel = "Deal/cancel";
+	public static final String Service_Suggest_Route = "Route/getSuggestionRoute";
 }

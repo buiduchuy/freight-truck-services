@@ -1,4 +1,4 @@
-package vn.edu.fpt.fts.ownerapp;
+package vn.edu.fpt.fts.fragment;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,8 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.activity.DealDetailActivity;
 import vn.edu.fpt.fts.classes.Deal;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.ownerapp.R;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -257,7 +259,7 @@ public class DealFragment extends Fragment {
 					price = new String[list.size()];
 
 					for (int i = 0; i < list.size(); i++) {
-						price[i] = (int) list.get(i).getPrice() + "";
+						price[i] = "Giao dịch giá: " + (int) list.get(i).getPrice() + " nghìn đồng";
 					}
 					// String a = price[0];
 
