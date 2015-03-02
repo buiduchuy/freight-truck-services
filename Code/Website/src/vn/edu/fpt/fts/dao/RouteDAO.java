@@ -380,6 +380,7 @@ public class RouteDAO {
 			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
 			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
 
+			DriverDAO driverDao = new DriverDAO();
 			GoodsCategory goodsCategory = new GoodsCategory();
 			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
 
@@ -398,7 +399,10 @@ public class RouteDAO {
 				route.setWeight(rs.getInt("Weight"));
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(rs.getInt("Active"));
+
 				route.setDriverID(rs.getInt("DriverID"));
+				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
+
 				route.setRouteMarkers(routeMarkerDao
 						.getAllRouteMarkerByRouteID(routeID));
 

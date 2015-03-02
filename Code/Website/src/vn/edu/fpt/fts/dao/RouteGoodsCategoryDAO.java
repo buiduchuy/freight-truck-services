@@ -150,4 +150,36 @@ public class RouteGoodsCategoryDAO {
 		return ret;
 	}
 
+	public int deleteRouteGoodsCategoryByRouteID(int routeID) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		int ret = 0;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "DELETE FROM RouteGoodsCategory "
+					+ " WHERE RouteID = '" + routeID + "' ";
+			stm = con.prepareStatement(sql);
+			ret = stm.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out
+					.println("Can't delete data from RouteGoodsCategory table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
 }

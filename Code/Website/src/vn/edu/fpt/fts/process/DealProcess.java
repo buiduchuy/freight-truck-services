@@ -169,10 +169,11 @@ public class DealProcess {
 		int ret = 0;
 		try {
 			// Update current deal
-			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_accept);
+			// dealDao.updateDealStatus(deal.getDealID(), Common.deal_accept);
+			dealDao.updateDeal(deal);
 
 			// Insert new deal with accept status and CreateTime
-			int newDealID = dealDao.insertDeal(deal);
+			// int newDealID = dealDao.insertDeal(deal);
 
 			// Update other deal
 			int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
@@ -196,7 +197,8 @@ public class DealProcess {
 			// Insert into DealOrder Table
 			DealOrder dealOrder = new DealOrder();
 			dealOrder.setOrderID(newOrderID);
-			dealOrder.setDealID(newDealID);
+			// dealOrder.setDealID(newDealID);
+			dealOrder.setDealID(deal.getDealID());
 			int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
 			ret = 1;
 			if (newDealOrderID == 0) {
@@ -208,18 +210,23 @@ public class DealProcess {
 			DealNotification dealNoti = new DealNotification();
 			String msg = "";
 			if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-				msg = "Chủ hàng " + deal.getGoods().getOwner().getEmail()
+				msg = "Chủ hàng "
+						+ goodsDao.getActiveGoodsByID(deal.getGoodsID())
+								.getOwner().getEmail()
 						+ " đã đồng ý đề nghị của bạn với giá tiền "
 						+ deal.getPrice() + " nghìn đồng.";
 			} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-				msg = "Tài xế " + deal.getRoute().getDriver().getEmail()
+				msg = "Tài xế "
+						+ routeDao.getActiveRouteByID(deal.getRouteID())
+								.getDriver().getEmail()
 						+ " đã đồng ý đề nghị của bạn với giá tiền "
 						+ deal.getPrice() + " nghìn đồng.";
 			}
 			dealNoti.setMessage(msg);
 			dealNoti.setActive(Common.activate);
 			dealNoti.setCreateTime(deal.getCreateTime());
-			dealNoti.setDealID(newDealID);
+			// dealNoti.setDealID(newDealID);
+			dealNoti.setDealID(deal.getDealID());
 			dealNotiDao.insertDealNotification(dealNoti);
 
 		} catch (Exception e) {
@@ -235,31 +242,37 @@ public class DealProcess {
 		try {
 			// Update current deal
 			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
+			dealDao.updateDeal(deal);
 
 			// Insert new deal with decline status
-			int newDealID = dealDao.insertDeal(deal);
-			ret = 1;
-			if (newDealID == 0) {
-				System.out.println("Decline deal FAIL!");
-				ret = 0;
-			}
+			// int newDealID = dealDao.insertDeal(deal);
+			// ret = 1;
+			// if (newDealID == 0) {
+			// System.out.println("Decline deal FAIL!");
+			// ret = 0;
+			// }
 
 			// Insert Notification
 			DealNotification dealNoti = new DealNotification();
 			String msg = "";
 			if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-				msg = "Chủ hàng " + deal.getGoods().getOwner().getEmail()
+				msg = "Chủ hàng "
+						+ goodsDao.getActiveGoodsByID(deal.getGoodsID())
+								.getOwner().getEmail()
 						+ " đã từ chối đề nghị của bạn với giá tiền "
 						+ deal.getPrice() + " nghìn đồng.";
 			} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-				msg = "Tài xế " + deal.getRoute().getDriver().getEmail()
+				msg = "Tài xế "
+						+ routeDao.getActiveRouteByID(deal.getRouteID())
+								.getDriver().getEmail()
 						+ " đã từ chối đề nghị của bạn với giá tiền "
 						+ deal.getPrice() + " nghìn đồng.";
 			}
 			dealNoti.setMessage(msg);
 			dealNoti.setActive(Common.activate);
 			dealNoti.setCreateTime(deal.getCreateTime());
-			dealNoti.setDealID(newDealID);
+			// dealNoti.setDealID(newDealID);
+			dealNoti.setDealID(deal.getDealID());
 			dealNotiDao.insertDealNotification(dealNoti);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -283,11 +296,13 @@ public class DealProcess {
 				DealNotification dealNoti = new DealNotification();
 				String msg = "";
 				if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-					msg = "Bạn đã hủy thương lượng với tài xế"
-							+ deal.getRoute().getDriver().getEmail();
+					msg = "Bạn đã hủy thương lượng với tài xế "
+							+ routeDao.getActiveRouteByID(deal.getRouteID())
+									.getDriver().getEmail();
 				} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-					msg = "Bạn đã hủy thương lượng với chủ hàng"
-							+ deal.getGoods().getOwner().getEmail();
+					msg = "Bạn đã hủy thương lượng với chủ hàng "
+							+ goodsDao.getActiveGoodsByID(deal.getGoodsID())
+									.getOwner().getEmail();
 				}
 				dealNoti.setMessage(msg);
 				dealNoti.setActive(Common.activate);
@@ -316,6 +331,24 @@ public class DealProcess {
 			// Not exist will insert new deal
 			ret = dealDao.insertDeal(deal);
 
+			// Insert Notification
+			DealNotification dealNoti = new DealNotification();
+			String msg = "";
+			if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+				msg = "Bạn đã gửi đề nghị cho tài xế"
+						+ routeDao.getActiveRouteByID(deal.getRouteID())
+								.getDriver().getEmail();
+			} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+				msg = "Bạn đã gửi đề nghị cho chủ hàng"
+						+ goodsDao.getActiveGoodsByID(deal.getGoodsID())
+								.getOwner().getEmail();
+			}
+			dealNoti.setMessage(msg);
+			dealNoti.setActive(Common.activate);
+			dealNoti.setCreateTime(deal.getCreateTime());
+			dealNoti.setDealID(deal.getDealID());
+			dealNotiDao.insertDealNotification(dealNoti);
+
 		} else {
 			int db_dealStatusID = db_deal.getDealStatusID();
 
@@ -328,13 +361,62 @@ public class DealProcess {
 				if (dealDao.updateDeal(currentDeal) != 0) {
 					// Insert new deal with pending status
 					ret = dealDao.insertDeal(deal);
+
+					// Insert Notification
+					DealNotification dealNoti = new DealNotification();
+					String msg = "";
+					if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+						msg = "Bạn đã gửi đề nghị cho tài xế "
+								+ db_deal.getRoute().getDriver().getEmail();
+					} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+						msg = "Bạn đã gửi đề nghị cho chủ hàng "
+								+ db_deal.getGoods().getOwner().getEmail();
+					}
+					dealNoti.setMessage(msg);
+					dealNoti.setActive(Common.activate);
+					dealNoti.setCreateTime(deal.getCreateTime());
+					dealNoti.setDealID(deal.getDealID());
+					dealNotiDao.insertDealNotification(dealNoti);
+
 				}
 			} else if (db_dealStatusID == Common.deal_accept) {
 				ret = 0;
 			} else if (db_dealStatusID == Common.deal_decline) {
 				ret = dealDao.insertDeal(deal);
+
+				// Insert Notification
+				DealNotification dealNoti = new DealNotification();
+				String msg = "";
+				if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+					msg = "Bạn đã gửi đề nghị cho tài xế "
+							+ db_deal.getRoute().getDriver().getEmail();
+				} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+					msg = "Bạn đã gửi đề nghị cho chủ hàng "
+							+ db_deal.getGoods().getOwner().getEmail();
+				}
+				dealNoti.setMessage(msg);
+				dealNoti.setActive(Common.activate);
+				dealNoti.setCreateTime(deal.getCreateTime());
+				dealNoti.setDealID(deal.getDealID());
+				dealNotiDao.insertDealNotification(dealNoti);
 			} else if (db_dealStatusID == Common.deal_cancel) {
 				ret = dealDao.insertDeal(deal);
+
+				// Insert Notification
+				DealNotification dealNoti = new DealNotification();
+				String msg = "";
+				if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+					msg = "Bạn đã gửi đề nghị cho tài xế "
+							+ db_deal.getRoute().getDriver().getEmail();
+				} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+					msg = "Bạn đã gửi đề nghị cho chủ hàng "
+							+ db_deal.getGoods().getOwner().getEmail();
+				}
+				dealNoti.setMessage(msg);
+				dealNoti.setActive(Common.activate);
+				dealNoti.setCreateTime(deal.getCreateTime());
+				dealNoti.setDealID(deal.getDealID());
+				dealNotiDao.insertDealNotification(dealNoti);
 			}
 		}
 		return ret;

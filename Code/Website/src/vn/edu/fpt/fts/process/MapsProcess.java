@@ -62,7 +62,7 @@ public class MapsProcess {
 		if (listMarker.size() != 0) {
 			// %7C is |
 			String waypoints = "";
-			waypoints += "&waypoints=optimize:true" + c_vertical;
+			waypoints += "&waypoints=";
 			for (int i = 0; i < s; i++) {
 				waypoints += listMarker.get(i);
 				if (s > 1) {
