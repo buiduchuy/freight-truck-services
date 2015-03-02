@@ -269,7 +269,7 @@ public class DealFragment extends Fragment {
 
 					if (price[0] == null) {
 						Toast.makeText(getActivity(),
-								"Giao dịch không thể tải được",
+								"Không có giao dịch mới",
 								Toast.LENGTH_LONG).show();
 					} else {
 						adapter = new ArrayAdapter<String>(getActivity(),

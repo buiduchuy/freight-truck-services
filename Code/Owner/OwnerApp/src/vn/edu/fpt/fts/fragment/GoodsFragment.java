@@ -182,43 +182,71 @@ public class GoodsFragment extends Fragment {
 			// handleResponse(response);
 			try {
 				JSONObject jsonObject = new JSONObject(response);
-				JSONArray array = jsonObject.getJSONArray("goods");
-				//String[] result = new String[array.length()];
 				List<String> lv = new ArrayList<String>();
-				//int counter = 0;
-				for (int i = 0; i < array.length(); i++) {
-					// Goods goods = new Goods();
-					// goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
-					// goods.setWeight(Integer.parseInt(jsonObject2.getString("weight")));
-					// goods.setPrice(Double.parseDouble(jsonObject2.getString("price")));
-					// goods.setPickupTime(jsonObject2.getString("pickupTime"));
-					// goods.setPickupAddress(jsonObject2.getString("pickupAddress"));
-					// goods.setDeliveryTime(jsonObject2.getString("deliveryTime"));
-					// goods.setDeliveryAddress(jsonObject2.getString("deliveryAddress"));
-					// try
-					// {goods.setPickupMarkerLongtitude(Float.parseFloat(jsonObject2.getString("pickupMarkerLongtitude")));}
-					// catch (JSONException e)
-					// {goods.setPickupMarkerLongtitude(0);}
-					// try
-					// {goods.setPickupMarkerLatidute(Float.parseFloat(jsonObject2.getString("pickupMarkerLatidute")));}
-					// catch (JSONException e)
-					// {goods.setPickupMarkerLatidute(0);}
-					// try
-					// {goods.setDeliveryMarkerLongtitude(Float.parseFloat(jsonObject2.getString("deliveryMarkerLongtitude")));}
-					// catch (JSONException e)
-					// {goods.setDeliveryMarkerLongtitude(0);}
-					// try
-					// {goods.setDeliveryMarkerLatidute(Float.parseFloat(jsonObject2.getString("deliveryMarkerLatidute")));}
-					// catch (JSONException e)
-					// {goods.setDeliveryMarkerLatidute(0);}
-					// try {goods.setNotes(jsonObject2.getString("notes"));}
-					// catch (JSONException e) {goods.setNotes("");}
-					// goods.setCreateTime(jsonObject2.getString("createTime"));
-					// goods.setActive(Integer.parseInt(jsonObject2.getString("active")));
-					// goods.setOwnerID(Integer.parseInt(jsonObject2.getString("ownerID")));
-					// goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
-					// list.add(goods);
-					JSONObject jsonObject2 = array.getJSONObject(i);
+				Object obj = jsonObject.get("goods");
+				if (obj instanceof JSONArray) {
+					JSONArray array = jsonObject.getJSONArray("goods");
+					//String[] result = new String[array.length()];
+					
+					//int counter = 0;
+					for (int i = 0; i < array.length(); i++) {
+						// Goods goods = new Goods();
+						// goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
+						// goods.setWeight(Integer.parseInt(jsonObject2.getString("weight")));
+						// goods.setPrice(Double.parseDouble(jsonObject2.getString("price")));
+						// goods.setPickupTime(jsonObject2.getString("pickupTime"));
+						// goods.setPickupAddress(jsonObject2.getString("pickupAddress"));
+						// goods.setDeliveryTime(jsonObject2.getString("deliveryTime"));
+						// goods.setDeliveryAddress(jsonObject2.getString("deliveryAddress"));
+						// try
+						// {goods.setPickupMarkerLongtitude(Float.parseFloat(jsonObject2.getString("pickupMarkerLongtitude")));}
+						// catch (JSONException e)
+						// {goods.setPickupMarkerLongtitude(0);}
+						// try
+						// {goods.setPickupMarkerLatidute(Float.parseFloat(jsonObject2.getString("pickupMarkerLatidute")));}
+						// catch (JSONException e)
+						// {goods.setPickupMarkerLatidute(0);}
+						// try
+						// {goods.setDeliveryMarkerLongtitude(Float.parseFloat(jsonObject2.getString("deliveryMarkerLongtitude")));}
+						// catch (JSONException e)
+						// {goods.setDeliveryMarkerLongtitude(0);}
+						// try
+						// {goods.setDeliveryMarkerLatidute(Float.parseFloat(jsonObject2.getString("deliveryMarkerLatidute")));}
+						// catch (JSONException e)
+						// {goods.setDeliveryMarkerLatidute(0);}
+						// try {goods.setNotes(jsonObject2.getString("notes"));}
+						// catch (JSONException e) {goods.setNotes("");}
+						// goods.setCreateTime(jsonObject2.getString("createTime"));
+						// goods.setActive(Integer.parseInt(jsonObject2.getString("active")));
+						// goods.setOwnerID(Integer.parseInt(jsonObject2.getString("ownerID")));
+						// goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
+						// list.add(goods);
+						JSONObject jsonObject2 = array.getJSONObject(i);
+						int active = Integer.parseInt(jsonObject2.getString("active"));
+						
+						if (active == 1) {
+							String a = jsonObject2.getString("goodsID");
+
+							goodsID.add(jsonObject2.getString("goodsID"));
+							goodsCategoryID.add(jsonObject2
+									.getString("goodsCategoryID"));
+
+							String createTime = jsonObject2.getString("createTime");
+							String tmp[] = createTime.split(" ");
+							createTime = tmp[0].replace("-", "")
+									+ jsonObject2.getString("goodsID");
+
+							JSONObject jsonObject3 = jsonObject2
+									.getJSONObject("goodsCategory");						
+							String object = jsonObject3.getString("name") + " " + "#"
+									+ createTime;
+							lv.add(object);
+							
+						}
+
+					}
+				} else if (obj instanceof JSONObject) {
+					JSONObject jsonObject2 = jsonObject.getJSONObject("goods");
 					int active = Integer.parseInt(jsonObject2.getString("active"));
 					
 					if (active == 1) {
@@ -240,8 +268,8 @@ public class GoodsFragment extends Fragment {
 						lv.add(object);
 						
 					}
-
 				}
+				
 				adapter = new ArrayAdapter<String>(getActivity(),
 						android.R.layout.simple_list_item_1, lv);
 				listView.setAdapter(adapter);
