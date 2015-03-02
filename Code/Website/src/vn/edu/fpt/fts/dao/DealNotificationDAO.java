@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
+import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.DealNotification;
 
 /**
@@ -157,4 +158,23 @@ public class DealNotificationDAO {
 		}
 		return ret;
 	}
+
+	public List<DealNotification> getDealNotificationByOwnerID(int ownerID) {
+
+		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
+		List<Deal> listDeal = new ArrayList<Deal>();
+		DealDAO dealDao = new DealDAO();
+		DealNotificationDAO dealNotiDao = new DealNotificationDAO();
+		listDeal = dealDao.getDealByOwnerID(ownerID);
+		for (int i = 0; i < listDeal.size(); i++) {
+			List<DealNotification> listDealNotiOfEachDeal = new ArrayList<DealNotification>();
+			listDealNotiOfEachDeal = dealNotiDao
+					.getDealNotificationByDealID(listDeal.get(i).getDealID());
+			for (int j = 0; j < listDealNotiOfEachDeal.size(); j++) {
+				listDealNoti.add(listDealNotiOfEachDeal.get(j));
+			}
+		}
+		return listDealNoti;
+	}
+
 }

@@ -3,8 +3,13 @@
  */
 package vn.edu.fpt.fts.process;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Route;
 
@@ -20,7 +25,7 @@ public class MAIN_PROCESS {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MatchingProcess matchingProcess = new MatchingProcess();
+		// MatchingProcess matchingProcess = new MatchingProcess();
 
 		// Vung Tau
 		// Double latGoods = 10.4025053;
@@ -57,13 +62,15 @@ public class MAIN_PROCESS {
 		//
 		// }
 		// }
-		List<Route> routeList = matchingProcess.getSuggestionRoute(11);
-		System.out.println("------------------- Number of Route: "
-				+ routeList.size());
 
-		List<Goods> goodsList = matchingProcess.getSuggestionGoods(8);
-		System.out.println("------------------- Number of Goods: "
-				+ goodsList.size());
+		// List<Route> routeList = matchingProcess.getSuggestionRoute(11);
+		// System.out.println("------------------- Number of Route: "
+		// + routeList.size());
+		//
+		// List<Goods> goodsList = matchingProcess.getSuggestionGoods(8);
+		// System.out.println("------------------- Number of Goods: "
+		// + goodsList.size());
+
 		// goodsStartLocation.setLatitude(21.0248455);
 		// goodsStartLocation.setLongitude(105.8287365);
 		//
@@ -72,6 +79,51 @@ public class MAIN_PROCESS {
 
 		// System.out.println(mapProcess.checkDistance(9, goodsStartLocation,
 		// goodsFinishLocation, 2));
+
+		GoodsDAO goodsDao = new GoodsDAO();
+		Goods goods = goodsDao.getGoodsByID(83);
+		RouteDAO ruoteDao = new RouteDAO();
+		List<Route> listRoute = ruoteDao.getListActiveRoute();
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			Date pickupDate = sdf.parse(goods.getPickupTime().toString());
+			Date deliveryDate = sdf.parse(goods.getDeliveryTime().toString());
+			for (int i = 0; i < listRoute.size(); i++) {
+				Date routeStartDate = sdf
+						.parse(listRoute.get(i).getStartTime());
+				Date routeFinishDate = sdf.parse(listRoute.get(i)
+						.getFinishTime());
+				if (pickupDate.compareTo(routeStartDate) >= 0
+						&& deliveryDate.compareTo(routeFinishDate) <= 0) {
+					System.out.println(routeStartDate.getTime() + " <= "
+							+ pickupDate.getTime() + " <= "
+							+ deliveryDate.getTime() + " <= "
+							+ routeFinishDate.getTime());
+				}
+			}
+
+			// System.out.println(pickupDate.compareTo(deliveryDate));
+
+			// Date date1 = sdf.parse("2009-12-31");
+			// Date date2 = sdf.parse("2010-01-31");
+			//
+			// System.out.println(sdf.format(date1));
+			// System.out.println(sdf.format(date2));
+			//
+			// if (date1.compareTo(date2) > 0) {
+			// System.out.println("Date1 is after Date2");
+			// } else if (date1.compareTo(date2) < 0) {
+			// System.out.println("Date1 is before Date2");
+			// } else if (date1.compareTo(date2) == 0) {
+			// System.out.println("Date1 is equal to Date2");
+			// } else {
+			// System.out.println("How to get here?");
+			// }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }
