@@ -84,7 +84,7 @@
             android:label="@string/title_activity_deal_detail" >
         </activity>
         <activity
-            android:name=".OrderDetailActivity"
+            android:name="vn.edu.fpt.fts.activity.OrderDetailActivity"
             android:label="@string/title_activity_order_detail" >
         </activity>
     </application>

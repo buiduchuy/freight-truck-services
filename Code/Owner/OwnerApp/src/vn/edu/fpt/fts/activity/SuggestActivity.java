@@ -206,7 +206,7 @@ public class SuggestActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (response == "null") {
+			if (response.equals("null")) {
 				pDlg.dismiss();
 				Toast.makeText(SuggestActivity.this,
 						"Không tìm thấy lộ trình phù hợp", Toast.LENGTH_LONG)

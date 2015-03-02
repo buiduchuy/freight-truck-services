@@ -73,7 +73,6 @@ public class DealDetailActivity extends Activity {
 		// goodsweight = (TextView) findViewById(R.id.textview_weightgoods);
 		// goodspickup = (TextView) findViewById(R.id.textview_pickupgoods);
 		// goodsdeliver = (TextView) findViewById(R.id.textview_delivergoods);
-		
 
 		dealID = getIntent().getIntExtra("dealID", 0);
 		refDealID = getIntent().getIntExtra("refDealID", 0);
@@ -83,7 +82,7 @@ public class DealDetailActivity extends Activity {
 		price = getIntent().getDoubleExtra("price", 0.0);
 		note = getIntent().getStringExtra("note");
 		createBy = getIntent().getStringExtra("createBy");
-		
+
 		if (dealStatus == 1 && createBy.equals("owner")) {
 			btn_counter.setVisibility(View.GONE);
 			btnAccept.setVisibility(View.GONE);
@@ -119,7 +118,7 @@ public class DealDetailActivity extends Activity {
 					wst2.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst2.addNameValuePair("refDealID", refDealID + "");
-				}				
+				}
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
 				wst2.execute(new String[] { url });
@@ -134,69 +133,73 @@ public class DealDetailActivity extends Activity {
 				Calendar calendar = Calendar.getInstance();
 				WebServiceTask3 wst3 = new WebServiceTask3(
 						WebServiceTask3.POST_TASK, DealDetailActivity.this,
-						"Đang xử lý...");				
+						"Đang xử lý...");
 				wst3.addNameValuePair("dealID", dealID + "");
 				wst3.addNameValuePair("price", price + "");
 				wst3.addNameValuePair("notes", note + "");
 				wst3.addNameValuePair("createTime", formatDate(calendar));
 				wst3.addNameValuePair("createBy", "owner");
 				wst3.addNameValuePair("routeID", routeID + "");
-				wst3.addNameValuePair("goodsID", goodsID + "");				
+				wst3.addNameValuePair("goodsID", goodsID + "");
 				if (refDealID == 0) {
 					wst3.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst3.addNameValuePair("refDealID", refDealID + "");
-				}	
+				}
 				wst3.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Accept;
 				wst3.execute(new String[] { url });
 			}
 		});
-		
+
 		btnDecline.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Calendar calendar = Calendar.getInstance();
-				WebServiceTask4 wst4 = new WebServiceTask4(WebServiceTask4.POST_TASK, DealDetailActivity.this, "Đang xử lý...");
+				WebServiceTask4 wst4 = new WebServiceTask4(
+						WebServiceTask4.POST_TASK, DealDetailActivity.this,
+						"Đang xử lý...");
 				wst4.addNameValuePair("dealID", dealID + "");
 				wst4.addNameValuePair("price", price + "");
 				wst4.addNameValuePair("notes", note + "");
 				wst4.addNameValuePair("createTime", formatDate(calendar));
 				wst4.addNameValuePair("createBy", "owner");
 				wst4.addNameValuePair("routeID", routeID + "");
-				wst4.addNameValuePair("goodsID", goodsID + "");				
+				wst4.addNameValuePair("goodsID", goodsID + "");
 				if (refDealID == 0) {
 					wst4.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst4.addNameValuePair("refDealID", refDealID + "");
-				}	
+				}
 				wst4.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Decline;
 				wst4.execute(new String[] { url });
 			}
 		});
-		
+
 		btnCancel.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Calendar calendar = Calendar.getInstance();
-				WebServiceTask5 wst5 = new WebServiceTask5(WebServiceTask5.POST_TASK, DealDetailActivity.this, "Đang xử lý...");
+				WebServiceTask5 wst5 = new WebServiceTask5(
+						WebServiceTask5.POST_TASK, DealDetailActivity.this,
+						"Đang xử lý...");
 				wst5.addNameValuePair("dealID", dealID + "");
 				wst5.addNameValuePair("price", price + "");
 				wst5.addNameValuePair("notes", note + "");
 				wst5.addNameValuePair("createTime", formatDate(calendar));
 				wst5.addNameValuePair("createBy", "owner");
 				wst5.addNameValuePair("routeID", routeID + "");
-				wst5.addNameValuePair("goodsID", goodsID + "");				
+				wst5.addNameValuePair("goodsID", goodsID + "");
 				if (refDealID == 0) {
 					wst5.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst5.addNameValuePair("refDealID", refDealID + "");
-				}	
+				}
 				wst5.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Cancel;
 				wst5.execute(new String[] { url });
@@ -221,7 +224,8 @@ public class DealDetailActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_homepage) {
-			Intent intent = new Intent(DealDetailActivity.this, MainActivity.class);
+			Intent intent = new Intent(DealDetailActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -366,7 +370,7 @@ public class DealDetailActivity extends Activity {
 				finishTime.setText("Thời gian kết thúc: "
 						+ route.getFinishTime());
 				category.setText("Loại hàng không chở: " + route.getCategory());
-				tvPrice.setText("Giá đề nghị: " + price);
+				tvPrice.setText("Giá đề nghị: " + (int) price + ",000 đồng");
 				tvNote.setText("Ghi chú: " + note);
 			} else {
 				Toast.makeText(DealDetailActivity.this,
@@ -530,7 +534,8 @@ public class DealDetailActivity extends Activity {
 			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(DealDetailActivity.this,
 						"Gửi đề nghị thành công", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(DealDetailActivity.this, MainActivity.class);
+				Intent intent = new Intent(DealDetailActivity.this,
+						MainActivity.class);
 				startActivity(intent);
 
 			} else {
@@ -694,12 +699,14 @@ public class DealDetailActivity extends Activity {
 			if (response.equals("1")) {
 				Toast.makeText(DealDetailActivity.this,
 						"Đề nghị đã được chấp nhận", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(DealDetailActivity.this, MainActivity.class);
+				Intent intent = new Intent(DealDetailActivity.this,
+						MainActivity.class);
 				startActivity(intent);
 
 			} else {
-				Toast.makeText(DealDetailActivity.this, "Đề nghị chưa được chấp nhận",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(DealDetailActivity.this,
+						"Đề nghị chưa được chấp nhận", Toast.LENGTH_LONG)
+						.show();
 			}
 			pDlg.dismiss();
 		}
@@ -770,7 +777,7 @@ public class DealDetailActivity extends Activity {
 		}
 
 	}
-	
+
 	private class WebServiceTask4 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -858,12 +865,13 @@ public class DealDetailActivity extends Activity {
 			if (response.equals("1")) {
 				Toast.makeText(DealDetailActivity.this,
 						"Đề nghị đã được từ chối", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(DealDetailActivity.this, MainActivity.class);
+				Intent intent = new Intent(DealDetailActivity.this,
+						MainActivity.class);
 				startActivity(intent);
 
 			} else {
-				Toast.makeText(DealDetailActivity.this, "Đề nghị chưa được từ chối",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(DealDetailActivity.this,
+						"Đề nghị chưa được từ chối", Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}
@@ -934,7 +942,7 @@ public class DealDetailActivity extends Activity {
 		}
 
 	}
-	
+
 	private class WebServiceTask5 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -1020,14 +1028,15 @@ public class DealDetailActivity extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			if (response.equals("1")) {
-				Toast.makeText(DealDetailActivity.this,
-						"Đề nghị đã được hủy", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(DealDetailActivity.this, MainActivity.class);
+				Toast.makeText(DealDetailActivity.this, "Đề nghị đã được hủy",
+						Toast.LENGTH_LONG).show();
+				Intent intent = new Intent(DealDetailActivity.this,
+						MainActivity.class);
 				startActivity(intent);
 
 			} else {
-				Toast.makeText(DealDetailActivity.this, "Đề nghị chưa được hủy",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(DealDetailActivity.this,
+						"Đề nghị chưa được hủy", Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}
