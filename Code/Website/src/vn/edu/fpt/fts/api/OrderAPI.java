@@ -41,6 +41,7 @@ public class OrderAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateOrder(MultivaluedMap<String, String> params) {
 		Order order;
+		int ret = 0;
 		try {
 			order = new Order();
 
@@ -55,16 +56,13 @@ public class OrderAPI {
 			order.setOrderStatusID(Integer.valueOf(params
 					.getFirst("orderStatusID")));
 
-			int ret = orderDao.updateOrder(order);
-			if (ret <= 0) {
-				return "Fail";
-			}
+			ret = orderDao.updateOrder(order);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return "Success";
+		return String.valueOf(ret);
 	}
 
 	@POST
@@ -82,7 +80,6 @@ public class OrderAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
 		return null;
 	}
 

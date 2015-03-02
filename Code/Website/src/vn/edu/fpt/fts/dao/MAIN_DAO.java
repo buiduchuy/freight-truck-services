@@ -3,6 +3,8 @@
  */
 package vn.edu.fpt.fts.dao;
 
+import vn.edu.fpt.fts.pojo.DealNotification;
+
 /**
  * @author Huy
  *
@@ -21,6 +23,11 @@ public class MAIN_DAO {
 		// "Hàng dễ cháy nổ"));
 		// Deal deal = dealDao.getLastDealByGoodsAndRouteID(22, 32);
 		// System.out.println(deal.getNotes());
+		DealNotificationDAO dealNotificationDAO = new DealNotificationDAO();
+		for (DealNotification dealNoti: dealNotificationDAO.getDealNotificationByOwnerID(1)) {
+			System.out.println(dealNoti.getMessage());
+		}
+		
 	}
 
 }
