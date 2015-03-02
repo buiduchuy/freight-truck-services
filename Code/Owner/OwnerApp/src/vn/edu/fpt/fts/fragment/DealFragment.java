@@ -281,7 +281,7 @@ public class DealFragment extends Fragment {
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Toast.makeText(getActivity(), "Giao dịch không thể tải được",
+				Toast.makeText(getActivity(), "Không có giao dịch mới",
 						Toast.LENGTH_LONG).show();
 			}
 
