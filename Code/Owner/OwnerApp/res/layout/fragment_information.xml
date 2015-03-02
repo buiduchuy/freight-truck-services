@@ -23,10 +23,10 @@
                 android:layout_height="wrap_content" >
 
                 <Spinner
-                    android:prompt="@string/prompt"
                     android:id="@+id/spinner_goods_type"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/prompt" />
             </TableRow>
 
             <TableRow
@@ -39,8 +39,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Khối lượng (kg)"
                     android:imeOptions="actionDone"
-                    android:inputType="numberDecimal" 
-                    />
+                    android:inputType="numberDecimal" />
             </TableRow>
 
             <TableRow
@@ -53,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:hint="Ngày nhận hàng" />
-            </TableRow>     
+            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -65,7 +64,7 @@
                     android:layout_height="wrap_content"
                     android:editable="false"
                     android:hint="Ngày giao hàng" />
-            </TableRow>          
+            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -76,8 +75,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:hint="Địa điểm nhận hàng"
-                    android:imeOptions="actionDone" 
-                    android:singleLine="true"/>
+                    android:imeOptions="actionDone"
+                    android:singleLine="true" />
 
                 <ImageButton
                     android:id="@+id/imagebtn_pickup_address"
@@ -94,9 +93,9 @@
                     android:id="@+id/edittext_deliver_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Địa điểm giao hàng" 
+                    android:hint="Địa điểm giao hàng"
                     android:imeOptions="actionDone"
-                    android:singleLine="true"/>
+                    android:singleLine="true" />
 
                 <ImageButton
                     android:id="@+id/imagebtn_deliver_address"
@@ -113,9 +112,9 @@
                     android:id="@+id/edittext_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Giá tiền (nghìn đồng)" 
-                    android:inputType="numberDecimal"
-                    android:imeOptions="actionDone"/>
+                    android:hint="Giá tiền (nghìn đồng)"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal" />
             </TableRow>
 
             <TableRow
@@ -126,18 +125,29 @@
                     android:id="@+id/edittext_note"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Ghi chú" 
+                    android:hint="Ghi chú"
                     android:imeOptions="actionDone"
-                    android:singleLine="true"/>
+                    android:singleLine="true" />
             </TableRow>
-        </TableLayout>
 
-        <Button
-            android:id="@+id/btn_post"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Cập nhật" />
+           <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+                <Button
+                    android:id="@+id/btn_post"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Cập nhật" />
+
+                <Button
+                    android:id="@+id/btn_delete"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="Xóa" />
+            </RelativeLayout>
+        </TableLayout>
     </LinearLayout>
 
 </RelativeLayout>
