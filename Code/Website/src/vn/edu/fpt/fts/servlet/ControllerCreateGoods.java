@@ -13,6 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.xml.sax.SAXException;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
@@ -60,9 +64,12 @@ public class ControllerCreateGoods extends HttpServlet {
 	 *             if a servlet-specific error occurs
 	 * @throws IOException
 	 *             if an I/O error occurs
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
+	 * @throws XPathExpressionException 
 	 */
 	protected void processRequest(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws ServletException, IOException, XPathExpressionException, ParserConfigurationException, SAXException {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
 			/* TODO output your page here. You may use following sample code. */
@@ -230,14 +237,32 @@ public class ControllerCreateGoods extends HttpServlet {
 				String notes = ((Goods) session.getAttribute("good"))
 						.getNotes();
 				int price = (int) session.getAttribute("price");
-				float a = Float.parseFloat("10");
+				float lngpickAddress=common.lngGeoCoding(pickupAdress);
+				if(session.getAttribute("lngpickupAddress")!=null){
+					lngpickAddress=(float) session.getAttribute("lngpickupAddress");
+				}
+				float latpickAddress=common.latGeoCoding(pickupAdress);
+				if(session.getAttribute("latpickupAddress")!=null){
+					latpickAddress=(float) session.getAttribute("latpickupAddress");
+				}
+				float lngdeliveryAddress=common.lngGeoCoding(deliveryAddress);
+				if(session.getAttribute("lngdeliveryAddress")!=null){
+					lngpickAddress=(float) session.getAttribute("lngdeliveryAddress");
+				}
+				float latdeliveryAddress=common.latGeoCoding(deliveryAddress);
+				if(session.getAttribute("latdeliveryAddress")!=null){
+					latpickAddress=(float) session.getAttribute("latdeliveryAddress");
+				}
 				Owner owner = (Owner) session.getAttribute("owner");
 				Goods goo = new Goods(weight, price, common.changeFormatDate(
 						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"), pickupAdress,
 						common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-								"MM-dd-yyyy"), deliveryAddress, a, a, a, a,
-						notes, createTime, 1, owner.getOwnerID(),
-						GoodsCategoryID);
+								"MM-dd-yyyy"), deliveryAddress,
+								lngpickAddress,
+								latpickAddress,
+								lngdeliveryAddress,
+								latdeliveryAddress, notes,
+						createTime, 1, owner.getOwnerID(), GoodsCategoryID);
 
 				List<Route> list = routeDao.getAllRoute();
 				Route[] listRou = new Route[list.size()];
@@ -247,6 +272,9 @@ public class ControllerCreateGoods extends HttpServlet {
 				listDriver.toArray(listDri);
 				int idnewGood = goodDao.insertGoods(goo);
 				if (idnewGood != -1) {
+					session.removeAttribute("router");
+					session.removeAttribute("good");
+					session.removeAttribute("price");
 					session.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
 
@@ -276,6 +304,48 @@ public class ControllerCreateGoods extends HttpServlet {
 				session.setAttribute("priceSuggest", "20");
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-3.jsp");
+				rd.forward(request, response);
+			}
+			if ("detailroutepickupAddress".equals(action)) {
+
+				Goods good=(Goods) session.getAttribute("router");
+				String address=good.getPickupAddress();
+				session.setAttribute("latpickupAddress", common.latGeoCoding(address));
+				session.setAttribute("lngpickupAddress", common.lngGeoCoding(address));
+				RequestDispatcher rd = request
+						.getRequestDispatcher("clearpickupAddress.jsp");
+				rd.forward(request, response);
+		
+			}
+			if ("finishClearPickupAddress".equals(action)) {
+
+				session.setAttribute("latpickAddress", Float.parseFloat(request.getParameter("latpickAddress")));
+				session.setAttribute("lngpickAddress", Float.parseFloat(request.getParameter("lngpickAddress")));
+				System.out.println(Float.parseFloat(request.getParameter("latpickAddress")));
+				System.out.println(Float.parseFloat(request.getParameter("lngpickAddress")));
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-4.jsp");
+				rd.forward(request, response);
+			}
+			if ("detailroutedeliveryAddress".equals(action)) {
+
+				Goods good=(Goods) session.getAttribute("router");
+				String address=good.getDeliveryAddress();
+				session.setAttribute("latdeliveryAddress", common.latGeoCoding(address));
+				session.setAttribute("lngdeliveryAddress", common.lngGeoCoding(address));
+				RequestDispatcher rd = request
+						.getRequestDispatcher("cleardeliveryAddress.jsp");
+				rd.forward(request, response);
+		
+			}
+			if ("finishClearDeliveryAddress".equals(action)) {
+
+				session.setAttribute("latdeliveryAddress", Float.parseFloat(request.getParameter("latdeliveryAddress")));
+				session.setAttribute("lngdeliveryAddress", Float.parseFloat(request.getParameter("lngdeliveryAddress")));
+				System.out.println(Float.parseFloat(request.getParameter("latdeliveryAddress")));
+				System.out.println(Float.parseFloat(request.getParameter("lngdeliveryAddress")));
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);
 			}
 			// out.println("<!DOCTYPE html>");
@@ -308,7 +378,13 @@ public class ControllerCreateGoods extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+		try {
+			processRequest(request, response);
+		} catch (XPathExpressionException | ParserConfigurationException
+				| SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -326,7 +402,13 @@ public class ControllerCreateGoods extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		processRequest(request, response);
+		try {
+			processRequest(request, response);
+		} catch (XPathExpressionException | ParserConfigurationException
+				| SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

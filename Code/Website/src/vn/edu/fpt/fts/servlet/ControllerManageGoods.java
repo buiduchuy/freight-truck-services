@@ -27,6 +27,7 @@ import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.process.MatchingProcess;
 
 /**
  * Servlet implementation class ControllerManageGoods
@@ -72,15 +73,13 @@ public class ControllerManageGoods extends HttpServlet {
 			DriverDAO driverDao = new DriverDAO();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
+			MatchingProcess matchingProcess= new MatchingProcess();
 			Common common = new Common();
 			if ("suggestFromSystem".equals(action)) {
 				int IdGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
-				List<Route> list = routeDao.getAllRoute();
+				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
 				Route[] listRou = new Route[list.size()];
-				for (Route route : listRou) {
-					
-				}
 				list.toArray(listRou);
 				
 				List<Driver> listDriver = driverDao.getAllDriver();

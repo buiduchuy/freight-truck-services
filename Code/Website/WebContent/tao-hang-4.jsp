@@ -105,6 +105,9 @@
 										<div class="small-9 columns">
 											<input type="text" id="right-label"
 												value="${router.pickupAddress}" readonly="" />
+												<a href="ControllerCreateGoods?btnAction=detailroutepickupAddress"
+										class="button secondary">
+										Tìm vị trí chính xác</a>
 										</div>
 									</div>
 									<div class="small-4 columns">
@@ -131,6 +134,9 @@
 										<div class="small-9 columns">
 											<input type="text" id="right-label"
 												value="${router.deliveryAddress}" readonly="" />
+												<a href="ControllerCreateGoods?btnAction=detailroutedeliveryAddress"
+										class="button secondary">
+										Tìm vị trí chính xác</a>
 										</div>
 									</div>
 									<div class="small-4 columns">
