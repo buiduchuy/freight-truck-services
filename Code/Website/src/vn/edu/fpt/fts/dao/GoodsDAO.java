@@ -597,6 +597,7 @@ public class GoodsDAO {
 			stmt.setInt(i++, Common.activate);
 
 			rs = stmt.executeQuery();
+			OwnerDAO ownerDao = new OwnerDAO();
 
 			while (rs.next()) {
 				Goods goods = new Goods();
@@ -621,6 +622,8 @@ public class GoodsDAO {
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
 				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
+
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
 				return goods;
 			}
