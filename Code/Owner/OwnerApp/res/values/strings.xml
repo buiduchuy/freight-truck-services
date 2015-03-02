@@ -23,5 +23,6 @@
     <string name="title_activity_suggest_detail">SuggestDetailActivity</string>
     <string name="title_activity_deal_detail">DealDetailActivity</string>
     <string name="action_homepage">Trang chủ</string>
+    <string name="title_activity_order_detail">OrderDetailActivity</string>
 
 </resources>

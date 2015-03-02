@@ -16,4 +16,5 @@ public final class Common {
 	public static final String Service_Deal_Decline = "Deal/decline";
 	public static final String Service_Deal_Cancel = "Deal/cancel";
 	public static final String Service_Suggest_Route = "Route/getSuggestionRoute";
+	public static final String Service_Order_get = "Order/getOrderByOwnerID";
 }

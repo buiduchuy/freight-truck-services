@@ -28,7 +28,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyChGU1c1Jx-DzTFiPky_tReExEkAU2Ck7I" />
+            android:value="AIzaSyBMSyqWeuSfzKdBTa3B3ZIpBruF8aK1_tc" />
 
         <activity
             android:name="vn.edu.fpt.fts.activity.LoginActivity"
@@ -82,6 +82,10 @@
         <activity
             android:name="vn.edu.fpt.fts.activity.DealDetailActivity"
             android:label="@string/title_activity_deal_detail" >
+        </activity>
+        <activity
+            android:name=".OrderDetailActivity"
+            android:label="@string/title_activity_order_detail" >
         </activity>
     </application>
 

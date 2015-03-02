@@ -9,7 +9,7 @@
     tools:context="vn.edu.fpt.fts.ownerapp.TrackFragment" >
 
     <ListView
-        android:id="@+id/listview_track"
+        android:id="@+id/listview_order"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </ListView>
