@@ -169,10 +169,11 @@ public class DealProcess {
 		int ret = 0;
 		try {
 			// Update current deal
-			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_accept);
+			// dealDao.updateDealStatus(deal.getDealID(), Common.deal_accept);
+			dealDao.updateDeal(deal);
 
 			// Insert new deal with accept status and CreateTime
-			int newDealID = dealDao.insertDeal(deal);
+			// int newDealID = dealDao.insertDeal(deal);
 
 			// Update other deal
 			int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
@@ -196,7 +197,8 @@ public class DealProcess {
 			// Insert into DealOrder Table
 			DealOrder dealOrder = new DealOrder();
 			dealOrder.setOrderID(newOrderID);
-			dealOrder.setDealID(newDealID);
+			// dealOrder.setDealID(newDealID);
+			dealOrder.setDealID(deal.getDealID());
 			int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
 			ret = 1;
 			if (newDealOrderID == 0) {
@@ -223,7 +225,8 @@ public class DealProcess {
 			dealNoti.setMessage(msg);
 			dealNoti.setActive(Common.activate);
 			dealNoti.setCreateTime(deal.getCreateTime());
-			dealNoti.setDealID(newDealID);
+			// dealNoti.setDealID(newDealID);
+			dealNoti.setDealID(deal.getDealID());
 			dealNotiDao.insertDealNotification(dealNoti);
 
 		} catch (Exception e) {
@@ -239,14 +242,15 @@ public class DealProcess {
 		try {
 			// Update current deal
 			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
+			dealDao.updateDeal(deal);
 
 			// Insert new deal with decline status
-			int newDealID = dealDao.insertDeal(deal);
-			ret = 1;
-			if (newDealID == 0) {
-				System.out.println("Decline deal FAIL!");
-				ret = 0;
-			}
+			// int newDealID = dealDao.insertDeal(deal);
+			// ret = 1;
+			// if (newDealID == 0) {
+			// System.out.println("Decline deal FAIL!");
+			// ret = 0;
+			// }
 
 			// Insert Notification
 			DealNotification dealNoti = new DealNotification();
@@ -267,7 +271,8 @@ public class DealProcess {
 			dealNoti.setMessage(msg);
 			dealNoti.setActive(Common.activate);
 			dealNoti.setCreateTime(deal.getCreateTime());
-			dealNoti.setDealID(newDealID);
+			// dealNoti.setDealID(newDealID);
+			dealNoti.setDealID(deal.getDealID());
 			dealNotiDao.insertDealNotification(dealNoti);
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -32,23 +32,27 @@ public class RouteProcess {
 			List<RouteMarker> listRouteMarker) {
 		int ret = 0;
 		int routeID = route.getRouteID();
-		
+
 		if (routeDao.getRouteByID(routeID) != null) {
 
 			try {
 				if (dealDao.getDealByRouteID(routeID).size() == 0) {
 
 					ret = routeDao.updateRoute(route);
-					// ------------------------------------------------------------------
+					// ---------------------------------------------------------
+					routeMarkerDao.deleteRouteMarkerByRouteID(routeID);
 					for (int i = 0; i < listRouteMarker.size(); i++) {
-						routeMarkerDao
-								.updateRouteMarkerByNumeringAndRouteID(listRouteMarker
-										.get(i));
+						if (!listRouteMarker.get(i).getRouteMarkerLocation()
+								.isEmpty()) {
+							routeMarkerDao.insertRouteMarker(listRouteMarker
+									.get(i));
+						}
 					}
-					// ------------------------------------------------------------------
+					// ---------------------------------------------------------
 
 					// Get params category true/false
-
+					routeGoodsCategoryDao
+							.deleteRouteGoodsCategoryByRouteID(routeID);
 					String goodsCategoryName = "";
 
 					String food = "Food";
@@ -56,20 +60,11 @@ public class RouteProcess {
 						goodsCategoryName = "Hàng thực phẩm";
 						routeGoodsCategoryDao.insertRouteGoodsCategory(routeID,
 								goodsCategoryName);
-					} else {
-						goodsCategoryName = "Hàng thực phẩm";
-						routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
-								goodsCategoryName);
 					}
-
 					String freeze = "Freeze";
 					if (routeGoodsCategoryMap.get(freeze)) {
 						goodsCategoryName = "Hàng đông lạnh";
 						routeGoodsCategoryDao.insertRouteGoodsCategory(routeID,
-								goodsCategoryName);
-					} else {
-						goodsCategoryName = "Hàng đông lạnh";
-						routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
 								goodsCategoryName);
 					}
 
@@ -78,20 +73,12 @@ public class RouteProcess {
 						goodsCategoryName = "Hàng dễ vỡ";
 						routeGoodsCategoryDao.insertRouteGoodsCategory(routeID,
 								goodsCategoryName);
-					} else {
-						goodsCategoryName = "Hàng dễ vỡ";
-						routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
-								goodsCategoryName);
 					}
 
 					String flame = "Flame";
 					if (routeGoodsCategoryMap.get(flame)) {
 						goodsCategoryName = "Hàng dễ cháy nổ";
 						routeGoodsCategoryDao.insertRouteGoodsCategory(routeID,
-								goodsCategoryName);
-					} else {
-						goodsCategoryName = "Hàng dễ cháy nổ";
-						routeGoodsCategoryDao.deleteRouteGoodsCategory(routeID,
 								goodsCategoryName);
 					}
 				}

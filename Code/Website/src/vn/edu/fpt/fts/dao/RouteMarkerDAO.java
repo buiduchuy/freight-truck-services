@@ -155,4 +155,39 @@ public class RouteMarkerDAO {
 		}
 		return ret;
 	}
+
+	public int deleteRouteMarkerByRouteID(int routeID) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "DELETE FROM RouteMarker " + " WHERE RouteID = '"
+					+ routeID + "' ";
+			stmt = con.prepareStatement(sql);
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out
+					.println("Can't delete RouteMarker record form RouteMarker table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
 }
