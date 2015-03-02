@@ -18,4 +18,5 @@ public final class Common {
 	public static final String Service_Suggest_Route = "Route/getSuggestionRoute";
 	public static final String Service_Order_get = "Order/getOrderByOwnerID";
 	public static final String Service_Order_getOrderByID = "Order/getOrderByID";
+	public static final String Service_Order_ConfirmDelivery = "Order/ownerConfirmDelivery";
 }

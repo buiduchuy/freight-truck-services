@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -36,6 +38,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +71,22 @@ public class OrderDetailActivity extends Activity {
 		wst.addNameValuePair("orderID", orderID);
 		String url = Common.IP_URL + Common.Service_Order_getOrderByID;
 		wst.execute(new String[] { url });
+
+		btnConfirm.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				WebServiceTask2 wst2 = new WebServiceTask2(
+						WebServiceTask2.POST_TASK, OrderDetailActivity.this,
+						"Đang xử lý...");
+				wst2.addNameValuePair("orderID", orderID);
+				wst2.addNameValuePair("ownerConfirmDelivery", "true");
+				String url = Common.IP_URL
+						+ Common.Service_Order_ConfirmDelivery;
+				wst2.execute(new String[] { url });
+			}
+		});
 	}
 
 	@Override
@@ -87,6 +106,14 @@ public class OrderDetailActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public String formatNumber(int number) {
+		DecimalFormat formatter = new DecimalFormat();
+		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+		symbol.setGroupingSeparator('.');
+		formatter.setDecimalFormatSymbols(symbol);
+		return formatter.format(number);
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -193,14 +220,17 @@ public class OrderDetailActivity extends Activity {
 				tvFinishTime.setText("Ngày giao hàng: " + tmp1[0]);
 				String test = jsonObject4.getString("name");
 				tvCate.setText("Loại hàng: " + jsonObject4.getString("name"));
-				int price = (int)Double.parseDouble(jsonObject2.getString("price"));
-				tvPrice.setText("Giá hàng: " + price + ",000 đồng");
+				int price = (int) Double.parseDouble(jsonObject2
+						.getString("price"));
+				tvPrice.setText("Giá hàng: " + formatNumber(price)
+						+ ".000 đồng");
 				tvNote.setText("Ghi chú: " + jsonObject2.getString("notes"));
 				tvPhone.setText("Số điện thoại tài xế: "
 						+ jsonObject6.getString("phone"));
 				String count = jsonObject.getString("ownerDeliveryStatus");
 				if (count.equals("true")) {
 					tvStatus.setText("Trạng thái hàng: " + "Đã nhận hàng");
+					btnConfirm.setVisibility(View.GONE);
 				} else {
 					tvStatus.setText("Trạng thái hàng: " + "Hàng chưa giao");
 				}
@@ -278,7 +308,7 @@ public class OrderDetailActivity extends Activity {
 		}
 
 	}
-	
+
 	private class WebServiceTask2 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -363,8 +393,14 @@ public class OrderDetailActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			
-
+			if (response.equals("1")) {				
+				finish();
+				startActivity(getIntent());				
+			} else {
+				Toast.makeText(OrderDetailActivity.this,
+						"Không thể xác nhận giao hàng", Toast.LENGTH_LONG)
+						.show();
+			}
 			pDlg.dismiss();
 		}
 

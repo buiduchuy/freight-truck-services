@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -236,6 +238,14 @@ public class DealDetailActivity extends Activity {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		return sdf.format(calendar.getTime());
 	}
+	
+	public String formatNumber(int number) {
+		DecimalFormat formatter = new DecimalFormat();
+		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+		symbol.setGroupingSeparator('.');
+		formatter.setDecimalFormatSymbols(symbol);
+		return formatter.format(number);
+	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -370,7 +380,7 @@ public class DealDetailActivity extends Activity {
 				finishTime.setText("Thời gian kết thúc: "
 						+ route.getFinishTime());
 				category.setText("Loại hàng không chở: " + route.getCategory());
-				tvPrice.setText("Giá đề nghị: " + (int) price + ",000 đồng");
+				tvPrice.setText("Giá đề nghị: " + formatNumber((int) price) + ".000 đồng");
 				tvNote.setText("Ghi chú: " + note);
 			} else {
 				Toast.makeText(DealDetailActivity.this,
