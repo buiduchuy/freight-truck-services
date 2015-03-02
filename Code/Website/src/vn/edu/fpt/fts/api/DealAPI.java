@@ -140,7 +140,7 @@ public class DealAPI {
 		try {
 			deal = new Deal();
 
-			// deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
 			deal.setCreateTime(params.getFirst("createTime"));
@@ -174,7 +174,7 @@ public class DealAPI {
 		try {
 			deal = new Deal();
 
-			// deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
+			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
 			deal.setCreateTime(params.getFirst("createTime"));

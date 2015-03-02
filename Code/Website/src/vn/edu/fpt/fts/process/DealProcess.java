@@ -241,7 +241,7 @@ public class DealProcess {
 		int ret = 0;
 		try {
 			// Update current deal
-			// dealDao.changeDealStatus(deal.getDealID(), Common.deal_decline);
+			// dealDao.updateDealStatus(deal.getDealID(), Common.deal_decline);
 			dealDao.updateDeal(deal);
 
 			// Insert new deal with decline status
@@ -356,29 +356,35 @@ public class DealProcess {
 
 				// Get current deal
 				Deal currentDeal = dealDao.getDealByID(deal.getDealID());
-				// Update status
-				currentDeal.setDealStatusID(Common.deal_decline);
-				if (dealDao.updateDeal(currentDeal) != 0) {
-					// Insert new deal with pending status
-					ret = dealDao.insertDeal(deal);
+				if (currentDeal != null) {
+					// Update status
+					currentDeal.setDealStatusID(Common.deal_decline);
+					if (dealDao.updateDeal(currentDeal) != 0) {
+						// Insert new deal with pending status
+						ret = dealDao.insertDeal(deal);
 
-					// Insert Notification
-					DealNotification dealNoti = new DealNotification();
-					String msg = "";
-					if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-						msg = "Bạn đã gửi đề nghị cho tài xế "
-								+ db_deal.getRoute().getDriver().getEmail();
-					} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-						msg = "Bạn đã gửi đề nghị cho chủ hàng "
-								+ db_deal.getGoods().getOwner().getEmail();
+						// Insert Notification
+						DealNotification dealNoti = new DealNotification();
+						String msg = "";
+						if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+							msg = "Bạn đã gửi đề nghị cho tài xế "
+									+ db_deal.getRoute().getDriver().getEmail();
+						} else if (deal.getCreateBy()
+								.equalsIgnoreCase("driver")) {
+							msg = "Bạn đã gửi đề nghị cho chủ hàng "
+									+ db_deal.getGoods().getOwner().getEmail();
+						}
+						dealNoti.setMessage(msg);
+						dealNoti.setActive(Common.activate);
+						dealNoti.setCreateTime(deal.getCreateTime());
+						dealNoti.setDealID(deal.getDealID());
+						dealNotiDao.insertDealNotification(dealNoti);
+
+					} else {
+						ret = 0;
 					}
-					dealNoti.setMessage(msg);
-					dealNoti.setActive(Common.activate);
-					dealNoti.setCreateTime(deal.getCreateTime());
-					dealNoti.setDealID(deal.getDealID());
-					dealNotiDao.insertDealNotification(dealNoti);
-
 				}
+
 			} else if (db_dealStatusID == Common.deal_accept) {
 				ret = 0;
 			} else if (db_dealStatusID == Common.deal_decline) {
