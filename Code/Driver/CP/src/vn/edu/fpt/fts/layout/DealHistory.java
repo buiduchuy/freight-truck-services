@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.http.HttpResponse;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
+import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
@@ -51,7 +53,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 	@SuppressLint("UseSparseArrays")
 	ArrayList<String> map = new ArrayList<String>();
 	ArrayList<ListItem> list;
-	ListItemAdapter adapter;
+	ListItemAdapter3 adapter;
 	ListView list1;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
@@ -170,58 +172,136 @@ public class DealHistory extends android.support.v4.app.Fragment {
 			if (!response.equals("null")) {
 				try {
 					int count = 1;
+					String status = "";
 					obj = new JSONObject(response);
 					JSONArray array = obj.getJSONArray("deal");
 					for (int i = array.length() - 1; i >= 0; i--) {
 						JSONObject item = array.getJSONObject(i);
-						if (item.getString("dealStatusID").equals("2")
-								|| item.getString("dealStatusID").equals("3")) {
-							JSONObject gd = item.getJSONObject("goods");
-							String title = "";
-							String[] start = gd.getString("pickupAddress")
-									.replaceAll("(?i), Vietnam", "")
-									.replaceAll("(?i), Viet Nam", "")
-									.replaceAll("(?i), Việt Nam", "")
-									.split(",");
-							title = start[start.length - 1].trim();
+						if (!item.getString("dealStatusID").equals("1")) {
+							if (item.getString("createBy").equals("driver")) {
+								JSONObject rt = item.getJSONObject("route");
+								String title = "";
+								String[] start = rt
+										.getString("startingAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title = start[start.length - 1].trim();
 
-							String[] end = gd.getString("deliveryAddress")
-									.replaceAll("(?i), Vietnam", "")
-									.replaceAll("(?i), Viet Nam", "")
-									.replaceAll("(?i), Việt Nam", "")
-									.split(",");
-							title += " - " + end[end.length - 1].trim();
-							SimpleDateFormat format = new SimpleDateFormat(
-									"yyyy-MM-dd hh:mm:ss");
-							Date createDate = format.parse(item
-									.getString("createTime"));
-							format.applyPattern("dd/MM/yyyy");
-							String createD = format.format(createDate);
-							String status = "";
-							if (item.getString("createBy").equals("owner")
-									&& item.getString("dealStatusID").equals(
+								if (obj.has("routeMarkers")) {
+									Object intervent = obj.get("routeMarkers");
+									if (intervent instanceof JSONArray) {
+										JSONArray catArray = obj
+												.getJSONArray("routeMarkers");
+										for (int j = 0; j < catArray.length(); j++) {
+											JSONObject cat = catArray
+													.getJSONObject(j);
+											if (!cat.getString(
+													"routeMarkerLocation")
+													.equals("")) {
+												title += " - "
+														+ cat.getString("routeMarkerLocation");
+											}
+										}
+									} else if (intervent instanceof JSONObject) {
+										JSONObject cat = obj
+												.getJSONObject("routeMarkers");
+										title += " - "
+												+ cat.getString("routeMarkerLocation");
+									}
+								}
+
+								String[] end = rt
+										.getString("destinationAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title += " - " + end[end.length - 1].trim();
+
+								SimpleDateFormat format = new SimpleDateFormat(
+										"yyyy-MM-dd hh:mm:ss");
+								Date createDate = format.parse(item
+										.getString("createTime"));
+								Calendar cal = Calendar.getInstance();
+								cal.setTime(createDate);
+								cal.add(Calendar.MONTH, 3);
+								Date timeout = cal.getTime();
+								format.applyPattern("dd/MM/yyyy");
+								String createD = format.format(createDate);
+								if (item.getString("dealStatusID").equals("2")) {
+									status = "Đã chấp nhận";
+								} else if (item.getString("dealStatusID")
+										.equals("3")) {
+									status = "Đã từ chối";
+								} else if (item.getString("dealStatusID")
+										.equals("4")) {
+									status = "Đã bị hủy";
+								}
+								JSONObject owner = item.getJSONObject("goods")
+										.getJSONObject("owner");
+								list.add(new ListItem(owner
+										.getString("firstName")
+										+ " "
+										+ owner.getString("lastName")
+										+ " gửi đề nghị cho lộ trình:", title,
+										status, createD));
+								count++;
+								map.add(item.getString("dealID"));
+							} else if (item.getString("createBy").equals(
+									"owner")) {
+								JSONObject gd = item.getJSONObject("goods");
+								if (gd.getString("active").equals("1")) {
+									String title = "";
+									String[] start = gd
+											.getString("pickupAddress")
+											.replaceAll("(?i), Vietnam", "")
+											.replaceAll("(?i), Viet Nam", "")
+											.replaceAll("(?i), Việt Nam", "")
+											.split(",");
+									title = start[start.length - 1].trim();
+
+									String[] end = gd
+											.getString("deliveryAddress")
+											.replaceAll("(?i), Vietnam", "")
+											.replaceAll("(?i), Viet Nam", "")
+											.replaceAll("(?i), Việt Nam", "")
+											.split(",");
+									title += " - " + end[end.length - 1].trim();
+									SimpleDateFormat format = new SimpleDateFormat(
+											"yyyy-MM-dd hh:mm:ss");
+									Date createDate = format.parse(item
+											.getString("createTime"));
+									Calendar cal = Calendar.getInstance();
+									cal.setTime(createDate);
+									cal.add(Calendar.MONTH, 3);
+									Date timeout = cal.getTime();
+									format.applyPattern("dd/MM/yyyy");
+									String createD = format.format(createDate);
+									if (item.getString("dealStatusID").equals(
 											"2")) {
-								status = "Đã được chấp nhận";
-							} else if (item.getString("createBy").equals(
-									"driver")
-									&& item.getString("dealStatusID").equals(
-											"2")) {
-								status = "Đã chấp nhận";
-							} else if (item.getString("createBy").equals(
-									"owner")
-									&& item.getString("dealStatusID").equals(
-									"3")) {
-								status = "Đã bị từ chối";
-							} else if (item.getString("createBy").equals(
-									"driver")
-									&& item.getString("dealStatusID").equals(
-									"3")) {
-								status = "Đã từ chối";
+										status = "Đã được chấp nhận";
+									} else if (item.getString("dealStatusID")
+											.equals("3")) {
+										status = "Đã bị từ chối";
+									} else if (item.getString("dealStatusID")
+											.equals("4")) {
+										status = "Đã hủy";
+									}
+									JSONObject owner = item.getJSONObject(
+											"goods").getJSONObject("owner");
+									list.add(new ListItem(
+											"Bạn đã gửi đề nghị cho "
+													+ owner.getString("firstName")
+													+ " "
+													+ owner.getString("lastName")
+													+ ":", title, status,
+											createD));
+									count++;
+									map.add(item.getString("dealID"));
+								}
 							}
-							list.add(new ListItem(count + ". " + title, status,
-									createD));
-							count++;
-							map.add(item.getString("dealID"));
 						}
 					}
 				} catch (JSONException e) {
@@ -232,7 +312,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter(getActivity(), list);
+			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();

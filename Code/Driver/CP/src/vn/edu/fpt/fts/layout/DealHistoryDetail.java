@@ -46,7 +46,7 @@ public class DealHistoryDetail extends Fragment {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Deal/getDealByID";
 	TextView startPlace, endPlace, startTime, endTime, price, status, weight;
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -55,8 +55,8 @@ public class DealHistoryDetail extends Fragment {
 				"Đang xử lý ...");
 		ws.addNameValuePair("dealID", getArguments().getString("dealID"));
 		ws.execute(new String[] { SERVICE_URL });
-		View v = inflater.inflate(R.layout.activity_deal_history_detail, container,
-				false);
+		View v = inflater.inflate(R.layout.activity_deal_history_detail,
+				container, false);
 		startPlace = (TextView) v.findViewById(R.id.textView2);
 		endPlace = (TextView) v.findViewById(R.id.textView4);
 		startTime = (TextView) v.findViewById(R.id.textView6);
@@ -164,24 +164,23 @@ public class DealHistoryDetail extends Fragment {
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("createBy").equals("owner")
-						&& obj.getString("dealStatusID").equals(
-								"2")) {
+						&& obj.getString("dealStatusID").equals("2")) {
 					stat = "Đã được chấp nhận";
-				} else if (obj.getString("createBy").equals(
-						"driver")
-						&& obj.getString("dealStatusID").equals(
-								"2")) {
+				} else if (obj.getString("createBy").equals("driver")
+						&& obj.getString("dealStatusID").equals("2")) {
 					stat = "Đã chấp nhận";
-				} else if (obj.getString("createBy").equals(
-						"owner")
-						&& obj.getString("dealStatusID").equals(
-								"3")) {
+				} else if (obj.getString("createBy").equals("owner")
+						&& obj.getString("dealStatusID").equals("3")) {
 					stat = "Đã bị từ chối";
-				} else if (obj.getString("createBy").equals(
-						"driver")
-						&& obj.getString("dealStatusID").equals(
-								"3")) {
+				} else if (obj.getString("createBy").equals("driver")
+						&& obj.getString("dealStatusID").equals("3")) {
 					stat = "Đã từ chối";
+				} else if (obj.getString("createBy").equals("driver")
+						&& obj.getString("dealStatusID").equals("4")) {
+					stat = "Đã hủy";
+				} else if (obj.getString("createBy").equals("owner")
+						&& obj.getString("dealStatusID").equals("4")) {
+					stat = "Đã bị hủy";
 				}
 				status.setText(stat);
 			} catch (JSONException e) {

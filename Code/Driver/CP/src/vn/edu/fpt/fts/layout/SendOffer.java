@@ -34,6 +34,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,7 +57,7 @@ public class SendOffer extends Fragment {
 			+ "Deal/Create";
 	private static final String SERVICE_URL2 = Constant.SERVICE_URL
 			+ "Goods/getGoodsByID";
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -168,9 +170,15 @@ public class SendOffer extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Gửi đề nghị thành công",
 						Toast.LENGTH_SHORT).show();
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				Fragment fragment = new TabDeals();
+				trs.replace(R.id.content_frame, fragment);
+				trs.addToBackStack(null);
+				trs.commit();
 			} else {
 				Toast.makeText(getActivity(), "Gửi đề nghị thất bại",
 						Toast.LENGTH_SHORT).show();
@@ -412,13 +420,13 @@ public class SendOffer extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
 		menu.findItem(R.id.action_create).setVisible(false);
-		MenuItem item = menu.add(Menu.NONE, R.id.action_send, 99,
-				R.string.send);
+		MenuItem item = menu
+				.add(Menu.NONE, R.id.action_send, 99, R.string.send);
 		item.setActionView(R.layout.actionbar_send);
 		item.getActionView().setOnClickListener(new View.OnClickListener() {
 
@@ -441,6 +449,7 @@ public class SendOffer extends Fragment {
 				} else {
 					WebService ws = new WebService(WebService.POST_TASK,
 							getActivity(), "Đang xử lý ...");
+					ws.addNameValuePair("dealID", getArguments().getString("refID"));
 					ws.addNameValuePair("price", pr);
 					ws.addNameValuePair("notes", note.getText().toString());
 					ws.addNameValuePair("createTime", current);
@@ -449,13 +458,8 @@ public class SendOffer extends Fragment {
 							getArguments().getString("routeID"));
 					ws.addNameValuePair("goodsID",
 							getArguments().getString("goodID"));
-					if (getArguments().getString("refID") == null) {
-						ws.addNameValuePair("refDealID", "0");
-					} else {
-						ws.addNameValuePair("refDealID", getArguments()
-								.getString("refID"));
-					}
-					ws.addNameValuePair("dealStatusID", "2");
+					ws.addNameValuePair("refDealID",
+							getArguments().getString("refID"));
 					ws.addNameValuePair("active", "1");
 					ws.execute(new String[] { SERVICE_URL });
 				}

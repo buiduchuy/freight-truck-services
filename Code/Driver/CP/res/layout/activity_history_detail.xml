@@ -153,6 +153,27 @@
                     android:layout_weight="1"
                     android:text="" />
             </TableRow>
+            
+            <TableRow
+                android:id="@+id/tableRow8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="0.7"
+                    android:text="@string/ownerPhone"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="" />
+            </TableRow>
 
             <TableRow
                 android:id="@+id/tableRow6"
@@ -181,7 +202,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Đã chuyển hàng" />
+            android:text="@string/sent" />
     </LinearLayout>
 
 </RelativeLayout>

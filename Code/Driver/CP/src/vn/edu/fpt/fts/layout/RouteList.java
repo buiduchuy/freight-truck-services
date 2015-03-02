@@ -244,13 +244,14 @@ public class RouteList extends Fragment {
 							title += " - " + end[end.length - 1].trim();
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm:ss");
+							Date finishDate = new Date();
 							try {
 								Date startDate = format.parse(item
 										.getString("startTime"));
 								format.applyPattern("dd/MM/yyyy");
 								String sd = format.format(startDate);
 								format.applyPattern("yyyy-MM-dd hh:mm:ss");
-								Date finishDate = format.parse(item
+								finishDate = format.parse(item
 										.getString("finishTime"));
 								format.applyPattern("dd/MM/yyyy");
 								String fd = format.format(finishDate);
@@ -261,6 +262,9 @@ public class RouteList extends Fragment {
 							}
 							ListItem itm = new ListItem(title, description, "");
 							list.add(itm);
+							if(finishDate.before(Calendar.getInstance().getTime())) {
+								list.remove(itm);
+							}
 							map.add(item.getString("routeID"));
 						}
 					}

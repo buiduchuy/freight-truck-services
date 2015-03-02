@@ -55,7 +55,11 @@
     <string name="suggest">Xem gợi ý</string>
     <string name="send">GỬI</string>
     <string name="save">LƯU</string>
+    <string name="noGood">Không có hàng nào</string>
     <string name="status">Trạng thái:</string>
+    <string name="counter">Gửi đề nghị</string>
+    <string name="sent">Đã chuyển hàng</string>
+    <string name="ownerPhone">Số điện thoại chủ hàng:</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Danh sách lộ trình</item>

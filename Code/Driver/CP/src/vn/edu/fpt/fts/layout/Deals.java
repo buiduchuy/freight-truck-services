@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
+import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -51,7 +53,7 @@ public class Deals extends Fragment {
 	@SuppressLint("UseSparseArrays")
 	ArrayList<String> map = new ArrayList<String>();
 	ArrayList<ListItem> list;
-	ListItemAdapter adapter;
+	ListItemAdapter3 adapter;
 	ListView list1;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
@@ -197,15 +199,28 @@ public class Deals extends Fragment {
 										"yyyy-MM-dd hh:mm:ss");
 								Date createDate = format.parse(item
 										.getString("createTime"));
+								Calendar cal = Calendar.getInstance();
+								cal.setTime(createDate);
+								cal.add(Calendar.MONTH, 3);
+								Date timeout = cal.getTime();
 								format.applyPattern("dd/MM/yyyy");
 								String createD = format.format(createDate);
-								list.add(new ListItem(count + ". " + title,
-										"Giá đề nghị: "
-												+ (int) Double.parseDouble(item
-														.getString("price"))
-												+ " ngàn đồng", createD));
-								count++;
-								map.add(item.getString("dealID"));
+								if (Calendar.getInstance().getTime()
+										.before(timeout)) {
+									JSONObject owner = item.getJSONObject(
+											"goods").getJSONObject("owner");
+									list.add(new ListItem("Bạn đã gửi đề nghị cho " +
+											owner.getString("firstName")
+													+ " "
+													+ owner.getString("lastName") + ":",
+											title,
+											"Giá đề nghị: "
+													+ (int) Double.parseDouble(item
+															.getString("price"))
+													+ " ngàn đồng", createD));
+									count++;
+									map.add(item.getString("dealID"));
+								}
 							}
 						}
 					}
@@ -217,7 +232,7 @@ public class Deals extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter(getActivity(), list);
+			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();

@@ -18,9 +18,9 @@ public class TabDeals extends Fragment {
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.activity_main);
 
-        mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("Đề nghị đã gửi"),
+        mTabHost.addTab(mTabHost.newTabSpec("tab1").setIndicator("Đề nghị gửi"),
                 Deals.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("Đề nghị đang chờ"),
+        mTabHost.addTab(mTabHost.newTabSpec("tab2").setIndicator("Đề nghị nhận"),
                 Deals2.class, null);
 
         return mTabHost;
