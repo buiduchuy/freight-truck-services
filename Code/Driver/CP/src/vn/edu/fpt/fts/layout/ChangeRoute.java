@@ -544,7 +544,7 @@ public class ChangeRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (response.equals("Success")) {
+			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Cập nhật thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -553,8 +553,9 @@ public class ChangeRoute extends Fragment {
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
-			} else if (response.equals("Fail")) {
-				Toast.makeText(getActivity(), "Cập nhật thất bại. Vui lòng thử lại",
+			} else if (Integer.parseInt(response) == 0) {
+				Toast.makeText(getActivity(),
+						"Lộ trình đang có các đề nghị liên quan. Không thể cập nhật lộ trình này.",
 						Toast.LENGTH_SHORT).show();
 			}
 		}
@@ -711,26 +712,30 @@ public class ChangeRoute extends Fragment {
 				Object intervent;
 				start.setText(obj.getString("startingAddress"));
 
-				intervent = obj.get("routeMarkers");
-				if (intervent instanceof JSONArray) {
-					JSONArray catArray = obj.getJSONArray("routeMarkers");
-					for (int j = 0; j < catArray.length(); j++) {
-						JSONObject cat = catArray.getJSONObject(j);
-						if (j == 0) {
-							if (!cat.getString("routeMarkerLocation")
-									.equals("")) {
-								p1.setText(cat.getString("routeMarkerLocation"));
-							}
-						} else if (j == 1) {
-							if (!cat.getString("routeMarkerLocation")
-									.equals("")) {
-								p2.setText(cat.getString("routeMarkerLocation"));
+				if (obj.has("routeMarkers")) {
+					intervent = obj.get("routeMarkers");
+					if (intervent instanceof JSONArray) {
+						JSONArray catArray = obj.getJSONArray("routeMarkers");
+						for (int j = 0; j < catArray.length(); j++) {
+							JSONObject cat = catArray.getJSONObject(j);
+							if (j == 0) {
+								if (!cat.getString("routeMarkerLocation")
+										.equals("")) {
+									p1.setText(cat
+											.getString("routeMarkerLocation"));
+								}
+							} else if (j == 1) {
+								if (!cat.getString("routeMarkerLocation")
+										.equals("")) {
+									p2.setText(cat
+											.getString("routeMarkerLocation"));
+								}
 							}
 						}
+					} else if (intervent instanceof JSONObject) {
+						JSONObject cat = obj.getJSONObject("routeMarkers");
+						p1.setText(cat.getString("routeMarkerLocation"));
 					}
-				} else if (intervent instanceof JSONObject) {
-					JSONObject cat = obj.getJSONObject("routeMarkers");
-					p1.setText(cat.getString("routeMarkerLocation"));
 				}
 
 				end.setText(obj.getString("destinationAddress"));
@@ -880,27 +885,6 @@ public class ChangeRoute extends Fragment {
 				String Point1 = p1.getText().toString();
 				String Point2 = p2.getText().toString();
 				String endPoint = end.getText().toString();
-				try {
-					if (!startPoint.equals("")) {
-						startPoint = new GetFullAddress().execute(startPoint)
-								.get();
-					}
-					if (!endPoint.equals("")) {
-						endPoint = new GetFullAddress().execute(endPoint).get();
-					}
-					if (!Point1.equals("")) {
-						Point1 = new GetFullAddress().execute(Point1).get();
-					}
-					if (!Point2.equals("")) {
-						Point2 = new GetFullAddress().execute(Point2).get();
-					}
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				String startD = startDate.getText().toString()
 						.replace("/", "-");
 				startD = common.changeFormatDate(startD) + " "

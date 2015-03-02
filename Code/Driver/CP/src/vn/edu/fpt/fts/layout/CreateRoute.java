@@ -674,27 +674,27 @@ public class CreateRoute extends Fragment {
 				String Point1 = p1.getText().toString();
 				String Point2 = p2.getText().toString();
 				String endPoint = end.getText().toString();
-				try {
-					if (!startPoint.equals("")) {
-						startPoint = new GetFullAddress().execute(startPoint)
-								.get();
-					}
-					if (!endPoint.equals("")) {
-						endPoint = new GetFullAddress().execute(endPoint).get();
-					}
-					if (!Point1.equals("")) {
-						Point1 = new GetFullAddress().execute(Point1).get();
-					}
-					if (!Point2.equals("")) {
-						Point2 = new GetFullAddress().execute(Point2).get();
-					}
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+//				try {
+//					if (!startPoint.equals("")) {
+//						startPoint = new GetFullAddress().execute(startPoint)
+//								.get();
+//					}
+//					if (!endPoint.equals("")) {
+//						endPoint = new GetFullAddress().execute(endPoint).get();
+//					}
+//					if (!Point1.equals("")) {
+//						Point1 = new GetFullAddress().execute(Point1).get();
+//					}
+//					if (!Point2.equals("")) {
+//						Point2 = new GetFullAddress().execute(Point2).get();
+//					}
+//				} catch (InterruptedException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				} catch (ExecutionException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
 				String startD = startDate.getText().toString()
 						.replace("/", "-");
 				startD = common.changeFormatDate(startD) + " "

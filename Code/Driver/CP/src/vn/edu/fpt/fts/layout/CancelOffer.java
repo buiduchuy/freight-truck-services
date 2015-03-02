@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -177,6 +181,10 @@ public class CancelOffer extends Fragment {
 			// handleResponse(response);
 			JSONObject obj;
 			try {
+				DecimalFormat formatter = new DecimalFormat();
+				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+				symbol.setGroupingSeparator('.');
+				formatter.setDecimalFormatSymbols(symbol);
 				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("goods");
 				startPlace.setText(good.getString("pickupAddress"));
@@ -188,8 +196,9 @@ public class CancelOffer extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText((int) Double.parseDouble(obj.getString("price"))
-						+ " ngàn đồng");
+				price.setText(formatter.format(Double.parseDouble(obj
+						.getString("price").replace(".0", "")
+						+ "000")) + " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (obj.has("notes")) {
 					if (obj.getString("notes").equals("")

@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -152,6 +154,10 @@ public class HistoryDetail extends Fragment {
 			JSONObject obj;
 			try {
 				obj = new JSONObject(response);
+				DecimalFormat formatter = new DecimalFormat();
+				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+				symbol.setGroupingSeparator('.');
+				formatter.setDecimalFormatSymbols(symbol);
 				JSONObject good = obj.getJSONObject("deal").getJSONObject(
 						"goods");
 				startPlace.setText(good.getString("pickupAddress"));
@@ -162,7 +168,9 @@ public class HistoryDetail extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText(obj.getString("price") + " ngàn đồng");
+				price.setText(formatter.format(Double.parseDouble(obj
+		                .getString("price").replace(".0", "")
+		                + "000")) + " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("driverDeliveryStatus").equals("true")) {

@@ -4,8 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -60,13 +64,9 @@ public class SystemSuggest extends Fragment {
 		// TODO Auto-generated method stub
 		list = new ArrayList<ListItem>();
 		getActivity().setTitle("Gợi ý hệ thống");
-		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
-				"Đang lấy dữ liệu ...");
-		ws.addNameValuePair("routeID", getArguments().getString("routeID"));
-		ws.execute(new String[] { SERVICE_URL });
 		myFragmentView = inflater.inflate(R.layout.activity_system_suggest,
 				container, false);
-		list1 = (ListView) myFragmentView.findViewById(R.id.listView4);
+		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
 		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -84,6 +84,10 @@ public class SystemSuggest extends Fragment {
 				trs.commit();
 			}
 		}));
+		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
+				"Đang lấy dữ liệu ...");
+		ws.addNameValuePair("routeID", getArguments().getString("routeID"));
+		ws.execute(new String[] { SERVICE_URL });
 		return myFragmentView;
 	}
 
@@ -167,37 +171,51 @@ public class SystemSuggest extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			JSONObject obj;
-			try {
-				obj = new JSONObject(response);
-				if (obj.has("goods")) {
-					Object intervent = obj.get("goods");
-					if (intervent instanceof JSONArray) {
-						JSONArray array = obj.getJSONArray("goods");
-						for (int i = 0; i < array.length(); i++) {
-							JSONObject item = array.getJSONObject(i);
-							list.add(new ListItem("Hàng "
-									+ String.valueOf(i + 1) + ": "
-									+ item.getString("weight") + " tấn", item
-									.getString("price") + " ngàn đồng", ""));
-							map.put(Long.valueOf(i),
+			if (!response.equals("null")) {
+				try {
+					obj = new JSONObject(response);
+					if (obj.has("goods")) {
+						Object intervent = obj.get("goods");
+						DecimalFormat formatter = new DecimalFormat();
+						DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+						symbol.setGroupingSeparator('.');
+						formatter.setDecimalFormatSymbols(symbol);
+						if (intervent instanceof JSONArray) {
+							JSONArray array = obj.getJSONArray("goods");
+							for (int i = 0; i < array.length(); i++) {
+								JSONObject item = array.getJSONObject(i);
+								list.add(new ListItem(
+										"Hàng " + item.getString("weight")
+												+ " kg",
+										"Giá của chủ hàng: "
+												+ formatter.format(Integer.parseInt(item
+														.getString("price").replace(".0", "")
+														+ "000")) + " đồng", ""));
+								map.put(Long.valueOf(i), Integer.parseInt(item
+										.getString("goodsID")));
+							}
+						} else if (intervent instanceof JSONObject) {
+							JSONObject item = obj.getJSONObject("goods");
+
+							list.add(new ListItem(
+									"Hàng " + item.getString("weight")
+											+ " kg",
+									"Giá của chủ hàng: "
+											+ formatter.format(Integer.parseInt(item
+													.getString("price").replace(".0", "")
+													+ "000")) + " đồng", ""));
+							map.put(Long.valueOf(0),
 									Integer.parseInt(item.getString("goodsID")));
 						}
-					} else if (intervent instanceof JSONObject) {
-						JSONObject item = obj.getJSONObject("goods");
-
-						list.add(new ListItem("Hàng 1: " + item.getString("weight") + " tấn",
-								item.getString("price") + " ngàn đồng", ""));
-						map.put(Long.valueOf(0),
-								Integer.parseInt(item.getString("goodsID")));
+						adapter = new ListItemAdapter2(getActivity(), list);
+						list1.setEmptyView(myFragmentView
+								.findViewById(R.id.emptyElement));
+						list1.setAdapter(adapter);
 					}
-					adapter = new ListItemAdapter2(getActivity(), list);
-					list1.setEmptyView(myFragmentView
-							.findViewById(R.id.emptyElement));
-					list1.setAdapter(adapter);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 			pDlg.dismiss();
 		}

@@ -4,11 +4,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -55,12 +59,13 @@ public class OfferResponse extends Fragment {
 			+ "Deal/decline";
 	TextView startPlace, endPlace, startTime, endTime, price, note, weight;
 	TextView startPoint, point1, point2, endPoint, startDate, endDate, payload,
-	cantLoad;
+			cantLoad;
 	String id;
 	String routeID;
 	String goodID;
+	String refID;
 	String oldPrice;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -102,7 +107,8 @@ public class OfferResponse extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Bundle bundle = new Bundle();
-				bundle.putString("refID", id);
+				bundle.putString("dealID", id);
+				bundle.putString("refID", refID);
 				bundle.putString("routeID", routeID);
 				bundle.putString("goodID", goodID);
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -198,6 +204,10 @@ public class OfferResponse extends Fragment {
 			// handleResponse(response);
 			JSONObject obj;
 			try {
+				DecimalFormat formatter = new DecimalFormat();
+				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+				symbol.setGroupingSeparator('.');
+				formatter.setDecimalFormatSymbols(symbol);
 				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("goods");
 				startPlace.setText(good.getString("pickupAddress"));
@@ -209,8 +219,9 @@ public class OfferResponse extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText((int) Double.parseDouble(obj.getString("price"))
-						+ " ngàn đồng");
+				price.setText(formatter.format(Double.parseDouble(obj
+						.getString("price").replace(".0", "") + "000"))
+						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (obj.has("notes")) {
 					if (obj.getString("notes").equals("")
@@ -225,7 +236,8 @@ public class OfferResponse extends Fragment {
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
 				oldPrice = obj.getString("price");
-				
+				refID = obj.getString("refDealID");
+
 				obj = obj.getJSONObject("route");
 				Object intervent;
 				startPoint.setText(obj.getString("startingAddress"));
@@ -704,7 +716,7 @@ public class OfferResponse extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
@@ -718,9 +730,9 @@ public class OfferResponse extends Fragment {
 		case R.id.action_accept:
 			WebService2 ws = new WebService2(WebService.POST_TASK,
 					getActivity(), "Đang xử lý ...");
-			ws.addNameValuePair("refDealID", id);
+			ws.addNameValuePair("dealID", id);
 			ws.addNameValuePair("active", "1");
-			ws.addNameValuePair("price", price.getText().toString().replace(" ngàn đồng", ""));
+			ws.addNameValuePair("price", oldPrice);
 			ws.addNameValuePair("notes", note.getText().toString());
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 			String createTime = format.format(Calendar.getInstance().getTime());
@@ -728,21 +740,34 @@ public class OfferResponse extends Fragment {
 			ws.addNameValuePair("createBy", "driver");
 			ws.addNameValuePair("routeID", routeID);
 			ws.addNameValuePair("goodsID", goodID);
-			ws.execute(new String[] { SERVICE_URL2 });			
+			if (refID.equals("")) {
+				ws.addNameValuePair("refDealID", id);
+			}
+			else {
+				ws.addNameValuePair("refDealID", refID);
+			}
+			ws.execute(new String[] { SERVICE_URL2 });
 			return true;
 		case R.id.action_decline:
 			WebService3 ws2 = new WebService3(WebService.POST_TASK,
 					getActivity(), "Đang xử lý ...");
-			ws2.addNameValuePair("refDealID", id);
+			ws2.addNameValuePair("dealID", id);
 			ws2.addNameValuePair("active", "1");
-			ws2.addNameValuePair("price", price.getText().toString().replace(" ngàn đồng", ""));
+			ws2.addNameValuePair("price", oldPrice);
 			ws2.addNameValuePair("notes", note.getText().toString());
 			SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-			String createTime2 = format2.format(Calendar.getInstance().getTime());
+			String createTime2 = format2.format(Calendar.getInstance()
+					.getTime());
 			ws2.addNameValuePair("createTime", createTime2);
 			ws2.addNameValuePair("createBy", "driver");
 			ws2.addNameValuePair("routeID", routeID);
 			ws2.addNameValuePair("goodsID", goodID);
+			if (refID.equals("")) {
+				ws2.addNameValuePair("refDealID", id);
+			}
+			else {
+				ws2.addNameValuePair("refDealID", refID);
+			}
 			ws2.execute(new String[] { SERVICE_URL3 });
 			return true;
 		default:

@@ -241,10 +241,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 								}
 								JSONObject owner = item.getJSONObject("goods")
 										.getJSONObject("owner");
-								list.add(new ListItem(owner
-										.getString("firstName")
-										+ " "
-										+ owner.getString("lastName")
+								list.add(new ListItem(owner.getString("email")
 										+ " gửi đề nghị cho lộ trình:", title,
 										status, createD));
 								count++;
@@ -292,10 +289,8 @@ public class DealHistory extends android.support.v4.app.Fragment {
 									JSONObject owner = item.getJSONObject(
 											"goods").getJSONObject("owner");
 									list.add(new ListItem(
-											"Bạn đã gửi đề nghị cho "
-													+ owner.getString("firstName")
-													+ " "
-													+ owner.getString("lastName")
+											"Bạn đã gửi đề nghị cho " +
+													owner.getString("email")
 													+ ":", title, status,
 											createD));
 									count++;
