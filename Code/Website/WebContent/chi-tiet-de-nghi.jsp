@@ -108,8 +108,7 @@
 														<a class="button alert"
 															href="ControllerMakeDeal?btnAction=cancelDeal&idDeal=${history.dealID }"
 															onclick="return confirm('Bạn có muốn huỷ đề nghị này không?')">Huỷ</a>
-														<a class="button success disabled">Chấp
-																nhận</a></td></td>
+														
 													</c:otherwise>
 												</c:choose>
 											</tr>
