@@ -33,6 +33,7 @@ import vn.edu.fpt.fts.ownerapp.R.menu;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -104,6 +105,10 @@ public class OrderDetailActivity extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		if (id == R.id.action_homepage) {
+			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

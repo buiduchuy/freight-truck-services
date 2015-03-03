@@ -41,6 +41,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -49,6 +50,7 @@ public class SuggestActivity extends Activity {
 	private ListView listView;
 	private ModelAdapter adapter;
 	private String goodsID;
+	private TextView tvGone;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -208,15 +210,16 @@ public class SuggestActivity extends Activity {
 			// handleResponse(response);
 			if (response.equals("null")) {
 				pDlg.dismiss();
-				Toast.makeText(SuggestActivity.this,
-						"Không tìm thấy lộ trình phù hợp", Toast.LENGTH_LONG)
-						.show();
-
+//				Toast.makeText(SuggestActivity.this,
+//						"Không tìm thấy lộ trình phù hợp", Toast.LENGTH_LONG)
+//						.show();
+				tvGone = (TextView) findViewById(R.id.textview_gone);
+				tvGone.setVisibility(View.VISIBLE);
 			} else {
 				try {
 					// android.os.Debug.waitForDebugger();
 					JSONObject jsonObject = new JSONObject(response);
-					Object object = jsonObject.getJSONObject("route");
+					Object object = jsonObject.get("route");
 					if (object instanceof JSONArray) {
 						JSONArray array = jsonObject.getJSONArray("route");
 

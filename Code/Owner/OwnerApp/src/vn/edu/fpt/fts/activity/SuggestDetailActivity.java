@@ -94,7 +94,7 @@ public class SuggestDetailActivity extends Activity {
 				wst2.addNameValuePair("createTime", formatDate(calendar));
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeid + "");
-				wst2.addNameValuePair("goodsID", goodsID + "");				
+				wst2.addNameValuePair("goodsID", goodsID + "");
 				wst2.addNameValuePair("refDealID", "0");
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
@@ -121,7 +121,8 @@ public class SuggestDetailActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_homepage) {
-			Intent intent = new Intent(SuggestDetailActivity.this, MainActivity.class);
+			Intent intent = new Intent(SuggestDetailActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -228,23 +229,26 @@ public class SuggestDetailActivity extends Activity {
 					String finish[] = finishTime.split(" ");
 					// JSONObject jsonObject2 =
 					// jsonObject.getJSONObject("goodsCategory");
-					Object object = jsonObject.get("goodsCategory");
 					String category = "";
-					if (object instanceof JSONArray) {
-						JSONArray array = jsonObject.getJSONArray("goodsCategory");					
-						
-						for (int i = 0; i < array.length(); i++) {
-							JSONObject jsonObject2 = array.getJSONObject(i);
+					if (response.contains("goodsCategory")) {
+						Object object = jsonObject.get("goodsCategory");
+
+						if (object instanceof JSONArray) {
+							JSONArray array = jsonObject
+									.getJSONArray("goodsCategory");
+
+							for (int i = 0; i < array.length(); i++) {
+								JSONObject jsonObject2 = array.getJSONObject(i);
+								category = category
+										+ jsonObject2.getString("name") + ", ";
+							}
+						} else if (object instanceof JSONObject) {
+							JSONObject jsonObject2 = jsonObject
+									.getJSONObject("goodsCategory");
 							category = category + jsonObject2.getString("name")
 									+ ", ";
 						}
-					} else if (object instanceof JSONObject) {
-						JSONObject jsonObject2 = jsonObject.getJSONObject("goodsCategory");
-						category = category + jsonObject2.getString("name")
-								+ ", ";
 					}
-					
-					
 
 					route.setStartingAddress(jsonObject
 							.getString("startingAddress"));
@@ -429,7 +433,8 @@ public class SuggestDetailActivity extends Activity {
 			if (Integer.parseInt(response) > 0) {
 				Toast.makeText(SuggestDetailActivity.this,
 						"Gửi đề nghị thành công", Toast.LENGTH_LONG).show();
-				Intent intent = new Intent(SuggestDetailActivity.this, SuggestActivity.class);
+				Intent intent = new Intent(SuggestDetailActivity.this,
+						SuggestActivity.class);
 				intent.putExtra("goodsID", goodsID);
 				startActivity(intent);
 			} else {

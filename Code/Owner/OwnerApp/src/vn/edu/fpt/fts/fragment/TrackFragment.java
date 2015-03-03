@@ -44,12 +44,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TrackFragment extends Fragment {
 	private ListView listView;
 	private ArrayAdapter<String> adapter;
 	private String ownerID;
 	List<String> orderID;
+	private TextView tvGone;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -169,19 +171,39 @@ public class TrackFragment extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {
-				JSONObject jsonObject = new JSONObject(response);
-				Object obj = jsonObject.get("order");
-				List<String> lv = new ArrayList<String>();
-				// String[] result = new String[array.length()];
-				if (obj instanceof JSONArray) {
-					JSONArray array = jsonObject.getJSONArray("order");
-					for (int i = 0; i < array.length(); i++) {
-						JSONObject jsonObject2 = array.getJSONObject(i);
-						JSONObject jsonObject3 = jsonObject2
-								.getJSONObject("deal");
-						JSONObject jsonObject4 = jsonObject3
-								.getJSONObject("goods");
+			if (response.equals("null")) {
+				tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+				tvGone.setVisibility(View.VISIBLE);
+			} else {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Object obj = jsonObject.get("order");
+					List<String> lv = new ArrayList<String>();
+					// String[] result = new String[array.length()];
+					if (obj instanceof JSONArray) {
+						JSONArray array = jsonObject.getJSONArray("order");
+						for (int i = 0; i < array.length(); i++) {
+							JSONObject jsonObject2 = array.getJSONObject(i);
+							JSONObject jsonObject3 = jsonObject2
+									.getJSONObject("deal");
+							JSONObject jsonObject4 = jsonObject3
+									.getJSONObject("goods");
+							JSONObject jsonObject5 = jsonObject4
+									.getJSONObject("goodsCategory");
+							String categoryName = jsonObject5.getString("name");
+							String number = jsonObject4.getString("createTime");
+							String[] tmp = number.split(" ");
+							number = " #" + tmp[0].replace("-", "")
+									+ jsonObject4.getString("goodsID");
+							String object = categoryName + number;
+							lv.add(object);
+							orderID.add(jsonObject2.getString("orderID"));
+
+						}
+					} else if (obj instanceof JSONObject) {
+						JSONObject jsonObject2 = jsonObject.getJSONObject("order");
+						JSONObject jsonObject3 = jsonObject2.getJSONObject("deal");
+						JSONObject jsonObject4 = jsonObject3.getJSONObject("goods");
 						JSONObject jsonObject5 = jsonObject4
 								.getJSONObject("goodsCategory");
 						String categoryName = jsonObject5.getString("name");
@@ -194,30 +216,16 @@ public class TrackFragment extends Fragment {
 						orderID.add(jsonObject2.getString("orderID"));
 
 					}
-				} else if (obj instanceof JSONObject) {
-					JSONObject jsonObject2 = jsonObject.getJSONObject("order");
-					JSONObject jsonObject3 = jsonObject2.getJSONObject("deal");
-					JSONObject jsonObject4 = jsonObject3.getJSONObject("goods");
-					JSONObject jsonObject5 = jsonObject4
-							.getJSONObject("goodsCategory");
-					String categoryName = jsonObject5.getString("name");
-					String number = jsonObject4.getString("createTime");
-					String[] tmp = number.split(" ");
-					number = " #" + tmp[0].replace("-", "")
-							+ jsonObject4.getString("goodsID");
-					String object = categoryName + number;
-					lv.add(object);
-					orderID.add(jsonObject2.getString("orderID"));
 
+					adapter = new ArrayAdapter<String>(getActivity(),
+							android.R.layout.simple_list_item_1, lv);
+					listView.setAdapter(adapter);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					Log.e(TAG, e.getLocalizedMessage());
 				}
-
-				adapter = new ArrayAdapter<String>(getActivity(),
-						android.R.layout.simple_list_item_1, lv);
-				listView.setAdapter(adapter);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				Log.e(TAG, e.getLocalizedMessage());
 			}
+			
 			pDlg.dismiss();
 
 		}

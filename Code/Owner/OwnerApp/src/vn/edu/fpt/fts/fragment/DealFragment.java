@@ -42,6 +42,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -50,6 +51,7 @@ public class DealFragment extends Fragment {
 	private ArrayAdapter<String> adapter;
 	private List<Deal> list;
 	private ListView listView;
+	private TextView tvGone;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -182,28 +184,63 @@ public class DealFragment extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			try {
-				JSONObject jsonObject = new JSONObject(response);
-				Object obj = jsonObject.get("deal");
-				String[] price = null;
-				if (obj instanceof JSONArray) {
-					JSONArray array = jsonObject.getJSONArray("deal");
-					list = new ArrayList<Deal>();
+			if (response.equals("null")) {
+				tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+				tvGone.setVisibility(View.VISIBLE);
+			} else {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Object obj = jsonObject.get("deal");
+					String[] price = null;
+					if (obj instanceof JSONArray) {
+						JSONArray array = jsonObject.getJSONArray("deal");
+						list = new ArrayList<Deal>();
 
-					for (int i = 0; i < array.length(); i++) {
-						JSONObject jsonObject2 = array.getJSONObject(i);
+						for (int i = 0; i < array.length(); i++) {
+							JSONObject jsonObject2 = array.getJSONObject(i);
+							Deal deal = new Deal();
+							int check = Integer.parseInt(jsonObject2
+									.getString("dealStatusID"));
+							int check2 = Integer.parseInt(jsonObject2
+									.getString("active"));
+							if (check != 3 && check != 4 && check2 != 0
+									&& check2 != 2) {
+								deal.setActive(Integer.parseInt(jsonObject2
+										.getString("active")));
+								deal.setCreateBy(jsonObject2.getString("createBy"));
+								deal.setCreateTime(jsonObject2
+										.getString("createTime"));
+								deal.setDealID(Integer.parseInt(jsonObject2
+										.getString("dealID")));
+								deal.setDealStatusID(Integer.parseInt(jsonObject2
+										.getString("dealStatusID")));
+								deal.setGoodsID(Integer.parseInt(jsonObject2
+										.getString("goodsID")));
+								deal.setNotes(jsonObject2.getString("notes"));
+								deal.setPrice(Double.parseDouble(jsonObject2
+										.getString("price")));
+								deal.setRefDealID(Integer.parseInt(jsonObject2
+										.getString("refDealID")));
+								deal.setRouteID(Integer.parseInt(jsonObject2
+										.getString("routeID")));
+								list.add(deal);
+							}
+
+						}
+					} else if (obj instanceof JSONObject) {
+						// price = new String[1];
+						JSONObject jsonObject2 = jsonObject.getJSONObject("deal");
+						list = new ArrayList<Deal>();
 						Deal deal = new Deal();
 						int check = Integer.parseInt(jsonObject2
 								.getString("dealStatusID"));
 						int check2 = Integer.parseInt(jsonObject2
 								.getString("active"));
-						if (check != 3 && check != 4 && check2 != 0
-								&& check2 != 2) {
+						if (check != 3 && check != 4 && check2 != 0 && check2 != 2) {
 							deal.setActive(Integer.parseInt(jsonObject2
 									.getString("active")));
 							deal.setCreateBy(jsonObject2.getString("createBy"));
-							deal.setCreateTime(jsonObject2
-									.getString("createTime"));
+							deal.setCreateTime(jsonObject2.getString("createTime"));
 							deal.setDealID(Integer.parseInt(jsonObject2
 									.getString("dealID")));
 							deal.setDealStatusID(Integer.parseInt(jsonObject2
@@ -219,71 +256,42 @@ public class DealFragment extends Fragment {
 									.getString("routeID")));
 							list.add(deal);
 						}
+					}
 
+					// for (Deal d : list) {
+					// if (d.getDealStatusID() == 3 || d.getDealStatusID() == 4
+					// || d.getActive() == 0) {
+					// list.remove(d);
+					// }
+					// }
+					int size = list.size();
+					if (size != 0) {
+						price = new String[list.size()];
+
+						for (int i = 0; i < list.size(); i++) {
+							price[i] = "Giao dịch giá: " + (int) list.get(i).getPrice() + " nghìn đồng";
+						}
+						// String a = price[0];
+
+						if (price[0] == null) {
+							Toast.makeText(getActivity(),
+									"Không có giao dịch mới",
+									Toast.LENGTH_LONG).show();
+						} else {
+							adapter = new ArrayAdapter<String>(getActivity(),
+									android.R.layout.simple_list_item_1, price);
+							listView.setAdapter(adapter);
+						}
 					}
-				} else if (obj instanceof JSONObject) {
-					// price = new String[1];
-					JSONObject jsonObject2 = jsonObject.getJSONObject("deal");
-					list = new ArrayList<Deal>();
-					Deal deal = new Deal();
-					int check = Integer.parseInt(jsonObject2
-							.getString("dealStatusID"));
-					int check2 = Integer.parseInt(jsonObject2
-							.getString("active"));
-					if (check != 3 && check != 4 && check2 != 0 && check2 != 2) {
-						deal.setActive(Integer.parseInt(jsonObject2
-								.getString("active")));
-						deal.setCreateBy(jsonObject2.getString("createBy"));
-						deal.setCreateTime(jsonObject2.getString("createTime"));
-						deal.setDealID(Integer.parseInt(jsonObject2
-								.getString("dealID")));
-						deal.setDealStatusID(Integer.parseInt(jsonObject2
-								.getString("dealStatusID")));
-						deal.setGoodsID(Integer.parseInt(jsonObject2
-								.getString("goodsID")));
-						deal.setNotes(jsonObject2.getString("notes"));
-						deal.setPrice(Double.parseDouble(jsonObject2
-								.getString("price")));
-						deal.setRefDealID(Integer.parseInt(jsonObject2
-								.getString("refDealID")));
-						deal.setRouteID(Integer.parseInt(jsonObject2
-								.getString("routeID")));
-						list.add(deal);
-					}
+
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Toast.makeText(getActivity(), "Không có giao dịch mới",
+							Toast.LENGTH_LONG).show();
 				}
-
-				// for (Deal d : list) {
-				// if (d.getDealStatusID() == 3 || d.getDealStatusID() == 4
-				// || d.getActive() == 0) {
-				// list.remove(d);
-				// }
-				// }
-				int size = list.size();
-				if (size != 0) {
-					price = new String[list.size()];
-
-					for (int i = 0; i < list.size(); i++) {
-						price[i] = "Giao dịch giá: " + (int) list.get(i).getPrice() + " nghìn đồng";
-					}
-					// String a = price[0];
-
-					if (price[0] == null) {
-						Toast.makeText(getActivity(),
-								"Không có giao dịch mới",
-								Toast.LENGTH_LONG).show();
-					} else {
-						adapter = new ArrayAdapter<String>(getActivity(),
-								android.R.layout.simple_list_item_1, price);
-						listView.setAdapter(adapter);
-					}
-				}
-
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				Toast.makeText(getActivity(), "Không có giao dịch mới",
-						Toast.LENGTH_LONG).show();
 			}
+			
 
 			pDlg.dismiss();
 

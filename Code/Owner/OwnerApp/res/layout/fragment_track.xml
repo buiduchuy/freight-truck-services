@@ -14,4 +14,11 @@
         android:layout_height="match_parent" >
     </ListView>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/textview_gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="Hiện giờ không có đơn hàng"
+        android:visibility="gone" />
+</RelativeLayout>

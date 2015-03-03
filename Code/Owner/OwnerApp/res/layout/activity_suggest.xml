@@ -18,5 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </ListView>
+    
+    <TextView
+        android:id="@+id/textview_gone"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="Không tìm thấy lộ trình phù hợp"
+        android:visibility="gone" />
 
 </RelativeLayout>
