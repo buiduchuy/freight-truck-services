@@ -5,6 +5,7 @@ package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -80,28 +81,36 @@ public class MAIN_PROCESS {
 		// System.out.println(mapProcess.checkDistance(9, goodsStartLocation,
 		// goodsFinishLocation, 2));
 
-		GoodsDAO goodsDao = new GoodsDAO();
-		Goods goods = goodsDao.getGoodsByID(83);
-		RouteDAO ruoteDao = new RouteDAO();
-		List<Route> listRoute = ruoteDao.getListActiveRoute();
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			Date pickupDate = sdf.parse(goods.getPickupTime().toString());
-			Date deliveryDate = sdf.parse(goods.getDeliveryTime().toString());
-			for (int i = 0; i < listRoute.size(); i++) {
-				Date routeStartDate = sdf
-						.parse(listRoute.get(i).getStartTime());
-				Date routeFinishDate = sdf.parse(listRoute.get(i)
-						.getFinishTime());
-				if (pickupDate.compareTo(routeStartDate) >= 0
-						&& deliveryDate.compareTo(routeFinishDate) <= 0) {
-					System.out.println(routeStartDate.getTime() + " <= "
-							+ pickupDate.getTime() + " <= "
-							+ deliveryDate.getTime() + " <= "
-							+ routeFinishDate.getTime());
-				}
-			}
+//		GoodsDAO goodsDao = new GoodsDAO();
+//		Goods goods = goodsDao.getGoodsByID(83);
+//		RouteDAO routeDao = new RouteDAO();
+//		routeDao.getActiveRouteByID(17);
+//		List<Goods> listGoods = new ArrayList<Goods>();
+//		listGoods = goodsDao.getAllGoods();
+//		
+		MatchingProcess mp = new MatchingProcess();
+		mp.getSuggestionGoods(19);
+		
+		
+//		List<Route> listRoute = routeDao.getListActiveRoute();
+//
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//		try {
+//			Date pickupDate = sdf.parse(goods.getPickupTime().toString());
+//			Date deliveryDate = sdf.parse(goods.getDeliveryTime().toString());
+//			for (int i = 0; i < listRoute.size(); i++) {
+//				Date routeStartDate = sdf
+//						.parse(listRoute.get(i).getStartTime());
+//				Date routeFinishDate = sdf.parse(listRoute.get(i)
+//						.getFinishTime());
+//				if (pickupDate.compareTo(routeStartDate) >= 0
+//						&& deliveryDate.compareTo(routeFinishDate) <= 0) {
+//					System.out.println(routeStartDate.getTime() + " <= "
+//							+ pickupDate.getTime() + " <= "
+//							+ deliveryDate.getTime() + " <= "
+//							+ routeFinishDate.getTime());
+//				}
+//			}
 
 			// System.out.println(pickupDate.compareTo(deliveryDate));
 
@@ -120,10 +129,9 @@ public class MAIN_PROCESS {
 			// } else {
 			// System.out.println("How to get here?");
 			// }
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (ParseException e) {
+		// e.printStackTrace();
+		// }
 
 	}
 }
