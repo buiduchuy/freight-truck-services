@@ -74,7 +74,7 @@
 													<font color="orange">Địa điểm kết thúc</font>
 												</h3></th>
 
-											<th ><h3>
+											<th ><h3 >
 													<font color="orange">Điểm uy tín</font>
 												</h3></th>
 											<th><h4>

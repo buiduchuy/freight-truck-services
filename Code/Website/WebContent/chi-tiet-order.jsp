@@ -11,13 +11,19 @@
 <title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
 <div class="large-12 columns">
-	<div class="large-2 columns">
+	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="menu-doc-quan-ly.jsp" />
+				<jsp:include page="vertical-menu-manage-good.jsp" />
+			<div class="row"></div>
+		</div>
+		<div class="form-content "
+			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+			<jsp:include page="vertical-pr.jsp" />
+			<div class="row"></div>
 		</div>
 	</div>
-	<div class="large-8 columns">
+	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<c:set var="detailGood1" value="${sessionScope.detailOrder }" />
@@ -200,10 +206,7 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area">
-											<a href="ControllerManageOrder?btnAction=manageOrder"
-												class="button secondary"> <i class="icon-mail-reply"></i>
-												Trở về trước
-											</a>
+										
 											<fmt:parseDate value="${detailGood1.deliveryTime }"
 												var="deliveryTime" pattern="dd-MM-yyyy" />
 											<fmt:formatDate pattern="yyyy-MM-dd" value="${deliveryTime}"

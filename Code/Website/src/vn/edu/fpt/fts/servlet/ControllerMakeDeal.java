@@ -33,6 +33,7 @@ import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.process.DealProcess;
 
 /**
  * Servlet implementation class ControllerMakeDeal
@@ -70,6 +71,7 @@ public class ControllerMakeDeal extends HttpServlet {
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
 			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
+			DealProcess dealProcess= new DealProcess();
 			AccountDAO accountDao = new AccountDAO();
 			RouteDAO routeDao = new RouteDAO();
 			GoodsDAO goodDao = new GoodsDAO();
@@ -190,8 +192,9 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
 				List<Deal> listDealById = dealDao.getDealByGoodsID(idGood);
+				
 				for (int i = 0; i < listDealById.size(); i++) {
-					if (listDealById.get(i).getRefDealID() == 0) {
+					if (listDealById.get(i).getRefDealID() == 0 ) {
 						list.add(listDealById.get(i));
 					}
 				}
@@ -219,7 +222,7 @@ public class ControllerMakeDeal extends HttpServlet {
 						.getGoodsID());
 				for (int i = 0; i < listDealByGoodId.size(); i++) {
 					if (listDealByGoodId.get(i).getRouteID() == dealFa
-							.getRouteID()) {
+							.getRouteID()&&listDealByGoodId.get(i).getDealStatusID()!=3&&listDealByGoodId.get(i).getDealStatusID()!=4) {
 						listDealByGoodId.get(i).setCreateTime(
 								common.changeFormatDate(listDealByGoodId.get(i)
 										.getCreateTime(),
@@ -309,6 +312,33 @@ public class ControllerMakeDeal extends HttpServlet {
 					session.setAttribute("messageError",
 							"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
 
+				}
+			}if("declineDeal".equals(action)){
+				int idDeal=Integer.parseInt(request.getParameter("idDeal"));
+				
+				Deal declineDeal= dealDao.getDealByID(idDeal);
+				declineDeal.setDealStatusID(3);
+				int update= dealDao.updateDeal(declineDeal);
+				int idgood=declineDeal.getGoodsID();
+				if(dealProcess.declineDeal1(declineDeal)!=0){
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
+									+ idgood);
+					rd.forward(request, response);
+				}
+			}
+			if("cancelDeal".equals(action)){
+				int idDeal=Integer.parseInt(request.getParameter("idDeal"));
+				
+				Deal cancelDeal= dealDao.getDealByID(idDeal);
+				int idgood=cancelDeal.getGoodsID();
+				if(dealProcess.cancelDeal1(cancelDeal)!=0){
+					cancelDeal.setDealStatusID(4);
+					int update= dealDao.updateDeal(cancelDeal);
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
+									+ idgood);
+					rd.forward(request, response);
 				}
 			}
 			// out.println("<!DOCTYPE html>");

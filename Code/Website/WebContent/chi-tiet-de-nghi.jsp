@@ -95,13 +95,20 @@
 												<td>${history.notes }</td>
 												<c:choose>
 													<c:when test="${history.createBy== 'driver' }">
-														<td><a class="button success"
+														<td><a class="button alert"
+															href="ControllerMakeDeal?btnAction=declineDeal&idDeal=${history.dealID }"
+															onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')">Từ chối</a>
+														<a class="button success"
 															href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }"
 															onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
 																nhận</a></td>
 													</c:when>
 													<c:otherwise>
-														<td><a class="button success disabled">Chấp
+														<td>
+														<a class="button alert"
+															href="ControllerMakeDeal?btnAction=cancelDeal&idDeal=${history.dealID }"
+															onclick="return confirm('Bạn có muốn huỷ đề nghị này không?')">Huỷ</a>
+														<a class="button success disabled">Chấp
 																nhận</a></td></td>
 													</c:otherwise>
 												</c:choose>
