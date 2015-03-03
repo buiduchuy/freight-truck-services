@@ -31,11 +31,11 @@ import org.xml.sax.SAXException;
 public final class Common {
 
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	 public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
-//	public static final String CONNECTION = "jdbc:sqlserver://137.116.128.218:1433;databaseName=FTS";
+//	 public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+	public static final String CONNECTION = "jdbc:sqlserver://137.116.128.218:1433;databaseName=FTS";
 	public static final String usernamedb = "sa";
-	public static final String passworddb = "123456";
-//	public static final String passworddb = "huy2108.";
+//	public static final String passworddb = "123456";
+	public static final String passworddb = "huy2108.";
 
 	// Status of Goods, Route, Deal, Order
 	public static final int deactivate = 0;
