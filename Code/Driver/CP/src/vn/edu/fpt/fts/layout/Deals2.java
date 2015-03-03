@@ -4,12 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -175,9 +179,94 @@ public class Deals2 extends Fragment {
 				try {
 					int count = 1;
 					obj = new JSONObject(response);
-					JSONArray array = obj.getJSONArray("deal");
-					for (int i = array.length() - 1; i >= 0; i--) {
-						JSONObject item = array.getJSONObject(i);
+					Object intervent1 = obj.get("deal");
+					DecimalFormat formatter = new DecimalFormat();
+					DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+					symbol.setGroupingSeparator('.');
+					formatter.setDecimalFormatSymbols(symbol);
+					if (intervent1 instanceof JSONArray) {
+						JSONArray array = obj.getJSONArray("deal");
+						for (int i = array.length() - 1; i >= 0; i--) {
+							JSONObject item = array.getJSONObject(i);
+							if (item.getString("createBy").equalsIgnoreCase(
+									"owner")
+									&& item.getString("dealStatusID").equals(
+											"1")) {
+								JSONObject gd = item.getJSONObject("goods");
+								JSONObject rt = item.getJSONObject("route");
+								if (gd.getString("active").equals("1")) {
+									String title = "";
+									String[] start = rt
+											.getString("startingAddress")
+											.replaceAll("(?i), Vietnam", "")
+											.replaceAll("(?i), Viet Nam", "")
+											.replaceAll("(?i), Việt Nam", "")
+											.split(",");
+									title = start[start.length - 1].trim();
+
+									if (obj.has("routeMarkers")) {
+										Object intervent = obj
+												.get("routeMarkers");
+										if (intervent instanceof JSONArray) {
+											JSONArray catArray = obj
+													.getJSONArray("routeMarkers");
+											for (int j = 0; j < catArray
+													.length(); j++) {
+												JSONObject cat = catArray
+														.getJSONObject(j);
+												if (!cat.getString(
+														"routeMarkerLocation")
+														.equals("")) {
+													title += " - "
+															+ cat.getString("routeMarkerLocation");
+												}
+											}
+										} else if (intervent instanceof JSONObject) {
+											JSONObject cat = obj
+													.getJSONObject("routeMarkers");
+											title += " - "
+													+ cat.getString("routeMarkerLocation");
+										}
+									}
+
+									String[] end = rt
+											.getString("destinationAddress")
+											.replaceAll("(?i), Vietnam", "")
+											.replaceAll("(?i), Viet Nam", "")
+											.replaceAll("(?i), Việt Nam", "")
+											.split(",");
+									title += " - " + end[end.length - 1].trim();
+
+									SimpleDateFormat format = new SimpleDateFormat(
+											"yyyy-MM-dd hh:mm:ss");
+									Date createDate = format.parse(item
+											.getString("createTime"));
+									Calendar cal = Calendar.getInstance();
+									cal.setTime(createDate);
+									cal.add(Calendar.MONTH, 3);
+									Date timeout = cal.getTime();
+									format.applyPattern("dd/MM/yyyy");
+									String createD = format.format(createDate);
+									if (Calendar.getInstance().getTime()
+											.before(timeout)) {
+										JSONObject owner = item.getJSONObject(
+												"goods").getJSONObject("owner");
+										list.add(new ListItem(
+												owner.getString("email")
+														+ " gửi đề nghị cho lộ trình:",
+												title,
+												"Giá đề nghị: "
+														+ formatter.format(Double.parseDouble(item
+																.getString("price").replace(".0", "")
+																+ "000")) + " đồng", createD));
+										count++;
+										map.add(item.getString("dealID"));
+									}
+								}
+							}
+						}
+					} else if (intervent1 instanceof JSONObject) {
+						JSONObject item = obj.getJSONObject("deal");
 						if (item.getString("createBy")
 								.equalsIgnoreCase("owner")
 								&& item.getString("dealStatusID").equals("1")) {
@@ -239,15 +328,13 @@ public class Deals2 extends Fragment {
 									JSONObject owner = item.getJSONObject(
 											"goods").getJSONObject("owner");
 									list.add(new ListItem(
-											owner.getString("firstName")
-													+ " "
-													+ owner.getString("lastName")
+											owner.getString("email")
 													+ " gửi đề nghị cho lộ trình:",
 											title,
 											"Giá đề nghị: "
-													+ (int) Double.parseDouble(item
-															.getString("price"))
-													+ " ngàn đồng", createD));
+													+ formatter.format(Double.parseDouble(item
+															.getString("price").replace(".0", "")
+															+ "000")) + " đồng", createD));
 									count++;
 									map.add(item.getString("dealID"));
 								}

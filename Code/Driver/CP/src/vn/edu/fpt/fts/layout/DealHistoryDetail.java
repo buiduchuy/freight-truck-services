@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -149,6 +151,10 @@ public class DealHistoryDetail extends Fragment {
 			JSONObject obj;
 			try {
 				obj = new JSONObject(response);
+				DecimalFormat formatter = new DecimalFormat();
+				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+				symbol.setGroupingSeparator('.');
+				formatter.setDecimalFormatSymbols(symbol);
 				JSONObject good = obj.getJSONObject("goods");
 				startPlace.setText(good.getString("pickupAddress"));
 				endPlace.setText(good.getString("deliveryAddress"));
@@ -159,8 +165,9 @@ public class DealHistoryDetail extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText((int) Double.parseDouble(obj.getString("price"))
-						+ " ngàn đồng");
+				price.setText(formatter.format(Double.parseDouble(obj
+		                .getString("price").replace(".0", "")
+		                + "000")) + " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("createBy").equals("owner")
@@ -177,10 +184,10 @@ public class DealHistoryDetail extends Fragment {
 					stat = "Đã từ chối";
 				} else if (obj.getString("createBy").equals("driver")
 						&& obj.getString("dealStatusID").equals("4")) {
-					stat = "Đã hủy";
+					stat = "Đã bị hủy";
 				} else if (obj.getString("createBy").equals("owner")
 						&& obj.getString("dealStatusID").equals("4")) {
-					stat = "Đã bị hủy";
+					stat = "Đã hủy";
 				}
 				status.setText(stat);
 			} catch (JSONException e) {

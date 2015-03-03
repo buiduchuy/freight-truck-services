@@ -25,8 +25,8 @@
                 android:id="@+id/emptyElement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/noOrder"
+                android:layout_gravity="center"
+                android:text="@string/noRoute"
                 android:textColor="#525252"
                 android:textSize="19.0sp"
                 android:visibility="gone" />

@@ -181,12 +181,112 @@ public class RouteList extends Fragment {
 			if (!response.equals("null")) {
 				try {
 					obj = new JSONObject(response);
-					JSONArray array = obj.getJSONArray("route");
-					for (int i = array.length() - 1; i >= 0; i--) {
-						JSONObject item = array.getJSONObject(i);
+					Object intervent1 = obj.get("route");
+					if (intervent1 instanceof JSONArray) {
+						JSONArray array = obj.getJSONArray("route");
+						for (int i = array.length() - 1; i >= 0; i--) {
+							JSONObject item = array.getJSONObject(i);
+							if (item.getString("driverID").equals(
+									getActivity().getIntent().getStringExtra(
+											"driverID"))
+									&& item.getString("active").equals("1")) {
+								Object intervent;
+
+								String[] start = item
+										.getString("startingAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title = start[start.length - 1].trim();
+
+								if (item.has("routeMarkers")) {
+									intervent = item.get("routeMarkers");
+
+									if (intervent instanceof JSONArray) {
+										JSONArray catArray = item
+												.getJSONArray("routeMarkers");
+										for (int j = 0; j < catArray.length(); j++) {
+											JSONObject cat = catArray
+													.getJSONObject(j);
+											String[] point = cat
+													.getString(
+															"routeMarkerLocation")
+													.replaceAll(
+															"(?i), Vietnam", "")
+													.replaceAll(
+															"(?i), Viet Nam",
+															"")
+													.replaceAll(
+															"(?i), Việt Nam",
+															"").split(",");
+											if (!point[point.length - 1]
+													.equals("")) {
+												title += " - "
+														+ point[point.length - 1]
+																.trim();
+											}
+										}
+									} else if (intervent instanceof JSONObject) {
+										JSONObject cat = item
+												.getJSONObject("routeMarkers");
+										String[] point = cat
+												.getString(
+														"routeMarkerLocation")
+												.replaceAll("(?i), Vietnam", "")
+												.replaceAll("(?i), Viet Nam",
+														"")
+												.replaceAll("(?i), Việt Nam",
+														"").split(",");
+										if (!point[point.length - 1].equals("")) {
+											title += " - "
+													+ point[point.length - 1]
+															.trim();
+										}
+									}
+								}
+
+								String[] end = item
+										.getString("destinationAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title += " - " + end[end.length - 1].trim();
+								SimpleDateFormat format = new SimpleDateFormat(
+										"yyyy-MM-dd hh:mm:ss");
+								Date finishDate = new Date();
+								try {
+									Date startDate = format.parse(item
+											.getString("startTime"));
+									format.applyPattern("dd/MM/yyyy");
+									String sd = format.format(startDate);
+									format.applyPattern("yyyy-MM-dd hh:mm:ss");
+									finishDate = format.parse(item
+											.getString("finishTime"));
+									format.applyPattern("dd/MM/yyyy");
+									String fd = format.format(finishDate);
+									description = sd + " - " + fd;
+								} catch (ParseException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								ListItem itm = new ListItem(title, description,
+										"");
+								list.add(itm);
+								if (finishDate.before(Calendar.getInstance()
+										.getTime())) {
+									list.remove(itm);
+								}
+								map.add(item.getString("routeID"));
+							}
+						}
+					} else if (intervent1 instanceof JSONObject) {
+						JSONObject item = obj.getJSONObject("route");
 						if (item.getString("driverID").equals(
 								getActivity().getIntent().getStringExtra(
-										"driverID")) && item.getString("active").equals("1")) {
+										"driverID"))
+								&& item.getString("active").equals("1")) {
 							Object intervent;
 
 							String[] start = item.getString("startingAddress")
@@ -262,7 +362,8 @@ public class RouteList extends Fragment {
 							}
 							ListItem itm = new ListItem(title, description, "");
 							list.add(itm);
-							if(finishDate.before(Calendar.getInstance().getTime())) {
+							if (finishDate.before(Calendar.getInstance()
+									.getTime())) {
 								list.remove(itm);
 							}
 							map.add(item.getString("routeID"));

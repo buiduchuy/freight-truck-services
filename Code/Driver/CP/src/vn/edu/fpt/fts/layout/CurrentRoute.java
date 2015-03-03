@@ -675,12 +675,6 @@ public class CurrentRoute extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
-		case R.id.action_delete:
-			WebService3 ws = new WebService3(WebService.POST_TASK,
-					getActivity(), "Đang kiểm tra ...");
-			ws.addNameValuePair("routeID", id);
-			ws.execute(new String[] { SERVICE_URL3 });
-			return true;
 		case R.id.action_update:
 			FragmentManager mng = getActivity().getSupportFragmentManager();
 			FragmentTransaction trs = mng.beginTransaction();

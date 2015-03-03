@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ public class SendOffer extends Fragment {
 			+ "Deal/Create";
 	private static final String SERVICE_URL2 = Constant.SERVICE_URL
 			+ "Goods/getGoodsByID";
+	private static final String SERVICE_URL3 = Constant.SERVICE_URL
+			+ "Deal/getDealByID";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,10 +86,17 @@ public class SendOffer extends Fragment {
 		nte = (TextView) v.findViewById(R.id.textView12);
 		weight = (TextView) v.findViewById(R.id.textView14);
 
-		WebService2 ws2 = new WebService2(WebService2.POST_TASK, getActivity(),
-				"");
-		ws2.addNameValuePair("goodsID", getArguments().getString("goodID"));
-		ws2.execute(SERVICE_URL2);
+		if (getArguments().getString("dealID") == null) {
+			WebService2 ws2 = new WebService2(WebService2.POST_TASK,
+					getActivity(), "");
+			ws2.addNameValuePair("goodsID", getArguments().getString("goodID"));
+			ws2.execute(SERVICE_URL2);
+		} else {
+			WebService3 ws3 = new WebService3(WebService3.POST_TASK,
+					getActivity(), "");
+			ws3.addNameValuePair("dealID", getArguments().getString("dealID"));
+			ws3.execute(SERVICE_URL3);
+		}
 
 		return v;
 	}
@@ -179,6 +190,9 @@ public class SendOffer extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
+			} else if(Integer.parseInt(response) == 0) {
+				Toast.makeText(getActivity(), "Đang có một đề nghị hiện hành với cùng lộ trình và hàng hóa. Gửi đề nghị thất bại.",
+						Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(), "Gửi đề nghị thất bại",
 						Toast.LENGTH_SHORT).show();
@@ -324,6 +338,10 @@ public class SendOffer extends Fragment {
 		protected void onPostExecute(String response) {
 			try {
 				JSONObject good = new JSONObject(response);
+				DecimalFormat formatter = new DecimalFormat();
+				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+				symbol.setGroupingSeparator('.');
+				formatter.setDecimalFormatSymbols(symbol);
 				startPlace.setText(good.getString("pickupAddress"));
 				endPlace.setText(good.getString("deliveryAddress"));
 				SimpleDateFormat format = new SimpleDateFormat(
@@ -333,8 +351,10 @@ public class SendOffer extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				pr.setText((int) Double.parseDouble(good.getString("price"))
-						+ " ngàn đồng");
+				pr.setText(formatter.format(Double.parseDouble(good.getString(
+						"price").replace(".0", "")
+						+ "000"))
+						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (good.has("notes")) {
 					if (good.getString("notes").equals("")
@@ -342,6 +362,181 @@ public class SendOffer extends Fragment {
 						nte.setText("Không có");
 					} else {
 						nte.setText(good.getString("notes"));
+					}
+				} else {
+					nte.setText("Không có");
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+	}
+
+	private class WebService3 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebService3(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response.getEntity() == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			try {
+				DecimalFormat formatter = new DecimalFormat();
+				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+				symbol.setGroupingSeparator('.');
+				formatter.setDecimalFormatSymbols(symbol);
+				JSONObject obj = new JSONObject(response);
+				JSONObject good = obj.getJSONObject("goods");
+				startPlace.setText(good.getString("pickupAddress"));
+				endPlace.setText(good.getString("deliveryAddress"));
+				SimpleDateFormat format = new SimpleDateFormat(
+						"yyyy-MM-dd hh:mm:ss");
+				Date start = format.parse(good.getString("pickupTime"));
+				Date end = format.parse(good.getString("deliveryTime"));
+				format.applyPattern("dd/MM/yyyy");
+				startTime.setText(format.format(start));
+				endTime.setText(format.format(end));
+				pr.setText(formatter.format(Double.parseDouble(obj
+						.getString("price").replace(".0", "") + "000"))
+						+ " đồng");
+				weight.setText(good.getString("weight") + " kg");
+				if (obj.has("notes")) {
+					if (obj.getString("notes").equals("")
+							|| obj.getString("notes").equalsIgnoreCase("null")) {
+						nte.setText("Không có");
+					} else {
+						nte.setText(obj.getString("notes"));
 					}
 				} else {
 					nte.setText("Không có");
@@ -449,7 +644,16 @@ public class SendOffer extends Fragment {
 				} else {
 					WebService ws = new WebService(WebService.POST_TASK,
 							getActivity(), "Đang xử lý ...");
-					ws.addNameValuePair("dealID", getArguments().getString("refID"));
+					String refID = getArguments().getString("refID");
+					if (getArguments().getString("refID") != null) {
+						ws.addNameValuePair("dealID",
+								getArguments().getString("refID"));
+						ws.addNameValuePair("refDealID", getArguments()
+								.getString("refID"));
+					} else {
+						ws.addNameValuePair("dealID", "");
+						ws.addNameValuePair("refDealID", "");
+					}
 					ws.addNameValuePair("price", pr);
 					ws.addNameValuePair("notes", note.getText().toString());
 					ws.addNameValuePair("createTime", current);
@@ -458,8 +662,6 @@ public class SendOffer extends Fragment {
 							getArguments().getString("routeID"));
 					ws.addNameValuePair("goodsID",
 							getArguments().getString("goodID"));
-					ws.addNameValuePair("refDealID",
-							getArguments().getString("refID"));
 					ws.addNameValuePair("active", "1");
 					ws.execute(new String[] { SERVICE_URL });
 				}

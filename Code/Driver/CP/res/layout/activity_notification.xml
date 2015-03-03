@@ -8,9 +8,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="vn.edu.fpt.fts.layout.Notification" >
 
+    <ListView
+        android:id="@+id/ListNotification"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </ListView>
+
     <TextView
+        android:id="@+id/emptyElement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_gravity="center"
+        android:text="@string/noNoti"
+        android:textColor="#525252"
+        android:textSize="19.0sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

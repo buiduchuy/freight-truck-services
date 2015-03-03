@@ -165,20 +165,16 @@ public class DealNotificationDAO {
 		List<Deal> listDeal = new ArrayList<Deal>();
 		DealDAO dealDao = new DealDAO();
 		DealNotificationDAO dealNotiDao = new DealNotificationDAO();
-		try {
-			listDeal = dealDao.getDealByOwnerID(ownerID);
-			for (int i = 0; i < listDeal.size(); i++) {
-				List<DealNotification> listDealNotiOfEachDeal = new ArrayList<DealNotification>();
-				listDealNotiOfEachDeal = dealNotiDao
-						.getDealNotificationByDealID(listDeal.get(i)
-								.getDealID());
-				for (int j = 0; j < listDealNotiOfEachDeal.size(); j++) {
-					listDealNoti.add(listDealNotiOfEachDeal.get(j));
-				}
+		listDeal = dealDao.getDealByOwnerID(ownerID);
+		for (int i = 0; i < listDeal.size(); i++) {
+			List<DealNotification> listDealNotiOfEachDeal = new ArrayList<DealNotification>();
+			listDealNotiOfEachDeal = dealNotiDao
+					.getDealNotificationByDealID(listDeal.get(i).getDealID());
+			for (int j = 0; j < listDealNotiOfEachDeal.size(); j++) {
+				listDealNoti.add(listDealNotiOfEachDeal.get(j));
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 		return listDealNoti;
 	}
+
 }

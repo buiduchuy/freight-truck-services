@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.apache.http.HttpResponse;
@@ -27,6 +31,7 @@ import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import vn.edu.fpt.fts.drawer.ListItemAdapter2;
+import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.R.anim;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -49,7 +54,7 @@ public class History extends Fragment {
 	ArrayList<ListItem> list;
 	ArrayList<String> map;
 	ListView list1;
-	ListItemAdapter2 adapter;
+	ListItemAdapter3 adapter;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByDriverID";
@@ -62,7 +67,8 @@ public class History extends Fragment {
 		getActivity().setTitle("Lịch sử giao dịch");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
-		ws.addNameValuePair("driverID", getActivity().getIntent().getStringExtra("driverID"));
+		ws.addNameValuePair("driverID", getActivity().getIntent()
+				.getStringExtra("driverID"));
 		ws.execute(new String[] { SERVICE_URL });
 		myFragmentView = inflater.inflate(R.layout.activity_history, container,
 				false);
@@ -175,40 +181,141 @@ public class History extends Fragment {
 						int count = 1;
 						for (int i = array.length() - 1; i >= 0; i--) {
 							JSONObject item = array.getJSONObject(i);
-							String status = "";
+							JSONObject rt = item.getJSONObject("deal").getJSONObject("route");
+
+							String title = "";
+							String[] start = rt.getString("startingAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title = start[start.length - 1].trim();
+
+							if (obj.has("routeMarkers")) {
+								Object intervent = obj.get("routeMarkers");
+								if (intervent instanceof JSONArray) {
+									JSONArray catArray = obj
+											.getJSONArray("routeMarkers");
+									for (int j = 0; j < catArray.length(); j++) {
+										JSONObject cat = catArray
+												.getJSONObject(j);
+										if (!cat.getString(
+												"routeMarkerLocation").equals(
+												"")) {
+											title += " - "
+													+ cat.getString("routeMarkerLocation");
+										}
+									}
+								} else if (intervent instanceof JSONObject) {
+									JSONObject cat = obj
+											.getJSONObject("routeMarkers");
+									title += " - "
+											+ cat.getString("routeMarkerLocation");
+								}
+							}
+
+							String[] end = rt.getString("destinationAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title += " - " + end[end.length - 1].trim();
+							String status = "Trạng thái: ";
 							String driverStatus = item
 									.getString("driverDeliveryStatus");
 							String price = item.getString("price");
 							if (driverStatus.equals("True")) {
-								status = "Đã giao hàng";
+								status += "Đã giao hàng";
 							} else {
-								status = "Chưa giao hàng";
+								status += "Chưa giao hàng";
 							}
-							list.add(new ListItem(count + ". " + price
-									+ " đồng", status, ""));
+							SimpleDateFormat format = new SimpleDateFormat(
+									"yyyy-MM-dd hh:mm:ss");
+							Date createDate = format.parse(item
+									.getString("createTime"));
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(createDate);
+							cal.add(Calendar.MONTH, 3);
+							Date timeout = cal.getTime();
+							format.applyPattern("dd/MM/yyyy");
+							String createD = format.format(createDate);
+							list.add(new ListItem("Hóa đơn cho lộ trình: ",
+									title, status, createD));
 							count++;
 							map.add(item.getString("orderID"));
 						}
 					} else if (invervent instanceof JSONObject) {
 						JSONObject item = obj.getJSONObject("order");
-						String status = "";
+						JSONObject rt = item.getJSONObject("deal").getJSONObject("route");
+
+						String title = "";
+						String[] start = rt.getString("startingAddress")
+								.replaceAll("(?i), Vietnam", "")
+								.replaceAll("(?i), Viet Nam", "")
+								.replaceAll("(?i), Việt Nam", "")
+								.split(",");
+						title = start[start.length - 1].trim();
+
+						if (obj.has("routeMarkers")) {
+							Object intervent = obj.get("routeMarkers");
+							if (intervent instanceof JSONArray) {
+								JSONArray catArray = obj
+										.getJSONArray("routeMarkers");
+								for (int j = 0; j < catArray.length(); j++) {
+									JSONObject cat = catArray
+											.getJSONObject(j);
+									if (!cat.getString(
+											"routeMarkerLocation").equals(
+											"")) {
+										title += " - "
+												+ cat.getString("routeMarkerLocation");
+									}
+								}
+							} else if (intervent instanceof JSONObject) {
+								JSONObject cat = obj
+										.getJSONObject("routeMarkers");
+								title += " - "
+										+ cat.getString("routeMarkerLocation");
+							}
+						}
+
+						String[] end = rt.getString("destinationAddress")
+								.replaceAll("(?i), Vietnam", "")
+								.replaceAll("(?i), Viet Nam", "")
+								.replaceAll("(?i), Việt Nam", "")
+								.split(",");
+						title += " - " + end[end.length - 1].trim();
+						String status = "Trạng thái: ";
 						String driverStatus = item
 								.getString("driverDeliveryStatus");
 						String price = item.getString("price");
 						if (driverStatus.equals("True")) {
-							status = "Đã giao hàng";
+							status += "Đã giao hàng";
 						} else {
-							status = "Chưa giao hàng";
+							status += "Chưa giao hàng";
 						}
-						list.add(new ListItem("1. " + price + " ngàn đồng", status, ""));
+						SimpleDateFormat format = new SimpleDateFormat(
+								"yyyy-MM-dd hh:mm:ss");
+						Date createDate = format.parse(item
+								.getString("createTime"));
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(createDate);
+						cal.add(Calendar.MONTH, 3);
+						Date timeout = cal.getTime();
+						format.applyPattern("dd/MM/yyyy");
+						String createD = format.format(createDate);
+						list.add(new ListItem("Hóa đơn cho lộ trình: ", title, status, createD));
 						map.add(item.getString("orderID"));
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter2(getActivity(), list);
+			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();

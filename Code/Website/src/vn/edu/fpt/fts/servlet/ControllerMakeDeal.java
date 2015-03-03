@@ -298,7 +298,7 @@ public class ControllerMakeDeal extends HttpServlet {
 					dealOrderDao.insertDealOrder(newDealOrder);
 					Goods goodChangeStatus = goodDao.getGoodsByID(dealConfirm
 							.getGoodsID());
-					goodChangeStatus.setActive(2);
+					goodChangeStatus.setActive(0);
 					goodDao.updateGoods(goodChangeStatus);
 					session.setAttribute("messageSuccess",
 							"Hoàn thành hoá đơn!");

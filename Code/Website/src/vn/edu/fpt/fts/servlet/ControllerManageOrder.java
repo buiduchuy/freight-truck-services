@@ -75,7 +75,7 @@ public class ControllerManageOrder extends HttpServlet {
 						.getOwnerID());
 				List<Goods> manageGood1 = new ArrayList<Goods>();
 				for (int i = 0; i < manageGood.size(); i++) {
-					if (manageGood.get(i).getActive() == 2) {
+					if (manageGood.get(i).getActive() == 0) {
 						manageGood.get(i).setPickupTime(
 								common.changeFormatDate(manageGood.get(i)
 										.getPickupTime(),
