@@ -129,7 +129,7 @@ public class MatchingProcess {
 
 					if (mapProcess.checkDistance(routeID, goodsStartLocation,
 							goodsFinishLocation, Common.maxAllowDistance)) {
-						l_goods.add(l_goodsBefore.get(i));
+						l_goods.add(l_goodsFilter1.get(i));
 					}
 				}
 			}
