@@ -106,7 +106,7 @@ public class OrderDetailActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if (id == R.id.action_homepage) {
+		if  (id == R.id.action_homepage) {
 			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
 			startActivity(intent);
 		}

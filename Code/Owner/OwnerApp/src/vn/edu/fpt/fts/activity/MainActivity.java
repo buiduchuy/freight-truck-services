@@ -86,6 +86,14 @@ public class MainActivity extends FragmentActivity implements TabListener {
         	Intent intent = new Intent(this, CreateGoodsActivity.class);	
         	startActivity(intent);
         }
+        if (id == R.id.action_homepage) {
+        	finish();
+        	startActivity(getIntent());
+        }
+        if (id == R.id.action_logout) {
+        	Intent intent = new Intent(this, LoginActivity.class);
+        	startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 
