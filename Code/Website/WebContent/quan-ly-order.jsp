@@ -3,6 +3,8 @@
 <title>Quản lý hoá đơn</title>
 <jsp:include page="header.jsp" />
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <div class="large-12 columns">
@@ -136,6 +138,8 @@
 									<thead>
 										<tr>
 											<th>#</th>
+											
+							<th><font color="orange">MÃ HÀNG</font></th>
 											<th ><font color="orange">LOẠI HÀNG</font></th>
 											<th ><font color="orange">THỜI GIAN
 													GIAO NHẬN HÀNG</font></th>
@@ -153,6 +157,7 @@
 											<c:set var="count" value="${count+1 }"/>
 												<tr>
 													<td>${count }</td>
+													<td> ${fn:substringBefore(fn:replace(good1.createTime, '-', ''),' ')}${good1.goodsID }</td>
 													<c:forEach var="row" items="${typeGoods }">
 														<c:if
 															test="${good1.goodsCategoryID==row.goodsCategoryId }">

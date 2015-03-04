@@ -22,6 +22,7 @@ import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
+import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
@@ -79,6 +80,15 @@ public class ControllerManageGoods extends HttpServlet {
 				int IdGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
 				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
+				List<Deal> listDeal= dealDao.getDealByGoodsID(IdGood);
+				
+				for (Deal deal : listDeal) {
+					for (Route route : list) {
+						if(route.getRouteID()==deal.getRouteID()&&deal.getDealStatusID()==Common.deal_accept&&deal.getDealStatusID()==Common.deal_pending){
+							list.remove(route);
+						}
+					}
+				}
 				Route[] listRou = new Route[list.size()];
 				list.toArray(listRou);
 				

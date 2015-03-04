@@ -3,6 +3,7 @@
 
 <title>Gợi ý hệ thống</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <jsp:include page="header.jsp" />
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <div class="large-12 columns">
@@ -64,22 +65,25 @@
 								<table id="example" class="display" cellspacing="0" width="100%">
 									<thead>
 										<tr>
-											<th><h4>
+											<th>
 													<font color="orange">#</font>
-												</h4></th>
-											<th ><h3>
+												</th>
+																						<th >
+													<font color="orange">Mã tuyến đường</font>
+												</th>
+											<th >
 													<font color="orange">Địa điểm bắt đầu</font>
-												</h3></th>
-											<th ><h3>
+												</th>
+											<th >
 													<font color="orange">Địa điểm kết thúc</font>
-												</h3></th>
+												</th>
 
-											<th ><h3 >
+											<th >
 													<font color="orange">Điểm uy tín</font>
-												</h3></th>
-											<th><h4>
+												</th>
+											<th>
 													<font color="orange"></font>
-												</h4></th>
+												</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -91,6 +95,7 @@
 													<c:set var="count" value="${count+1 }" />
 													<tr>
 														<td>${count}</td>
+														<td> ${fn:substringBefore(fn:replace(listRoute.createTime, '-', ''),' ')}${listRoute.routeID }</td>
 														<td>${listRoute.startingAddress }</td>
 														<td>${listRoute.destinationAddress }</td>
 														<c:set var="dri" value="${sessionScope.listDriver}" />
