@@ -170,6 +170,7 @@ public class DealProcess {
 		try {
 			// Update current deal
 			// dealDao.updateDealStatus(deal.getDealID(), Common.deal_accept);
+			deal.setDealStatusID(Common.deal_accept);
 			ret = dealDao.updateDeal(deal);
 
 			// Insert new deal with accept status and CreateTime
@@ -221,6 +222,7 @@ public class DealProcess {
 		try {
 			// Update current deal
 			// dealDao.updateDealStatus(deal.getDealID(), Common.deal_decline);
+			deal.setDealStatusID(Common.deal_decline);
 			ret = dealDao.updateDeal(deal);
 
 			// Insert new deal with decline status
