@@ -238,7 +238,7 @@ public class DealDetailActivity extends Activity {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		return sdf.format(calendar.getTime());
 	}
-	
+
 	public String formatNumber(int number) {
 		DecimalFormat formatter = new DecimalFormat();
 		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
@@ -342,22 +342,28 @@ public class DealDetailActivity extends Activity {
 					String finish[] = finishTime.split(" ");
 					// JSONObject jsonObject2 =
 					// jsonObject.getJSONObject("goodsCategory");
-					Object object = jsonObject.get("goodsCategory");
 					String category = "";
-					if (object instanceof JSONArray) {
-						JSONArray array = jsonObject
-								.getJSONArray("goodsCategory");
+					if (response.contains("goodsCategory")) {
+						Object object = jsonObject.get("goodsCategory");
+						
+						if (object instanceof JSONArray) {
+							JSONArray array = jsonObject
+									.getJSONArray("goodsCategory");
 
-						for (int i = 0; i < array.length(); i++) {
-							JSONObject jsonObject2 = array.getJSONObject(i);
+							for (int i = 0; i < array.length(); i++) {
+								JSONObject jsonObject2 = array.getJSONObject(i);
+								category = category
+										+ jsonObject2.getString("name") + ", ";
+							}
+						} else if (object instanceof JSONObject) {
+							JSONObject jsonObject2 = jsonObject
+									.getJSONObject("goodsCategory");
 							category = category + jsonObject2.getString("name")
 									+ ", ";
 						}
-					} else if (object instanceof JSONObject) {
-						JSONObject jsonObject2 = jsonObject
-								.getJSONObject("goodsCategory");
-						category = category + jsonObject2.getString("name")
-								+ ", ";
+
+					} else {
+						category = "Không có";
 					}
 					route.setStartingAddress(jsonObject
 							.getString("startingAddress"));
@@ -380,7 +386,8 @@ public class DealDetailActivity extends Activity {
 				finishTime.setText("Thời gian kết thúc: "
 						+ route.getFinishTime());
 				category.setText("Loại hàng không chở: " + route.getCategory());
-				tvPrice.setText("Giá đề nghị: " + formatNumber((int) price) + ".000 đồng");
+				tvPrice.setText("Giá đề nghị: " + formatNumber((int) price)
+						+ ".000 đồng");
 				tvNote.setText("Ghi chú: " + note);
 			} else {
 				Toast.makeText(DealDetailActivity.this,

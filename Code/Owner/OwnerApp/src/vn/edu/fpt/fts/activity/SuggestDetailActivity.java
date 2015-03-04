@@ -248,6 +248,8 @@ public class SuggestDetailActivity extends Activity {
 							category = category + jsonObject2.getString("name")
 									+ ", ";
 						}
+					} else {
+						category = "Không có";
 					}
 
 					route.setStartingAddress(jsonObject
