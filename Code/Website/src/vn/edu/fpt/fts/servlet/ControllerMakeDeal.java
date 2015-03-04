@@ -280,8 +280,11 @@ public class ControllerMakeDeal extends HttpServlet {
 			}
 			if ("confirmDeal".equals(action)) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
+
+				
 				try {
 					Deal dealConfirm = dealDao.getDealByID(idDeal);
+					dealConfirm.setActive(Common.deal_accept);
 					List<Deal> listDealByID = dealDao
 							.getDealByGoodsID(dealConfirm.getGoodsID());
 					for (int i = 0; i < listDealByID.size(); i++) {
@@ -290,6 +293,7 @@ public class ControllerMakeDeal extends HttpServlet {
 							dealDao.updateDeal(listDealByID.get(i));
 						}
 					}
+					int updateDeal=dealDao.updateDeal(dealConfirm);
 					DateFormat dateFormat = new SimpleDateFormat(
 							"yyyy/MM/dd HH:mm:ss");
 					Date date = new Date();

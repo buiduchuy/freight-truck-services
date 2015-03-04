@@ -9,6 +9,7 @@
 <title>Quản lý hàng</title>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <jsp:include page="header.jsp" />
@@ -31,7 +32,8 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerManageGoods" method="post" accept-charset="utf-8">
+				<form action="ControllerManageGoods" method="post"
+					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
@@ -101,9 +103,9 @@
 					<thead>
 						<tr>
 							<th><font color="orange">#</font></th>
-							<th ><font color="orange">LOẠI HÀNG</font></th>
-							<th><font color="orange">THỜI GIAN GIAO
-									NHẬN HÀNG</font></th>
+							<th><font color="orange">MÃ HÀNG</font></th>
+							<th><font color="orange">LOẠI HÀNG</font></th>
+							<th><font color="orange">THỜI GIAN GIAO NHẬN HÀNG</font></th>
 
 							<th><h4>
 									<font color="orange"></font>
@@ -118,6 +120,7 @@
 								<c:set var="count" value="${count+1 }" />
 								<tr>
 									<td>${count }</td>
+									<td> ${fn:substringBefore(fn:replace(good1.createTime, '-', ''),' ')}${good1.goodsID }</td>
 									<c:forEach var="row" items="${typeGoods }">
 										<c:if test="${good1.goodsCategoryID==row.goodsCategoryId }">
 											<td>${row.name }</td>

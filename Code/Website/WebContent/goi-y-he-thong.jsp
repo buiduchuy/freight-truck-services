@@ -8,6 +8,7 @@
 <!DOCTYPE html>
 <title>Gợi ý hệ thống</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="dri" value="${sessionScope.listDriver}" />
 <c:set var="detailGood1" value="${sessionScope.detailGood1}" />
 <jsp:include page="header.jsp" />
@@ -72,9 +73,10 @@
 							<table id="example" class="display" cellspacing="0" width="100%">
 								<thead>
 									<tr>
-										<th width="50"><h4>
+										<th>
 												<font color="orange">#</font>
-											</h4></th>
+											</th>
+												<th ><font color="orange">Mã tuyến đường</font></th>
 										<th ><font color="orange">Địa điểm bắt
 												đầu</font></th>
 										<th ><font color="orange">Địa điểm kết
@@ -95,6 +97,7 @@
 											<tr>
 												<c:set var="count" value="${count+1 }" />
 												<td>${count}</td>
+												<td> ${fn:substringBefore(fn:replace(rows.createTime, '-', ''),' ')}${rows.routeID }</td>
 												<td>${rows.startingAddress}</td>
 												<td>${rows.destinationAddress}</td>
 												<c:if test="${not empty dri }">
