@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Order;
@@ -165,17 +166,22 @@ public class OrderDAO {
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE [Order] SET " + " OwnerDeliveryStatus = ?"
+			String sql = "UPDATE [Order] SET " + " OwnerDeliveryStatus = ?,"
+					+ " DriverDeliveryStatus = ?," + " OrderStatusID = ?"
 					+ " WHERE OrderID = '" + orderID + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
 			if (ownerDeliveryStatus) {
-				// StaffDeliveryStatus
+				// ownerDeliveryStatus
 				stmt.setString(i++, "true");
+				stmt.setString(i++, "true");
+				stmt.setInt(i++, Common.order_accept);
 			} else {
-				// StaffDeliveryStatus
+				// ownerDeliveryStatus
 				stmt.setString(i++, "false");
+				stmt.setString(i++, "false");
+				stmt.setInt(i++, Common.order_decline);
 			}
 			ret = stmt.executeUpdate();
 
@@ -214,10 +220,10 @@ public class OrderDAO {
 			int i = 1;
 
 			if (driverDeliveryStatus) {
-				// StaffDeliveryStatus
+				// driverDeliveryStatus
 				stmt.setString(i++, "true");
 			} else {
-				// StaffDeliveryStatus
+				// driverDeliveryStatus
 				stmt.setString(i++, "false");
 			}
 			ret = stmt.executeUpdate();

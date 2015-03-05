@@ -18,8 +18,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.DealNotificationDAO;
-import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.DealNotification;
+import vn.edu.fpt.fts.process.NotificationProcess;
 
 /**
  * @author Huy
@@ -30,6 +30,7 @@ public class DealNotificationAPI {
 	private final static String TAG = "DealNotificationAPI";
 	DealNotificationDAO dealNotiDao = new DealNotificationDAO();
 	DealDAO dealDao = new DealDAO();
+	NotificationProcess notiProcess = new NotificationProcess();
 
 	@POST
 	@Path("getDealNotificationByDriverID")
@@ -38,19 +39,9 @@ public class DealNotificationAPI {
 	public List<DealNotification> getDealNotificationByDealID(
 			MultivaluedMap<String, String> params) {
 		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
-		List<Deal> listDeal = new ArrayList<Deal>();
 		try {
-			listDeal = dealDao.getDealByDriverID(Integer.valueOf(params
-					.getFirst("driverID")));
-			for (int i = 0; i < listDeal.size(); i++) {
-				List<DealNotification> listDealNotiOfEachDeal = new ArrayList<DealNotification>();
-				listDealNotiOfEachDeal = dealNotiDao
-						.getDealNotificationByDealID(listDeal.get(i)
-								.getDealID());
-				for (int j = 0; j < listDealNotiOfEachDeal.size(); j++) {
-					listDealNoti.add(listDealNotiOfEachDeal.get(j));
-				}
-			}
+			int driverID = Integer.valueOf(params.getFirst("driverID"));
+			listDealNoti = notiProcess.getListDealNotiByDriver(driverID);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -66,19 +57,9 @@ public class DealNotificationAPI {
 	public List<DealNotification> getDealNotificationByOwnerID(
 			MultivaluedMap<String, String> params) {
 		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
-		List<Deal> listDeal = new ArrayList<Deal>();
 		try {
-			listDeal = dealDao.getDealByOwnerID(Integer.valueOf(params
-					.getFirst("ownerID")));
-			for (int i = 0; i < listDeal.size(); i++) {
-				List<DealNotification> listDealNotiOfEachDeal = new ArrayList<DealNotification>();
-				listDealNotiOfEachDeal = dealNotiDao
-						.getDealNotificationByDealID(listDeal.get(i)
-								.getDealID());
-				for (int j = 0; j < listDealNotiOfEachDeal.size(); j++) {
-					listDealNoti.add(listDealNotiOfEachDeal.get(j));
-				}
-			}
+			int ownerID = Integer.valueOf(params.getFirst("ownerID"));
+			listDealNoti = notiProcess.getListDealNotiByOwner(ownerID);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
