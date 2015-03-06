@@ -282,6 +282,9 @@ public class DealFragment extends Fragment {
 									android.R.layout.simple_list_item_1, price);
 							listView.setAdapter(adapter);
 						}
+					} else {
+						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+						tvGone.setVisibility(View.VISIBLE);
 					}
 
 				} catch (JSONException e) {

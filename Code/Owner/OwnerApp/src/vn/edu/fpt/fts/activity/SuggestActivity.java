@@ -49,7 +49,7 @@ public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
 	private ModelAdapter adapter;
-	private String goodsID;
+	private String goodsID, price, notes;
 	private TextView tvGone;
 
 	@Override
@@ -57,6 +57,8 @@ public class SuggestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
 		goodsID = getIntent().getStringExtra("goodsID");
+//		price = getIntent().getStringExtra("price");
+//		notes = getIntent().getStringExtra("notes");
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestActivity.this, "Đang xử lý...");
@@ -77,6 +79,8 @@ public class SuggestActivity extends Activity {
 						SuggestDetailActivity.class);
 				intent.putExtra("route", routeId);
 				intent.putExtra("goodsID", goodsID);
+				intent.putExtra("price", price);
+				intent.putExtra("notes", notes);
 				startActivity(intent);
 			}
 		});
@@ -210,9 +214,9 @@ public class SuggestActivity extends Activity {
 			// handleResponse(response);
 			if (response.equals("null")) {
 				pDlg.dismiss();
-//				Toast.makeText(SuggestActivity.this,
-//						"Không tìm thấy lộ trình phù hợp", Toast.LENGTH_LONG)
-//						.show();
+				// Toast.makeText(SuggestActivity.this,
+				// "Không tìm thấy lộ trình phù hợp", Toast.LENGTH_LONG)
+				// .show();
 				tvGone = (TextView) findViewById(R.id.textview_gone);
 				tvGone.setVisibility(View.VISIBLE);
 			} else {

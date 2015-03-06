@@ -546,6 +546,8 @@ public class CreateGoodsActivity extends Activity {
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						SuggestActivity.class);
 				intent.putExtra("goodsID", response);
+				intent.putExtra("price", etPrice.getText().toString());
+				intent.putExtra("notes", etNotes.getText().toString());
 				startActivity(intent);
 			}
 			pDlg.dismiss();

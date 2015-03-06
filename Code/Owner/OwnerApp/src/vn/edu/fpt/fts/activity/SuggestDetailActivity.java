@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.http.HttpResponse;
@@ -51,7 +53,7 @@ public class SuggestDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category;
 	private EditText etPrice, etNote;
 	private Button btnSend;
-	private String goodsID, ownerID;
+	private String goodsID, ownerID, price, notes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class SuggestDetailActivity extends Activity {
 
 		routeid = getIntent().getIntExtra("route", 0);
 		goodsID = getIntent().getStringExtra("goodsID");
+		price = getIntent().getStringExtra("price");
+		notes = getIntent().getStringExtra("notes");
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestDetailActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Route_GetByID;
@@ -78,6 +82,13 @@ public class SuggestDetailActivity extends Activity {
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btnSend = (Button) findViewById(R.id.button_send);
+		
+//		etPrice.setText(price);
+//		etNote.setText(notes);
+		WebServiceTask3 wst3 = new WebServiceTask3(WebServiceTask3.POST_TASK, this, "Đang xử lý");
+		String urlString = Common.IP_URL + Common.Service_Goods_getGoodsByID;
+		wst3.addNameValuePair("goodsID", goodsID);
+		wst3.execute(new String[] { urlString });
 
 		btnSend.setOnClickListener(new View.OnClickListener() {
 
@@ -227,6 +238,19 @@ public class SuggestDetailActivity extends Activity {
 					String start[] = startTime.split(" ");
 					String finishTime = jsonObject.getString("finishTime");
 					String finish[] = finishTime.split(" ");
+					Date sTime = new Date();
+					Date fTime = new Date();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						sTime = sdf.parse(start[0]);
+						fTime = sdf.parse(finish[0]);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					sdf = new SimpleDateFormat("dd/MM/yyyy");
+					startTime = sdf.format(sTime);
+					finishTime = sdf.format(fTime);
 					// JSONObject jsonObject2 =
 					// jsonObject.getJSONObject("goodsCategory");
 					String category = "";
@@ -256,8 +280,8 @@ public class SuggestDetailActivity extends Activity {
 							.getString("startingAddress"));
 					route.setDestinationAddress(jsonObject
 							.getString("destinationAddress"));
-					route.setStartTime(start[0]);
-					route.setFinishTime(finish[0]);
+					route.setStartTime(startTime);
+					route.setFinishTime(finishTime);
 					route.setCategory(category);
 
 				} catch (JSONException e) {
@@ -473,6 +497,170 @@ public class SuggestDetailActivity extends Activity {
 					// Add parameters
 					httppost.setEntity(new UrlEncodedFormEntity(params,
 							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+	
+	private class WebServiceTask3 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask2";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask3(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			try {
+				JSONObject jsonObject = new JSONObject(response);
+				String price = jsonObject.getString("price");
+				String notes = jsonObject.getString("notes");
+				etPrice.setText(price.replace(".0", ""));
+				etNote.setText(notes);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, e.getLocalizedMessage());
+			}
+			pDlg.dismiss();
+
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
 
 					response = httpclient.execute(httppost);
 					break;

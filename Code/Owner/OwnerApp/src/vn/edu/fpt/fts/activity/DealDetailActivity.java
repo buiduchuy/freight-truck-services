@@ -6,9 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import org.apache.http.HttpResponse;
@@ -340,6 +342,19 @@ public class DealDetailActivity extends Activity {
 					String start[] = startTime.split(" ");
 					String finishTime = jsonObject.getString("finishTime");
 					String finish[] = finishTime.split(" ");
+					Date sTime = new Date();
+					Date fTime = new Date();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						sTime = sdf.parse(start[0]);
+						fTime = sdf.parse(finish[0]);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					sdf = new SimpleDateFormat("dd/MM/yyyy");
+					startTime = sdf.format(sTime);
+					finishTime = sdf.format(fTime);
 					// JSONObject jsonObject2 =
 					// jsonObject.getJSONObject("goodsCategory");
 					String category = "";
@@ -369,8 +384,8 @@ public class DealDetailActivity extends Activity {
 							.getString("startingAddress"));
 					route.setDestinationAddress(jsonObject
 							.getString("destinationAddress"));
-					route.setStartTime(start[0]);
-					route.setFinishTime(finish[0]);
+					route.setStartTime(startTime);
+					route.setFinishTime(finishTime);
 					route.setCategory(category);
 
 				} catch (JSONException e) {
