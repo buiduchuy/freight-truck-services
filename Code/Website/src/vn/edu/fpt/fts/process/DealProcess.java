@@ -72,9 +72,6 @@ public class DealProcess {
 				// Insert order when accept finish
 				Order order = new Order();
 				order.setPrice(deal.getPrice());
-				order.setStaffDeliveryStatus(false);
-				order.setDriverDeliveryStatus(false);
-				order.setOwnerDeliveryStatus(false);
 				order.setCreateTime(deal.getCreateTime());
 				order.setOrderStatusID(1);
 				int newOrderID = orderDao.insertOrder(order);
@@ -188,9 +185,6 @@ public class DealProcess {
 			// Insert new order
 			Order order = new Order();
 			order.setPrice(deal.getPrice());
-			order.setStaffDeliveryStatus(false);
-			order.setDriverDeliveryStatus(false);
-			order.setOwnerDeliveryStatus(false);
 			order.setCreateTime(deal.getCreateTime());
 			order.setOrderStatusID(Common.order_pending);
 			int newOrderID = orderDao.insertOrder(order);

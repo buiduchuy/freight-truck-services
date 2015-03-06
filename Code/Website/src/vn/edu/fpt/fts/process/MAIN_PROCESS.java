@@ -4,17 +4,6 @@
 package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import vn.edu.fpt.fts.dao.GoodsDAO;
-import vn.edu.fpt.fts.dao.RouteDAO;
-import vn.edu.fpt.fts.dao.RouteGoodsCategoryDAO;
-import vn.edu.fpt.fts.pojo.Goods;
-import vn.edu.fpt.fts.pojo.Route;
-import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 
 /**
  * @author Huy
@@ -90,30 +79,31 @@ public class MAIN_PROCESS {
 		// List<Goods> listGoods = new ArrayList<Goods>();
 		// listGoods = goodsDao.getAllGoods();
 		//
-		 MatchingProcess mp = new MatchingProcess();
-		 System.out.println(mp.getSuggestionGoods(35).size());
-		
-//		RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
-//		
-//		List<RouteGoodsCategory>
-//		
-//		listRouteGoodsCategory = routeGoodsCategoryDao
-//				.getListRouteGoodsCategoryByRouteID(27);
-//		System.out.println(listRouteGoodsCategory.size());
-//
-//		GoodsDAO goodsDao = new GoodsDAO();
-//		RouteDAO routeDao = new RouteDAO();
-//		List<Goods> l_goods = new ArrayList<Goods>();
-//		Route route = routeDao.getActiveRouteByID(19);
-//		List<RouteGoodsCategory> l_routeGoodsCategory = route
-//				.getRouteGoodsCategory();
-//		for (int i = 0; i < l_routeGoodsCategory.size(); i++) {
-//			List<Goods> l_goodsTemp = goodsDao
-//					.getListActiveGoodsByCategoryID(l_routeGoodsCategory.get(i)
-//							.getGoodsCategoryID());
-//			l_goods.addAll(l_goodsTemp);
-//		}
-//		System.out.println(l_goods.size());
+		MatchingProcess mp = new MatchingProcess();
+		System.out.println(mp.getSuggestionGoods(35).size());
+
+		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
+		// RouteGoodsCategoryDAO();
+		//
+		// List<RouteGoodsCategory>
+		//
+		// listRouteGoodsCategory = routeGoodsCategoryDao
+		// .getListRouteGoodsCategoryByRouteID(27);
+		// System.out.println(listRouteGoodsCategory.size());
+		//
+		// GoodsDAO goodsDao = new GoodsDAO();
+		// RouteDAO routeDao = new RouteDAO();
+		// List<Goods> l_goods = new ArrayList<Goods>();
+		// Route route = routeDao.getActiveRouteByID(19);
+		// List<RouteGoodsCategory> l_routeGoodsCategory = route
+		// .getRouteGoodsCategory();
+		// for (int i = 0; i < l_routeGoodsCategory.size(); i++) {
+		// List<Goods> l_goodsTemp = goodsDao
+		// .getListActiveGoodsByCategoryID(l_routeGoodsCategory.get(i)
+		// .getGoodsCategoryID());
+		// l_goods.addAll(l_goodsTemp);
+		// }
+		// System.out.println(l_goods.size());
 
 		// List<Route> listRoute = routeDao.getListActiveRoute();
 		//

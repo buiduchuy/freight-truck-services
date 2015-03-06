@@ -14,7 +14,6 @@ import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Route;
-import vn.edu.fpt.fts.pojo.RouteGoodsCategory;
 
 /**
  * @author Huy
