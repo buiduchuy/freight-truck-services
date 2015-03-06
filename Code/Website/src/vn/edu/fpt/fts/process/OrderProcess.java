@@ -18,9 +18,10 @@ public class OrderProcess {
 	public boolean checkDelivery(int orderID) {
 		Order order = orderDao.getOrderByID(orderID);
 		if (order != null) {
-			if (order.isStaffDeliveryStatus() || order.isOwnerDeliveryStatus()) {
-				return true;
-			}
+			// if (order.isStaffDeliveryStatus() ||
+			// order.isOwnerDeliveryStatus()) {
+			// return true;
+			// }
 		}
 		return false;
 	}

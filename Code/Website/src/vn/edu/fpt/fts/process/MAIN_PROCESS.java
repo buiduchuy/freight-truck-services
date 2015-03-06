@@ -4,15 +4,6 @@
 package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import vn.edu.fpt.fts.dao.GoodsDAO;
-import vn.edu.fpt.fts.dao.RouteDAO;
-import vn.edu.fpt.fts.pojo.Goods;
-import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * @author Huy
@@ -81,55 +72,77 @@ public class MAIN_PROCESS {
 		// System.out.println(mapProcess.checkDistance(9, goodsStartLocation,
 		// goodsFinishLocation, 2));
 
-//		GoodsDAO goodsDao = new GoodsDAO();
-//		Goods goods = goodsDao.getGoodsByID(83);
-//		RouteDAO routeDao = new RouteDAO();
-//		routeDao.getActiveRouteByID(17);
-//		List<Goods> listGoods = new ArrayList<Goods>();
-//		listGoods = goodsDao.getAllGoods();
-//		
+		// GoodsDAO goodsDao = new GoodsDAO();
+		// Goods goods = goodsDao.getGoodsByID(83);
+		// RouteDAO routeDao = new RouteDAO();
+		// routeDao.getActiveRouteByID(17);
+		// List<Goods> listGoods = new ArrayList<Goods>();
+		// listGoods = goodsDao.getAllGoods();
+		//
 		MatchingProcess mp = new MatchingProcess();
-		mp.getSuggestionGoods(19);
-		
-		
-//		List<Route> listRoute = routeDao.getListActiveRoute();
-//
-//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//		try {
-//			Date pickupDate = sdf.parse(goods.getPickupTime().toString());
-//			Date deliveryDate = sdf.parse(goods.getDeliveryTime().toString());
-//			for (int i = 0; i < listRoute.size(); i++) {
-//				Date routeStartDate = sdf
-//						.parse(listRoute.get(i).getStartTime());
-//				Date routeFinishDate = sdf.parse(listRoute.get(i)
-//						.getFinishTime());
-//				if (pickupDate.compareTo(routeStartDate) >= 0
-//						&& deliveryDate.compareTo(routeFinishDate) <= 0) {
-//					System.out.println(routeStartDate.getTime() + " <= "
-//							+ pickupDate.getTime() + " <= "
-//							+ deliveryDate.getTime() + " <= "
-//							+ routeFinishDate.getTime());
-//				}
-//			}
+		System.out.println(mp.getSuggestionGoods(35).size());
 
-			// System.out.println(pickupDate.compareTo(deliveryDate));
+		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
+		// RouteGoodsCategoryDAO();
+		//
+		// List<RouteGoodsCategory>
+		//
+		// listRouteGoodsCategory = routeGoodsCategoryDao
+		// .getListRouteGoodsCategoryByRouteID(27);
+		// System.out.println(listRouteGoodsCategory.size());
+		//
+		// GoodsDAO goodsDao = new GoodsDAO();
+		// RouteDAO routeDao = new RouteDAO();
+		// List<Goods> l_goods = new ArrayList<Goods>();
+		// Route route = routeDao.getActiveRouteByID(19);
+		// List<RouteGoodsCategory> l_routeGoodsCategory = route
+		// .getRouteGoodsCategory();
+		// for (int i = 0; i < l_routeGoodsCategory.size(); i++) {
+		// List<Goods> l_goodsTemp = goodsDao
+		// .getListActiveGoodsByCategoryID(l_routeGoodsCategory.get(i)
+		// .getGoodsCategoryID());
+		// l_goods.addAll(l_goodsTemp);
+		// }
+		// System.out.println(l_goods.size());
 
-			// Date date1 = sdf.parse("2009-12-31");
-			// Date date2 = sdf.parse("2010-01-31");
-			//
-			// System.out.println(sdf.format(date1));
-			// System.out.println(sdf.format(date2));
-			//
-			// if (date1.compareTo(date2) > 0) {
-			// System.out.println("Date1 is after Date2");
-			// } else if (date1.compareTo(date2) < 0) {
-			// System.out.println("Date1 is before Date2");
-			// } else if (date1.compareTo(date2) == 0) {
-			// System.out.println("Date1 is equal to Date2");
-			// } else {
-			// System.out.println("How to get here?");
-			// }
-//		} catch (ParseException e) {
+		// List<Route> listRoute = routeDao.getListActiveRoute();
+		//
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		// try {
+		// Date pickupDate = sdf.parse(goods.getPickupTime().toString());
+		// Date deliveryDate = sdf.parse(goods.getDeliveryTime().toString());
+		// for (int i = 0; i < listRoute.size(); i++) {
+		// Date routeStartDate = sdf
+		// .parse(listRoute.get(i).getStartTime());
+		// Date routeFinishDate = sdf.parse(listRoute.get(i)
+		// .getFinishTime());
+		// if (pickupDate.compareTo(routeStartDate) >= 0
+		// && deliveryDate.compareTo(routeFinishDate) <= 0) {
+		// System.out.println(routeStartDate.getTime() + " <= "
+		// + pickupDate.getTime() + " <= "
+		// + deliveryDate.getTime() + " <= "
+		// + routeFinishDate.getTime());
+		// }
+		// }
+
+		// System.out.println(pickupDate.compareTo(deliveryDate));
+
+		// Date date1 = sdf.parse("2009-12-31");
+		// Date date2 = sdf.parse("2010-01-31");
+		//
+		// System.out.println(sdf.format(date1));
+		// System.out.println(sdf.format(date2));
+		//
+		// if (date1.compareTo(date2) > 0) {
+		// System.out.println("Date1 is after Date2");
+		// } else if (date1.compareTo(date2) < 0) {
+		// System.out.println("Date1 is before Date2");
+		// } else if (date1.compareTo(date2) == 0) {
+		// System.out.println("Date1 is equal to Date2");
+		// } else {
+		// System.out.println("How to get here?");
+		// }
+		// } catch (ParseException e) {
 		// e.printStackTrace();
 		// }
 

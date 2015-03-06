@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.pojo.Order;
 
@@ -46,15 +47,10 @@ public class OrderAPI {
 			order = new Order();
 
 			order.setPrice(Double.valueOf(params.getFirst("price")));
-			order.setStaffDeliveryStatus(Boolean.valueOf(params
-					.getFirst("staffDeliveryStatus")));
-			order.setDriverDeliveryStatus(Boolean.valueOf(params
-					.getFirst("driverDeliveryStatus")));
-			order.setOwnerDeliveryStatus(Boolean.valueOf(params
-					.getFirst("ownerDeliveryStatus")));
 			order.setCreateTime(params.getFirst("createTime"));
 			order.setOrderStatusID(Integer.valueOf(params
 					.getFirst("orderStatusID")));
+			order.setActive(Common.activate);
 
 			ret = orderDao.updateOrder(order);
 		} catch (NumberFormatException e) {
@@ -148,11 +144,10 @@ public class OrderAPI {
 		int ret = 0;
 		try {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			Boolean b_drive = Boolean.valueOf(params
-					.getFirst("driverDeliveryStatus"));
 			if (orderDao.getOrderByID(orderID) != null) {
 				ret = orderDao
-						.updateDriverDeliveryStatusOrder(orderID, b_drive);
+						.updateOrderStatusID(orderID, Common.order_driver);
+
 			}
 
 		} catch (NumberFormatException e) {
@@ -172,10 +167,8 @@ public class OrderAPI {
 		int ret = 0;
 		try {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			Boolean b_owner = Boolean.valueOf(params
-					.getFirst("ownerConfirmDelivery"));
 			if (orderDao.getOrderByID(orderID) != null) {
-				ret = orderDao.updateOwnerDeliveryStatusOrder(orderID, b_owner);
+				ret = orderDao.updateOrderStatusID(orderID, Common.order_owner);
 			}
 
 		} catch (NumberFormatException e) {

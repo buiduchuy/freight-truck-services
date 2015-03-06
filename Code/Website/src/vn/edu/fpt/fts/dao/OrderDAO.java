@@ -32,35 +32,12 @@ public class OrderDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO [Order] (" + "Price,"
-					+ "StaffDeliveryStatus," + "DriverDeliveryStatus,"
-					+ "OwnerDeliveryStatus," + "CreateTime," + "OrderStatusID,"
-					+ "Active" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
+			String sql = "INSERT INTO Order ( " + "Price," + "CreateTime,"
+					+ "OrderStatusID," + "Active" + ") VALUES (" + "?, "
 					+ "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 			stmt.setDouble(i++, bean.getPrice()); // Price
-			if (bean.isStaffDeliveryStatus()) {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "false");
-			}
-			if (bean.isDriverDeliveryStatus()) {
-				// DriverDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// DriverDeliveryStatus
-				stmt.setString(i++, "false");
-			}
-			if (bean.isOwnerDeliveryStatus()) {
-				// OwnerDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// OwnerDeliveryStatus
-				stmt.setString(i++, "false");
-			}
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
@@ -100,37 +77,14 @@ public class OrderDAO {
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE [Order] SET " + " Price = ?,"
-					+ " StaffDeliveryStatus = ?,"
-					+ " DriverDeliveryStatus = ?,"
-					+ " OwnerDeliveryStatus = ?," + " CreateTime = ?,"
-					+ " OrderStatusID = ? " + " Active = ? "
-					+ " WHERE OrderID = '" + bean.getOrderID() + "' ";
+			String sql = "UPDATE Order SET " + " Price = ?,"
+					+ " CreateTime = ?," + " OrderStatusID = ?,"
+					+ " Active = ? " + " WHERE OrderID = '" + bean.getOrderID()
+					+ "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
 			stmt.setDouble(i++, bean.getPrice()); // Price
-			if (bean.isStaffDeliveryStatus()) {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "false");
-			}
-			if (bean.isDriverDeliveryStatus()) {
-				// DriverDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// DriverDeliveryStatus
-				stmt.setString(i++, "false");
-			}
-			if (bean.isOwnerDeliveryStatus()) {
-				// OwnerDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// OwnerDeliveryStatus
-				stmt.setString(i++, "false");
-			}
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
 			stmt.setInt(i++, bean.getActive()); // Active
@@ -158,118 +112,25 @@ public class OrderDAO {
 		return ret;
 	}
 
-	public int updateOwnerDeliveryStatusOrder(int orderID,
-			Boolean ownerDeliveryStatus) {
+	public int updateOrderStatusID(int orderID, int orderStatusID) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE [Order] SET " + " OwnerDeliveryStatus = ?"
+			String sql = "UPDATE Order SET " + " OrderStatusID = ?"
 					+ " WHERE OrderID = '" + orderID + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
-			if (ownerDeliveryStatus) {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "false");
-			}
+			stmt.setInt(i++, orderStatusID); // OrderStatusID
+
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			System.out
-					.println("Can't update OwnerDeliveryStatus to Order table");
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-			}
-		}
-		return ret;
-	}
-
-	public int updateDriverDeliveryStatusOrder(int orderID,
-			Boolean driverDeliveryStatus) {
-		Connection con = null;
-		PreparedStatement stmt = null;
-		int ret = 0;
-		try {
-			con = DBAccess.makeConnection();
-			String sql = "UPDATE [Order] SET " + " DriverDeliveryStatus = ?"
-					+ " WHERE OrderID = '" + orderID + "' ";
-			stmt = con.prepareStatement(sql);
-			int i = 1;
-
-			if (driverDeliveryStatus) {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "false");
-			}
-			ret = stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			System.out
-					.println("Can't update DriverDeliveryStatus to Order table");
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-			}
-		}
-		return ret;
-	}
-
-	public int updateStaffDeliveryStatusOrder(int orderID,
-			Boolean staffDeliveryStatus) {
-		Connection con = null;
-		PreparedStatement stmt = null;
-		int ret = 0;
-		try {
-			con = DBAccess.makeConnection();
-			String sql = "UPDATE [Order] SET " + " StaffDeliveryStatus = ?"
-					+ " WHERE OrderID = '" + orderID + "' ";
-			stmt = con.prepareStatement(sql);
-			int i = 1;
-
-			if (staffDeliveryStatus) {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "true");
-			} else {
-				// StaffDeliveryStatus
-				stmt.setString(i++, "false");
-			}
-			ret = stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			System.out
-					.println("Can't update to StaffDeliveryStatus Order table");
+			System.out.println("Can't update OrderStatusID to Order table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -311,12 +172,6 @@ public class OrderDAO {
 
 				order.setOrderID(rs.getInt("OrderID"));
 				order.setPrice(rs.getDouble("Price"));
-				order.setStaffDeliveryStatus(rs
-						.getBoolean("StaffDeliveryStatus"));
-				order.setDriverDeliveryStatus(rs
-						.getBoolean("DriverDeliveryStatus"));
-				order.setOwnerDeliveryStatus(rs
-						.getBoolean("OwnerDeliveryStatus"));
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
 				order.setActive(rs.getInt("Active"));
@@ -372,12 +227,6 @@ public class OrderDAO {
 
 				order.setOrderID(rs.getInt("OrderID"));
 				order.setPrice(rs.getDouble("Price"));
-				order.setStaffDeliveryStatus(rs
-						.getBoolean("StaffDeliveryStatus"));
-				order.setDriverDeliveryStatus(rs
-						.getBoolean("DriverDeliveryStatus"));
-				order.setOwnerDeliveryStatus(rs
-						.getBoolean("OwnerDeliveryStatus"));
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
 				order.setActive(rs.getInt("Active"));

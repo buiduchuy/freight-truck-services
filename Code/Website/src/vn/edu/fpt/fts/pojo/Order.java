@@ -19,17 +19,25 @@ public class Order implements Serializable {
 	private static final long serialVersionUID = 3733670181329818420L;
 	private int orderID;
 	private double price;
-	private boolean staffDeliveryStatus;
-	private boolean driverDeliveryStatus;
-	private boolean ownerDeliveryStatus;
 	private String createTime;
 	private int orderStatusID;
 	private int active;
-	
+
 	private Deal deal;
 
 	public Order() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Order(int orderID, double price, String createTime,
+			int orderStatusID, int active, Deal deal) {
+		super();
+		this.orderID = orderID;
+		this.price = price;
+		this.createTime = createTime;
+		this.orderStatusID = orderStatusID;
+		this.active = active;
+		this.deal = deal;
 	}
 
 	public int getOrderID() {
@@ -48,30 +56,6 @@ public class Order implements Serializable {
 		this.price = price;
 	}
 
-	public boolean isStaffDeliveryStatus() {
-		return staffDeliveryStatus;
-	}
-
-	public void setStaffDeliveryStatus(boolean staffDeliveryStatus) {
-		this.staffDeliveryStatus = staffDeliveryStatus;
-	}
-
-	public boolean isDriverDeliveryStatus() {
-		return driverDeliveryStatus;
-	}
-
-	public void setDriverDeliveryStatus(boolean driverDeliveryStatus) {
-		this.driverDeliveryStatus = driverDeliveryStatus;
-	}
-
-	public boolean isOwnerDeliveryStatus() {
-		return ownerDeliveryStatus;
-	}
-
-	public void setOwnerDeliveryStatus(boolean ownerDeliveryStatus) {
-		this.ownerDeliveryStatus = ownerDeliveryStatus;
-	}
-
 	public String getCreateTime() {
 		return createTime;
 	}
@@ -87,7 +71,7 @@ public class Order implements Serializable {
 	public void setOrderStatusID(int orderStatusID) {
 		this.orderStatusID = orderStatusID;
 	}
-	
+
 	public int getActive() {
 		return active;
 	}
@@ -104,31 +88,4 @@ public class Order implements Serializable {
 		this.deal = deal;
 	}
 
-	public Order(double price, boolean staffDeliveryStatus,
-			boolean driverDeliveryStatus, boolean ownerDeliveryStatus,
-			String createTime, int orderStatusID, int active) {
-		super();
-		this.price = price;
-		this.staffDeliveryStatus = staffDeliveryStatus;
-		this.driverDeliveryStatus = driverDeliveryStatus;
-		this.ownerDeliveryStatus = ownerDeliveryStatus;
-		this.createTime = createTime;
-		this.orderStatusID = orderStatusID;
-		this.active = active;
-	}
-
-	public Order(int orderID, double price, boolean staffDeliveryStatus,
-			boolean driverDeliveryStatus, boolean ownerDeliveryStatus,
-			String createTime, int orderStatusID, int active) {
-		super();
-		this.orderID = orderID;
-		this.price = price;
-		this.staffDeliveryStatus = staffDeliveryStatus;
-		this.driverDeliveryStatus = driverDeliveryStatus;
-		this.ownerDeliveryStatus = ownerDeliveryStatus;
-		this.createTime = createTime;
-		this.orderStatusID = orderStatusID;
-		this.active = active;
-	}
-	
 }

@@ -24,6 +24,12 @@ public class RouteDAO {
 
 	private final static String TAG = "RouteDAO";
 
+	DriverDAO driverDao = new DriverDAO();
+	VehicleDAO vehicleDAO = new VehicleDAO();
+	RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+	GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+	RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+
 	public int insertRoute(Route bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -157,11 +163,6 @@ public class RouteDAO {
 			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
 
 			GoodsCategory goodsCategory = new GoodsCategory();
-			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
-
-			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
-			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
-			DriverDAO driverDao = new DriverDAO();
 
 			while (rs.next()) {
 				route = new Route();
@@ -313,9 +314,11 @@ public class RouteDAO {
 			int i = 1;
 			stm.setInt(i++, Common.activate);
 			rs = stm.executeQuery();
+
+			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
+			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
 			List<Route> list = new ArrayList<Route>();
-			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
-			VehicleDAO vehicleDAO = new VehicleDAO();
+			GoodsCategory goodsCategory = new GoodsCategory();
 			Route route;
 			while (rs.next()) {
 				route = new Route();
@@ -330,10 +333,26 @@ public class RouteDAO {
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(rs.getInt("Active"));
 				route.setDriverID(rs.getInt("DriverID"));
-				route.setRouteMarkers(routeMarkderDAO
+
+				route.setRouteMarkers(routeMarkerDao
 						.getAllRouteMarkerByRouteID(route.getRouteID()));
+
 				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
 						.getRouteID()));
+
+				listRouteGoodsCategory = routeGoodsCategoryDao
+						.getListRouteGoodsCategoryByRouteID(rs
+								.getInt("RouteID"));
+
+				for (int j = 0; j < listRouteGoodsCategory.size(); j++) {
+					goodsCategory = goodsCategoryDao
+							.getGoodsCategoryByID(listRouteGoodsCategory.get(j)
+									.getGoodsCategoryID());
+					listGoodsCategory.add(goodsCategory);
+				}
+
+				route.setGoodsCategory(listGoodsCategory);
+
 				list.add(route);
 			}
 			return list;
@@ -380,12 +399,7 @@ public class RouteDAO {
 			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
 			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
 
-			DriverDAO driverDao = new DriverDAO();
 			GoodsCategory goodsCategory = new GoodsCategory();
-			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
-
-			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
-			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 
 			while (rs.next()) {
 				route = new Route();
@@ -408,6 +422,7 @@ public class RouteDAO {
 
 				listRouteGoodsCategory = routeGoodsCategoryDao
 						.getListRouteGoodsCategoryByRouteID(routeID);
+				route.setRouteGoodsCategory(listRouteGoodsCategory);
 
 				for (int j = 0; j < listRouteGoodsCategory.size(); j++) {
 					goodsCategory = goodsCategoryDao
@@ -443,4 +458,65 @@ public class RouteDAO {
 		return null;
 	}
 
+	public List<Route> getListActiveRouteNotByCategoryID(int goodsCategoryID) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM [Route] WHERE Active = 1 AND RouteID NOT IN (SELECT RouteID FROM RouteGoodsCategory WHERE GoodsCategoryID = '"
+					+ goodsCategoryID + "')";
+			stm = con.prepareStatement(sql);
+			rs = stm.executeQuery();
+			List<Route> list = new ArrayList<Route>();
+			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
+			VehicleDAO vehicleDAO = new VehicleDAO();
+			DriverDAO driverDao = new DriverDAO();
+			Route route;
+			while (rs.next()) {
+				route = new Route();
+
+				route.setRouteID(rs.getInt("RouteID"));
+				route.setStartingAddress(rs.getString("StartingAddress"));
+				route.setDestinationAddress(rs.getString("DestinationAddress"));
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
+				route.setNotes(rs.getString("Notes"));
+				route.setWeight(rs.getInt("Weight"));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(rs.getInt("Active"));
+
+				route.setDriverID(rs.getInt("DriverID"));
+				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
+
+				route.setRouteMarkers(routeMarkderDAO
+						.getAllRouteMarkerByRouteID(route.getRouteID()));
+				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
+						.getRouteID()));
+				list.add(route);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
 }

@@ -39,7 +39,13 @@ public class MatchingProcess {
 			goodsStartLocation.setLatitude(goods.getPickupMarkerLatidute());
 			goodsStartLocation.setLongitude(goods.getPickupMarkerLongtitude());
 
-			List<Route> l_routeOrigin = routeDao.getListActiveRoute();
+			// Condition Goods Category
+			List<Route> l_routeOrigin = routeDao
+					.getListActiveRouteNotByCategoryID(goods
+							.getGoodsCategoryID());
+			if (l_routeOrigin == null) {
+				l_routeOrigin = routeDao.getListActiveRoute();
+			}
 
 			// Condition datetime
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -87,7 +93,37 @@ public class MatchingProcess {
 		List<Goods> l_goodsFilter1 = new ArrayList<Goods>();
 
 		if (route != null) {
-			List<Goods> l_goodsBefore = goodsDao.getListActiveGoods();
+
+			List<Goods> l_goodsBefore = goodsDao.getListActiveGoodsNotByRoute(routeID);
+
+			// Condition Goods Category
+//			List<RouteGoodsCategory> l_routeGoodsCategory = route
+//					.getRouteGoodsCategory();
+
+			// List<Goods> l_dbGoods = goodsDao.getListActiveGoods();
+			//
+			// for (int i = 0; i < l_dbGoods.size(); i++) {
+			// int goodsCategoryID = l_dbGoods.get(i).getGoodsCategoryID();
+			// for (int j = 0; j < l_routeGoodsCategory.size(); i++) {
+			// if (goodsCategoryID != l_routeGoodsCategory.get(j)
+			// .getGoodsCategoryID()) {
+			// l_goodsBefore.add(l_dbGoods.get(i));
+			// }
+			// }
+			//
+			// }
+
+//			if (l_routeGoodsCategory.size() == 0) {
+//				l_goodsBefore = goodsDao.getListActiveGoods();
+//			} else {
+//				List<Goods> l_goodsTemp = new ArrayList<Goods>();
+//				for (int i = 0; i < l_routeGoodsCategory.size(); i++) {
+//					l_goodsTemp = goodsDao
+//							.getListActiveGoodsNotByCategoryID(l_routeGoodsCategory
+//									.get(i).getGoodsCategoryID());
+//					l_goodsBefore.containsAll(l_goodsTemp);
+//				}
+//			}
 
 			// Condition datetime
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
