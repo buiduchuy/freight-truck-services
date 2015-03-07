@@ -99,7 +99,7 @@ public class SystemSuggest extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 100000;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 100000;
@@ -207,16 +207,16 @@ public class SystemSuggest extends Fragment {
 							map.put(Long.valueOf(0),
 									Integer.parseInt(item.getString("goodsID")));
 						}
-						adapter = new ListItemAdapter2(getActivity(), list);
-						list1.setEmptyView(myFragmentView
-								.findViewById(R.id.emptyElement));
-						list1.setAdapter(adapter);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+			adapter = new ListItemAdapter2(getActivity(), list);
+			list1.setEmptyView(myFragmentView
+					.findViewById(R.id.emptyElement));
+			list1.setAdapter(adapter);
 			pDlg.dismiss();
 		}
 

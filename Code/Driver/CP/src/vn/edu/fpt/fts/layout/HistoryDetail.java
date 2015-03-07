@@ -49,7 +49,7 @@ public class HistoryDetail extends Fragment {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByID";
 	TextView startPlace, endPlace, startTime, endTime, price, status, weight, phone;
-	Button button;
+//	Button button;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class HistoryDetail extends Fragment {
 		status = (TextView) myFragmentView.findViewById(R.id.textView12);
 		weight = (TextView) myFragmentView.findViewById(R.id.textView14);
 		phone = (TextView) myFragmentView.findViewById(R.id.textView16);
-		button = (Button) myFragmentView.findViewById(R.id.button1);
+//		button = (Button) myFragmentView.findViewById(R.id.button1);
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("orderID", getArguments().getString("orderID"));
@@ -173,9 +173,9 @@ public class HistoryDetail extends Fragment {
 		                + "000")) + " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
-				if (obj.getString("driverDeliveryStatus").equals("true")) {
+				if (obj.getString("orderStatusID").equals("1")) {
 					stat = "Đã giao hàng";
-					button.setEnabled(false);
+//					button.setEnabled(false);
 				} else {
 					stat = "Chưa giao hàng";
 				}

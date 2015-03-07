@@ -104,10 +104,10 @@ public class RouteList extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 10000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -273,12 +273,11 @@ public class RouteList extends Fragment {
 								}
 								ListItem itm = new ListItem(title, description,
 										"");
-								list.add(itm);
-								if (finishDate.before(Calendar.getInstance()
-										.getTime())) {
-									list.remove(itm);
-								}
-								map.add(item.getString("routeID"));
+//								if (Calendar.getInstance()
+//										.getTime().after(finishDate)) {
+									list.add(itm);
+									map.add(item.getString("routeID"));
+//								}
 							}
 						}
 					} else if (intervent1 instanceof JSONObject) {
@@ -361,12 +360,11 @@ public class RouteList extends Fragment {
 								e.printStackTrace();
 							}
 							ListItem itm = new ListItem(title, description, "");
-							list.add(itm);
-							if (finishDate.before(Calendar.getInstance()
-									.getTime())) {
-								list.remove(itm);
-							}
-							map.add(item.getString("routeID"));
+//							if (Calendar.getInstance()
+//									.getTime().after(finishDate)) {
+								list.add(itm);
+								map.add(item.getString("routeID"));
+//							}
 						}
 					}
 				} catch (JSONException e) {

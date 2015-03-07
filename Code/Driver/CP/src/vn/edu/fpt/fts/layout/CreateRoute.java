@@ -47,6 +47,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -86,6 +87,7 @@ public class CreateRoute extends Fragment {
 	PlacesAutoCompleteAdapter p1Adapter;
 	PlacesAutoCompleteAdapter p2Adapter;
 	PlacesAutoCompleteAdapter endAdapter;
+	TextView show;
 	CheckBox check1;
 	CheckBox check2;
 	CheckBox check3;
@@ -202,7 +204,15 @@ public class CreateRoute extends Fragment {
 		// TODO Auto-generated method stub
 		getActivity().setTitle("Lộ trình mới");
 
+		Fragment custom = getFragmentManager().findFragmentByTag(
+				"customizeRoute");
+		if (custom != null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.remove(custom).commit();
+		}
+
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
+		show = (TextView) v.findViewById(R.id.textView2);
 		startDate = (EditText) v.findViewById(R.id.editText2);
 		startHour = (EditText) v.findViewById(R.id.editText3);
 		payload = (EditText) v.findViewById(R.id.editText8);
@@ -236,6 +246,15 @@ public class CreateRoute extends Fragment {
 		p1.setAdapter(p1Adapter);
 		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
+
+		show.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
+			}
+		});
 
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -307,7 +326,8 @@ public class CreateRoute extends Fragment {
 							.getSupportFragmentManager();
 					FragmentTransaction trs = mng.beginTransaction();
 					CustomizeRoute frag1 = new CustomizeRoute();
-					trs.replace(R.id.content_frame, frag1);
+					trs.replace(R.id.content_frame, frag1, "customizeRoute");
+					trs.addToBackStack("customizeRoute");
 					trs.commit();
 				}
 			}
@@ -581,7 +601,10 @@ public class CreateRoute extends Fragment {
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
-				RouteList frag = new RouteList();
+				SystemSuggest frag = new SystemSuggest();
+				Bundle bundle = new Bundle();
+				bundle.putString("routeID", response);
+				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
@@ -674,27 +697,27 @@ public class CreateRoute extends Fragment {
 				String Point1 = p1.getText().toString();
 				String Point2 = p2.getText().toString();
 				String endPoint = end.getText().toString();
-//				try {
-//					if (!startPoint.equals("")) {
-//						startPoint = new GetFullAddress().execute(startPoint)
-//								.get();
-//					}
-//					if (!endPoint.equals("")) {
-//						endPoint = new GetFullAddress().execute(endPoint).get();
-//					}
-//					if (!Point1.equals("")) {
-//						Point1 = new GetFullAddress().execute(Point1).get();
-//					}
-//					if (!Point2.equals("")) {
-//						Point2 = new GetFullAddress().execute(Point2).get();
-//					}
-//				} catch (InterruptedException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (ExecutionException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
+				// try {
+				// if (!startPoint.equals("")) {
+				// startPoint = new GetFullAddress().execute(startPoint)
+				// .get();
+				// }
+				// if (!endPoint.equals("")) {
+				// endPoint = new GetFullAddress().execute(endPoint).get();
+				// }
+				// if (!Point1.equals("")) {
+				// Point1 = new GetFullAddress().execute(Point1).get();
+				// }
+				// if (!Point2.equals("")) {
+				// Point2 = new GetFullAddress().execute(Point2).get();
+				// }
+				// } catch (InterruptedException e1) {
+				// // TODO Auto-generated catch block
+				// e1.printStackTrace();
+				// } catch (ExecutionException e1) {
+				// // TODO Auto-generated catch block
+				// e1.printStackTrace();
+				// }
 				String startD = startDate.getText().toString()
 						.replace("/", "-");
 				startD = common.changeFormatDate(startD) + " "
@@ -754,10 +777,13 @@ public class CreateRoute extends Fragment {
 							Toast.LENGTH_SHORT).show();
 				} else
 					try {
-						if (formatter.parse(startDate.getText().toString()).compareTo(
-								formatter.parse(endDate.getText().toString())) >= 0) {
-							Toast.makeText(getActivity(),
-									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
+						if (formatter.parse(startDate.getText().toString())
+								.compareTo(
+										formatter.parse(endDate.getText()
+												.toString())) > 0) {
+							Toast.makeText(
+									getActivity(),
+									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
 									Toast.LENGTH_SHORT).show();
 						} else if (payload.equals("")) {
 							Toast.makeText(getActivity(),
@@ -768,8 +794,9 @@ public class CreateRoute extends Fragment {
 									"Khối lượng chở không vượt quá 20 tấn",
 									Toast.LENGTH_SHORT).show();
 						} else {
-							WebService ws = new WebService(WebService.POST_TASK,
-									getActivity(), "Đang xử lý ...");
+							WebService ws = new WebService(
+									WebService.POST_TASK, getActivity(),
+									"Đang xử lý ...");
 							ws.addNameValuePair("startingAddress", startPoint);
 							ws.addNameValuePair("destinationAddress", endPoint);
 							ws.addNameValuePair("routeMarkerLocation1", Point1);
@@ -780,8 +807,8 @@ public class CreateRoute extends Fragment {
 							ws.addNameValuePair("weight", load);
 							ws.addNameValuePair("createTime", current);
 							ws.addNameValuePair("active", "1");
-							ws.addNameValuePair("driverID", getActivity().getIntent()
-									.getStringExtra("driverID"));
+							ws.addNameValuePair("driverID", getActivity()
+									.getIntent().getStringExtra("driverID"));
 							ws.addNameValuePair("Food", fd);
 							ws.addNameValuePair("Freeze", frz);
 							ws.addNameValuePair("Broken", brk);

@@ -29,6 +29,7 @@ import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListNotiAdapter;
 import vn.edu.fpt.fts.drawer.NavDrawerAdapter;
 import vn.edu.fpt.fts.drawer.NavDrawerItem;
+import vn.edu.fpt.fts.helper.ConnectivityHelper;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -286,27 +287,28 @@ public class MainActivity extends FragmentActivity {
 		}
 
 		protected String doInBackground(String... urls) {
-			String url = urls[0];
 			String result = "";
+			if (ConnectivityHelper.CheckConnectivity(getBaseContext())) {
+				String url = urls[0];
 
-			HttpResponse response = doResponse(url);
+				HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
-				return result;
-			} else {
-				try {
-					result = inputStreamToString(response.getEntity()
-							.getContent());
+				if (response.getEntity() == null) {
+					return result;
+				} else {
+					try {
+						result = inputStreamToString(response.getEntity()
+								.getContent());
 
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
+					} catch (IllegalStateException e) {
+						Log.e(TAG, e.getLocalizedMessage(), e);
 
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
+					} catch (IOException e) {
+						Log.e(TAG, e.getLocalizedMessage(), e);
+					}
+
 				}
-
 			}
-
 			return result;
 		}
 
@@ -314,62 +316,64 @@ public class MainActivity extends FragmentActivity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (list != null) {
-				oldSize = list.size();
-				if (oldSize == 0) {
-					try {
-						list = new ArrayList<ListItem>();
-						JSONObject obj = new JSONObject(response);
-						Object intervent = obj.get("dealNotification");
-						if (intervent instanceof JSONArray) {
-							JSONArray array = obj
-									.getJSONArray("dealNotification");
-							for (int i = array.length() - 1; i >= 0; i--) {
-								JSONObject item = array.getJSONObject(i);
+			if (!response.equals("")) {
+				if (list != null) {
+					oldSize = list.size();
+					if (oldSize == 0) {
+						try {
+							list = new ArrayList<ListItem>();
+							JSONObject obj = new JSONObject(response);
+							Object intervent = obj.get("dealNotification");
+							if (intervent instanceof JSONArray) {
+								JSONArray array = obj
+										.getJSONArray("dealNotification");
+								for (int i = array.length() - 1; i >= 0; i--) {
+									JSONObject item = array.getJSONObject(i);
+									list.add(new ListItem(item
+											.getString("message"), "", ""));
+								}
+							} else if (intervent instanceof JSONObject) {
+								JSONObject item = obj
+										.getJSONObject("dealNotification");
 								list.add(new ListItem(
 										item.getString("message"), "", ""));
 							}
-						} else if (intervent instanceof JSONObject) {
-							JSONObject item = obj
-									.getJSONObject("dealNotification");
-							list.add(new ListItem(item.getString("message"),
-									"", ""));
+							oldSize = list.size();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						oldSize = list.size();
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} else {
-					try {
-						list = new ArrayList<ListItem>();
-						JSONObject obj = new JSONObject(response);
-						Object intervent = obj.get("dealNotification");
-						if (intervent instanceof JSONArray) {
-							JSONArray array = obj
-									.getJSONArray("dealNotification");
-							for (int i = array.length() - 1; i >= 0; i--) {
-								JSONObject item = array.getJSONObject(i);
+					} else {
+						try {
+							list = new ArrayList<ListItem>();
+							JSONObject obj = new JSONObject(response);
+							Object intervent = obj.get("dealNotification");
+							if (intervent instanceof JSONArray) {
+								JSONArray array = obj
+										.getJSONArray("dealNotification");
+								for (int i = array.length() - 1; i >= 0; i--) {
+									JSONObject item = array.getJSONObject(i);
+									list.add(new ListItem(item
+											.getString("message"), "", ""));
+								}
+							} else if (intervent instanceof JSONObject) {
+								JSONObject item = obj
+										.getJSONObject("dealNotification");
 								list.add(new ListItem(
 										item.getString("message"), "", ""));
 							}
-						} else if (intervent instanceof JSONObject) {
-							JSONObject item = obj
-									.getJSONObject("dealNotification");
-							list.add(new ListItem(item.getString("message"),
-									"", ""));
+							newSize = list.size();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						newSize = list.size();
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (oldSize < newSize) {
-						Toast.makeText(
-								MainActivity.this,
-								"Bạn có " + (newSize - oldSize)
-										+ " thông báo mới", Toast.LENGTH_SHORT)
-								.show();
+						if (oldSize < newSize) {
+							Toast.makeText(
+									MainActivity.this,
+									"Bạn có " + (newSize - oldSize)
+											+ " thông báo mới",
+									Toast.LENGTH_SHORT).show();
+						}
 					}
 				}
 			}

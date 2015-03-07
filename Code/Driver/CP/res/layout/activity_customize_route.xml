@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="vn.edu.fpt.fts.layout.CustomizeRoute" >
+    tools:context="vn.edu.fpt.fts.layout.CustomizeRoute">
 
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="70"
+        android:background="@android:color/white"
         class="com.google.android.gms.maps.SupportMapFragment" />
 
 </LinearLayout>

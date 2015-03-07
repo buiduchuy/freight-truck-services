@@ -84,6 +84,7 @@ public class ChangeRoute extends Fragment {
 	PlacesAutoCompleteAdapter p1Adapter;
 	PlacesAutoCompleteAdapter p2Adapter;
 	PlacesAutoCompleteAdapter endAdapter;
+	TextView show;
 	CheckBox check1;
 	CheckBox check2;
 	CheckBox check3;
@@ -165,8 +166,16 @@ public class ChangeRoute extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		getActivity().setTitle("Lộ trình mới");
+		
+		Fragment custom = getFragmentManager().findFragmentByTag(
+				"customizeRoute");
+		if (custom != null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.remove(custom).commit();
+		}
 
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
+		show = (TextView) v.findViewById(R.id.textView2);
 		startDate = (EditText) v.findViewById(R.id.editText2);
 		startHour = (EditText) v.findViewById(R.id.editText3);
 		payload = (EditText) v.findViewById(R.id.editText8);
@@ -200,6 +209,15 @@ public class ChangeRoute extends Fragment {
 		p1.setAdapter(p1Adapter);
 		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
+		
+		show.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
+			}
+		});
 
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -271,7 +289,8 @@ public class ChangeRoute extends Fragment {
 							.getSupportFragmentManager();
 					FragmentTransaction trs = mng.beginTransaction();
 					CustomizeRoute frag1 = new CustomizeRoute();
-					trs.replace(R.id.content_frame, frag1);
+					trs.replace(R.id.content_frame, frag1, "customizeRoute");
+					trs.addToBackStack("customizeRoute");
 					trs.commit();
 				}
 			}
@@ -723,6 +742,9 @@ public class ChangeRoute extends Fragment {
 										.equals("")) {
 									p1.setText(cat
 											.getString("routeMarkerLocation"));
+									show.setVisibility(View.GONE);
+									p1.setVisibility(View.VISIBLE);
+									p2.setVisibility(View.VISIBLE);
 								}
 							} else if (j == 1) {
 								if (!cat.getString("routeMarkerLocation")
@@ -735,6 +757,9 @@ public class ChangeRoute extends Fragment {
 					} else if (intervent instanceof JSONObject) {
 						JSONObject cat = obj.getJSONObject("routeMarkers");
 						p1.setText(cat.getString("routeMarkerLocation"));
+						show.setVisibility(View.GONE);
+						p1.setVisibility(View.VISIBLE);
+						p2.setVisibility(View.VISIBLE);
 					}
 				}
 
@@ -947,9 +972,9 @@ public class ChangeRoute extends Fragment {
 						if (formatter.parse(startDate.getText().toString())
 								.compareTo(
 										formatter.parse(endDate.getText()
-												.toString())) >= 0) {
+												.toString())) > 0) {
 							Toast.makeText(getActivity(),
-									"Ngày bắt đầu phải sớm hơn ngày kết thúc",
+									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
 									Toast.LENGTH_SHORT).show();
 						} else if (payload.equals("")) {
 							Toast.makeText(getActivity(),

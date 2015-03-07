@@ -61,14 +61,16 @@
                 android:layout_width="fill_parent"
                 android:layout_height="48dp"
                 android:hint="@string/point1"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <AutoCompleteTextView
                 android:id="@+id/point2"
                 android:layout_width="fill_parent"
                 android:layout_height="48dp"
                 android:hint="@string/point2"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <AutoCompleteTextView
                 android:id="@+id/end"
@@ -77,6 +79,14 @@
                 android:layout_marginBottom="8dp"
                 android:hint="@string/endPoint"
                 android:textSize="14sp" />
+            
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:text="@string/addPoints" />
 
             <TextView
                 android:id="@+id/textView10"
@@ -143,8 +153,8 @@
                     android:id="@+id/editText8"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:layout_weight="0.8"
                     android:layout_marginBottom="8dp"
+                    android:layout_weight="0.8"
                     android:hint="@string/payload"
                     android:inputType="number"
                     android:maxLength="5"
@@ -156,7 +166,6 @@
                     android:layout_height="48dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/kg" />
-
             </LinearLayout>
 
             <TextView

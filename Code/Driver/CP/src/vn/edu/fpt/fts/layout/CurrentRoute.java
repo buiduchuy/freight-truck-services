@@ -118,10 +118,10 @@ public class CurrentRoute extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 100000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -355,7 +355,7 @@ public class CurrentRoute extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -517,7 +517,7 @@ public class CurrentRoute extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -668,6 +668,7 @@ public class CurrentRoute extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
 		inflater.inflate(R.menu.current_route, menu);
 	}
 

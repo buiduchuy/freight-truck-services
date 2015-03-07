@@ -108,7 +108,7 @@ public class OfferResponse extends Fragment {
 			public void onClick(View v) {
 				Bundle bundle = new Bundle();
 				bundle.putString("dealID", id);
-				bundle.putString("refID", refID);
+				bundle.putString("refID", id);
 				bundle.putString("routeID", routeID);
 				bundle.putString("goodID", goodID);
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -720,6 +720,7 @@ public class OfferResponse extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
 		inflater.inflate(R.menu.offer_response, menu);
 	}
 

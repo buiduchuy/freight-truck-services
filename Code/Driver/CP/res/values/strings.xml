@@ -60,6 +60,9 @@
     <string name="status">Trạng thái:</string>
     <string name="counter">Gửi đề nghị</string>
     <string name="sent">Đã chuyển hàng</string>
+    <string name="accept">Chấp nhận</string>
+    <string name="decline">Từ chối</string>
+    <string name="addPoints"><u>Thêm điểm đi qua</u></string>
     <string name="ownerPhone">Số điện thoại chủ hàng:</string>
 
     <string-array name="navigation_drawer_items_array">

@@ -63,7 +63,7 @@ public class CancelOffer extends Fragment {
 	TextView startPlace, endPlace, startTime, endTime, price, note, weight;
 	TextView startPoint, point1, point2, endPoint, startDate, endDate, payload,
 			cantLoad;
-	String routeID, goodID, refID;
+	String routeID, goodID, refID, oldPrice;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -213,6 +213,7 @@ public class CancelOffer extends Fragment {
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
 				refID = obj.getString("refDealID");
+				oldPrice = obj.getString("price");
 
 				obj = obj.getJSONObject("route");
 				Object intervent;
@@ -542,8 +543,7 @@ public class CancelOffer extends Fragment {
 						getActivity(), "Đang xử lý ...");
 				ws.addNameValuePair("dealID", getArguments()
 						.getString("dealID"));
-				ws.addNameValuePair("price", price.getText().toString()
-						.replace(" ngàn đồng", ""));
+				ws.addNameValuePair("price", oldPrice);
 				ws.addNameValuePair("notes", note.getText().toString());
 				SimpleDateFormat format = new SimpleDateFormat(
 						"yyyy-MM-dd hh:mm");

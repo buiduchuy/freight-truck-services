@@ -48,22 +48,28 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 public class History extends Fragment {
 
 	ArrayList<ListItem> list;
+	ArrayList<ListItem> listFilter;
 	ArrayList<String> map;
+	ArrayList<String> mapFilter;
 	ListView list1;
 	ListItemAdapter3 adapter;
 	View myFragmentView;
+	Spinner spinner;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByDriverID";
+	ArrayList<String> filter;
 
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
+		mapFilter = new ArrayList<String>();
 		getActivity().setTitle("Lịch sử giao dịch");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
@@ -77,7 +83,7 @@ public class History extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				int id = Integer.parseInt(map.get((int) arg3));
+				int id = Integer.parseInt(mapFilter.get((int) arg3));
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				HistoryDetail frag = new HistoryDetail();
@@ -89,6 +95,40 @@ public class History extends Fragment {
 				trs.commit();
 			}
 		}));
+		spinner = (Spinner) myFragmentView.findViewById(R.id.spinner1);
+		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				String selected = spinner.getSelectedItem().toString();
+				if(selected.equals("Hiện tất cả")) {
+					adapter = new ListItemAdapter3(getActivity(), list);
+					list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+					list1.setAdapter(adapter);
+				}
+				else {
+					listFilter = new ArrayList<ListItem>();
+					mapFilter = new ArrayList<String>();
+					for (ListItem item : list) {
+						if(item.getDate().equals(selected)) {
+							listFilter.add(item);
+							mapFilter.add(map.get(list.indexOf(item)));
+						}
+					}
+					adapter = new ListItemAdapter3(getActivity(), listFilter);
+					list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+					list1.setAdapter(adapter);
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		return myFragmentView;
 	}
 
@@ -100,10 +140,10 @@ public class History extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 100000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -172,6 +212,8 @@ public class History extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			JSONObject obj;
+			filter = new ArrayList<String>();
+			filter.add("Hiện tất cả");
 			if (!response.equals("null")) {
 				try {
 					obj = new JSONObject(response);
@@ -181,7 +223,8 @@ public class History extends Fragment {
 						int count = 1;
 						for (int i = array.length() - 1; i >= 0; i--) {
 							JSONObject item = array.getJSONObject(i);
-							JSONObject rt = item.getJSONObject("deal").getJSONObject("route");
+							JSONObject rt = item.getJSONObject("deal")
+									.getJSONObject("route");
 
 							String title = "";
 							String[] start = rt.getString("startingAddress")
@@ -222,9 +265,9 @@ public class History extends Fragment {
 							title += " - " + end[end.length - 1].trim();
 							String status = "Trạng thái: ";
 							String driverStatus = item
-									.getString("driverDeliveryStatus");
+									.getString("orderStatusID");
 							String price = item.getString("price");
-							if (driverStatus.equals("True")) {
+							if (driverStatus.equals("1")) {
 								status += "Đã giao hàng";
 							} else {
 								status += "Chưa giao hàng";
@@ -239,21 +282,25 @@ public class History extends Fragment {
 							Date timeout = cal.getTime();
 							format.applyPattern("dd/MM/yyyy");
 							String createD = format.format(createDate);
+							if (!filter.contains(createD)) {
+								filter.add(createD);
+							}
 							list.add(new ListItem("Hóa đơn cho lộ trình: ",
 									title, status, createD));
 							count++;
 							map.add(item.getString("orderID"));
+							mapFilter.add(item.getString("orderID"));
 						}
 					} else if (invervent instanceof JSONObject) {
 						JSONObject item = obj.getJSONObject("order");
-						JSONObject rt = item.getJSONObject("deal").getJSONObject("route");
+						JSONObject rt = item.getJSONObject("deal")
+								.getJSONObject("route");
 
 						String title = "";
 						String[] start = rt.getString("startingAddress")
 								.replaceAll("(?i), Vietnam", "")
 								.replaceAll("(?i), Viet Nam", "")
-								.replaceAll("(?i), Việt Nam", "")
-								.split(",");
+								.replaceAll("(?i), Việt Nam", "").split(",");
 						title = start[start.length - 1].trim();
 
 						if (obj.has("routeMarkers")) {
@@ -262,11 +309,9 @@ public class History extends Fragment {
 								JSONArray catArray = obj
 										.getJSONArray("routeMarkers");
 								for (int j = 0; j < catArray.length(); j++) {
-									JSONObject cat = catArray
-											.getJSONObject(j);
-									if (!cat.getString(
-											"routeMarkerLocation").equals(
-											"")) {
+									JSONObject cat = catArray.getJSONObject(j);
+									if (!cat.getString("routeMarkerLocation")
+											.equals("")) {
 										title += " - "
 												+ cat.getString("routeMarkerLocation");
 									}
@@ -282,14 +327,13 @@ public class History extends Fragment {
 						String[] end = rt.getString("destinationAddress")
 								.replaceAll("(?i), Vietnam", "")
 								.replaceAll("(?i), Viet Nam", "")
-								.replaceAll("(?i), Việt Nam", "")
-								.split(",");
+								.replaceAll("(?i), Việt Nam", "").split(",");
 						title += " - " + end[end.length - 1].trim();
 						String status = "Trạng thái: ";
 						String driverStatus = item
-								.getString("driverDeliveryStatus");
+								.getString("orderStatusID");
 						String price = item.getString("price");
-						if (driverStatus.equals("True")) {
+						if (driverStatus.equals("1")) {
 							status += "Đã giao hàng";
 						} else {
 							status += "Chưa giao hàng";
@@ -304,8 +348,13 @@ public class History extends Fragment {
 						Date timeout = cal.getTime();
 						format.applyPattern("dd/MM/yyyy");
 						String createD = format.format(createDate);
-						list.add(new ListItem("Hóa đơn cho lộ trình: ", title, status, createD));
+						if (!filter.contains(createD)) {
+							filter.add(createD);
+						}
+						list.add(new ListItem("Hóa đơn cho lộ trình: ", title,
+								status, createD));
 						map.add(item.getString("orderID"));
+						mapFilter.add(item.getString("orderID"));
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -318,6 +367,10 @@ public class History extends Fragment {
 			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_spinner_item, filter);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
 			pDlg.dismiss();
 		}
 
