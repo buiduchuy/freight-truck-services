@@ -724,4 +724,47 @@ public class GoodsDAO {
 		return null;
 	}
 
+	public int getTotalGoodsWeightByRouteID(int routeID) {
+
+		Connection con = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		int ret = 0;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT SUM(Weight) AS TotalGoodsWeight FROM Goods"
+					+ " WHERE GoodsID IN (SELECT GoodsID FROM Deal WHERE RouteID = '"
+					+ routeID + "' AND DealStatusID = '" + Common.deal_accept
+					+ "')";
+
+			stmt = con.prepareStatement(sql);
+
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				ret = rs.getInt("TotalGoodsWeight");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Goods table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
+
 }
