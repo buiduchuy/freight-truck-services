@@ -724,7 +724,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public int getTotalGoodsWeightByRouteID(int routeID) {
+	public int getRemainingWeightByRouteID(int routeID) {
 
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -733,16 +733,18 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT SUM(Weight) AS TotalGoodsWeight FROM Goods"
-					+ " WHERE GoodsID IN (SELECT GoodsID FROM Deal WHERE RouteID = '"
-					+ routeID + "' AND DealStatusID = '" + Common.deal_accept
-					+ "')";
+			String sql = "SELECT Weight - (SELECT SUM(Weight) "
+					+ "AS TotalGoodsWeight FROM Goods WHERE GoodsID IN "
+					+ "(SELECT GoodsID FROM Deal WHERE RouteID = '" + routeID
+					+ "' " + "AND DealStatusID = '" + Common.deal_accept
+					+ "')) AS RemainingWeight FROM Route WHERE RouteID = '"
+					+ routeID + "'";
 
 			stmt = con.prepareStatement(sql);
 
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				ret = rs.getInt("TotalGoodsWeight");
+				ret = rs.getInt("RemainingWeight");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -766,5 +768,4 @@ public class GoodsDAO {
 		}
 		return ret;
 	}
-
 }

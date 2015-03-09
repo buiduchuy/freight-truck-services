@@ -174,8 +174,11 @@ public class DealProcess {
 			// int newDealID = dealDao.insertDeal(deal);
 
 			// Update other deal
+			int remainingWeightOfRoute = goodsDao
+					.getRemainingWeightByRouteID(deal.getRouteID());
 			int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
-					deal.getGoodsID(), deal.getRouteID());
+					deal.getGoodsID(), remainingWeightOfRoute,
+					deal.getRouteID());
 			System.out.println("Co " + n
 					+ " deal da thay doi trang thai la cancel");
 

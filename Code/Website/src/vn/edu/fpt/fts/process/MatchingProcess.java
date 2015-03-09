@@ -50,11 +50,10 @@ public class MatchingProcess {
 
 			// Condition Weight
 			for (int i = 0; i < l_routeOrigin.size(); i++) {
-				int totalWeight = goodsDao
-						.getTotalGoodsWeightByRouteID(l_routeOrigin.get(i)
+				int remainingWeight = goodsDao
+						.getRemainingWeightByRouteID(l_routeOrigin.get(i)
 								.getRouteID());
-				if ((l_routeOrigin.get(i).getWeight() - totalWeight) <= goods
-						.getWeight()) {
+				if (remainingWeight <= goods.getWeight()) {
 					l_routeOrigin1.add(l_routeOrigin.get(i));
 				}
 			}
@@ -71,7 +70,7 @@ public class MatchingProcess {
 					Date routeFinishDate = sdf.parse(l_routeOrigin1.get(i)
 							.getFinishTime());
 					if (pickupDate.compareTo(routeStartDate) >= 0
-							&& deliveryDate.compareTo(routeFinishDate) <= 0) {
+					/* && deliveryDate.compareTo(routeFinishDate) <= 0 */) {
 						l_routesFilter1.add(l_routeOrigin1.get(i));
 						System.out.println(routeStartDate.getTime() + " <= "
 								+ pickupDate.getTime() + " <= "
@@ -111,9 +110,9 @@ public class MatchingProcess {
 					.getListActiveGoodsNotByRoute(routeID);
 
 			// Condition Weight
-			int totalWeight = goodsDao.getTotalGoodsWeightByRouteID(routeID);
+			int remainingWeight = goodsDao.getRemainingWeightByRouteID(routeID);
 			for (int i = 0; i < l_goodsBefore.size(); i++) {
-				if (l_goodsBefore.get(i).getWeight() <= (route.getWeight() - totalWeight)) {
+				if (l_goodsBefore.get(i).getWeight() <= remainingWeight) {
 					l_goodsBefore1.add(l_goodsBefore.get(i));
 				}
 			}
@@ -129,7 +128,7 @@ public class MatchingProcess {
 					Date goodsDelivery = sdf.parse(l_goodsBefore1.get(i)
 							.getDeliveryTime());
 					if (goodsPickup.compareTo(startingDate) >= 0
-							&& goodsDelivery.compareTo(finishDate) <= 0) {
+					/* && goodsDelivery.compareTo(finishDate) <= 0 */) {
 						l_goodsFilter1.add(l_goodsBefore1.get(i));
 						System.out.println(startingDate.getTime() + " <= "
 								+ goodsPickup.getTime() + " <= "

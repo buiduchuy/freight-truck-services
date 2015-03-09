@@ -592,18 +592,19 @@ public class DealDAO {
 	}
 
 	public int updateStatusOfOtherDeal(int dealStatusID, int goodsID,
-			int routeID) {
+			int remainingWeightOfRoute, int routeID) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE Deal SET DealStatusID = ? WHERE GoodsID=? AND RouteID!=?";
+			String sql = "UPDATE Deal SET DealStatusID = ? WHERE GoodsID=? AND GoodsID IN (SELECT GoodsID FROM Goods WHERE Weight >= ?) AND RouteID != ?";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
 			stmt.setInt(i++, dealStatusID);
 			stmt.setInt(i++, goodsID);
+			stmt.setInt(i++, remainingWeightOfRoute);
 			stmt.setInt(i++, routeID);
 
 			ret = stmt.executeUpdate();
