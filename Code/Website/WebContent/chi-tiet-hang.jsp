@@ -19,19 +19,33 @@
 		<div class="small-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-						<jsp:include page="vertical-menu-make-deal.jsp" />
-					<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
-			<div class="row"></div>
-		</div>
+				<a class="button alert expand center">MENU</a> <a
+					href="tao-hang-1.jsp" class="button info expand center">Tạo
+					hàng</a> <a href="ControllerManageGoods?btnAction=manageGoods"
+					class="button info expand left">Quản lý hàng</a>
+				<ul class="">
+
+					<li><a
+						href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
+						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
+					<li><a
+						href="ControllerMakeDeal?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
+						class="button expand secondary">Danh sách các đề nghị</a></li>
+				</ul>
+				<a href="ControllerManageOrder?btnAction=manageOrder"
+					class="button info expand left">Quản lý hoá đơn</a>
+				<div class="row"></div>
+			</div>
+			<div class="form-content "
+				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+				<jsp:include page="vertical-pr.jsp" />
+				<div class="row"></div>
+			</div>
 		</div>
 		<div class="small-9 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<div class="form-content">
+				<div class="form-content">
 					<form action="ControllerManageGoods" method="post"
 						accept-charset="utf-8">
 						<div class="row">
@@ -218,7 +232,7 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area right">
-										
+
 											<button class="button "
 												onclick="return confirm('Bạn có muốn cập nhật hàng không?')"
 												name="btnAction" value="updateGood">
@@ -238,7 +252,7 @@
 										</br>
 									</div>
 								</div>
-										<div class="row"></div>
+								<div class="row"></div>
 							</div>
 					</form>
 
@@ -246,12 +260,12 @@
 				</div>
 			</div>
 		</div>
-	
+
 	</div>
 
 
 
-	
+
 
 
 </c:if>

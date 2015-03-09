@@ -140,26 +140,7 @@ public class ControllerManageOrder extends HttpServlet {
 				}
 			}
 			if ("confirmOrder".equals(action)) {
-				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				Goods good = goodDao.getGoodsByID(idGood);
-				Order order = orderDao.getOrderByGoodsID(idGood);
-				try {
-					order.setOwnerDeliveryStatus(true);
-					order.setOrderStatusID(4);
-					if (orderDao.updateOrder(order) == 1) {
-						session.setAttribute("messageSuccess",
-								"Hoàn tất hoá đơn!");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
-						rd.forward(request, response);
-					}
-				} catch (Exception ex) {
-					session.setAttribute("messageError",
-							"Có lỗi xảy ra!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
-					rd.forward(request, response);
-				}
+				
 			}
 
 			// out.println("<!DOCTYPE html>");
