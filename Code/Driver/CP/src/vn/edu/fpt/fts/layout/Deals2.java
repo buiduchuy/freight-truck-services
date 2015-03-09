@@ -66,6 +66,8 @@ public class Deals2 extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setTitle("Đề nghị");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_sort_by_size_white);
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),

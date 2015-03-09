@@ -165,8 +165,9 @@ public class ChangeRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Lộ trình mới");
-		
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Cập nhật lộ trình");
+
 		Fragment custom = getFragmentManager().findFragmentByTag(
 				"customizeRoute");
 		if (custom != null) {
@@ -209,7 +210,7 @@ public class ChangeRoute extends Fragment {
 		p1.setAdapter(p1Adapter);
 		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
-		
+
 		show.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -316,7 +317,15 @@ public class ChangeRoute extends Fragment {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			startHour.setText(hourOfDay + ":" + minute);
+			String hr = String.valueOf(hourOfDay);
+			String min = String.valueOf(minute);
+			if (hr.length() == 1) {
+				hr = "0" + hr;
+			}
+			if (min.length() == 1) {
+				min = "0" + min;
+			}
+			startHour.setText(hr + ":" + min);
 		}
 	};
 
@@ -573,7 +582,8 @@ public class ChangeRoute extends Fragment {
 				trs.addToBackStack(null);
 				trs.commit();
 			} else if (Integer.parseInt(response) == 0) {
-				Toast.makeText(getActivity(),
+				Toast.makeText(
+						getActivity(),
 						"Lộ trình đang có các đề nghị liên quan. Không thể cập nhật lộ trình này.",
 						Toast.LENGTH_SHORT).show();
 			}
@@ -973,7 +983,8 @@ public class ChangeRoute extends Fragment {
 								.compareTo(
 										formatter.parse(endDate.getText()
 												.toString())) > 0) {
-							Toast.makeText(getActivity(),
+							Toast.makeText(
+									getActivity(),
 									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
 									Toast.LENGTH_SHORT).show();
 						} else if (payload.equals("")) {

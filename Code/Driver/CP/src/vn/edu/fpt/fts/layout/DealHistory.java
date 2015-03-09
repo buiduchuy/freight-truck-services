@@ -61,6 +61,8 @@ public class DealHistory extends android.support.v4.app.Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
+		getActivity().getActionBar().setTitle("Lịch sử");
 		list = new ArrayList<ListItem>();
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");

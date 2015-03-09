@@ -74,7 +74,8 @@ public class CurrentRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Thông tin lộ trình");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Thông tin lộ trình");
 		View v = inflater.inflate(R.layout.activity_current_route, container,
 				false);
 		startPoint = (TextView) v.findViewById(R.id.textView2);

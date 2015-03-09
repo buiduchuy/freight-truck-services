@@ -8,6 +8,7 @@
     android:gravity="center"
     android:textStyle="bold"
     android:textSize="14sp"
+    android:textColor="@android:color/white"
     android:text="@string/delete"
     android:drawableLeft="@drawable/ic_action_discard"
     android:background="@drawable/actionbar_background"

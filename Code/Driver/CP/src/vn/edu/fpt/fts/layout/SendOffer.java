@@ -72,7 +72,8 @@ public class SendOffer extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Gửi đề nghị");
+		getActivity().getActionBar().setTitle("Gửi đề nghị");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_sort_by_size_white);
 		View v = inflater.inflate(R.layout.activity_send_offer, container,
 				false);
 

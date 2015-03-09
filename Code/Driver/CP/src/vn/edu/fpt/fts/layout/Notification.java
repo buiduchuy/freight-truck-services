@@ -65,7 +65,7 @@ public class Notification extends Fragment {
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
-		getActivity().setTitle("Thông báo");
+		getActivity().getActionBar().setTitle("Thông báo");
 		myFragmentView = inflater.inflate(R.layout.activity_notification,
 				container, false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.ListNotification);

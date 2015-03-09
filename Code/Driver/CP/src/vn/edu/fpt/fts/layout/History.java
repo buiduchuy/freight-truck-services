@@ -67,6 +67,8 @@ public class History extends Fragment {
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setTitle("Lịch sử");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
 		mapFilter = new ArrayList<String>();
@@ -106,6 +108,7 @@ public class History extends Fragment {
 					adapter = new ListItemAdapter3(getActivity(), list);
 					list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 					list1.setAdapter(adapter);
+					mapFilter = map;
 				}
 				else {
 					listFilter = new ArrayList<ListItem>();

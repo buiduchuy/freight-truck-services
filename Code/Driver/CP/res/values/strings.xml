@@ -36,7 +36,7 @@
     <string name="time"><b>THỜI GIAN</b></string>
     <string name="otherInfo"><b>HÀNG HÓA</b></string>
     <string name="pass">Mật khẩu</string>
-    <string name="login">Đăng nhập</string>
+    <string name="login">ĐĂNG NHẬP</string>
     <string name="sendPlace">Địa điểm giao hàng:</string>
     <string name="receivePlace">Địa điểm nhận hàng:</string>
     <string name="sentTime">Thời gian giao hàng:</string>
@@ -66,9 +66,9 @@
     <string name="ownerPhone">Số điện thoại chủ hàng:</string>
 
     <string-array name="navigation_drawer_items_array">
-        <item>Danh sách lộ trình</item>
+        <item>Lộ trình</item>
         <item>Đề nghị</item>
-        <item>Lịch sử giao dịch</item>
+        <item>Lịch sử</item>
         <item>Hóa đơn</item>
         <item>Thông báo</item>
         <item>Tài khoản</item>
@@ -106,5 +106,6 @@
     <string name="title_activity_deal_history">DealHistory</string>
     <string name="title_activity_notification">Notification</string>
     <string name="title_activity_deal_history_detail">DealHistoryDetail</string>
+    <string name="title_activity_result">ResultActivity</string>
 
 </resources>

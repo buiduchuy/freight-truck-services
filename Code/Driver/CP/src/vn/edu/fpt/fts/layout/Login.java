@@ -19,28 +19,47 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.helper.ConnectivityHelper;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class Login extends Activity {
-	private static final String SERVICE_URL = Constant.SERVICE_URL + "Account/DriverLogin";
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Account/DriverLogin";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		setTitle("Đăng nhập");
+		EditText password = (EditText) findViewById(R.id.editText2);
+		password.setTypeface(Typeface.DEFAULT);
+		password.setTransformationMethod(new PasswordTransformationMethod());
+		if (Build.VERSION.SDK_INT < 16) {
+			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		} else {
+			View decorView = getWindow().getDecorView();
+			int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+			decorView.setSystemUiVisibility(uiOptions);
+			ActionBar actionBar = getActionBar();
+			actionBar.hide();
+		}
 	}
 
 	@Override
@@ -63,13 +82,18 @@ public class Login extends Activity {
 	}
 
 	public void checkLogin(View v) {
-		EditText email = (EditText) findViewById(R.id.editText1);
-		EditText password = (EditText) findViewById(R.id.editText2);
-		WebService ws = new WebService(WebService.POST_TASK, this,
-				"Đang kiểm tra ...");
-		ws.addNameValuePair("email", email.getText().toString());
-		ws.addNameValuePair("password", password.getText().toString());
-		ws.execute(new String[] { SERVICE_URL });
+		if (ConnectivityHelper.CheckConnectivity(this)) {
+			EditText email = (EditText) findViewById(R.id.editText1);
+			EditText password = (EditText) findViewById(R.id.editText2);
+			WebService ws = new WebService(WebService.POST_TASK, this,
+					"Đang kiểm tra ...");
+			ws.addNameValuePair("email", email.getText().toString());
+			ws.addNameValuePair("password", password.getText().toString());
+			ws.execute(new String[] { SERVICE_URL });
+		}
+		else {
+			Toast.makeText(this, "Vui lòng kết nối mạng trước khi đăng nhập", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private class WebService extends AsyncTask<String, Integer, String> {
@@ -153,8 +177,7 @@ public class Login extends Activity {
 			// handleResponse(response);
 			pDlg.dismiss();
 			if (Integer.parseInt(response) > 0) {
-				Toast.makeText(Login.this,
-						"Đăng nhập thành công",
+				Toast.makeText(Login.this, "Đăng nhập thành công",
 						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(Login.this, MainActivity.class);
 				intent.putExtra("driverID", response);

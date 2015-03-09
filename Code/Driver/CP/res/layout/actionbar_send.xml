@@ -9,6 +9,7 @@
     android:textStyle="bold"
     android:textSize="14sp"
     android:text="@string/send"
+    android:textColor="@android:color/white"
     android:drawableLeft="@drawable/ic_action_accept"
     android:background="@drawable/actionbar_background"
     android:clickable="true" />

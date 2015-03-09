@@ -202,7 +202,8 @@ public class CreateRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Lộ trình mới");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Lộ trình mới");
 
 		Fragment custom = getFragmentManager().findFragmentByTag(
 				"customizeRoute");
@@ -349,7 +350,15 @@ public class CreateRoute extends Fragment {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			startHour.setText(hourOfDay + ":" + minute);
+			String hr = String.valueOf(hourOfDay);
+			String min = String.valueOf(minute);
+			if(hr.length() == 1) {
+				hr = "0" + hr;
+			}
+			if(min.length() == 1) {
+				min = "0" + min;
+			}
+			startHour.setText(hr + ":" + min);
 		}
 	};
 
