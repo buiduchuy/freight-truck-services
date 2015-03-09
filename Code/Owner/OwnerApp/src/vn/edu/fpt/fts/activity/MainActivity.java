@@ -7,6 +7,7 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -18,6 +19,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
+	ColorDrawable colorDrawable;
 	private ActionBar actionBar;
 	private String[] tabs = {"Hàng hóa", "Đơn hàng"};
 	
@@ -30,6 +32,8 @@ public class MainActivity extends FragmentActivity implements TabListener {
         
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
+//        colorDrawable.setColor(R.color.app_color);
+//        actionBar.setBackgroundDrawable(getResources().getDrawable(R.color.app_color));
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         
         viewPager.setAdapter(mAdapter);

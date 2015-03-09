@@ -1,143 +1,138 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="vn.edu.fpt.fts.ownerapp.CreateGoodsActivity" >
 
-    <LinearLayout
-        android:id="@+id/linearlayout_create_goods"
+    <Spinner
+        android:id="@+id/spinner_goods_type"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="40dp"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:prompt="@string/prompt" />
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+    <EditText
+        android:id="@+id/edittext_weight"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Khối lượng (kg)"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-                <Spinner
-                    android:prompt="@string/prompt"
-                    android:id="@+id/spinner_goods_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </TableRow>
+        <EditText
+            android:id="@+id/edittext_pickup_date"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:editable="false"
+            android:hint="Ngày nhận hàng"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp" />
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_weight"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Khối lượng (kg)"
-                    android:imeOptions="actionDone"
-                    android:inputType="numberDecimal" 
-                    />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_pickup_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:hint="Ngày nhận hàng" />
-            </TableRow>     
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_deliver_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:hint="Ngày giao hàng" />
-            </TableRow>          
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <AutoCompleteTextView
-                    android:id="@+id/edittext_pickup_address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Địa điểm nhận hàng"
-                    android:imeOptions="actionDone" 
-                    android:singleLine="true"/>
-
-                <ImageButton
-                    android:id="@+id/imagebtn_pickup_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_map" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <AutoCompleteTextView
-                    android:id="@+id/edittext_deliver_address"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Địa điểm giao hàng" 
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"/>
-
-                <ImageButton
-                    android:id="@+id/imagebtn_deliver_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_map" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Giá tiền (nghìn đồng)" 
-                    android:inputType="numberDecimal"
-                    android:imeOptions="actionDone"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <EditText
-                    android:id="@+id/edittext_note"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:hint="Ghi chú" 
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"/>
-            </TableRow>
-        </TableLayout>
-
-        <Button
-            android:id="@+id/btn_post"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Đăng hàng" />
+        <EditText
+            android:id="@+id/edittext_deliver_date"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:editable="false"
+            android:hint="Ngày giao hàng"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp" />
     </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <AutoCompleteTextView
+            android:id="@+id/edittext_pickup_address"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="Địa điểm nhận hàng"
+            android:imeOptions="actionDone"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/imagebtn_pickup_address"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:src="@drawable/ic_action_map" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <AutoCompleteTextView
+            android:id="@+id/edittext_deliver_address"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="Địa điểm giao hàng"
+            android:imeOptions="actionDone"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:singleLine="true" />
+
+        <ImageButton
+            android:id="@+id/imagebtn_deliver_address"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:src="@drawable/ic_action_map" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edittext_price"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Giá tiền (nghìn đồng)"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" />
+
+    <EditText
+        android:id="@+id/edittext_note"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Ghi chú"
+        android:imeOptions="actionDone"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/btn_post"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:background="#fb8c00"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:text="Đăng hàng" />
+
+</LinearLayout>

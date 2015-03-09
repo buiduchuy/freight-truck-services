@@ -82,7 +82,7 @@ public class OrderDetailActivity extends Activity {
 						WebServiceTask2.POST_TASK, OrderDetailActivity.this,
 						"Đang xử lý...");
 				wst2.addNameValuePair("orderID", orderID);
-				wst2.addNameValuePair("ownerConfirmDelivery", "true");
+				//wst2.addNameValuePair("ownerConfirmDelivery", "true");
 				String url = Common.IP_URL
 						+ Common.Service_Order_ConfirmDelivery;
 				wst2.execute(new String[] { url });
@@ -232,8 +232,8 @@ public class OrderDetailActivity extends Activity {
 				tvNote.setText("Ghi chú: " + jsonObject2.getString("notes"));
 				tvPhone.setText("Số điện thoại tài xế: "
 						+ jsonObject6.getString("phone"));
-				String count = jsonObject.getString("ownerDeliveryStatus");
-				if (count.equals("true")) {
+				String count = jsonObject.getString("orderStatusID");
+				if (count.equals("3") || count.equals("4")) {
 					tvStatus.setText("Trạng thái hàng: " + "Đã nhận hàng");
 					btnConfirm.setVisibility(View.GONE);
 				} else {
