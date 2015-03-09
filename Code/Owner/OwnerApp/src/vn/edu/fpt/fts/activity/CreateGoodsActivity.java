@@ -58,7 +58,7 @@ public class CreateGoodsActivity extends Activity {
 
 	private Spinner spinner;
 	private ArrayAdapter<String> dataAdapter;
-	private Calendar calendar1, calendar2, currentTime;
+	private Calendar calendar1, calendar2, currentTime, cal;
 	private DatePickerDialog.OnDateSetListener date1, date2;
 	private EditText etPickupDate, etDeliverDate, etNotes, etPrice, etWeight;
 	private AutoCompleteTextView actPickupAddr, actDeliverAddr;
@@ -164,7 +164,7 @@ public class CreateGoodsActivity extends Activity {
 									.get(Calendar.MONTH), calendar1
 									.get(Calendar.DAY_OF_MONTH));
 					DatePicker picker = dialog.getDatePicker();
-					Calendar cal = Calendar.getInstance();
+					cal = Calendar.getInstance();
 					picker.setMinDate(cal.getTimeInMillis() - 1000);
 					cal.add(Calendar.MONTH, 1);
 					picker.setMaxDate(cal.getTimeInMillis());
@@ -188,7 +188,7 @@ public class CreateGoodsActivity extends Activity {
 											.get(Calendar.MONTH), calendar2
 											.get(Calendar.DAY_OF_MONTH));
 							DatePicker picker = dialog.getDatePicker();
-							Calendar cal = Calendar.getInstance();
+//							Calendar cal = Calendar.getInstance();
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
 							picker.setMaxDate(cal.getTimeInMillis());
@@ -246,14 +246,22 @@ public class CreateGoodsActivity extends Activity {
 				try {			
 					List<Address> list = geocoder.getFromLocationName(
 							actPickupAddr.getText().toString(), 1);
-					pickupLng = list.get(0).getLongitude();
-					pickupLat = list.get(0).getLatitude();
 					List<Address> list2 = geocoder.getFromLocationName(
 							actDeliverAddr.getText().toString(), 1);
-					deliverLng = list2.get(0).getLongitude();
-					deliverLat = list2.get(0).getLatitude();
+					if (list.size() > 0 && list2.size() > 0) {
+						pickupLng = list.get(0).getLongitude();
+						pickupLat = list.get(0).getLatitude();
+						
+						deliverLng = list2.get(0).getLongitude();
+						deliverLat = list2.get(0).getLatitude();
+					} else {
+						Toast.makeText(CreateGoodsActivity.this, "Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
+						return;
+					}									
 				} catch (IOException ex) {
 					ex.printStackTrace();
+					Toast.makeText(CreateGoodsActivity.this, "Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
+					return;
 				}
 				postData(v);
 			}
