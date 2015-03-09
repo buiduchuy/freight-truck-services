@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.DealNotification;
 
 /**
@@ -29,6 +28,7 @@ public class DealNotificationDAO {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
+		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
 
 		try {
 			con = DBAccess.makeConnection();
@@ -38,12 +38,10 @@ public class DealNotificationDAO {
 			stm.setInt(1, dealID);
 
 			rs = stm.executeQuery();
-			List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
 			DealNotification dealNoti;
 			while (rs.next()) {
 				dealNoti = new DealNotification();
 
-				dealNoti.setDealID(dealID);
 				dealNoti.setNotificationID(rs.getInt("NotificationID"));
 				dealNoti.setMessage(rs.getString("Message"));
 				dealNoti.setActive(rs.getInt("Active"));
@@ -73,7 +71,7 @@ public class DealNotificationDAO {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
-		return null;
+		return listDealNoti;
 	}
 
 	public int insertDealNotification(DealNotification bean) {
@@ -159,22 +157,51 @@ public class DealNotificationDAO {
 		return ret;
 	}
 
-	public List<DealNotification> getDealNotificationByOwnerID(int ownerID) {
-
+	public List<DealNotification> getAllDealNotification() {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
 		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
-		List<Deal> listDeal = new ArrayList<Deal>();
-		DealDAO dealDao = new DealDAO();
-		DealNotificationDAO dealNotiDao = new DealNotificationDAO();
-		listDeal = dealDao.getDealByOwnerID(ownerID);
-		for (int i = 0; i < listDeal.size(); i++) {
-			List<DealNotification> listDealNotiOfEachDeal = new ArrayList<DealNotification>();
-			listDealNotiOfEachDeal = dealNotiDao
-					.getDealNotificationByDealID(listDeal.get(i).getDealID());
-			for (int j = 0; j < listDealNotiOfEachDeal.size(); j++) {
-				listDealNoti.add(listDealNotiOfEachDeal.get(j));
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM DealNotification";
+			stm = con.prepareStatement(sql);
+
+			rs = stm.executeQuery();
+			DealNotification dealNoti;
+			while (rs.next()) {
+				dealNoti = new DealNotification();
+
+				dealNoti.setNotificationID(rs.getInt("NotificationID"));
+				dealNoti.setMessage(rs.getString("Message"));
+				dealNoti.setActive(rs.getInt("Active"));
+				dealNoti.setCreateTime(rs.getString("CreateTime"));
+				dealNoti.setDealID(rs.getInt("DealID"));
+
+				listDealNoti.add(dealNoti);
+			}
+			return listDealNoti;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from DealNotification table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
 		return listDealNoti;
 	}
-
 }

@@ -9,4 +9,10 @@ package vn.edu.fpt.fts.process;
  */
 public class AccountProcess {
 
+	public int register() {
+		int ret = 0;
+		
+		return ret;
+	}
+
 }

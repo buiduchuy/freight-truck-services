@@ -3,10 +3,12 @@
  */
 package vn.edu.fpt.fts.api;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,13 +25,21 @@ import vn.edu.fpt.fts.pojo.RouteMarker;
 @Path("RouteMarker")
 public class RouteMarkerAPI {
 	private final static String TAG = "RouteAPI";
+	RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+
+	@GET
+	@Path("get")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<RouteMarker> JSON() {
+		List<RouteMarker> l_routeMarkers = routeMarkerDao.getAllRouteMarker();
+		return l_routeMarkers;
+	}
 
 	@POST
 	@Path("Create")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String createRouteMarker(MultivaluedMap<String, String> goodsParams) {
-		RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
 		RouteMarker routeMarker = new RouteMarker();
 		int ret = 0;
 		try {
