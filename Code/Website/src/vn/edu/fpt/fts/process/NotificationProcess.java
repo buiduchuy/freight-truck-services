@@ -3,6 +3,8 @@
  */
 package vn.edu.fpt.fts.process;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class NotificationProcess {
 	DealNotificationDAO dealNotiDao = new DealNotificationDAO();
 	DealDAO dealDao = new DealDAO();
 	DealNotification dealNoti = new DealNotification();
+	NumberFormat nf = new DecimalFormat("#.####");
 
 	public int insertSendDealNoti(Deal deal) {
 		int ret = 0;
@@ -28,13 +31,14 @@ public class NotificationProcess {
 				deal.getGoodsID());
 		String msg = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+
 			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã gửi đề nghị với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã gửi đề nghị với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã gửi đề nghị với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã gửi đề nghị với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
 		dealNoti.setMessage(msg);
 		dealNoti.setActive(Common.activate);
@@ -52,12 +56,12 @@ public class NotificationProcess {
 		String msg = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã đồng ý đề nghị với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã đồng ý đề nghị với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã đồng ý đề nghị với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã đồng ý đề nghị với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
 		dealNoti.setMessage(msg);
 		dealNoti.setActive(Common.activate);
@@ -74,12 +78,12 @@ public class NotificationProcess {
 		String msg = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã từ chối đề nghị với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã từ chối đề nghị với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã từ chối đề nghị với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã từ chối đề nghị với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
 		dealNoti.setMessage(msg);
 		dealNoti.setActive(Common.activate);
@@ -97,12 +101,12 @@ public class NotificationProcess {
 		String msg = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã hủy thương lượng với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã hủy thương lượng với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã hủy thương lượng với giá tiền " + db_deal.getPrice()
-					+ " nghìn đồng.";
+					+ " đã hủy thương lượng với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
 		dealNoti.setMessage(msg);
 		dealNoti.setActive(Common.activate);
@@ -116,7 +120,7 @@ public class NotificationProcess {
 		List<DealNotification> l_dealNoti = new ArrayList<DealNotification>();
 		List<Deal> l_deal = dealDao.getDealByDriverID(driverID);
 		for (int i = 0; i < l_deal.size(); i++) {
-			if (l_deal.get(i).getCreateBy().equalsIgnoreCase("driver")) {
+			if (l_deal.get(i).getCreateBy().equalsIgnoreCase("owner")) {
 				l_dealNoti
 						.addAll(dealNotiDao.getDealNotificationByDealID(l_deal
 								.get(i).getDealID()));
@@ -130,7 +134,7 @@ public class NotificationProcess {
 		List<DealNotification> l_dealNoti = new ArrayList<DealNotification>();
 		List<Deal> l_deal = dealDao.getDealByOwnerID(ownerID);
 		for (int i = 0; i < l_deal.size(); i++) {
-			if (l_deal.get(i).getCreateBy().equalsIgnoreCase("owner")) {
+			if (l_deal.get(i).getCreateBy().equalsIgnoreCase("driver")) {
 				l_dealNoti
 						.addAll(dealNotiDao.getDealNotificationByDealID(l_deal
 								.get(i).getDealID()));

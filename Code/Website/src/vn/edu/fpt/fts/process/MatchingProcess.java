@@ -55,10 +55,11 @@ public class MatchingProcess {
 						.getTotalWeightByRouteID(l_routeOrigin.get(i)
 								.getRouteID());
 				int routeWeight = l_routeOrigin.get(i).getWeight();
-				if ((routeWeight - totalWeight) >= goodsWeight) {
+				if (goodsWeight <= (routeWeight - totalWeight)) {
 					l_routeOrigin1.add(l_routeOrigin.get(i));
 					System.out.println("Goods Weight: " + goodsWeight
-							+ " -- Route Weight:" + routeWeight);
+							+ " -- Route Weight:" + routeWeight
+							+ " -- Remaining Weight: " + (routeWeight - totalWeight));
 				}
 			}
 
@@ -120,10 +121,11 @@ public class MatchingProcess {
 			int routeWeight = route.getWeight();
 			for (int i = 0; i < l_goodsBefore.size(); i++) {
 				int goodsWeight = l_goodsBefore.get(i).getWeight();
-				if ((routeWeight - totalWeight) >= goodsWeight) {
+				if (goodsWeight <= (routeWeight - totalWeight)) {
 					l_goodsBefore1.add(l_goodsBefore.get(i));
 					System.out.println("Goods Weight: " + goodsWeight
-							+ " -- Route Weight:" + routeWeight);
+							+ " -- Route Weight:" + routeWeight
+							+ " -- Remaining Weight: " + (routeWeight - totalWeight));
 				}
 			}
 

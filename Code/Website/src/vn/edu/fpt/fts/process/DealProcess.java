@@ -267,6 +267,7 @@ public class DealProcess {
 			ret = dealDao.insertDeal(deal);
 
 			// Insert Notification
+			deal.setDealID(ret); // Update last dealID
 			notiProcess.insertSendDealNoti(deal);
 		} else {
 			int db_dealStatusID = db_deal.getDealStatusID();
@@ -283,6 +284,7 @@ public class DealProcess {
 						ret = dealDao.insertDeal(deal);
 
 						// Insert Notification
+						deal.setDealID(ret); // Update last dealID
 						notiProcess.insertSendDealNoti(deal);
 					} else {
 						ret = 0;
@@ -295,11 +297,13 @@ public class DealProcess {
 				ret = dealDao.insertDeal(deal);
 
 				// Insert Notification
+				deal.setDealID(ret); // Update last dealID
 				notiProcess.insertSendDealNoti(deal);
 			} else if (db_dealStatusID == Common.deal_cancel) {
 				ret = dealDao.insertDeal(deal);
 
 				// Insert Notification
+				deal.setDealID(ret); // Update last dealID
 				notiProcess.insertSendDealNoti(deal);
 			}
 		}

@@ -6,6 +6,9 @@ package vn.edu.fpt.fts.process;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import vn.edu.fpt.fts.pojo.DealNotification;
 
 /**
  * @author Huy
@@ -82,7 +85,7 @@ public class MAIN_PROCESS {
 		// listGoods = goodsDao.getAllGoods();
 		//
 		// MatchingProcess mp = new MatchingProcess();
-		// System.out.println(mp.getSuggestionGoods(35).size());
+		// System.out.println(mp.getSuggestionGoods(40).size());
 
 		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
 		// RouteGoodsCategoryDAO();
@@ -109,37 +112,42 @@ public class MAIN_PROCESS {
 
 		// List<Route> listRoute = routeDao.getListActiveRoute();
 		//
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			// Date pickupDate = sdf.parse(goods.getPickupTime().toString());
-			// Date deliveryDate =
-			// sdf.parse(goods.getDeliveryTime().toString());
-			// for (int i = 0; i < listRoute.size(); i++) {
-			// Date routeStartDate = sdf
-			// .parse(listRoute.get(i).getStartTime());
-			// Date routeFinishDate = sdf.parse(listRoute.get(i)
-			// .getFinishTime());
-			// if (pickupDate.compareTo(routeStartDate) >= 0
-			// && deliveryDate.compareTo(routeFinishDate) <= 0) {
-			// System.out.println(routeStartDate.getTime() + " <= "
-			// + pickupDate.getTime() + " <= "
-			// + deliveryDate.getTime() + " <= "
-			// + routeFinishDate.getTime());
-			// }
-			// }
+		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		// try {
+		// Date pickupDate = sdf.parse(goods.getPickupTime().toString());
+		// Date deliveryDate =
+		// sdf.parse(goods.getDeliveryTime().toString());
+		// for (int i = 0; i < listRoute.size(); i++) {
+		// Date routeStartDate = sdf
+		// .parse(listRoute.get(i).getStartTime());
+		// Date routeFinishDate = sdf.parse(listRoute.get(i)
+		// .getFinishTime());
+		// if (pickupDate.compareTo(routeStartDate) >= 0
+		// && deliveryDate.compareTo(routeFinishDate) <= 0) {
+		// System.out.println(routeStartDate.getTime() + " <= "
+		// + pickupDate.getTime() + " <= "
+		// + deliveryDate.getTime() + " <= "
+		// + routeFinishDate.getTime());
+		// }
+		// }
 
-			// System.out.println(pickupDate.compareTo(deliveryDate));
+		// System.out.println(pickupDate.compareTo(deliveryDate));
 
-			Date date1 = sdf.parse("2009-12-31");
-			Date date2 = sdf.parse("2010-01-31");
-
-			System.out.println(sdf.format(date1));
-			System.out.println(sdf.format(date2));
-			
-			System.out.println(date1.compareTo(date2));
-
-		} catch (ParseException e) {
-			e.printStackTrace();
+		// Date date1 = sdf.parse("2009-12-31");
+		// Date date2 = sdf.parse("2010-01-31");
+		//
+		// System.out.println(sdf.format(date1));
+		// System.out.println(sdf.format(date2));
+		//
+		// System.out.println(date1.compareTo(date2));
+		//
+		// } catch (ParseException e) {
+		// e.printStackTrace();
+		// }
+		NotificationProcess np = new NotificationProcess();
+		List<DealNotification> l_dealNoti = np.getListDealNotiByDriver(1);
+		for (int i = 0; i < l_dealNoti.size(); i++) {
+			System.out.println(l_dealNoti.get(i).getMessage());
 		}
 
 	}
