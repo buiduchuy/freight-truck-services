@@ -4,6 +4,11 @@
 package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import vn.edu.fpt.fts.pojo.DealNotification;
 
 /**
  * @author Huy
@@ -79,8 +84,8 @@ public class MAIN_PROCESS {
 		// List<Goods> listGoods = new ArrayList<Goods>();
 		// listGoods = goodsDao.getAllGoods();
 		//
-		MatchingProcess mp = new MatchingProcess();
-		System.out.println(mp.getSuggestionGoods(35).size());
+		// MatchingProcess mp = new MatchingProcess();
+		// System.out.println(mp.getSuggestionGoods(40).size());
 
 		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
 		// RouteGoodsCategoryDAO();
@@ -110,7 +115,8 @@ public class MAIN_PROCESS {
 		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		// try {
 		// Date pickupDate = sdf.parse(goods.getPickupTime().toString());
-		// Date deliveryDate = sdf.parse(goods.getDeliveryTime().toString());
+		// Date deliveryDate =
+		// sdf.parse(goods.getDeliveryTime().toString());
 		// for (int i = 0; i < listRoute.size(); i++) {
 		// Date routeStartDate = sdf
 		// .parse(listRoute.get(i).getStartTime());
@@ -133,18 +139,16 @@ public class MAIN_PROCESS {
 		// System.out.println(sdf.format(date1));
 		// System.out.println(sdf.format(date2));
 		//
-		// if (date1.compareTo(date2) > 0) {
-		// System.out.println("Date1 is after Date2");
-		// } else if (date1.compareTo(date2) < 0) {
-		// System.out.println("Date1 is before Date2");
-		// } else if (date1.compareTo(date2) == 0) {
-		// System.out.println("Date1 is equal to Date2");
-		// } else {
-		// System.out.println("How to get here?");
-		// }
+		// System.out.println(date1.compareTo(date2));
+		//
 		// } catch (ParseException e) {
 		// e.printStackTrace();
 		// }
+		NotificationProcess np = new NotificationProcess();
+		List<DealNotification> l_dealNoti = np.getListDealNotiByDriver(1);
+		for (int i = 0; i < l_dealNoti.size(); i++) {
+			System.out.println(l_dealNoti.get(i).getMessage());
+		}
 
 	}
 }

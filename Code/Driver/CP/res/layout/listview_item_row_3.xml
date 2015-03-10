@@ -13,10 +13,12 @@
             android:id="@+id/txtInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:paddingBottom="4dp"
-            android:paddingLeft="4dp"
+            android:paddingLeft="10dp"
             android:text="A"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="#000000"
+            android:alpha="0.54"
             android:textSize="12sp" />
 
         <TextView
@@ -25,8 +27,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:gravity="right"
+            android:paddingRight="10dp"
             android:text="date"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="#000000"
+            android:alpha="0.54"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -40,18 +44,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:paddingLeft="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#000000"
             android:text="A"
+            android:alpha="0.87"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="4dp"
-            android:paddingLeft="4dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#000000"
             android:text="A"
-            android:textColor="@android:color/darker_gray"
+            android:alpha="0.54"
             android:textSize="12sp" />
     </LinearLayout>
 

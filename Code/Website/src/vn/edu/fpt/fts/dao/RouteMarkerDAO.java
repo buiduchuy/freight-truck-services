@@ -27,6 +27,7 @@ public class RouteMarkerDAO {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
+		List<RouteMarker> list = new ArrayList<RouteMarker>();
 
 		try {
 			con = DBAccess.makeConnection();
@@ -36,7 +37,6 @@ public class RouteMarkerDAO {
 			stm.setInt(1, routeID);
 
 			rs = stm.executeQuery();
-			List<RouteMarker> list = new ArrayList<RouteMarker>();
 			RouteMarker routeMarker;
 			while (rs.next()) {
 				routeMarker = new RouteMarker();
@@ -70,7 +70,54 @@ public class RouteMarkerDAO {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
-		return null;
+		return list;
+	}
+
+	public List<RouteMarker> getAllRouteMarker() {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		List<RouteMarker> list = new ArrayList<RouteMarker>();
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM RouteMarker";
+			stm = con.prepareStatement(sql);
+			rs = stm.executeQuery();
+			RouteMarker routeMarker;
+			while (rs.next()) {
+				routeMarker = new RouteMarker();
+
+				routeMarker.setRouteMarkerID(rs.getInt("RouteMarkerID"));
+				routeMarker.setRouteID(rs.getInt("RouteID"));
+				routeMarker.setRouteMarkerLocation(rs
+						.getString("RouteMarkerLocation"));
+				routeMarker.setNumbering(rs.getInt("Numbering"));
+
+				list.add(routeMarker);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from RouteMarker table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return list;
 	}
 
 	public int insertRouteMarker(RouteMarker bean) {

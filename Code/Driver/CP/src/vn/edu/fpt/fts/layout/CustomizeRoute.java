@@ -64,7 +64,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Tùy chỉnh lộ trình");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Tùy chỉnh lộ trình");
 		View v = inflater.inflate(R.layout.activity_customize_route, container,
 				false);
 		InputMethodManager imm = (InputMethodManager) getActivity()

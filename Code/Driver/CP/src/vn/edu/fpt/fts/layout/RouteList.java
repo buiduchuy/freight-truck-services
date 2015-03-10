@@ -70,7 +70,8 @@ public class RouteList extends Fragment {
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
-		getActivity().setTitle("Danh sách lộ trình");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Lộ trình");
 		WebService ws = new WebService(WebService.GET_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
 		ws.execute(new String[] { SERVICE_URL });

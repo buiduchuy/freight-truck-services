@@ -65,7 +65,8 @@
 						</div>
 						<div class="large-12 columns">
 							<div class="extra-title">
-								<h3>Lịch sử đề nghị</h3>
+							
+								<h3><font color="blue">Lịch sử đề nghị</font> </h3>
 							</div>
 							<table id="example" class="display" cellspacing="0" width="100%">
 								<thead>
@@ -129,7 +130,8 @@
 					<div class="large-12 columns">
 						</br>
 						<div class="extra-title">
-							<h3>Phản hồi</h3>
+								<h3><font color="blue">Phản hồi</font> </h3>
+					
 						</div>
 						<div class="row">
 							<div class="small-3 columns">

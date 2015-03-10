@@ -76,7 +76,8 @@ public class OfferResponse extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Trả lời đề nghị");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_sort_by_size_white);
+		getActivity().getActionBar().setTitle("Trả lời đề nghị");
 		id = getArguments().getString("dealID");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");

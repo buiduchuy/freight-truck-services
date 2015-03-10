@@ -75,7 +75,8 @@ public class CancelOffer extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().setTitle("Thông tin đề nghị");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_sort_by_size_white);
+		getActivity().getActionBar().setTitle("Đề nghị");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("dealID", getArguments().getString("dealID"));

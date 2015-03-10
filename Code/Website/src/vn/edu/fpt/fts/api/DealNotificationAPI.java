@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -31,6 +32,15 @@ public class DealNotificationAPI {
 	DealNotificationDAO dealNotiDao = new DealNotificationDAO();
 	DealDAO dealDao = new DealDAO();
 	NotificationProcess notiProcess = new NotificationProcess();
+
+	@GET
+	@Path("get")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<DealNotification> JSON() {
+		List<DealNotification> i_dealNotifications = dealNotiDao
+				.getAllDealNotification();
+		return i_dealNotifications;
+	}
 
 	@POST
 	@Path("getDealNotificationByDriverID")

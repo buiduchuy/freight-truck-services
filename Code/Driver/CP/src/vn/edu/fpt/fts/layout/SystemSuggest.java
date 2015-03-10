@@ -63,7 +63,8 @@ public class SystemSuggest extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		list = new ArrayList<ListItem>();
-		getActivity().setTitle("Gợi ý hệ thống");
+		getActivity().getActionBar().setTitle("Gợi ý hàng hóa");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		myFragmentView = inflater.inflate(R.layout.activity_system_suggest,
 				container, false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);

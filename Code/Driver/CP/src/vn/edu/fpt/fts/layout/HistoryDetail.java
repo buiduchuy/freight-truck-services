@@ -53,7 +53,8 @@ public class HistoryDetail extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		getActivity().setTitle("Nội dung giao dịch");
+		getActivity().getActionBar().setTitle("Lịch sử");
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		View myFragmentView = inflater.inflate(
 				R.layout.activity_history_detail, container, false);
 		startPlace = (TextView) myFragmentView.findViewById(R.id.textView2);

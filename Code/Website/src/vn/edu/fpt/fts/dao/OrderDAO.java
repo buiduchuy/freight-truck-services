@@ -32,7 +32,7 @@ public class OrderDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Order ( " + "Price," + "CreateTime,"
+			String sql = "INSERT INTO [Order] ( " + "Price," + "CreateTime,"
 					+ "OrderStatusID," + "Active" + ") VALUES (" + "?, "
 					+ "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -77,7 +77,7 @@ public class OrderDAO {
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE Order SET " + " Price = ?,"
+			String sql = "UPDATE [Order] SET " + " Price = ?,"
 					+ " CreateTime = ?," + " OrderStatusID = ?,"
 					+ " Active = ? " + " WHERE OrderID = '" + bean.getOrderID()
 					+ "' ";
@@ -118,7 +118,7 @@ public class OrderDAO {
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE Order SET " + " OrderStatusID = ?"
+			String sql = "UPDATE [Order] SET " + " OrderStatusID = ?"
 					+ " WHERE OrderID = '" + orderID + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;

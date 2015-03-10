@@ -49,12 +49,17 @@ public class MatchingProcess {
 			}
 
 			// Condition Weight
+			int goodsWeight = goods.getWeight();
 			for (int i = 0; i < l_routeOrigin.size(); i++) {
-				int remainingWeight = goodsDao
-						.getRemainingWeightByRouteID(l_routeOrigin.get(i)
+				int totalWeight = goodsDao
+						.getTotalWeightByRouteID(l_routeOrigin.get(i)
 								.getRouteID());
-				if (remainingWeight <= goods.getWeight()) {
+				int routeWeight = l_routeOrigin.get(i).getWeight();
+				if (goodsWeight <= (routeWeight - totalWeight)) {
 					l_routeOrigin1.add(l_routeOrigin.get(i));
+					System.out.println("Goods Weight: " + goodsWeight
+							+ " -- Route Weight:" + routeWeight
+							+ " -- Remaining Weight: " + (routeWeight - totalWeight));
 				}
 			}
 
@@ -69,8 +74,10 @@ public class MatchingProcess {
 							.getStartTime());
 					Date routeFinishDate = sdf.parse(l_routeOrigin1.get(i)
 							.getFinishTime());
-					if (pickupDate.compareTo(routeStartDate) >= 0
-					/* && deliveryDate.compareTo(routeFinishDate) <= 0 */) {
+
+					if (routeStartDate.compareTo(pickupDate) <= 0
+							&& routeStartDate.compareTo(deliveryDate) <= 0
+							&& !(routeFinishDate.compareTo(deliveryDate) < 0)) {
 						l_routesFilter1.add(l_routeOrigin1.get(i));
 						System.out.println(routeStartDate.getTime() + " <= "
 								+ pickupDate.getTime() + " <= "
@@ -110,10 +117,15 @@ public class MatchingProcess {
 					.getListActiveGoodsNotByRoute(routeID);
 
 			// Condition Weight
-			int remainingWeight = goodsDao.getRemainingWeightByRouteID(routeID);
+			int totalWeight = goodsDao.getTotalWeightByRouteID(routeID);
+			int routeWeight = route.getWeight();
 			for (int i = 0; i < l_goodsBefore.size(); i++) {
-				if (l_goodsBefore.get(i).getWeight() <= remainingWeight) {
+				int goodsWeight = l_goodsBefore.get(i).getWeight();
+				if (goodsWeight <= (routeWeight - totalWeight)) {
 					l_goodsBefore1.add(l_goodsBefore.get(i));
+					System.out.println("Goods Weight: " + goodsWeight
+							+ " -- Route Weight:" + routeWeight
+							+ " -- Remaining Weight: " + (routeWeight - totalWeight));
 				}
 			}
 
@@ -127,8 +139,9 @@ public class MatchingProcess {
 							.getPickupTime());
 					Date goodsDelivery = sdf.parse(l_goodsBefore1.get(i)
 							.getDeliveryTime());
-					if (goodsPickup.compareTo(startingDate) >= 0
-					/* && goodsDelivery.compareTo(finishDate) <= 0 */) {
+					if (startingDate.compareTo(goodsPickup) <= 0
+							&& startingDate.compareTo(goodsDelivery) <= 0
+							&& !(finishDate.compareTo(goodsDelivery) < 0)) {
 						l_goodsFilter1.add(l_goodsBefore1.get(i));
 						System.out.println(startingDate.getTime() + " <= "
 								+ goodsPickup.getTime() + " <= "
