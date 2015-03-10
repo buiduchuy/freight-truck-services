@@ -79,7 +79,8 @@ public class ControllerManageGoods extends HttpServlet {
 			if ("suggestFromSystem".equals(action)) {
 				int IdGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
-				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
+				//List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
+				List<Route> list=matchingProcess.getSuggestionRoute(IdGood);
 				List<Deal> listDeal= dealDao.getDealByGoodsID(IdGood);
 				
 				for (Deal deal : listDeal) {
@@ -212,7 +213,7 @@ public class ControllerManageGoods extends HttpServlet {
 				int idGoodDelete = Integer.parseInt(request
 						.getParameter("txtIdGood"));
 				Goods goodDelete = goodDao.getGoodsByID(idGoodDelete);
-				goodDelete.setActive(0);
+				goodDelete.setActive(10);
 				if (goodDao.updateGoods(goodDelete) == 1) {
 					session.setAttribute("messageSuccess",
 							"Xoá hàng thành công!");

@@ -64,12 +64,14 @@ public class ControllerCreateGoods extends HttpServlet {
 	 *             if a servlet-specific error occurs
 	 * @throws IOException
 	 *             if an I/O error occurs
-	 * @throws SAXException 
-	 * @throws ParserConfigurationException 
-	 * @throws XPathExpressionException 
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 * @throws XPathExpressionException
 	 */
 	protected void processRequest(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException, XPathExpressionException, ParserConfigurationException, SAXException {
+			HttpServletResponse response) throws ServletException, IOException,
+			XPathExpressionException, ParserConfigurationException,
+			SAXException {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
 			/* TODO output your page here. You may use following sample code. */
@@ -237,32 +239,34 @@ public class ControllerCreateGoods extends HttpServlet {
 				String notes = ((Goods) session.getAttribute("good"))
 						.getNotes();
 				int price = (int) session.getAttribute("price");
-				float lngpickAddress=common.lngGeoCoding(pickupAdress);
-				if(session.getAttribute("lngpickupAddress")!=null){
-					lngpickAddress=(float) session.getAttribute("lngpickupAddress");
+				float lngpickAddress = common.lngGeoCoding(pickupAdress);
+				if (session.getAttribute("lngpickupAddress") != null) {
+					lngpickAddress = (float) session
+							.getAttribute("lngpickupAddress");
 				}
-				float latpickAddress=common.latGeoCoding(pickupAdress);
-				if(session.getAttribute("latpickupAddress")!=null){
-					latpickAddress=(float) session.getAttribute("latpickupAddress");
+				float latpickAddress = common.latGeoCoding(pickupAdress);
+				if (session.getAttribute("latpickupAddress") != null) {
+					latpickAddress = (float) session
+							.getAttribute("latpickupAddress");
 				}
-				float lngdeliveryAddress=common.lngGeoCoding(deliveryAddress);
-				if(session.getAttribute("lngdeliveryAddress")!=null){
-					lngpickAddress=(float) session.getAttribute("lngdeliveryAddress");
+				float lngdeliveryAddress = common.lngGeoCoding(deliveryAddress);
+				if (session.getAttribute("lngdeliveryAddress") != null) {
+					lngpickAddress = (float) session
+							.getAttribute("lngdeliveryAddress");
 				}
-				float latdeliveryAddress=common.latGeoCoding(deliveryAddress);
-				if(session.getAttribute("latdeliveryAddress")!=null){
-					latpickAddress=(float) session.getAttribute("latdeliveryAddress");
+				float latdeliveryAddress = common.latGeoCoding(deliveryAddress);
+				if (session.getAttribute("latdeliveryAddress") != null) {
+					latpickAddress = (float) session
+							.getAttribute("latdeliveryAddress");
 				}
 				Owner owner = (Owner) session.getAttribute("owner");
 				Goods goo = new Goods(weight, price, common.changeFormatDate(
 						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"), pickupAdress,
 						common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-								"MM-dd-yyyy"), deliveryAddress,
-								lngpickAddress,
-								latpickAddress,
-								lngdeliveryAddress,
-								latdeliveryAddress, notes,
-						createTime, 1, owner.getOwnerID(), GoodsCategoryID);
+								"MM-dd-yyyy"), deliveryAddress, lngpickAddress,
+						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
+						notes, createTime, 1, owner.getOwnerID(),
+						GoodsCategoryID);
 
 				List<Route> list = routeDao.getAllRoute();
 				Route[] listRou = new Route[list.size()];
@@ -277,7 +281,8 @@ public class ControllerCreateGoods extends HttpServlet {
 					session.removeAttribute("price");
 					session.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
-
+					session.setAttribute("detailGood1",
+							goodDao.getGoodsByID(idnewGood));
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
 									+ idnewGood);
@@ -308,42 +313,54 @@ public class ControllerCreateGoods extends HttpServlet {
 			}
 			if ("detailroutepickupAddress".equals(action)) {
 
-				Goods good=(Goods) session.getAttribute("router");
-				String address=good.getPickupAddress();
-				session.setAttribute("latpickupAddress", common.latGeoCoding(address));
-				session.setAttribute("lngpickupAddress", common.lngGeoCoding(address));
+				Goods good = (Goods) session.getAttribute("router");
+				String address = good.getPickupAddress();
+				session.setAttribute("latpickupAddress",
+						common.latGeoCoding(address));
+				session.setAttribute("lngpickupAddress",
+						common.lngGeoCoding(address));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("clearpickupAddress.jsp");
 				rd.forward(request, response);
-		
+
 			}
 			if ("finishClearPickupAddress".equals(action)) {
 
-				session.setAttribute("latpickAddress", Float.parseFloat(request.getParameter("latpickAddress")));
-				session.setAttribute("lngpickAddress", Float.parseFloat(request.getParameter("lngpickAddress")));
-				System.out.println(Float.parseFloat(request.getParameter("latpickAddress")));
-				System.out.println(Float.parseFloat(request.getParameter("lngpickAddress")));
+				session.setAttribute("latpickAddress", Float.parseFloat(request
+						.getParameter("latpickAddress")));
+				session.setAttribute("lngpickAddress", Float.parseFloat(request
+						.getParameter("lngpickAddress")));
+				System.out.println(Float.parseFloat(request
+						.getParameter("latpickAddress")));
+				System.out.println(Float.parseFloat(request
+						.getParameter("lngpickAddress")));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);
 			}
 			if ("detailroutedeliveryAddress".equals(action)) {
 
-				Goods good=(Goods) session.getAttribute("router");
-				String address=good.getDeliveryAddress();
-				session.setAttribute("latdeliveryAddress", common.latGeoCoding(address));
-				session.setAttribute("lngdeliveryAddress", common.lngGeoCoding(address));
+				Goods good = (Goods) session.getAttribute("router");
+				String address = good.getDeliveryAddress();
+				session.setAttribute("latdeliveryAddress",
+						common.latGeoCoding(address));
+				session.setAttribute("lngdeliveryAddress",
+						common.lngGeoCoding(address));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("cleardeliveryAddress.jsp");
 				rd.forward(request, response);
-		
+
 			}
 			if ("finishClearDeliveryAddress".equals(action)) {
 
-				session.setAttribute("latdeliveryAddress", Float.parseFloat(request.getParameter("latdeliveryAddress")));
-				session.setAttribute("lngdeliveryAddress", Float.parseFloat(request.getParameter("lngdeliveryAddress")));
-				System.out.println(Float.parseFloat(request.getParameter("latdeliveryAddress")));
-				System.out.println(Float.parseFloat(request.getParameter("lngdeliveryAddress")));
+				session.setAttribute("latdeliveryAddress", Float
+						.parseFloat(request.getParameter("latdeliveryAddress")));
+				session.setAttribute("lngdeliveryAddress", Float
+						.parseFloat(request.getParameter("lngdeliveryAddress")));
+				System.out.println(Float.parseFloat(request
+						.getParameter("latdeliveryAddress")));
+				System.out.println(Float.parseFloat(request
+						.getParameter("lngdeliveryAddress")));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);

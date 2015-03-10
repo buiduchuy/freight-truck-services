@@ -188,150 +188,168 @@ public class ControllerMakeDeal extends HttpServlet {
 				}
 			}
 			if ("viewSuggest".equals(action)) {
-				int idGood = Integer.parseInt(request.getParameter("txtIdGood"));
+				int idGood = Integer
+						.parseInt(request.getParameter("txtIdGood"));
+
 				List<Deal> listDealById = dealDao.getDealByGoodsID(idGood);
-				List<Deal> list= new ArrayList<Deal>();
-				for (Deal deal : listDealById) {
-					if(deal.getRefDealID()==0){
-						list.add(deal);
-					}
-				}
-				Deal[] listDeal = new Deal[list.size()];
-				list.toArray(listDeal);
-				session.setAttribute("listDeal", listDeal);
-				if (listDeal.length != 0) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("danh-sach-de-nghi.jsp");
-					rd.forward(request, response);
-				} else {
+				if (listDealById.size() == 0) {
 					session.setAttribute("messageError",
 							"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
 									+ idGood);
 					rd.forward(request, response);
-				}
-			}
-			if ("viewDetailDeal".equals(action)) {
-				int idDeal = Integer.parseInt(request.getParameter("dealID"));
-				Deal dealFa = dealDao.getDealByID(idDeal);
-				List<Deal> list = new ArrayList<Deal>();
-				List<Deal> listDealByGoodId = dealDao.getDealByGoodsID(dealFa
-						.getGoodsID());
-				for (int i = 0; i < listDealByGoodId.size(); i++) {
-					if (listDealByGoodId.get(i).getRouteID() == dealFa
-							.getRouteID()
-							&& listDealByGoodId.get(i).getDealStatusID() != 3
-							&& listDealByGoodId.get(i).getDealStatusID() != 4) {
-						listDealByGoodId.get(i).setCreateTime(
-								common.changeFormatDate(listDealByGoodId.get(i)
-										.getCreateTime(),
-										"yyyy-MM-dd hh:mm:ss.s",
-										"hh:mm dd-MM-yyyy"));
-						list.add(listDealByGoodId.get(i));
+				} else {
+					List<Deal> list = new ArrayList<Deal>();
+					for (Deal deal : listDealById) {
+						if (deal.getRefDealID() == 0) {
+							list.add(deal);
+						}
+						if (list.size() != 0) {
+							Deal[] listDeal = new Deal[list.size()];
+							list.toArray(listDeal);
+							System.out.println(listDeal.length);
+							session.setAttribute("listDeal", listDeal);
+							RequestDispatcher rd = request
+									 .getRequestDispatcher("danh-sach-de-nghi.jsp");
+									 rd.forward(request, response);
+						}else{
+							session.setAttribute("messageError",
+									"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
+							RequestDispatcher rd = request
+									.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+											+ idGood);
+							rd.forward(request, response);
+						}
 					}
 				}
-				Deal[] listDeal = new Deal[list.size()];
-				list.toArray(listDeal);
-				session.setAttribute("listDealDetail", listDeal);
-				session.setAttribute("dealFa", dealFa);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("chi-tiet-de-nghi.jsp");
-				rd.forward(request, response);
-			}
-			if ("sendOffer".equals(action)) {
-				int idDealFa = ((Deal) session.getAttribute("dealFa"))
-						.getDealID();
-
-				Deal dealFa = dealDao.getDealByID(idDealFa);
-				int price = Integer.parseInt(request.getParameter("txtPrice"));
-				DateFormat dateFormat = new SimpleDateFormat(
-						"yyyy/MM/dd HH:mm:ss");
-				Date date = new Date();
-				String createTime = dateFormat.format(date);
-				String notes = "";
-				try {
-					notes = notes + request.getParameter("txtNotes");
-				} catch (Exception ex) {
-
-				}
-				dealFa.setDealStatusID(1);
-				dealFa.setPrice(price);
-				dealFa.setNotes(notes);
-				dealFa.setCreateTime(createTime);
-				dealFa.setCreateBy("owner");
-				dealFa.setRefDealID(idDealFa);
-				if (dealDao.insertDeal(dealFa) != -1) {
-					session.setAttribute("messageSuccess",
-							"Gửi đề nghị thành công");
+				if ("viewDetailDeal".equals(action)) {
+					int idDeal = Integer.parseInt(request
+							.getParameter("dealID"));
+					Deal dealFa = dealDao.getDealByID(idDeal);
+					List<Deal> list = new ArrayList<Deal>();
+					List<Deal> listDealByGoodId = dealDao
+							.getDealByGoodsID(dealFa.getGoodsID());
+					for (int i = 0; i < listDealByGoodId.size(); i++) {
+						if (listDealByGoodId.get(i).getRouteID() == dealFa
+								.getRouteID()
+								&& listDealByGoodId.get(i).getDealStatusID() != 3
+								&& listDealByGoodId.get(i).getDealStatusID() != 4) {
+							listDealByGoodId.get(i).setCreateTime(
+									common.changeFormatDate(listDealByGoodId
+											.get(i).getCreateTime(),
+											"yyyy-MM-dd hh:mm:ss.s",
+											"hh:mm dd-MM-yyyy"));
+							list.add(listDealByGoodId.get(i));
+						}
+					}
+					Deal[] listDeal = new Deal[list.size()];
+					list.toArray(listDeal);
+					session.setAttribute("listDealDetail", listDeal);
+					session.setAttribute("dealFa", dealFa);
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
-									+ dealFa.getGoodsID());
-					rd.forward(request, response);
-				} else {
-					session.setAttribute("messageError",
-							"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
-									+ idDealFa);
+							.getRequestDispatcher("chi-tiet-de-nghi.jsp");
 					rd.forward(request, response);
 				}
+				if ("sendOffer".equals(action)) {
+					int idDealFa = ((Deal) session.getAttribute("dealFa"))
+							.getDealID();
 
-			}
-			if ("confirmDeal".equals(action)) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				String deal = dealProcess.acceptDeal(idDeal);
+					Deal dealFa = dealDao.getDealByID(idDealFa);
+					int price = Integer.parseInt(request
+							.getParameter("txtPrice"));
+					DateFormat dateFormat = new SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss");
+					Date date = new Date();
+					String createTime = dateFormat.format(date);
+					String notes = "";
+					try {
+						notes = notes + request.getParameter("txtNotes");
+					} catch (Exception ex) {
 
-				if ("Accept deal SUCCESS".equals(deal)) {
-					session.setAttribute("messageSuccess",
-							"Hoàn thành hoá đơn!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
-					rd.forward(request, response);
-				} else {
-					session.setAttribute("messageError",
-							"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
+					}
+					dealFa.setDealStatusID(1);
+					dealFa.setPrice(price);
+					dealFa.setNotes(notes);
+					dealFa.setCreateTime(createTime);
+					dealFa.setCreateBy("owner");
+					dealFa.setRefDealID(idDealFa);
+					if (dealDao.insertDeal(dealFa) != -1) {
+						session.setAttribute("messageSuccess",
+								"Gửi đề nghị thành công");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
+										+ dealFa.getGoodsID());
+						rd.forward(request, response);
+					} else {
+						session.setAttribute("messageError",
+								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+										+ idDealFa);
+						rd.forward(request, response);
+					}
 
 				}
-			}
-			if ("declineDeal".equals(action)) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
+				if ("confirmDeal".equals(action)) {
+					int idDeal = Integer.parseInt(request
+							.getParameter("idDeal"));
+					String deal = dealProcess.acceptDeal(idDeal);
 
-				Deal declineDeal = dealDao.getDealByID(idDeal);
-				declineDeal.setDealStatusID(3);
-				int update = dealDao.updateDeal(declineDeal);
-				int idgood = declineDeal.getGoodsID();
-				if (dealProcess.declineDeal1(declineDeal) != 0) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
-									+ idgood);
-					rd.forward(request, response);
-				}
-			}
-			if ("cancelDeal".equals(action)) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
+					if ("Accept deal SUCCESS".equals(deal)) {
+						session.setAttribute("messageSuccess",
+								"Hoàn thành hoá đơn!");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+						rd.forward(request, response);
+					} else {
+						session.setAttribute("messageError",
+								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
 
-				Deal cancelDeal = dealDao.getDealByID(idDeal);
-				int idgood = cancelDeal.getGoodsID();
-				if (dealProcess.cancelDeal1(cancelDeal) != 0) {
-					cancelDeal.setDealStatusID(4);
-					int update = dealDao.updateDeal(cancelDeal);
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
-									+ idgood);
-					rd.forward(request, response);
+					}
 				}
+				if ("declineDeal".equals(action)) {
+					int idDeal = Integer.parseInt(request
+							.getParameter("idDeal"));
+
+					Deal declineDeal = dealDao.getDealByID(idDeal);
+					declineDeal.setDealStatusID(3);
+					int update = dealDao.updateDeal(declineDeal);
+					int idgood = declineDeal.getGoodsID();
+					if (dealProcess.declineDeal1(declineDeal) != 0) {
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
+										+ idgood);
+						rd.forward(request, response);
+					}
+				}
+				if ("cancelDeal".equals(action)) {
+					int idDeal = Integer.parseInt(request
+							.getParameter("idDeal"));
+
+					Deal cancelDeal = dealDao.getDealByID(idDeal);
+					int idgood = cancelDeal.getGoodsID();
+					if (dealProcess.cancelDeal1(cancelDeal) != 0) {
+						cancelDeal.setDealStatusID(4);
+						int update = dealDao.updateDeal(cancelDeal);
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
+										+ idgood);
+						rd.forward(request, response);
+					}
+				}
+				// out.println("<!DOCTYPE html>");
+				// out.println("<html>");
+				// out.println("<head>");
+				// out.println("<title>Servlet Controller</title>");
+				// out.println("</head>");
+				// out.println("<body>");
+				// out.println("<h1>Servlet Controller at " +
+				// request.getContextPath() + "</h1>");
+				// out.println("</body>");
+				// out.println("</html>");
+
 			}
-			// out.println("<!DOCTYPE html>");
-			// out.println("<html>");
-			// out.println("<head>");
-			// out.println("<title>Servlet Controller</title>");
-			// out.println("</head>");
-			// out.println("<body>");
-			// out.println("<h1>Servlet Controller at " +
-			// request.getContextPath() + "</h1>");
-			// out.println("</body>");
-			// out.println("</html>");
 		}
 	}
 
