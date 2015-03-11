@@ -215,9 +215,7 @@ public class ControllerMakeDeal extends HttpServlet {
 						.getGoodsID());
 				for (int i = 0; i < listDealByGoodId.size(); i++) {
 					if (listDealByGoodId.get(i).getRouteID() == dealFa
-							.getRouteID()
-							&& listDealByGoodId.get(i).getDealStatusID() != 3
-							&& listDealByGoodId.get(i).getDealStatusID() != 4) {
+							.getRouteID()) {
 						listDealByGoodId.get(i).setCreateTime(
 								common.changeFormatDate(listDealByGoodId.get(i)
 										.getCreateTime(),
@@ -275,9 +273,7 @@ public class ControllerMakeDeal extends HttpServlet {
 			}
 			if ("confirmDeal".equals(action)) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				String deal = dealProcess.acceptDeal(idDeal);
-
-				if ("Accept deal SUCCESS".equals(deal)) {
+				if (dealProcess.acceptDeal1(dealDao.getDealByID(idDeal))!=0) {
 					session.setAttribute("messageSuccess",
 							"Hoàn thành hoá đơn!");
 					RequestDispatcher rd = request
