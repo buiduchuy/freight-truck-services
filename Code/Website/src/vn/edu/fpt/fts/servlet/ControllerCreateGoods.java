@@ -88,7 +88,7 @@ public class ControllerCreateGoods extends HttpServlet {
 			DriverDAO driverDao = new DriverDAO();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
-			Common common = new Common();
+			Common commonDao = new Common();
 			if ("next1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
@@ -119,14 +119,14 @@ public class ControllerCreateGoods extends HttpServlet {
 				Goods r = (Goods) session.getAttribute("router");
 				DecimalFormat formatPrice = new DecimalFormat("#");
 				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(common.perKilometer
-								* common.perKilogram
+						.format(Common.perKilometer
+								* Common.perKilogram
 								* weight
-								* common.distance(common.latGeoCoding(r
-										.getPickupAddress()), common
+								* commonDao.distance(commonDao.latGeoCoding(r
+										.getPickupAddress()), commonDao
 										.lngGeoCoding(r.getPickupAddress()),
-										common.latGeoCoding(r
-												.getDeliveryAddress()), common
+										commonDao.latGeoCoding(r
+												.getDeliveryAddress()), commonDao
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
@@ -145,8 +145,8 @@ public class ControllerCreateGoods extends HttpServlet {
 				if(price==0){
 					price=priceSuggest;
 				}
-				double total = price + common.priceCreateGood;
-				session.setAttribute("priceCreate", common.priceCreateGood);
+				double total = price + Common.priceCreateGood;
+				session.setAttribute("priceCreate", Common.priceCreateGood);
 				session.setAttribute("total", total);
 				session.setAttribute("price", price);
 				if (session.getAttribute("router") == null) {
@@ -183,14 +183,14 @@ public class ControllerCreateGoods extends HttpServlet {
 				Goods g = (Goods) session.getAttribute("good");
 				Goods r = (Goods) session.getAttribute("router");
 				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(common.perKilometer
-								* common.perKilogram
+						.format(Common.perKilometer
+								* Common.perKilogram
 								* g.getWeight()
-								* common.distance(common.latGeoCoding(r
-										.getPickupAddress()), common
+								* commonDao.distance(commonDao.latGeoCoding(r
+										.getPickupAddress()), commonDao
 										.lngGeoCoding(r.getPickupAddress()),
-										common.latGeoCoding(r
-												.getDeliveryAddress()), common
+										commonDao.latGeoCoding(r
+												.getDeliveryAddress()), commonDao
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
@@ -231,14 +231,14 @@ public class ControllerCreateGoods extends HttpServlet {
 				session.setAttribute("good", g);
 				Goods r = (Goods) session.getAttribute("router");
 				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(common.perKilometer
-								* common.perKilogram
+						.format(Common.perKilometer
+								* Common.perKilogram
 								* weight
-								* common.distance(common.latGeoCoding(r
-										.getPickupAddress()), common
+								* commonDao.distance(commonDao.latGeoCoding(r
+										.getPickupAddress()), commonDao
 										.lngGeoCoding(r.getPickupAddress()),
-										common.latGeoCoding(r
-												.getDeliveryAddress()), common
+										commonDao.latGeoCoding(r
+												.getDeliveryAddress()), commonDao
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
@@ -300,39 +300,40 @@ public class ControllerCreateGoods extends HttpServlet {
 				String notes = ((Goods) session.getAttribute("good"))
 						.getNotes();
 				Double price = (Double) session.getAttribute("price");
-				float lngpickAddress = common.lngGeoCoding(pickupAdress);
+				float lngpickAddress = commonDao.lngGeoCoding(pickupAdress);
 				if (session.getAttribute("lngpickupAddress") != null) {
 					lngpickAddress = (float) session
 							.getAttribute("lngpickupAddress");
 				}
-				float latpickAddress = common.latGeoCoding(pickupAdress);
+				float latpickAddress = commonDao.latGeoCoding(pickupAdress);
 				if (session.getAttribute("latpickupAddress") != null) {
 					latpickAddress = (float) session
 							.getAttribute("latpickupAddress");
 				}
-				float lngdeliveryAddress = common.lngGeoCoding(deliveryAddress);
+				float lngdeliveryAddress = commonDao.lngGeoCoding(deliveryAddress);
 				if (session.getAttribute("lngdeliveryAddress") != null) {
 					lngpickAddress = (float) session
 							.getAttribute("lngdeliveryAddress");
 				}
-				float latdeliveryAddress = common.latGeoCoding(deliveryAddress);
+				float latdeliveryAddress = commonDao.latGeoCoding(deliveryAddress);
 				if (session.getAttribute("latdeliveryAddress") != null) {
 					latpickAddress = (float) session
 							.getAttribute("latdeliveryAddress");
 				}
 				Owner owner = (Owner) session.getAttribute("owner");
-				Goods goo = new Goods(weight, price, common.changeFormatDate(
+				Goods goo = new Goods(weight, price, commonDao.changeFormatDate(
 						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"), pickupAdress,
-						common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+						commonDao.changeFormatDate(deliveryTime, "dd-MM-yyyy",
 								"MM-dd-yyyy"), deliveryAddress, lngpickAddress,
 						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
-						notes, createTime, common.activate, owner.getOwnerID(),
+						notes, createTime, Common.activate, owner.getOwnerID(),
 						GoodsCategoryID);
 				int idnewGood = goodDao.insertGoods(goo);
 				if (idnewGood != -1) {
 					session.removeAttribute("router");
 					session.removeAttribute("good");
 					session.removeAttribute("price");
+					session.setAttribute("detailGood1", goodDao.getGoodsByID(idnewGood));
 					session.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
 					RequestDispatcher rd = request
@@ -353,9 +354,9 @@ public class ControllerCreateGoods extends HttpServlet {
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getPickupAddress();
 				session.setAttribute("latpickupAddress",
-						common.latGeoCoding(address));
+						commonDao.latGeoCoding(address));
 				session.setAttribute("lngpickupAddress",
-						common.lngGeoCoding(address));
+						commonDao.lngGeoCoding(address));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("clearpickupAddress.jsp");
 				rd.forward(request, response);
@@ -380,9 +381,9 @@ public class ControllerCreateGoods extends HttpServlet {
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getDeliveryAddress();
 				session.setAttribute("latdeliveryAddress",
-						common.latGeoCoding(address));
+						commonDao.latGeoCoding(address));
 				session.setAttribute("lngdeliveryAddress",
-						common.lngGeoCoding(address));
+						commonDao.lngGeoCoding(address));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("cleardeliveryAddress.jsp");
 				rd.forward(request, response);

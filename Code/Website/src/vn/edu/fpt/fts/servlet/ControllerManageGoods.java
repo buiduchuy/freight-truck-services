@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
+
+import org.xml.sax.SAXException;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
@@ -75,8 +80,9 @@ public class ControllerManageGoods extends HttpServlet {
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
 			MatchingProcess matchingProcess = new MatchingProcess();
-			Common common = new Common();
+			Common commonDao = new Common();
 			if ("suggestFromSystem".equals(action)) {
+				session.removeAttribute("listRouter");
 				int IdGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
 				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
@@ -86,15 +92,14 @@ public class ControllerManageGoods extends HttpServlet {
 					List<Driver> listDriver = driverDao.getAllDriver();
 					Driver[] listDri = new Driver[listDriver.size()];
 					listDriver.toArray(listDri);
-					session.setAttribute("detailGood", goodDao.getGoodsByID(IdGood));
+					session.setAttribute("detailGood",
+							goodDao.getGoodsByID(IdGood));
 					session.setAttribute("listRouter", listRou);
 					session.setAttribute("listDriver", listDri);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("goi-y-he-thong.jsp");
 					rd.forward(request, response);
-				}else{
-					session.setAttribute("messageError",
-							"Không có gợi ý nào!");
+				} else {
 					RequestDispatcher rd = request
 							.getRequestDispatcher("goi-y-he-thong.jsp");
 					rd.forward(request, response);
@@ -108,11 +113,11 @@ public class ControllerManageGoods extends HttpServlet {
 				for (int i = 0; i < manageGood.size(); i++) {
 					if (manageGood.get(i).getActive() == 1) {
 						manageGood.get(i).setPickupTime(
-								common.changeFormatDate(manageGood.get(i)
+								commonDao.changeFormatDate(manageGood.get(i)
 										.getPickupTime(),
 										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood.get(i).setDeliveryTime(
-								common.changeFormatDate(manageGood.get(i)
+								commonDao.changeFormatDate(manageGood.get(i)
 										.getDeliveryTime(),
 										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood1.add(manageGood.get(i));
@@ -130,13 +135,17 @@ public class ControllerManageGoods extends HttpServlet {
 					int idGood = Integer.parseInt(request
 							.getParameter("idGood"));
 					Goods good = goodDao.getGoodsByID(idGood);
-					good.setPickupTime(common.changeFormatDate(
+					good.setPickupTime(commonDao.changeFormatDate(
 							good.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
 							"dd-MM-yyyy"));
-					good.setDeliveryTime(common.changeFormatDate(
+					good.setDeliveryTime(commonDao.changeFormatDate(
 							good.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
 							"dd-MM-yyyy"));
 					session.setAttribute("detailGood1", good);
+					session.setAttribute("priceCreateGood",
+							commonDao.priceCreateGood);
+					session.setAttribute("priceTotal", good.getPrice()
+							+ commonDao.priceCreateGood);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-hang.jsp");
 					rd.forward(request, response);
@@ -174,16 +183,57 @@ public class ControllerManageGoods extends HttpServlet {
 				} catch (Exception ex) {
 
 				}
-				float a = Float.parseFloat("10");
+
 				double price = Double.parseDouble(request
 						.getParameter("txtPrice"));
-				Goods good = new Goods(go.getGoodsID(), weight, price,
-						common.changeFormatDate(pickupTime, "dd-MM-yyyy",
-								"MM-dd-yyyy"), pickupAddress,
-						common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-								"MM-dd-yyyy"), deliveryAddress, a, a, a, a,
-						notes, go.getCreateTime().toString(), 1,
-						go.getOwnerID(), goodsCategoryID);
+				if (price == 0) {
+					DecimalFormat formatPrice = new DecimalFormat("#");
+					try {
+						price = Double
+								.valueOf(formatPrice.format(Common.perKilometer
+										* Common.perKilogram
+										* weight
+										* commonDao.distance(
+												commonDao.latGeoCoding(pickupAddress),
+												commonDao.lngGeoCoding(pickupAddress),
+												commonDao.latGeoCoding(deliveryAddress),
+												commonDao.lngGeoCoding(deliveryAddress),
+												"K")));
+					} catch (NumberFormatException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (XPathExpressionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParserConfigurationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (SAXException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				Goods good=new Goods();
+				try {
+					good = new Goods(go.getGoodsID(), weight, price,
+							commonDao.changeFormatDate(pickupTime, "dd-MM-yyyy",
+									"MM-dd-yyyy"), pickupAddress,
+									commonDao.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+									"MM-dd-yyyy"), deliveryAddress,
+									commonDao.lngGeoCoding(pickupAddress), commonDao.latGeoCoding(pickupAddress),
+									commonDao.lngGeoCoding(deliveryAddress), commonDao.latGeoCoding(deliveryAddress), notes, go
+									.getCreateTime().toString(), Common.activate,
+							go.getOwnerID(), goodsCategoryID);
+				} catch (XPathExpressionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SAXException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 				if (goodDao.updateGoods(good) == 1) {
 					session.setAttribute("messageSuccess",
@@ -254,11 +304,11 @@ public class ControllerManageGoods extends HttpServlet {
 				for (int i = 0; i < manageGood.size(); i++) {
 					if (manageGood.get(i).getActive() == 1) {
 						manageGood.get(i).setPickupTime(
-								common.changeFormatDate(manageGood.get(i)
+								commonDao.changeFormatDate(manageGood.get(i)
 										.getPickupTime(),
 										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood.get(i).setDeliveryTime(
-								common.changeFormatDate(manageGood.get(i)
+								commonDao.changeFormatDate(manageGood.get(i)
 										.getDeliveryTime(),
 										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood1.add(manageGood.get(i));

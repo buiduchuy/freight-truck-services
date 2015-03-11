@@ -133,7 +133,7 @@
 										<div class="row">
 											<div class="submit-area right">
 												<a class="button success"
-													href="ControllerMakeDeal?btnAction=sendSuggest&routeID=${detailRoute.routeID }&goodID="
+													href="ControllerMakeDeal?btnAction=sendSuggest&txtrouteID=${detailRoute.routeID }&txtgoodID=${detailGood1.goodsID}"
 													onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 													<i class="icon-envelope"></i> Gửi để nghị
 												</a>

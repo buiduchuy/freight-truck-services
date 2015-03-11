@@ -65,6 +65,7 @@
 									<%
 										request.getSession().removeAttribute("messageSuccess");
 									%>
+									
 								</c:if>
 								<c:if test="${not empty messageError}">
 									<div class="row">
