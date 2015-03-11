@@ -55,6 +55,7 @@
 												class="validate">*</small> Loại hàng: </label>
 										</div>
 										<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
+										<c:set var="priceCreate" value="${sessionScope.priceCreate }" />
 										<div class="small-6 columns">
 											<c:forEach var="row" items="${typeGoods }">
 												<c:if test="${row.goodsCategoryId==good.goodsCategoryID }">
@@ -168,13 +169,14 @@
 										<label class="left inline">(Ngàn đồng) </label>
 									</div>
 								</div>
+								
 								<div class="row">
 									<div class="small-4 columns">
 										<label class="right inline">Chi phí tạo hàng: </label>
 									</div>
 									<div class="small-4 columns left">
-										<input type="text" id="right-label" name="txtPrice"
-											value="15" readonly="readonly"/>
+										<input type="text" id="right-label" 
+											value="${priceCreate }" readonly="readonly"/>
 									</div>
 									<div class="small-4 columns left">
 										<label class="left inline">(Ngàn đồng) </label>

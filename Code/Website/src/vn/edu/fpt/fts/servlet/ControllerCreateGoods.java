@@ -117,7 +117,7 @@ public class ControllerCreateGoods extends HttpServlet {
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
 				Goods r = (Goods) session.getAttribute("router");
-				DecimalFormat formatPrice = new DecimalFormat("####,###,###.0");
+				DecimalFormat formatPrice = new DecimalFormat("#");
 				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
 						.format(common.perKilometer
 								* common.perKilogram
@@ -146,6 +146,7 @@ public class ControllerCreateGoods extends HttpServlet {
 					price=priceSuggest;
 				}
 				double total = price + common.priceCreateGood;
+				session.setAttribute("priceCreate", common.priceCreateGood);
 				session.setAttribute("total", total);
 				session.setAttribute("price", price);
 				if (session.getAttribute("router") == null) {
@@ -178,7 +179,7 @@ public class ControllerCreateGoods extends HttpServlet {
 				rd.forward(request, response);
 			}
 			if ("viewCreate_3".equals(action)) {
-				DecimalFormat formatPrice = new DecimalFormat("####,###,###.0");
+				DecimalFormat formatPrice = new DecimalFormat("#");
 				Goods g = (Goods) session.getAttribute("good");
 				Goods r = (Goods) session.getAttribute("router");
 				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
@@ -225,7 +226,7 @@ public class ControllerCreateGoods extends HttpServlet {
 
 				}
 
-				DecimalFormat formatPrice = new DecimalFormat("####,###,###.0");
+				DecimalFormat formatPrice = new DecimalFormat("#");
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
 				Goods r = (Goods) session.getAttribute("router");
