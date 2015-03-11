@@ -227,6 +227,7 @@ public class ControllerMakeDeal extends HttpServlet {
 				Deal[] listDeal = new Deal[list.size()];
 				list.toArray(listDeal);
 				session.setAttribute("listDealDetail", listDeal);
+				session.setAttribute("sizeHistory", listDeal.length);
 				session.setAttribute("dealFa", dealFa);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("chi-tiet-de-nghi.jsp");
@@ -258,8 +259,8 @@ public class ControllerMakeDeal extends HttpServlet {
 					session.setAttribute("messageSuccess",
 							"Gửi đề nghị thành công");
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
-									+ dealFa.getGoodsID());
+							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+									+ idDealFa);
 					rd.forward(request, response);
 				} else {
 					session.setAttribute("messageError",
@@ -294,8 +295,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idgood = declineDeal.getGoodsID();
 				if (dealProcess.declineDeal1(declineDeal) != 0) {
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
-									+ idgood);
+							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+									+ dealDao.getDealByID(idDeal).getRefDealID());
 					rd.forward(request, response);
 				}
 			}
@@ -308,8 +309,8 @@ public class ControllerMakeDeal extends HttpServlet {
 					cancelDeal.setDealStatusID(4);
 					int update = dealDao.updateDeal(cancelDeal);
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewSuggest&txtIdGood="
-									+ idgood);
+							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+									+ dealDao.getDealByID(idDeal).getRefDealID());
 					rd.forward(request, response);
 				}
 			}

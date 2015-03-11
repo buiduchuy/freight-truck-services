@@ -10,6 +10,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <jsp:include page="header.jsp" />
 <c:set var="historyDeal" value="${sessionScope.listDealDetail}" />
+<c:set var="sizeHistory" value="${sessionScope.sizeHistory}" />
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <div class="large-12 columns">
 	<div class="large-3 columns">
@@ -36,37 +37,36 @@
 								<font color="orange">Chi tiết đề nghị</font>
 							</h2>
 							<c:set var="messageSuccess"
-									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError"
-									value="${sessionScope.messageError }" />
-								<c:if test="${not empty messageSuccess}">
-									<div class="row">
-										<div data-alert class="alert-box success radius inline">
-											${messageSuccess} <a href="#" class="close">&times;</a>
-										</div>
+								value="${sessionScope.messageSuccess }" />
+							<c:set var="messageError" value="${sessionScope.messageError }" />
+							<c:if test="${not empty messageSuccess}">
+								<div class="row">
+									<div data-alert class="alert-box success radius inline">
+										${messageSuccess} <a href="#" class="close">&times;</a>
 									</div>
-									<%
-										request.getSession().removeAttribute(
-														"messageSuccess");
-									%>
-								</c:if>
-								<c:if test="${not empty messageError}">
-									<div class="row">
-										<div data-alert class="alert-box alert radius inline">
-											${messageError} <a href="#" class="close">&times;</a>
-										</div>
+								</div>
+								<%
+									request.getSession().removeAttribute("messageSuccess");
+								%>
+							</c:if>
+							<c:if test="${not empty messageError}">
+								<div class="row">
+									<div data-alert class="alert-box alert radius inline">
+										${messageError} <a href="#" class="close">&times;</a>
+									</div>
 
-									</div>
-									<%
-										request.getSession().removeAttribute(
-														"messageError");
-									%>
-								</c:if>
+								</div>
+								<%
+									request.getSession().removeAttribute("messageError");
+								%>
+							</c:if>
 						</div>
 						<div class="large-12 columns">
 							<div class="extra-title">
-							
-								<h3><font color="blue">Lịch sử đề nghị</font> </h3>
+
+								<h3>
+									<font color="blue">Lịch sử đề nghị</font>
+								</h3>
 							</div>
 							<table id="example" class="display" cellspacing="0" width="100%">
 								<thead>
@@ -87,29 +87,46 @@
 									</tr>
 								</thead>
 								<tbody>
+									<c:set var="count" value="0" />
 									<c:if test="${not empty historyDeal }">
 										<c:forEach var="history" items="${historyDeal }">
+											<c:set var="count" value="${count+1 }" />
 											<tr>
 												<td>${history.createTime }</td>
 												<td>${history.createBy }</td>
 												<td>${history.price }</td>
 												<td>${history.notes }</td>
 												<c:choose>
-													<c:when test="${history.createBy== 'driver' }">
-														<td><a class="button alert"
-															href="ControllerMakeDeal?btnAction=declineDeal&idDeal=${history.dealID }"
-															onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')">Từ chối</a>
-														<a class="button success"
-															href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }"
-															onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
-																nhận</a></td>
+													<c:when test="${count==sizeHistory}">
+														<c:choose>
+															<c:when
+																test="${history.dealStatusID!=3 and  history.dealStatusID!=4}">
+																<c:choose>
+																	<c:when test="${history.createBy== 'driver'}">
+																		<td><a class="button alert"
+																			href="ControllerMakeDeal?btnAction=declineDeal&idDeal=${history.dealID }"
+																			onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')">Từ
+																				chối</a> <a class="button success"
+																			href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }"
+																			onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
+																				nhận</a></td>
+
+																	</c:when>
+																	<c:otherwise>
+																		<td><a class="button alert"
+																			href="ControllerMakeDeal?btnAction=cancelDeal&idDeal=${history.dealID }"
+																			onclick="return confirm('Bạn có muốn huỷ đề nghị này không?')">Huỷ</a>
+																		</td>
+																	</c:otherwise>
+																</c:choose>
+															</c:when>
+															<c:otherwise>
+																<td></td>
+															</c:otherwise>
+														</c:choose>
 													</c:when>
 													<c:otherwise>
-														<td>
-														<a class="button alert"
-															href="ControllerMakeDeal?btnAction=cancelDeal&idDeal=${history.dealID }"
-															onclick="return confirm('Bạn có muốn huỷ đề nghị này không?')">Huỷ</a>
-														
+														<td></td>
 													</c:otherwise>
 												</c:choose>
 											</tr>
@@ -130,8 +147,10 @@
 					<div class="large-12 columns">
 						</br>
 						<div class="extra-title">
-								<h3><font color="blue">Phản hồi</font> </h3>
-					
+							<h3>
+								<font color="blue">Phản hồi</font>
+							</h3>
+
 						</div>
 						<div class="row">
 							<div class="small-3 columns">
