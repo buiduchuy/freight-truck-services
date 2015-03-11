@@ -301,7 +301,7 @@ public class ControllerMakeDeal extends HttpServlet {
 			}
 			if ("cancelDeal".equals(action)) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-
+				session.removeAttribute("listDeal");
 				Deal cancelDeal = dealDao.getDealByID(idDeal);
 				int idgood = cancelDeal.getGoodsID();
 				if (dealProcess.cancelDeal1(cancelDeal) != 0) {
