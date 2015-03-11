@@ -299,7 +299,7 @@ public class ControllerCreateGoods extends HttpServlet {
 						.getGoodsCategoryID();
 				String notes = ((Goods) session.getAttribute("good"))
 						.getNotes();
-				int price = (int) session.getAttribute("price");
+				Double price = (Double) session.getAttribute("price");
 				float lngpickAddress = common.lngGeoCoding(pickupAdress);
 				if (session.getAttribute("lngpickupAddress") != null) {
 					lngpickAddress = (float) session
