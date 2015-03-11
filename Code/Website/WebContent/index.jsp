@@ -66,7 +66,7 @@
                             <div class="media text-center ">
                                 <div class="media-body"><h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-truck"></i></font> Tạo hàng nhanh</a>
                                     </h4><p>Tạo hàng nhanh và dễ dàng với hướng dẫn chi tiết cho người sử dụng</p>
-                                    <a class="button" href="CreateGood.jsp"><i class="icon-ok"></i> Tạo hàng</a>
+                                    <a class="button" href="tao-hang-1.jsp"><i class="icon-ok"></i> Tạo hàng</a>
                                 </div>
                             </div>
                         </div>

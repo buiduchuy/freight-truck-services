@@ -57,8 +57,9 @@ public final class Common {
 	// Max allow distance for matching goods and routes
 	public static final int maxAllowDistance = 10;
 	// Price for 1 kilometer
-	public static final double perKilo = 15;
-	
+	public static final double perKilometer = 15;
+	public static final double perKilogram = 0.2;
+	public static final double priceCreateGood = 15;
 	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";
 
 	public String changeFormatDate(String dateInput, String oldFormat,
@@ -202,7 +203,7 @@ public final class Common {
 		}
 		return lng;
 	}
-	private double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+	public double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
 		  double theta = lon1 - lon2;
 		  double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
 		  dist = Math.acos(dist);
@@ -219,14 +220,14 @@ public final class Common {
 		/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 		/*::  This function converts decimal degrees to radians             :*/
 		/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-		private double deg2rad(double deg) {
+	public double deg2rad(double deg) {
 		  return (deg * Math.PI / 180.0);
 		}
 
 		/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
 		/*::  This function converts radians to decimal degrees             :*/
 		/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-		private  double rad2deg(double rad) {
+	public  double rad2deg(double rad) {
 		  return (rad * 180 / Math.PI);
 		}
 }
