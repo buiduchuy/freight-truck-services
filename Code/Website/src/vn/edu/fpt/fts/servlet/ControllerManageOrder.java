@@ -97,8 +97,18 @@ public class ControllerManageOrder extends HttpServlet {
 			}
 			if ("viewDetailOrder".equals(action)) {
 				int idGood = Integer.parseInt(request.getParameter("idGood"));
+				List<Deal> listDeal = dealDao.getDealByGoodsID(idGood);
+				Deal dea = new Deal();
+				for (Deal deal : listDeal) {
+					if (deal.getDealStatusID() == Common.deal_accept) {
+						dea = deal;
+					}
+				}
+				DealOrder dealOrder = dealOrderDao.getDealOrderByDealID(dea
+						.getDealID());
+				Route r = routeDao.getRouteByID(dea.getRouteID());
 				Order order = orderDao.getOrderByGoodsID(idGood);
-				DealOrder dealOrder= dealOrderDao.getDealOrderByOrderID(order.getOrderID());
+
 				try {
 					OrderStatus trackingStatus = orderStatusDao
 							.getOrderStatusByID(order.getOrderStatusID());
@@ -111,7 +121,7 @@ public class ControllerManageOrder extends HttpServlet {
 							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 					session.setAttribute("detailOrder", goodDetail);
 					session.setAttribute("orderStatus", trackingStatus);
-
+					session.setAttribute("routeOrder", r);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-order.jsp");
 					rd.forward(request, response);
@@ -126,7 +136,8 @@ public class ControllerManageOrder extends HttpServlet {
 				try {
 					order.setOrderStatusID(5);
 					if (orderDao.updateOrder(order) == 1) {
-						session.setAttribute("messageSuccess",
+						session.setAttribute(
+								"messageSuccess",
 								"Xin lỗi vì sự cố mất hàng. Hệ thống sẽ kiểm tra và báo lại cho bạn trong thời gian gần nhất!");
 						RequestDispatcher rd = request
 								.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
@@ -141,7 +152,7 @@ public class ControllerManageOrder extends HttpServlet {
 				}
 			}
 			if ("confirmOrder".equals(action)) {
-				
+
 			}
 
 			// out.println("<!DOCTYPE html>");
