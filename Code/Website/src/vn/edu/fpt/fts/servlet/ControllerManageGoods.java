@@ -74,39 +74,31 @@ public class ControllerManageGoods extends HttpServlet {
 			DriverDAO driverDao = new DriverDAO();
 			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
-			MatchingProcess matchingProcess= new MatchingProcess();
+			MatchingProcess matchingProcess = new MatchingProcess();
 			Common common = new Common();
 			if ("suggestFromSystem".equals(action)) {
 				int IdGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
-				//List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
-				List<Route> list=matchingProcess.getSuggestionRoute(IdGood);
-				List<Deal> listDeal= dealDao.getDealByGoodsID(IdGood);
-				
-				for (Deal deal : listDeal) {
-					for (Route route : list) {
-						if(route.getRouteID()==deal.getRouteID()&&deal.getDealStatusID()==Common.deal_accept&&deal.getDealStatusID()==Common.deal_pending){
-							list.remove(route);
-						}
-					}
+				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
+				if (list.size() != 0) {
+					Route[] listRou = new Route[list.size()];
+					list.toArray(listRou);
+					List<Driver> listDriver = driverDao.getAllDriver();
+					Driver[] listDri = new Driver[listDriver.size()];
+					listDriver.toArray(listDri);
+					session.setAttribute("detailGood", goodDao.getGoodsByID(IdGood));
+					session.setAttribute("listRouter", listRou);
+					session.setAttribute("listDriver", listDri);
+					RequestDispatcher rd = request
+							.getRequestDispatcher("goi-y-he-thong.jsp");
+					rd.forward(request, response);
+				}else{
+					session.setAttribute("messageError",
+							"Không có gợi ý nào!");
+					RequestDispatcher rd = request
+							.getRequestDispatcher("goi-y-he-thong.jsp");
+					rd.forward(request, response);
 				}
-				Route[] listRou = new Route[list.size()];
-				list.toArray(listRou);
-				
-				List<Driver> listDriver = driverDao.getAllDriver();
-				Driver[] listDri = new Driver[listDriver.size()];
-				listDriver.toArray(listDri);
-				session.removeAttribute("router");
-				session.removeAttribute("good");
-				session.removeAttribute("price");
-				Goods good = goodDao.getGoodsByID(IdGood);
-				session.setAttribute("detailGood1", good);
-				session.setAttribute("newGood", goodDao.getGoodsByID(IdGood));
-				session.setAttribute("listRouter", listRou);
-				session.setAttribute("listDriver", listDri);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("goi-y-he-thong.jsp");
-				rd.forward(request, response);
 			}
 			if ("manageGoods".equals(action)) {
 				Owner owner = (Owner) session.getAttribute("owner");
@@ -242,18 +234,18 @@ public class ControllerManageGoods extends HttpServlet {
 
 				}
 			}
-			if("filter".equals(action)){
-				String startDate="";
-				String endDate="";
-				try{
-					startDate=request.getParameter("txtstartdate");
-				}catch(Exception ex){
-					
+			if ("filter".equals(action)) {
+				String startDate = "";
+				String endDate = "";
+				try {
+					startDate = request.getParameter("txtstartdate");
+				} catch (Exception ex) {
+
 				}
-				try{
-					endDate=request.getParameter("txtenddate");
-				}catch(Exception ex){
-					
+				try {
+					endDate = request.getParameter("txtenddate");
+				} catch (Exception ex) {
+
 				}
 				Owner owner = (Owner) session.getAttribute("owner");
 				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner

@@ -113,12 +113,12 @@
 						<ul class="inline-list">
 							<c:choose>
 								<c:when
-									test="${namePage=='tao-hang-1.jsp' or namePage=='tao-hang-2.jsp' or namePage=='tao-hang-3.jsp' or namePage=='tao-hang-4.jsp'}">
-									<li class="active"><a href="tao-hang-1.jsp"><i
+									test="${namePage=='CreateGood.jsp' or namePage=='tao-hang-2.jsp' or namePage=='tao-hang-3.jsp' or namePage=='tao-hang-4.jsp'}">
+									<li class="active"><a href="CreateGood.jsp"><i
 											class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="tao-hang-1.jsp"><i class="icon-truck"></i>
+									<li><a href="CreateGood.jsp"><i class="icon-truck"></i>
 											Tạo hàng&nbsp;&nbsp;</a></li>
 								</c:otherwise>
 							</c:choose>

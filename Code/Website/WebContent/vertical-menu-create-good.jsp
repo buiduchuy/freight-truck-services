@@ -14,7 +14,7 @@
 					class="button secondary expand left"> Địa chỉ
 						giao nhận hàng</a></li>
 			</c:when>
-			<c:when test="${namePage=='tao-hang-1.jsp'}">
+			<c:when test="${namePage=='CreateGood.jsp'}">
 				<li><a href="#" class="button secondary expand ">Địa chỉ giao nhận
 						hàng</a></li>
 			</c:when>

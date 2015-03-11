@@ -11,67 +11,6 @@
 <c:set var="detailRoute" value="${sessionScope.viewDetailRoute }" />
 <c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
 <jsp:include page="header.jsp" />
-<style>
-html, body, #map-canvas {
-	height: 100%;
-	margin: 0px;
-	padding: 0px
-}
-
-#panel {
-	position: absolute;
-	top: 5px;
-	left: 50%;
-	margin-left: -180px;
-	z-index: 5;
-	background-color: #fff;
-	padding: 5px;
-	border: 1px solid #999;
-}
-</style>
-<script
-	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
-<script>
-	var directionsDisplay;
-	var directionsService = new google.maps.DirectionsService();
-	var map;
-
-	function initialize() {
-		directionsDisplay = new google.maps.DirectionsRenderer();
-		var chicago = new google.maps.LatLng(41.850033, -87.6500523);
-		var mapOptions = {
-			zoom : 7,
-			center : chicago
-		};
-		map = new google.maps.Map(document.getElementById('map-canvas'),
-				mapOptions);
-		directionsDisplay.setMap(map);
-	}
-
-	function calcRoute() {
-		var start = '533 Huỳnh Văn Bánh, 14, Phú Nhuận';
-		var end = 'Hanoi, Vietnam';
-		var request = {
-			origin : start,
-			destination : end,
-			travelMode : google.maps.TravelMode.DRIVING
-		};
-		directionsService.route(request, function(response, status) {
-			if (status == google.maps.DirectionsStatus.OK) {
-				directionsDisplay.setDirections(response);
-			}
-		});
-	}
-
-	google.maps.event.addDomListener(window, 'load', initialize);
-	google.maps.event.addDomListener(window, 'load', calcRoute);
-</script>
-<style>
-#map-canvas {
-	width: 100%;
-	height: 300px;
-}
-</style>
 <div class="large-12 columns">
 	<div class="large-3 columns">
 		<div class="form-content"
@@ -194,7 +133,7 @@ html, body, #map-canvas {
 										<div class="row">
 											<div class="submit-area right">
 												<a class="button success"
-													href="ControllerMakeDeal?btnAction=sendSuggest&routeID=${detailRoute.routeID }"
+													href="ControllerMakeDeal?btnAction=sendSuggest&routeID=${detailRoute.routeID }&goodID="
 													onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 													<i class="icon-envelope"></i> Gửi để nghị
 												</a>

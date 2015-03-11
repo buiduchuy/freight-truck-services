@@ -97,10 +97,22 @@ public class ControllerCreateGoods extends HttpServlet {
 
 				Goods r = new Goods(pickupTime, pickupAddress, deliveryTime,
 						deliveryAddress);
-
 				session.setAttribute("router", r);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-2.jsp");
+				rd.forward(request, response);
+			}if ("next2".equals(action)) {
+				int goodsCategoryID = Integer.parseInt(request
+						.getParameter("ddlgoodsCategoryID"));
+				int weight = Integer
+						.parseInt(request.getParameter("txtWeight"));
+				String notes = request.getParameter("txtNotes");
+				Goods g = new Goods(weight, notes, goodsCategoryID);
+				session.setAttribute("good", g);
+				
+				session.setAttribute("priceSuggest", "10");
+				RequestDispatcher rd = request
+						.getRequestDispatcher("tao-hang-3.jsp");
 				rd.forward(request, response);
 			}
 			if ("save1".equals(action)) {
@@ -118,25 +130,7 @@ public class ControllerCreateGoods extends HttpServlet {
 				rd.forward(request, response);
 
 			}
-			if ("next2".equals(action)) {
-				int goodsCategoryID = Integer.parseInt(request
-						.getParameter("ddlgoodsCategoryID"));
-				int weight = Integer
-						.parseInt(request.getParameter("txtWeight"));
-				String notes = "";
-				try {
-					notes = notes + request.getParameter("txtNotes");
-				} catch (Exception ex) {
-
-				}
-
-				Goods g = new Goods(weight, notes, goodsCategoryID);
-				session.setAttribute("good", g);
-				session.setAttribute("priceSuggest", "10");
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-3.jsp");
-				rd.forward(request, response);
-			}
+			
 			if ("save2".equals(action)) {
 				int goodsCategoryID = Integer.parseInt(request
 						.getParameter("ddlgoodsCategoryID"));
@@ -265,15 +259,8 @@ public class ControllerCreateGoods extends HttpServlet {
 						common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
 								"MM-dd-yyyy"), deliveryAddress, lngpickAddress,
 						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
-						notes, createTime, 1, owner.getOwnerID(),
+						notes, createTime, common.activate, owner.getOwnerID(),
 						GoodsCategoryID);
-
-				List<Route> list = routeDao.getAllRoute();
-				Route[] listRou = new Route[list.size()];
-				list.toArray(listRou);
-				List<Driver> listDriver = driverDao.getAllDriver();
-				Driver[] listDri = new Driver[listDriver.size()];
-				listDriver.toArray(listDri);
 				int idnewGood = goodDao.insertGoods(goo);
 				if (idnewGood != -1) {
 					session.removeAttribute("router");
@@ -281,8 +268,6 @@ public class ControllerCreateGoods extends HttpServlet {
 					session.removeAttribute("price");
 					session.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
-					session.setAttribute("detailGood1",
-							goodDao.getGoodsByID(idnewGood));
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
 									+ idnewGood);
