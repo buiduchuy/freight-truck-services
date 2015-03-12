@@ -39,6 +39,8 @@ import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
@@ -142,22 +144,65 @@ public class MainActivity extends FragmentActivity {
 		getActionBar().setHomeButtonEnabled(true);
 
 		Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
-		alarmIntent.putExtra("driverID", getIntent().getStringExtra("driverID"));
-		
+		alarmIntent
+				.putExtra("driverID", getIntent().getStringExtra("driverID"));
+
 		pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
 				alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		int interval = 10000;
+		int interval = 60000;
 
 		manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis(), interval, pendingIntent);
 
-		FragmentManager mng = getSupportFragmentManager();
-		FragmentTransaction trs = mng.beginTransaction();
-		RouteList frag1 = new RouteList();
-		trs.replace(R.id.content_frame, frag1);
-		trs.commit();
-
+		if (getIntent().getStringExtra("dealID") == null) {
+			FragmentManager mng = getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			RouteList frag1 = new RouteList();
+			trs.replace(R.id.content_frame, frag1);
+			trs.commit();
+		} else {
+			String id = getIntent().getStringExtra("dealID");
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			mNotificationManager.cancel(Integer.parseInt(id));
+			String status = getIntent().getStringExtra("status");
+			String sender = getIntent().getStringExtra("sender");
+			if(status.equals("1")) {
+				if(sender.equals("driver")) {
+					FragmentManager mng = getSupportFragmentManager();
+					FragmentTransaction trs = mng.beginTransaction();
+					CancelOffer frag = new CancelOffer();
+					Bundle bundle = new Bundle();
+					bundle.putString("dealID", id);
+					frag.setArguments(bundle);
+					trs.replace(R.id.content_frame, frag);
+					trs.addToBackStack(null);
+					trs.commit();
+				}
+				else if(sender.equals("owner")) {
+					FragmentManager mng = getSupportFragmentManager();
+					FragmentTransaction trs = mng.beginTransaction();
+					OfferResponse frag = new OfferResponse();
+					Bundle bundle = new Bundle();
+					bundle.putString("dealID", id);
+					frag.setArguments(bundle);
+					trs.replace(R.id.content_frame, frag);
+					trs.addToBackStack(null);
+					trs.commit();
+				}
+			}
+			else {
+				FragmentManager mng = getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				DealHistoryDetail frag = new DealHistoryDetail();
+				Bundle bundle = new Bundle();
+				bundle.putString("dealID", id);
+				frag.setArguments(bundle);
+				trs.replace(R.id.content_frame, frag);
+				trs.addToBackStack(null);
+				trs.commit();
+			}
+		}
 	}
 
 	private class DrawerItemClickListener implements
@@ -190,7 +235,16 @@ public class MainActivity extends FragmentActivity {
 				fragment = new SuggestList();
 				break;
 			case 6:
-				fragment = new SuggestList();
+				SharedPreferences share = getSharedPreferences("driver",
+						Context.MODE_PRIVATE);
+				Editor editor = share.edit();
+				editor.remove("driverID");
+				editor.commit();
+				Intent intent = new Intent(getApplicationContext(), Login.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_CLEAR_TASK
+						| Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
 				break;
 			default:
 				break;

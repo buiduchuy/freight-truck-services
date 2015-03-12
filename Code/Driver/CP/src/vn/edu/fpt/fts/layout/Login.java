@@ -12,11 +12,14 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+
+import com.google.android.gms.internal.ed;
 
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.ConnectivityHelper;
@@ -26,6 +29,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,29 +41,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class Login extends Activity {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Account/DriverLogin";
+	CheckBox remember;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
-		EditText password = (EditText) findViewById(R.id.editText2);
-		password.setTypeface(Typeface.DEFAULT);
-		password.setTransformationMethod(new PasswordTransformationMethod());
-		if (Build.VERSION.SDK_INT < 16) {
-			getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-					WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		SharedPreferences share = getSharedPreferences("driver",
+				Context.MODE_PRIVATE);
+		if (share.contains("driverID")) {
+			Intent intent = new Intent(Login.this, MainActivity.class);
+			intent.putExtra("driverID", share.getString("driverID", ""));
+			startActivity(intent);
 		} else {
-			View decorView = getWindow().getDecorView();
-			int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			decorView.setSystemUiVisibility(uiOptions);
-			ActionBar actionBar = getActionBar();
-			actionBar.hide();
+			setContentView(R.layout.activity_login);
+			EditText password = (EditText) findViewById(R.id.editText2);
+			remember = (CheckBox) findViewById(R.id.checkBox1);
+			password.setTypeface(Typeface.DEFAULT);
+			password.setTransformationMethod(new PasswordTransformationMethod());
+			if (Build.VERSION.SDK_INT < 16) {
+				getWindow().setFlags(
+						WindowManager.LayoutParams.FLAG_FULLSCREEN,
+						WindowManager.LayoutParams.FLAG_FULLSCREEN);
+			} else {
+				View decorView = getWindow().getDecorView();
+				int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+				decorView.setSystemUiVisibility(uiOptions);
+				ActionBar actionBar = getActionBar();
+				actionBar.hide();
+			}
 		}
 	}
 
@@ -90,9 +107,9 @@ public class Login extends Activity {
 			ws.addNameValuePair("email", email.getText().toString());
 			ws.addNameValuePair("password", password.getText().toString());
 			ws.execute(new String[] { SERVICE_URL });
-		}
-		else {
-			Toast.makeText(this, "Vui lòng kết nối mạng trước khi đăng nhập", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "Vui lòng kết nối mạng trước khi đăng nhập",
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -104,10 +121,10 @@ public class Login extends Activity {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -152,7 +169,7 @@ public class Login extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -177,10 +194,18 @@ public class Login extends Activity {
 			// handleResponse(response);
 			pDlg.dismiss();
 			if (Integer.parseInt(response) > 0) {
+				if (remember.isChecked()) {
+					SharedPreferences share = getSharedPreferences("driver",
+							Context.MODE_PRIVATE);
+					Editor editor = share.edit();
+					editor.putString("driverID", response);
+					editor.commit();
+				}
 				Toast.makeText(Login.this, "Đăng nhập thành công",
 						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(Login.this, MainActivity.class);
 				intent.putExtra("driverID", response);
+
 				startActivity(intent);
 			} else {
 				Toast.makeText(Login.this,
@@ -223,12 +248,20 @@ public class Login extends Activity {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(Login.this,
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
 
 				Log.e(TAG, e.getLocalizedMessage(), e);
 
 			}
-
 			return response;
 		}
 

@@ -64,6 +64,7 @@
     <string name="decline">Từ chối</string>
     <string name="addPoints"><u>Thêm điểm đi qua</u></string>
     <string name="ownerPhone">Số điện thoại chủ hàng:</string>
+    <string name="remember">Ghi nhớ</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Lộ trình</item>

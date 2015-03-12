@@ -17,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -49,6 +50,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class History extends Fragment {
 
@@ -104,23 +106,24 @@ public class History extends Fragment {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				String selected = spinner.getSelectedItem().toString();
-				if(selected.equals("Hiện tất cả")) {
+				if (selected.equals("Hiện tất cả")) {
 					adapter = new ListItemAdapter3(getActivity(), list);
-					list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+					list1.setEmptyView(myFragmentView
+							.findViewById(R.id.emptyElement));
 					list1.setAdapter(adapter);
 					mapFilter = map;
-				}
-				else {
+				} else {
 					listFilter = new ArrayList<ListItem>();
 					mapFilter = new ArrayList<String>();
 					for (ListItem item : list) {
-						if(item.getDate().equals(selected)) {
+						if (item.getDate().equals(selected)) {
 							listFilter.add(item);
 							mapFilter.add(map.get(list.indexOf(item)));
 						}
 					}
 					adapter = new ListItemAdapter3(getActivity(), listFilter);
-					list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+					list1.setEmptyView(myFragmentView
+							.findViewById(R.id.emptyElement));
 					list1.setAdapter(adapter);
 				}
 			}
@@ -128,9 +131,9 @@ public class History extends Fragment {
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
 		return myFragmentView;
 	}
@@ -143,10 +146,10 @@ public class History extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 100000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -191,7 +194,7 @@ public class History extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -333,8 +336,7 @@ public class History extends Fragment {
 								.replaceAll("(?i), Việt Nam", "").split(",");
 						title += " - " + end[end.length - 1].trim();
 						String status = "Trạng thái: ";
-						String driverStatus = item
-								.getString("orderStatusID");
+						String driverStatus = item.getString("orderStatusID");
 						String price = item.getString("price");
 						if (driverStatus.equals("1")) {
 							status += "Đã giao hàng";
@@ -370,8 +372,8 @@ public class History extends Fragment {
 			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_spinner_item, filter);
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+					getActivity(), android.R.layout.simple_spinner_item, filter);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			spinner.setAdapter(adapter);
 			pDlg.dismiss();
@@ -412,10 +414,17 @@ public class History extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
-
 				Log.e(TAG, e.getLocalizedMessage(), e);
-
 			}
 
 			return response;

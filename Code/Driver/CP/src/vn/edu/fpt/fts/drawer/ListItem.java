@@ -14,6 +14,12 @@ public class ListItem {
 		this.date = date;
 	}
 	
+	public ListItem(String info, String title) {
+		super();
+		this.info = info;
+		this.title = title;
+	}
+	
 	public ListItem(String title, String description, String date) {
 		super();
 		this.title = title;
