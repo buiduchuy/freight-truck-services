@@ -19,19 +19,33 @@
 		<div class="small-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-						<jsp:include page="vertical-menu-make-deal.jsp" />
-					<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
-			<div class="row"></div>
-		</div>
+				<a class="button alert expand center">MENU</a> <a
+					href="tao-hang-1.jsp" class="button info expand center">Tạo
+					hàng</a> <a href="ControllerManageGoods?btnAction=manageGoods"
+					class="button info expand left">Quản lý hàng</a>
+				<ul class="">
+
+					<li><a
+						href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
+						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
+					<li><a
+						href="ControllerMakeDeal?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
+						class="button expand secondary">Danh sách các đề nghị</a></li>
+				</ul>
+				<a href="ControllerManageOrder?btnAction=manageOrder"
+					class="button info expand left">Quản lý hoá đơn</a>
+				<div class="row"></div>
+			</div>
+			<div class="form-content "
+				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
+				<jsp:include page="vertical-pr.jsp" />
+				<div class="row"></div>
+			</div>
 		</div>
 		<div class="small-9 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<div class="form-content">
+				<div class="form-content">
 					<form action="ControllerManageGoods" method="post"
 						accept-charset="utf-8">
 						<div class="row">
@@ -73,7 +87,10 @@
 
 							<div class="large-12 columns">
 								<div class="extra-title">
-									<h3>Thông tin hàng hoá</h3>
+									<h3>
+										<font color="blue">Thông tin hàng hoá</font>
+									</h3>
+
 								</div>
 
 
@@ -137,7 +154,10 @@
 								</div>
 								<div class="row">
 									<div class="extra-title">
-										<h3>Địa chỉ giao hàng</h3>
+										<h3>
+											<font color="blue">Địa chỉ giao hàng</font>
+										</h3>
+
 									</div>
 									<div class="row">
 										<div class="small-8 columns">
@@ -169,7 +189,9 @@
 									</div>
 
 									<div class="extra-title">
-										<h3>Địa chỉ nhận hàng</h3>
+										<h3>
+											<font color="blue">Địa chỉ nhận hàng</font>
+										</h3>
 									</div>
 									<div class="row">
 										<div class="small-8 columns">
@@ -202,23 +224,57 @@
 								</div>
 								<div class="row">
 									<div class="extra-title">
-										<h3>Chi phí</h3>
+										<h3>
+											<font color="blue">Chi phí</font>
+										</h3>
 									</div>
 									<div class="row">
 										<div class="small-4 columns">
-											<label class="right inline">Chi phí tài xế: </label>
+											<label class="right inline"><small
+													class="validate">*</small>Chi phí tài xế: </label>
 										</div>
 										<div class="small-4 columns left">
 											<input type="text" id="right-label" name="txtPrice"
-												value="${detailGood1.price}" />
+												value="${detailGood1.price}" required=""
+												data-errormessage-value-missing="Vui lòng điền đầy đủ chi phí!"/>
+										</div>
+										<div class="small-4 columns left">
+											<label class="left inline">(Ngàn đồng) </label>
 										</div>
 									</div>
-
+									<c:set var="priceCreateGood"
+										value="${sessionScope.priceCreateGood }" />
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Chi phí tạo hàng: </label>
+										</div>
+										<div class="small-4 columns left">
+											<input type="text" id="right-label"
+												value="${priceCreateGood}" readonly="readonly" />
+										</div>
+										<div class="small-4 columns left">
+											<label class="left inline">(Ngàn đồng) </label>
+										</div>
+									</div>
+									<c:set var="priceTotal"
+										value="${sessionScope.priceTotal }" />
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Tổng Cộng: </label>
+										</div>
+										<div class="small-4 columns left">
+											<input type="text" id="right-label"
+												value="${priceTotal}" readonly="readonly" />
+										</div>
+										<div class="small-4 columns left">
+											<label class="left inline">(Ngàn đồng) </label>
+										</div>
+									</div>
 								</div>
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area right">
-										
+
 											<button class="button "
 												onclick="return confirm('Bạn có muốn cập nhật hàng không?')"
 												name="btnAction" value="updateGood">
@@ -238,7 +294,7 @@
 										</br>
 									</div>
 								</div>
-										<div class="row"></div>
+								<div class="row"></div>
 							</div>
 					</form>
 
@@ -246,12 +302,12 @@
 				</div>
 			</div>
 		</div>
-	
+
 	</div>
 
 
 
-	
+
 
 
 </c:if>
