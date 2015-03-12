@@ -4,8 +4,6 @@
 package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import vn.edu.fpt.fts.pojo.DealNotification;

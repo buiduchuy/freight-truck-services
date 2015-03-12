@@ -75,6 +75,7 @@ public class DealNotificationDAO {
 	}
 
 	public int insertDealNotification(DealNotification bean) {
+		ResultSet rs = null;
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -94,7 +95,7 @@ public class DealNotificationDAO {
 			stmt.setInt(i++, bean.getDealID()); // DealID
 
 			stmt.executeUpdate();
-			ResultSet rs = stmt.getGeneratedKeys();
+			rs = stmt.getGeneratedKeys();
 			if (rs != null && rs.next()) {
 				ret = (int) rs.getLong(1);
 			}
@@ -107,6 +108,9 @@ public class DealNotificationDAO {
 
 		} finally {
 			try {
+				if (rs != null) {
+					rs.close();
+				}
 				if (stmt != null) {
 					stmt.close();
 				}
