@@ -100,72 +100,81 @@ public class ControllerMakeDeal extends HttpServlet {
 				session.getAttribute("detailGood1");
 				int idGood = Integer
 						.parseInt(request.getParameter("txtgoodID"));
-				int idRoute = Integer.parseInt(request
-						.getParameter("txtrouteID"));
-				if (goodDao.getGoodsByID(idGood) != null) {
-					Goods good = goodDao.getGoodsByID(idGood);
-					Route route = routeDao.getRouteByID(idRoute);
-					DateFormat dateFormat = new SimpleDateFormat(
-							"yyyy/MM/dd HH:mm:ss");
-					Date date = new Date();
-					String createTime = dateFormat.format(date);
-					List<Deal> listDealByGoodID = dealDao.getDealByGoodsID(good
-							.getGoodsID());
-					int idDealFa = 0;
-					if (listDealByGoodID.size() != 0) {
+				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+					rd.forward(request, response);
+				} else {
+					int idRoute = Integer.parseInt(request
+							.getParameter("txtrouteID"));
+					if (goodDao.getGoodsByID(idGood) != null) {
+						Goods good = goodDao.getGoodsByID(idGood);
+						Route route = routeDao.getRouteByID(idRoute);
+						DateFormat dateFormat = new SimpleDateFormat(
+								"yyyy/MM/dd HH:mm:ss");
+						Date date = new Date();
+						String createTime = dateFormat.format(date);
+						List<Deal> listDealByGoodID = dealDao
+								.getDealByGoodsID(good.getGoodsID());
+						int idDealFa = 0;
+						if (listDealByGoodID.size() != 0) {
 
-						for (int i = 0; i < listDealByGoodID.size(); i++) {
-							if (listDealByGoodID.get(i).getRouteID() == idRoute
-									&& listDealByGoodID.get(i).getRefDealID() == 0) {
-								idDealFa = listDealByGoodID.get(i).getDealID();
+							for (int i = 0; i < listDealByGoodID.size(); i++) {
+								if (listDealByGoodID.get(i).getRouteID() == idRoute
+										&& listDealByGoodID.get(i)
+												.getRefDealID() == 0) {
+									idDealFa = listDealByGoodID.get(i)
+											.getDealID();
+								}
 							}
 						}
-					}
-					if (idDealFa == 0) {
-						Deal newDeal = new Deal(good.getPrice(),
-								good.getNotes(), createTime, "owner",
-								route.getRouteID(), good.getGoodsID(), 0, 1, 1);
+						if (idDealFa == 0) {
+							Deal newDeal = new Deal(good.getPrice(),
+									good.getNotes(), createTime, "owner",
+									route.getRouteID(), good.getGoodsID(), 0,
+									1, 1);
 
-						if (dealDao.insertDeal(newDeal) != -1) {
+							if (dealDao.insertDeal(newDeal) != -1) {
 
-							session.setAttribute("messageSuccess",
-									"Gửi đề nghị thành công");
-							RequestDispatcher rd = request
-									.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
-											+ idGood);
-							rd.forward(request, response);
+								session.setAttribute("messageSuccess",
+										"Gửi đề nghị thành công");
+								RequestDispatcher rd = request
+										.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+												+ idGood);
+								rd.forward(request, response);
+							} else {
+								session.setAttribute("messageError",
+										"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
+								RequestDispatcher rd = request
+										.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
+												+ idRoute);
+								rd.forward(request, response);
+							}
 						} else {
-							session.setAttribute("messageError",
-									"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
-							RequestDispatcher rd = request
-									.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
-											+ idRoute);
-							rd.forward(request, response);
-						}
-					} else {
-						Deal newDeal = new Deal(good.getPrice(),
-								good.getNotes(), createTime, "owner",
-								route.getRouteID(), good.getGoodsID(),
-								idDealFa, 1, 1);
+							Deal newDeal = new Deal(good.getPrice(),
+									good.getNotes(), createTime, "owner",
+									route.getRouteID(), good.getGoodsID(),
+									idDealFa, 1, 1);
 
-						if (dealDao.insertDeal(newDeal) != -1) {
+							if (dealDao.insertDeal(newDeal) != -1) {
 
-							session.setAttribute("messageSuccess",
-									"Gửi đề nghị thành công");
-							RequestDispatcher rd = request
-									.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
-											+ idGood);
-							rd.forward(request, response);
-						} else {
-							session.setAttribute("messageError",
-									"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
-							RequestDispatcher rd = request
-									.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
-											+ idRoute);
-							rd.forward(request, response);
+								session.setAttribute("messageSuccess",
+										"Gửi đề nghị thành công");
+								RequestDispatcher rd = request
+										.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+												+ idGood);
+								rd.forward(request, response);
+							} else {
+								session.setAttribute("messageError",
+										"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
+								RequestDispatcher rd = request
+										.getRequestDispatcher("ControllerMakeDeal?btnAction=sendSuggest&routeID="
+												+ idRoute);
+								rd.forward(request, response);
+							}
 						}
+
 					}
-
 				}
 			}
 			if ("viewSuggest".equals(action)) {
@@ -191,7 +200,8 @@ public class ControllerMakeDeal extends HttpServlet {
 						session.removeAttribute("listDeal");
 						Deal[] listFa = new Deal[listDealFa.size()];
 						listDealFa.toArray(listFa);
-						session.setAttribute("listRoute", routeDao.getAllRoute());
+						session.setAttribute("listRoute",
+								routeDao.getAllRoute());
 						session.setAttribute("listDeal", listFa);
 						RequestDispatcher rd = request
 								.getRequestDispatcher("danh-sach-de-nghi.jsp");
@@ -238,80 +248,109 @@ public class ControllerMakeDeal extends HttpServlet {
 						.getDealID();
 
 				Deal dealFa = dealDao.getDealByID(idDealFa);
-				int price = Integer.parseInt(request.getParameter("txtPrice"));
-				DateFormat dateFormat = new SimpleDateFormat(
-						"yyyy/MM/dd HH:mm:ss");
-				Date date = new Date();
-				String createTime = dateFormat.format(date);
-				String notes = "";
-				try {
-					notes = notes + request.getParameter("txtNotes");
-				} catch (Exception ex) {
-
-				}
-				dealFa.setDealStatusID(1);
-				dealFa.setPrice(price);
-				dealFa.setNotes(notes);
-				dealFa.setCreateTime(createTime);
-				dealFa.setCreateBy("owner");
-				dealFa.setRefDealID(idDealFa);
-				if (dealDao.insertDeal(dealFa) != -1) {
-					session.setAttribute("messageSuccess",
-							"Gửi đề nghị thành công");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
-									+ idDealFa);
-					rd.forward(request, response);
-				} else {
-					session.setAttribute("messageError",
-							"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
-									+ idDealFa);
-					rd.forward(request, response);
-				}
-
-			}
-			if ("confirmDeal".equals(action)) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				if (dealProcess.acceptDeal1(dealDao.getDealByID(idDeal))!=0) {
-					session.setAttribute("messageSuccess",
-							"Hoàn thành hoá đơn!");
+				int idGood = dealFa.getGoodsID();
+				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
 				} else {
-					session.setAttribute("messageError",
-							"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
+					int price = Integer.parseInt(request
+							.getParameter("txtPrice"));
+					DateFormat dateFormat = new SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss");
+					Date date = new Date();
+					String createTime = dateFormat.format(date);
+					String notes = "";
+					try {
+						notes = notes + request.getParameter("txtNotes");
+					} catch (Exception ex) {
 
+					}
+					dealFa.setDealStatusID(1);
+					dealFa.setPrice(price);
+					dealFa.setNotes(notes);
+					dealFa.setCreateTime(createTime);
+					dealFa.setCreateBy("owner");
+					dealFa.setRefDealID(idDealFa);
+					if (dealDao.insertDeal(dealFa) != -1) {
+						session.setAttribute("messageSuccess",
+								"Gửi đề nghị thành công");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+										+ idDealFa);
+						rd.forward(request, response);
+					} else {
+						session.setAttribute("messageError",
+								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+										+ idDealFa);
+						rd.forward(request, response);
+					}
+				}
+			}
+			if ("confirmDeal".equals(action)) {
+				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
+				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
+				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					RequestDispatcher rd = request
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+					rd.forward(request, response);
+				} else {
+					if (dealProcess.acceptDeal1(dealDao.getDealByID(idDeal)) != 0) {
+						session.setAttribute("messageSuccess",
+								"Hoàn thành hoá đơn!");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
+						rd.forward(request, response);
+					} else {
+						session.setAttribute("messageError",
+								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
+
+					}
 				}
 			}
 			if ("declineDeal".equals(action)) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-
-				Deal declineDeal = dealDao.getDealByID(idDeal);
-				declineDeal.setDealStatusID(3);
-				int update = dealDao.updateDeal(declineDeal);
-				int idgood = declineDeal.getGoodsID();
-				if (dealProcess.declineDeal1(declineDeal) != 0) {
+				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
+				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
-									+ dealDao.getDealByID(idDeal).getRefDealID());
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
+				} else {
+					Deal declineDeal = dealDao.getDealByID(idDeal);
+					declineDeal.setDealStatusID(3);
+					int update = dealDao.updateDeal(declineDeal);
+					int idgood = declineDeal.getGoodsID();
+					if (dealProcess.declineDeal1(declineDeal) != 0) {
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+										+ dealDao.getDealByID(idDeal)
+												.getRefDealID());
+						rd.forward(request, response);
+					}
 				}
 			}
 			if ("cancelDeal".equals(action)) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				session.removeAttribute("listDeal");
-				Deal cancelDeal = dealDao.getDealByID(idDeal);
-				int idgood = cancelDeal.getGoodsID();
-				if (dealProcess.cancelDeal1(cancelDeal) != 0) {
-					cancelDeal.setDealStatusID(4);
-					int update = dealDao.updateDeal(cancelDeal);
+				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
+				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
-									+ dealDao.getDealByID(idDeal).getRefDealID());
+							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
+				} else {
+					session.removeAttribute("listDeal");
+					Deal cancelDeal = dealDao.getDealByID(idDeal);
+					int idgood = cancelDeal.getGoodsID();
+					if (dealProcess.cancelDeal1(cancelDeal) != 0) {
+						cancelDeal.setDealStatusID(4);
+						int update = dealDao.updateDeal(cancelDeal);
+						RequestDispatcher rd = request
+								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
+										+ dealDao.getDealByID(idDeal)
+												.getRefDealID());
+						rd.forward(request, response);
+					}
 				}
 			}
 		}

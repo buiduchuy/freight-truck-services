@@ -90,7 +90,7 @@
                                         <a href=""> <font size="+3"><i class="icon-bar-chart"></i></font> Xem lịch sử hàng</a>
                                     </h4><p>Quản lý giao hàng chuyên nghiệp hơn, kiểm soát giao hàng, nhận hàng.</p>
 
-                                    <a class="button" href="lich-su.jsp"><i class="icon-ok"></i> Xem lịch sử hàng</a>
+                                    <a class="button" href="ControllerManageOrder?btnAction=manageOrder"><i class="icon-ok"></i> Xem lịch sử hàng</a>
                                 </div>
                             </div>
                         </div>
