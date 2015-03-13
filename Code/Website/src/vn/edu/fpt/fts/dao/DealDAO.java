@@ -25,6 +25,7 @@ public class DealDAO {
 	private final static String TAG = "DealDAO";
 
 	public int insertDeal(Deal bean) {
+		ResultSet rs = null;
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -59,7 +60,7 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			stmt.executeUpdate();
-			ResultSet rs = stmt.getGeneratedKeys();
+			rs = stmt.getGeneratedKeys();
 			if (rs != null && rs.next()) {
 				ret = (int) rs.getLong(1);
 			}
@@ -72,6 +73,9 @@ public class DealDAO {
 
 		} finally {
 			try {
+				if (rs != null) {
+					rs.close();
+				}
 				if (stmt != null) {
 					stmt.close();
 				}

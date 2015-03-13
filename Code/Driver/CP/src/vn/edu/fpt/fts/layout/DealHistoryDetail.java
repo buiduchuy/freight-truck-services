@@ -17,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -42,6 +43,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DealHistoryDetail extends Fragment {
 
@@ -78,10 +80,10 @@ public class DealHistoryDetail extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -126,7 +128,7 @@ public class DealHistoryDetail extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -167,8 +169,8 @@ public class DealHistoryDetail extends Fragment {
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
 				price.setText(formatter.format(Double.parseDouble(obj
-		                .getString("price").replace(".0", "")
-		                + "000")) + " đồng");
+						.getString("price").replace(".0", "") + "000"))
+						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("createBy").equals("owner")
@@ -185,10 +187,10 @@ public class DealHistoryDetail extends Fragment {
 					stat = "Đã từ chối";
 				} else if (obj.getString("createBy").equals("driver")
 						&& obj.getString("dealStatusID").equals("4")) {
-					stat = "Đã bị hủy";
+					stat = "Đã hủy";
 				} else if (obj.getString("createBy").equals("owner")
 						&& obj.getString("dealStatusID").equals("4")) {
-					stat = "Đã hủy";
+					stat = "Đã bị hủy";
 				}
 				status.setText(stat);
 			} catch (JSONException e) {
@@ -236,10 +238,17 @@ public class DealHistoryDetail extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
-
 				Log.e(TAG, e.getLocalizedMessage(), e);
-
 			}
 
 			return response;

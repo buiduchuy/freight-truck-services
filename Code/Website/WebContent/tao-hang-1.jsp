@@ -35,8 +35,7 @@
 			<jsp:include page="process-create-good.jsp" />
 
 
-			<form action="ControllerCreateGoods" method="post"
-				accept-charset="utf-8">
+			<form action="ControllerCreateGoods" method="post" accept-charset="utf-8">
 				<div class="row">
 					<c:choose>
 						<c:when test="${not empty router}">
@@ -126,11 +125,6 @@
 
 							</div>
 						</c:when>
-
-
-
-
-
 						<c:otherwise>
 							<div class="large-12 columns">
 

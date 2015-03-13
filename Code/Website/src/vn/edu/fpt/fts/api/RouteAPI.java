@@ -72,15 +72,18 @@ public class RouteAPI {
 			String marker1 = params.getFirst("routeMarkerLocation1");
 			String marker2 = params.getFirst("routeMarkerLocation2");
 
-			routeMarker.setNumbering(1);
-			routeMarker.setRouteMarkerLocation(marker1);
+			if (!marker1.isEmpty()) {
+				routeMarker.setNumbering(1);
+				routeMarker.setRouteMarkerLocation(marker1);
 
-			routeMarkerDao.insertRouteMarker(routeMarker);
+				routeMarkerDao.insertRouteMarker(routeMarker);
+			}
+			if (!marker2.isEmpty()) {
+				routeMarker.setNumbering(2);
+				routeMarker.setRouteMarkerLocation(marker2);
 
-			routeMarker.setNumbering(2);
-			routeMarker.setRouteMarkerLocation(marker2);
-
-			routeMarkerDao.insertRouteMarker(routeMarker);
+				routeMarkerDao.insertRouteMarker(routeMarker);
+			}
 			// ------------------------------------------------------------------
 
 			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();

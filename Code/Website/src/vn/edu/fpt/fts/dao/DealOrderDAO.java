@@ -23,6 +23,7 @@ public class DealOrderDAO {
 	private final static String TAG = "DealOrderDAO";
 
 	public int insertDealOrder(DealOrder bean) {
+		ResultSet rs = null;
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
@@ -39,7 +40,7 @@ public class DealOrderDAO {
 
 			stmt.executeUpdate();
 
-			ResultSet rs = stmt.getGeneratedKeys();
+			rs = stmt.getGeneratedKeys();
 			if (rs != null && rs.next()) {
 				ret = (int) rs.getLong(1);
 			}
@@ -52,6 +53,9 @@ public class DealOrderDAO {
 
 		} finally {
 			try {
+				if (rs != null) {
+					rs.close();
+				}
 				if (stmt != null) {
 					stmt.close();
 				}

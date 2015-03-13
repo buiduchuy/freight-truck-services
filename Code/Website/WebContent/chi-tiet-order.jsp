@@ -14,7 +14,7 @@
 	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-				<jsp:include page="vertical-menu-manage-good.jsp" />
+			<jsp:include page="vertical-menu-manage-good.jsp" />
 			<div class="row"></div>
 		</div>
 		<div class="form-content "
@@ -46,7 +46,9 @@
 							%>
 							<div class="large-12 columns">
 								<div class="extra-title">
-									<h3>Thông tin hàng hoá</h3>
+									<h3>
+										<font color="blue">Thông tin hàng hoá</font>
+									</h3>
 								</div>
 
 
@@ -106,7 +108,9 @@
 								</div>
 								<div class="row">
 									<div class="extra-title">
-										<h3>Địa chỉ giao hàng</h3>
+										<h3>
+											<font color="blue">Địa chỉ giao hàng</font>
+										</h3>
 									</div>
 									<div class="row">
 										<div class="small-8 columns">
@@ -138,7 +142,9 @@
 									</div>
 
 									<div class="extra-title">
-										<h3>Địa chỉ nhận hàng</h3>
+										<h3>
+											<font color="blue">Địa chỉ nhận hàng</font>
+										</h3>
 									</div>
 									<div class="row">
 										<div class="small-8 columns">
@@ -171,22 +177,114 @@
 								</div>
 								<div class="row">
 									<div class="extra-title">
-										<h3>Chi phí</h3>
+										<h3>
+											<font color="blue">Chi phí</font>
+										</h3>
 									</div>
 									<div class="row">
 										<div class="small-4 columns">
 											<label class="right inline">Chi phí tài xế: </label>
 										</div>
 										<div class="small-4 columns left">
-											<input type="text" id="right-label" name="txtPrice"
-												value="${detailGood1.price}" readonly="readonly" />
+											<c:set var="priceDriver"
+												value="${sessionScope.priceForDriver }" />
+											<input type="text" id="right-label"
+												value="${priceDriver}" readonly="readonly" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Chi phí tạo hàng: </label>
+										</div>
+										<div class="small-4 columns left">
+											<c:set var="priceCreate"
+												value="${sessionScope.priceCreate }" />
+											<input type="text" id="right-label" 
+												value="${priceCreate}" readonly="readonly" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Chi phí tổng cộng: </label>
+										</div>
+										<div class="small-4 columns left">
+											<c:set var="priceTotal"
+												value="${sessionScope.priceTotal }" />
+											<input type="text" id="right-label" 
+												value="${priceTotal}" readonly="readonly" />
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="extra-title">
+										<h3>
+											<font color="blue">Thông tin tuyến đường</font>
+										</h3>
+									</div>
+									<c:set var="detailRoute" value="${sessionScope.routeOrder }" />
+									<div class="row">
+										<div class="small-4 columns ">
+											<label class="right inline">Địa điểm bắt đầu:</label>
+										</div>
+										<div class="small-6 columns left">
+											<input type="text" id="startAddress" class="left inline"
+												value="${detailRoute.startingAddress }" readonly="readonly">
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns ">
+											<label class="right inline">Thời gian bắt đầu:</label>
+										</div>
+										<div class="small-6 columns left">
+											<input type="text" class="left inline"
+												value="${detailRoute.startTime }" readonly="readonly">
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns ">
+											<label class="right inline">Địa điểm kết thúc:</label>
+										</div>
+										<div class="small-6 columns left">
+											<input type="text" id="endAddress" class="left inline"
+												value="${detailRoute.destinationAddress }"
+												readonly="readonly">
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns ">
+											<label class="right inline">Thời gian kết thúc:</label>
+										</div>
+										<div class="small-6 columns left">
+											<input type="text" class="left inline"
+												value="${detailRoute.finishTime }" readonly="readonly">
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns ">
+											<label class="right inline">Khối lượng có thể chở:</label>
+										</div>
+										<div class="small-6 columns left">
+											<input type="text" class="left inline"
+												value="${detailRoute.weight } Kg" readonly="readonly">
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns ">
+											<label class="right inline">Ghi chú:</label>
+										</div>
+										<div class="small-6 columns left">
+											<input type="text" class="left inline"
+												value="${detailRoute.notes }" readonly="readonly">
 										</div>
 									</div>
 
 								</div>
 								<div class="row">
 									<div class="extra-title">
-										<h3>Tracking hoá đơn</h3>
+										<h3>
+											<font color="blue">Tracking hoá đơn</font>
+										</h3>
 									</div>
 									<div class="row">
 										<div class="small-4 columns">
@@ -206,7 +304,7 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area">
-										
+
 											<fmt:parseDate value="${detailGood1.deliveryTime }"
 												var="deliveryTime" pattern="dd-MM-yyyy" />
 											<fmt:formatDate pattern="yyyy-MM-dd" value="${deliveryTime}"
@@ -215,12 +313,13 @@
 											<fmt:formatDate pattern="yyyy-MM-dd" value="${today}"
 												var="current" />
 											<c:if test="${checkDay lt current}">
-												<c:if test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
-												<a class="button alert"
-													href="ControllerManageOrder?btnAction=lostGood&idGood=${detailGood1.goodsID }"
-													onclick="return confirm('Bạn có muốn báo mất hàng không?')">
-													<i class="icon-ok"></i> Báo mất hàng
-												</a>
+												<c:if
+													test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
+													<a class="button alert"
+														href="ControllerManageOrder?btnAction=lostGood&idGood=${detailGood1.goodsID }"
+														onclick="return confirm('Bạn có muốn báo mất hàng không?')">
+														<i class="icon-ok"></i> Báo mất hàng
+													</a>
 												</c:if>
 											</c:if>
 

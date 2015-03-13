@@ -6,6 +6,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/truck2"
     tools:context="vn.edu.fpt.fts.layout.CreateRoute" >
 
     <ScrollView

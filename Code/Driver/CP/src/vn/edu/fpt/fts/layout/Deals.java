@@ -22,6 +22,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -52,6 +53,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class Deals extends Fragment {
 	@SuppressLint("UseSparseArrays")
@@ -66,7 +68,8 @@ public class Deals extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().getActionBar().setTitle("Đề nghị");
-		getActivity().getActionBar().setIcon(R.drawable.ic_action_sort_by_size_white);
+		getActivity().getActionBar().setIcon(
+				R.drawable.ic_action_sort_by_size_white);
 		list = new ArrayList<ListItem>();
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
@@ -103,10 +106,10 @@ public class Deals extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -151,7 +154,7 @@ public class Deals extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response == null || response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -349,12 +352,18 @@ public class Deals extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
-
 				Log.e(TAG, e.getLocalizedMessage(), e);
-
 			}
-
 			return response;
 		}
 

@@ -4,8 +4,6 @@
 package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import vn.edu.fpt.fts.pojo.DealNotification;
@@ -84,8 +82,8 @@ public class MAIN_PROCESS {
 		// List<Goods> listGoods = new ArrayList<Goods>();
 		// listGoods = goodsDao.getAllGoods();
 		//
-		// MatchingProcess mp = new MatchingProcess();
-		// System.out.println(mp.getSuggestionGoods(40).size());
+		 MatchingProcess mp = new MatchingProcess();
+		 System.out.println(mp.getSuggestionGoods(46).size());
 
 		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
 		// RouteGoodsCategoryDAO();

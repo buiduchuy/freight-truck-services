@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Order;
@@ -40,7 +41,7 @@ public class OrderDAO {
 			stmt.setDouble(i++, bean.getPrice()); // Price
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getOrderStatusID()); // OrderStatusID
-			stmt.setInt(i++, bean.getActive()); // Active
+			stmt.setInt(i++, Common.activate); // Active
 
 			stmt.executeUpdate();
 

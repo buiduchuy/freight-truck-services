@@ -16,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -47,6 +48,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class DealHistory extends android.support.v4.app.Fragment {
 
@@ -99,10 +101,10 @@ public class DealHistory extends android.support.v4.app.Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -147,7 +149,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response == null || response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -232,20 +234,28 @@ public class DealHistory extends android.support.v4.app.Fragment {
 								Date timeout = cal.getTime();
 								format.applyPattern("dd/MM/yyyy");
 								String createD = format.format(createDate);
+								JSONObject owner = item.getJSONObject("goods")
+										.getJSONObject("owner");
 								if (item.getString("dealStatusID").equals("2")) {
 									status = "Đã chấp nhận";
+									list.add(new ListItem(owner.getString("email")
+											+ " gửi đề nghị cho lộ trình:", title,
+											status, createD));
 								} else if (item.getString("dealStatusID")
 										.equals("3")) {
 									status = "Đã từ chối";
+									list.add(new ListItem(owner.getString("email")
+											+ " gửi đề nghị cho lộ trình:", title,
+											status, createD));
 								} else if (item.getString("dealStatusID")
 										.equals("4")) {
-									status = "Đã bị hủy";
+									status = "Đã hủy";
+									list.add(new ListItem(
+											"Bạn đã gửi đề nghị cho "
+													+ owner.getString("email")
+													+ ":", title, status,
+											createD));
 								}
-								JSONObject owner = item.getJSONObject("goods")
-										.getJSONObject("owner");
-								list.add(new ListItem(owner.getString("email")
-										+ " gửi đề nghị cho lộ trình:", title,
-										status, createD));
 								count++;
 								map.add(item.getString("dealID"));
 							} else if (item.getString("createBy").equals(
@@ -278,23 +288,31 @@ public class DealHistory extends android.support.v4.app.Fragment {
 									Date timeout = cal.getTime();
 									format.applyPattern("dd/MM/yyyy");
 									String createD = format.format(createDate);
+									JSONObject owner = item.getJSONObject(
+											"goods").getJSONObject("owner");
 									if (item.getString("dealStatusID").equals(
 											"2")) {
 										status = "Đã được chấp nhận";
+										list.add(new ListItem(
+												"Bạn đã gửi đề nghị cho "
+														+ owner.getString("email")
+														+ ":", title, status,
+												createD));
 									} else if (item.getString("dealStatusID")
 											.equals("3")) {
 										status = "Đã bị từ chối";
+										list.add(new ListItem(
+												"Bạn đã gửi đề nghị cho "
+														+ owner.getString("email")
+														+ ":", title, status,
+												createD));
 									} else if (item.getString("dealStatusID")
 											.equals("4")) {
-										status = "Đã hủy";
+										list.add(new ListItem(owner.getString("email")
+												+ " gửi đề nghị cho lộ trình:", title,
+												status, createD));
+										status = "Đã bị hủy";
 									}
-									JSONObject owner = item.getJSONObject(
-											"goods").getJSONObject("owner");
-									list.add(new ListItem(
-											"Bạn đã gửi đề nghị cho " +
-													owner.getString("email")
-													+ ":", title, status,
-											createD));
 									count++;
 									map.add(item.getString("dealID"));
 								}
@@ -350,10 +368,17 @@ public class DealHistory extends android.support.v4.app.Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
-
 				Log.e(TAG, e.getLocalizedMessage(), e);
-
 			}
 
 			return response;

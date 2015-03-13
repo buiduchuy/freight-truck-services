@@ -17,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -44,12 +45,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HistoryDetail extends Fragment {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Order/getOrderByID";
-	TextView startPlace, endPlace, startTime, endTime, price, status, weight, phone;
-//	Button button;
+	TextView startPlace, endPlace, startTime, endTime, price, status, weight,
+			phone;
+
+	// Button button;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -65,7 +69,7 @@ public class HistoryDetail extends Fragment {
 		status = (TextView) myFragmentView.findViewById(R.id.textView12);
 		weight = (TextView) myFragmentView.findViewById(R.id.textView14);
 		phone = (TextView) myFragmentView.findViewById(R.id.textView16);
-//		button = (Button) myFragmentView.findViewById(R.id.button1);
+		// button = (Button) myFragmentView.findViewById(R.id.button1);
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("orderID", getArguments().getString("orderID"));
@@ -81,10 +85,10 @@ public class HistoryDetail extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -129,7 +133,7 @@ public class HistoryDetail extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -163,20 +167,21 @@ public class HistoryDetail extends Fragment {
 						"goods");
 				startPlace.setText(good.getString("pickupAddress"));
 				endPlace.setText(good.getString("deliveryAddress"));
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				SimpleDateFormat format = new SimpleDateFormat(
+						"yyyy-MM-dd hh:mm:ss");
 				Date start = format.parse(good.getString("pickupTime"));
 				Date end = format.parse(good.getString("deliveryTime"));
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
 				price.setText(formatter.format(Double.parseDouble(obj
-		                .getString("price").replace(".0", "")
-		                + "000")) + " đồng");
+						.getString("price").replace(".0", "") + "000"))
+						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("orderStatusID").equals("1")) {
 					stat = "Đã giao hàng";
-//					button.setEnabled(false);
+					// button.setEnabled(false);
 				} else {
 					stat = "Chưa giao hàng";
 				}
@@ -227,10 +232,17 @@ public class HistoryDetail extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
-
 				Log.e(TAG, e.getLocalizedMessage(), e);
-
 			}
 
 			return response;

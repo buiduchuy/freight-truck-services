@@ -19,6 +19,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -73,7 +74,8 @@ public class SendOffer extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		getActivity().getActionBar().setTitle("Gửi đề nghị");
-		getActivity().getActionBar().setIcon(R.drawable.ic_action_sort_by_size_white);
+		getActivity().getActionBar().setIcon(
+				R.drawable.ic_action_sort_by_size_white);
 		View v = inflater.inflate(R.layout.activity_send_offer, container,
 				false);
 
@@ -110,10 +112,10 @@ public class SendOffer extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -158,7 +160,7 @@ public class SendOffer extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -191,8 +193,10 @@ public class SendOffer extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
-			} else if(Integer.parseInt(response) == 0) {
-				Toast.makeText(getActivity(), "Đang có một đề nghị hiện hành với cùng lộ trình và hàng hóa. Gửi đề nghị thất bại.",
+			} else if (Integer.parseInt(response) == 0) {
+				Toast.makeText(
+						getActivity(),
+						"Đang có một đề nghị hiện hành với cùng lộ trình và hàng hóa. Gửi đề nghị thất bại.",
 						Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(), "Gửi đề nghị thất bại",
@@ -235,6 +239,15 @@ public class SendOffer extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
 
 				Log.e(TAG, e.getLocalizedMessage(), e);
@@ -275,10 +288,10 @@ public class SendOffer extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -316,7 +329,7 @@ public class SendOffer extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -411,6 +424,15 @@ public class SendOffer extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
 
 				Log.e(TAG, e.getLocalizedMessage(), e);
@@ -450,10 +472,10 @@ public class SendOffer extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -491,7 +513,7 @@ public class SendOffer extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -528,8 +550,9 @@ public class SendOffer extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				pr.setText(formatter.format(Double.parseDouble(obj
-						.getString("price").replace(".0", "") + "000"))
+				pr.setText(formatter.format(Double.parseDouble(obj.getString(
+						"price").replace(".0", "")
+						+ "000"))
 						+ " đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (obj.has("notes")) {
@@ -586,6 +609,15 @@ public class SendOffer extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
 
 				Log.e(TAG, e.getLocalizedMessage(), e);

@@ -59,26 +59,34 @@ public class MapsProcess {
 		urlString.append(des);
 		int s = listMarker.size();
 		String c_vertical = "|";
+		try {
+			c_vertical = URLEncoder.encode(c_vertical, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
 		if (listMarker.size() != 0) {
 			// %7C is |
 			String waypoints = "";
-			waypoints += "&waypoints=";
+			waypoints += "&waypoints=via:";
 			for (int i = 0; i < s; i++) {
-				waypoints += listMarker.get(i);
-				if (s > 1) {
-					waypoints += c_vertical;
+				String marker = listMarker.get(i);
+				try {
+					marker = URLEncoder.encode(marker, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 				}
-			}
-			try {
-				waypoints = URLEncoder.encode(waypoints, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+				waypoints += marker;
+				if (s > 1) {
+					waypoints += c_vertical + "via:";
+				}
 			}
 			urlString.append(waypoints);
 		}
-		urlString.append("&mode=driving");
+		urlString.append("&mode=driving&region=vi");
 		return urlString.toString();
 	}
 
@@ -151,6 +159,7 @@ public class MapsProcess {
 		String json = "";
 		try {
 			System.out.println("URL: " + url);
+			Logger.getLogger(TAG).log(Level.SEVERE, null, "URL: " + url);
 			long startTime = System.currentTimeMillis();
 			HttpClient httpClient = HttpClientBuilder.create().build();
 			HttpPost httpPost = new HttpPost(url);
@@ -217,10 +226,7 @@ public class MapsProcess {
 						.getAllRouteMarkerByRouteID(routeID).get(i)
 						.getRouteMarkerLocation());
 			}
-		} else {
-			l_listRouteMarker.add("");
 		}
-
 		String json = getJSONFromUrl(makeURL(routeDao.getRouteByID(routeID)
 				.getStartingAddress(), l_listRouteMarker, routeDao
 				.getRouteByID(routeID).getDestinationAddress()));

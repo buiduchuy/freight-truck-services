@@ -17,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -47,6 +48,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class SystemSuggest extends Fragment {
 
@@ -100,10 +102,10 @@ public class SystemSuggest extends Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 100000;
+		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 15000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -148,7 +150,7 @@ public class SystemSuggest extends Fragment {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 				try {
@@ -189,9 +191,14 @@ public class SystemSuggest extends Fragment {
 										"Hàng " + item.getString("weight")
 												+ " kg",
 										"Giá của chủ hàng: "
-												+ formatter.format(Integer.parseInt(item
-														.getString("price").replace(".0", "")
-														+ "000")) + " đồng", ""));
+												+ formatter.format(Integer
+														.parseInt(item
+																.getString(
+																		"price")
+																.replace(".0",
+																		"")
+																+ "000"))
+												+ " đồng", ""));
 								map.put(Long.valueOf(i), Integer.parseInt(item
 										.getString("goodsID")));
 							}
@@ -199,12 +206,14 @@ public class SystemSuggest extends Fragment {
 							JSONObject item = obj.getJSONObject("goods");
 
 							list.add(new ListItem(
-									"Hàng " + item.getString("weight")
-											+ " kg",
+									"Hàng " + item.getString("weight") + " kg",
 									"Giá của chủ hàng: "
-											+ formatter.format(Integer.parseInt(item
-													.getString("price").replace(".0", "")
-													+ "000")) + " đồng", ""));
+											+ formatter.format(Integer
+													.parseInt(item.getString(
+															"price").replace(
+															".0", "")
+															+ "000")) + " đồng",
+									""));
 							map.put(Long.valueOf(0),
 									Integer.parseInt(item.getString("goodsID")));
 						}
@@ -215,8 +224,7 @@ public class SystemSuggest extends Fragment {
 				}
 			}
 			adapter = new ListItemAdapter2(getActivity(), list);
-			list1.setEmptyView(myFragmentView
-					.findViewById(R.id.emptyElement));
+			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();
 		}
@@ -256,6 +264,15 @@ public class SystemSuggest extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (Exception e) {
 
 				Log.e(TAG, e.getLocalizedMessage(), e);
