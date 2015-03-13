@@ -31,11 +31,10 @@ import org.xml.sax.SAXException;
 public final class Common {
 
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-	// public static final String CONNECTION =
-	//"jdbc:sqlserver://localhost:1433;databaseName=FTS";
+//	 public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
 	public static final String CONNECTION = "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
 	public static final String usernamedb = "sa";
-	 //public static final String passworddb = "123456";
+//	 public static final String passworddb = "123456";
 	public static final String passworddb = "huy2108.";
 
 	// Status of Goods, Route, Deal, Order
@@ -55,7 +54,8 @@ public final class Common {
 	public static final int order_staff = 4;
 
 	// Max allow distance for matching goods and routes
-	public static final int maxAllowDistance = 10;
+	public static final int maxAllowDistance = 30;
+	
 	// Price for 1 kilometer
 	public static final double perKilometer = 15;
 	public static final double perKilogram = 0.2;
