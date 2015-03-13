@@ -20,16 +20,11 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
-import vn.edu.fpt.fts.ownerapp.R.id;
-import vn.edu.fpt.fts.ownerapp.R.layout;
-import vn.edu.fpt.fts.ownerapp.R.menu;
+import vn.edu.fpt.fts.fragment.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;

@@ -27,7 +27,7 @@ import vn.edu.fpt.fts.adapter.Model;
 import vn.edu.fpt.fts.adapter.ModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
+import vn.edu.fpt.fts.fragment.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -39,11 +39,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();

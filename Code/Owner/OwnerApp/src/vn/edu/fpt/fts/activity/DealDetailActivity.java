@@ -31,8 +31,9 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
+import vn.edu.fpt.fts.fragment.R;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -50,16 +51,22 @@ import android.widget.Toast;
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote;
-	private int dealID, dealStatus, routeID, goodsID, refDealID;
+	private int dealID;
+	private String refDealID, dealStatus, routeID, goodsID;
 	private double price;
 	private String note, createBy;
 	private Button btn_counter, btnAccept, btnDecline, btnCancel;
 	private EditText etPrice, etNote;
+	private View viewLine;
+	private NotificationManager manager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deal_detail);
+		
+		dealID = getIntent().getIntExtra("dealID", 0);		
+		
 		startAddr = (TextView) this.findViewById(R.id.textview_startAddr);
 		destAddr = (TextView) this.findViewById(R.id.textview_destAddr);
 		startTime = (TextView) this.findViewById(R.id.textview_startTime);
@@ -73,34 +80,29 @@ public class DealDetailActivity extends Activity {
 		btnAccept = (Button) findViewById(R.id.button_accept);
 		btnDecline = (Button) findViewById(R.id.button_decline);
 		btnCancel = (Button) findViewById(R.id.button_cancel);
+		viewLine = (View) findViewById(R.id.view_line);
 		// goodscate = (TextView) findViewById(R.id.textview_categorygoods);
 		// goodsweight = (TextView) findViewById(R.id.textview_weightgoods);
 		// goodspickup = (TextView) findViewById(R.id.textview_pickupgoods);
 		// goodsdeliver = (TextView) findViewById(R.id.textview_delivergoods);
 
-		dealID = getIntent().getIntExtra("dealID", 0);
-		refDealID = getIntent().getIntExtra("refDealID", 0);
-		dealStatus = getIntent().getIntExtra("dealStatus", 0);
-		routeID = getIntent().getIntExtra("routeID", 0);
-		goodsID = getIntent().getIntExtra("goodsID", 0);
-		price = getIntent().getDoubleExtra("price", 0.0);
-		note = getIntent().getStringExtra("note");
-		createBy = getIntent().getStringExtra("createBy");
+		
+		// refDealID = getIntent().getIntExtra("refDealID", 0);
+		// dealStatus = getIntent().getIntExtra("dealStatus", 0);
+		// routeID = getIntent().getIntExtra("routeID", 0);
+		// goodsID = getIntent().getIntExtra("goodsID", 0);
+		// price = getIntent().getDoubleExtra("price", 0.0);
+		// note = getIntent().getStringExtra("note");
+		// createBy = getIntent().getStringExtra("createBy");
+		WebServiceTask6 wst6 = new WebServiceTask6(WebServiceTask6.POST_TASK,
+				this, "Đang xử lý...");
+		wst6.addNameValuePair("dealID", dealID + "");
+		String url = Common.IP_URL + Common.Service_Deal_getDealByID;
+		wst6.execute(new String[] { url });
 
-		if (dealStatus == 1 && createBy.equals("owner")) {
-			btn_counter.setVisibility(View.GONE);
-			btnAccept.setVisibility(View.GONE);
-			btnDecline.setVisibility(View.GONE);
-			etPrice.setVisibility(View.GONE);
-			etNote.setVisibility(View.GONE);
-			btnCancel.setVisibility(View.VISIBLE);
-		}
 
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
-				DealDetailActivity.this, "Đang xử lý...");
-		String url = Common.IP_URL + Common.Service_Route_GetByID;
-		wst.addNameValuePair("routeID", routeID + "");
-		wst.execute(new String[] { url });
+
+		
 
 		btn_counter.setOnClickListener(new View.OnClickListener() {
 
@@ -118,7 +120,7 @@ public class DealDetailActivity extends Activity {
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeID + "");
 				wst2.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID == 0) {
+				if (refDealID.equals("0")) {
 					wst2.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst2.addNameValuePair("refDealID", refDealID + "");
@@ -145,7 +147,7 @@ public class DealDetailActivity extends Activity {
 				wst3.addNameValuePair("createBy", "owner");
 				wst3.addNameValuePair("routeID", routeID + "");
 				wst3.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID == 0) {
+				if (refDealID.equals("0")) {
 					wst3.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst3.addNameValuePair("refDealID", refDealID + "");
@@ -172,7 +174,7 @@ public class DealDetailActivity extends Activity {
 				wst4.addNameValuePair("createBy", "owner");
 				wst4.addNameValuePair("routeID", routeID + "");
 				wst4.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID == 0) {
+				if (refDealID.equals("0")) {
 					wst4.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst4.addNameValuePair("refDealID", refDealID + "");
@@ -199,7 +201,7 @@ public class DealDetailActivity extends Activity {
 				wst5.addNameValuePair("createBy", "owner");
 				wst5.addNameValuePair("routeID", routeID + "");
 				wst5.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID == 0) {
+				if (refDealID.equals("0")) {
 					wst5.addNameValuePair("refDealID", dealID + "");
 				} else {
 					wst5.addNameValuePair("refDealID", refDealID + "");
@@ -333,6 +335,7 @@ public class DealDetailActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
+
 			if (response != null) {
 				Route route = new Route();
 				try {
@@ -360,7 +363,7 @@ public class DealDetailActivity extends Activity {
 					String category = "";
 					if (response.contains("goodsCategory")) {
 						Object object = jsonObject.get("goodsCategory");
-						
+
 						if (object instanceof JSONArray) {
 							JSONArray array = jsonObject
 									.getJSONArray("goodsCategory");
@@ -1100,6 +1103,192 @@ public class DealDetailActivity extends Activity {
 					// Add parameters
 					httppost.setEntity(new UrlEncodedFormEntity(params,
 							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+
+	private class WebServiceTask6 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask2";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 10000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask6(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			if (response != null) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					refDealID = jsonObject.getString("refDealID");
+					dealStatus = jsonObject.getString("dealStatusID");
+					routeID = jsonObject.getString("routeID");
+					goodsID = jsonObject.getString("goodsID");
+					price = Double.parseDouble(jsonObject.getString("price"));
+					note = jsonObject.getString("notes");
+					createBy = jsonObject.getString("createBy");
+					JSONObject jsonObject2 = jsonObject.getJSONObject("route");
+					if (dealStatus.equals("1") && createBy.equals("owner")) {
+						btn_counter.setVisibility(View.GONE);
+						btnAccept.setVisibility(View.GONE);
+						btnDecline.setVisibility(View.GONE);
+						etPrice.setVisibility(View.GONE);
+						etNote.setVisibility(View.GONE);
+						btnCancel.setVisibility(View.VISIBLE);
+						viewLine.setVisibility(View.GONE);
+					}
+					WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
+							DealDetailActivity.this, "Đang xử lý...");
+					// String url = Common.IP_URL + Common.Service_Deal_getDealByID;
+					// wst.addNameValuePair("dealID", dealID + "");
+					String urlGetRoute = Common.IP_URL + Common.Service_Route_GetByID;
+					wst.addNameValuePair("routeID", routeID + "");
+					wst.execute(new String[] { urlGetRoute });
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			pDlg.dismiss();
+
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
 
 					response = httpclient.execute(httppost);
 					break;

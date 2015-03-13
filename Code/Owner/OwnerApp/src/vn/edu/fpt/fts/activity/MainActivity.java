@@ -1,11 +1,15 @@
 package vn.edu.fpt.fts.activity;
 
 import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
-import vn.edu.fpt.fts.ownerapp.R;
+import vn.edu.fpt.fts.classes.AlarmReceiver;
+import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
+import android.app.AlarmManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -65,6 +69,13 @@ public class MainActivity extends FragmentActivity implements TabListener {
 			}
 		});
         
+        // alarm receiver
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval = 10000;
+        
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
         
     }
 

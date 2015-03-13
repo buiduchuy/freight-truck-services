@@ -29,7 +29,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
-import vn.edu.fpt.fts.ownerapp.R;
+import vn.edu.fpt.fts.fragment.R;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -188,7 +188,7 @@ public class CreateGoodsActivity extends Activity {
 											.get(Calendar.MONTH), calendar2
 											.get(Calendar.DAY_OF_MONTH));
 							DatePicker picker = dialog.getDatePicker();
-//							Calendar cal = Calendar.getInstance();
+							Calendar cal = Calendar.getInstance();
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
 							picker.setMaxDate(cal.getTimeInMillis());
