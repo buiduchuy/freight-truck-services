@@ -101,6 +101,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idGood = Integer
 						.parseInt(request.getParameter("txtgoodID"));
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					session.setAttribute("messageError",
+							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
@@ -250,6 +252,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				Deal dealFa = dealDao.getDealByID(idDealFa);
 				int idGood = dealFa.getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					session.setAttribute("messageError",
+							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
@@ -293,6 +297,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					session.setAttribute("messageError",
+							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
@@ -314,6 +320,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					session.setAttribute("messageError",
+							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
@@ -335,6 +343,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					session.setAttribute("messageError",
+							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("ControllerManageOrder?btnAction=manageOrder");
 					rd.forward(request, response);
