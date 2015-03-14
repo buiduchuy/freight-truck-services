@@ -19,9 +19,8 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.ownerapp.R;
-
-import android.R.anim;
+import vn.edu.fpt.fts.fragment.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -50,6 +49,9 @@ public class LoginActivity extends Activity {
 		etEmail = (EditText) findViewById(R.id.edittext_email);
 		etPass = (EditText) findViewById(R.id.edittext_pass);
 		btnLogin = (Button) findViewById(R.id.button_login);
+		
+		ActionBar actionBar = getActionBar();
+		actionBar.hide();
 		
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 			
@@ -187,7 +189,7 @@ public class LoginActivity extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			
-			if (response.equals("0")) {
+			if (response.equals("0") || response.length() == 0) {
 				Toast.makeText(LoginActivity.this, "Sai email hoặc password", Toast.LENGTH_LONG).show();
 				
 			} else {

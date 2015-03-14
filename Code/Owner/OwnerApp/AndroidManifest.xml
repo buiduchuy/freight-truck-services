@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="vn.edu.fpt.fts.ownerapp"
+    package="vn.edu.fpt.fts.fragment"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -23,12 +23,20 @@
         android:icon="@drawable/ic_launcher"
         android:label="FTS Owner"
         android:theme="@style/CustomActionBarTheme" >
+        <receiver android:name="vn.edu.fpt.fts.classes.AlarmReceiver" >
+        </receiver>
+        <receiver android:name="vn.edu.fpt.fts.classes.NotificationReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBBsohNH3CXOKsy_4bvhpMPW5DBwKJyhEg" />
+            android:value="AIzaSyBCbOIHDu78vJEOP8FgeSHChl9_R2PsUbc" />
 
         <activity
             android:name="vn.edu.fpt.fts.activity.LoginActivity"

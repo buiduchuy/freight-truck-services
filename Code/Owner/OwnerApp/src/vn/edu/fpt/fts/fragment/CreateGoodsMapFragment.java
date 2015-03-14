@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import vn.edu.fpt.fts.activity.CreateGoodsActivity;
-import vn.edu.fpt.fts.ownerapp.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Address;
