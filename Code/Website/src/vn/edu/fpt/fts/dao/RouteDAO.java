@@ -519,4 +519,66 @@ public class RouteDAO {
 		}
 		return null;
 	}
+
+	public List<Route> getListRouteByDriverID(int driverID) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM [Route] WHERE DriverID ='" + driverID
+					+ "' ORDER BY CreateTime DESC)";
+			stm = con.prepareStatement(sql);
+			rs = stm.executeQuery();
+			List<Route> list = new ArrayList<Route>();
+			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
+			VehicleDAO vehicleDAO = new VehicleDAO();
+			DriverDAO driverDao = new DriverDAO();
+			Route route;
+			while (rs.next()) {
+				route = new Route();
+
+				route.setRouteID(rs.getInt("RouteID"));
+				route.setStartingAddress(rs.getString("StartingAddress"));
+				route.setDestinationAddress(rs.getString("DestinationAddress"));
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
+				route.setNotes(rs.getString("Notes"));
+				route.setWeight(rs.getInt("Weight"));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(rs.getInt("Active"));
+
+				route.setDriverID(rs.getInt("DriverID"));
+				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
+
+				route.setRouteMarkers(routeMarkderDAO
+						.getAllRouteMarkerByRouteID(route.getRouteID()));
+				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
+						.getRouteID()));
+				list.add(route);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
 }

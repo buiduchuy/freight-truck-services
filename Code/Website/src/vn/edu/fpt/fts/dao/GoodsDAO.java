@@ -299,7 +299,7 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM [Goods] WHERE OwnerID=?";
+			String sql = "SELECT * FROM [Goods] WHERE OwnerID=? ORDER BY CreateTime DESC";
 			stm = con.prepareStatement(sql);
 
 			int i = 1;

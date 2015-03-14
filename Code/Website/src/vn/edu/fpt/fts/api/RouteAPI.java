@@ -225,6 +225,24 @@ public class RouteAPI {
 	}
 
 	@POST
+	@Path("getListRouteByDriverID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Route> getListRouteByDriverID(
+			MultivaluedMap<String, String> params) {
+		List<Route> l_route = new ArrayList<Route>();
+		try {
+			l_route = routeDao.getListRouteByDriverID(Integer.valueOf(params
+					.getFirst("driverID")));
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return l_route;
+	}
+
+	@POST
 	@Path("getSuggestionRoute")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)

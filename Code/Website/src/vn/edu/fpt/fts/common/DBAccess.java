@@ -16,6 +16,7 @@ public class DBAccess {
 		try {
 			Class.forName(Common.CLASSSQLSERVERDRIVER);
 			String url = Common.CONNECTION;
+			// Connection con = DriverManager.getConnection(url);
 			Connection con = DriverManager.getConnection(url,
 					Common.usernamedb, Common.passworddb);
 			return con;
