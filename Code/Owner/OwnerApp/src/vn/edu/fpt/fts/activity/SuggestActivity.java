@@ -28,6 +28,7 @@ import vn.edu.fpt.fts.adapter.ModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,6 +36,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,8 @@ public class SuggestActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
 		goodsID = getIntent().getStringExtra("goodsID");
 //		price = getIntent().getStringExtra("price");
 //		notes = getIntent().getStringExtra("notes");
@@ -63,7 +67,8 @@ public class SuggestActivity extends Activity {
 				SuggestActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Suggest_Route;
 		wst.addNameValuePair("goodsID", goodsID);
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		listView = (ListView) findViewById(R.id.listview_suggest);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -124,7 +129,24 @@ public class SuggestActivity extends Activity {
 			Intent intent = new Intent(SuggestActivity.this, MainActivity.class);
 			startActivity(intent);
 		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(SuggestActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+//			Intent intent = new Intent(SuggestActivity.this,
+//					GoodsDetailActivity.class);
+//			intent.putExtra("goodsID", goodsID);
+//			startActivity(intent);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -138,7 +160,7 @@ public class SuggestActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

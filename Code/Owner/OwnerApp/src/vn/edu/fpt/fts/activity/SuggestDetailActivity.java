@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,6 +39,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +59,8 @@ public class SuggestDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest_detail);
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
 
 		routeid = getIntent().getIntExtra("route", 0);
 		goodsID = getIntent().getStringExtra("goodsID");
@@ -66,7 +70,8 @@ public class SuggestDetailActivity extends Activity {
 				SuggestDetailActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Route_GetByID;
 		wst.addNameValuePair("routeID", routeid + "");
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
@@ -107,7 +112,8 @@ public class SuggestDetailActivity extends Activity {
 				wst2.addNameValuePair("refDealID", "0");
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
-				wst2.execute(new String[] { url });
+//				wst2.execute(new String[] { url });
+				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 			}
 		});
 
@@ -134,7 +140,25 @@ public class SuggestDetailActivity extends Activity {
 					MainActivity.class);
 			startActivity(intent);
 		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(SuggestDetailActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(SuggestDetailActivity.this,
+					SuggestActivity.class);
+			intent.putExtra("goodsID", goodsID);
+			startActivity(intent);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private String formatDate(Calendar calendar) {
