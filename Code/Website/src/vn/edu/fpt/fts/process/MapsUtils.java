@@ -23,7 +23,9 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import vn.edu.fpt.fts.dao.CityDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.pojo.City;
 import vn.edu.fpt.fts.pojo.Goods;
 
 /**
@@ -34,22 +36,17 @@ public class MapsUtils {
 
 	public static void main(String[] args) {
 		MapsUtils mapsUtils = new MapsUtils();
-		GoodsDAO goodsDao = new GoodsDAO();
-		List<Goods> l_goods = goodsDao.getAllGoods();
+		CityDAO cityDao = new CityDAO();
+		List<City> l_city = cityDao.getAllCity();
 
-		for (int i = 0; i < l_goods.size(); i++) {
-			LatLng latLngSrc = mapsUtils.parseJson(mapsUtils
-					.getJSONFromUrl(mapsUtils.makeURL(l_goods.get(i)
-							.getPickupAddress())));
-			LatLng latLngDes = mapsUtils.parseJson(mapsUtils
-					.getJSONFromUrl(mapsUtils.makeURL(l_goods.get(i)
-							.getDeliveryAddress())));
-			goodsDao.updateLocationGoods(l_goods.get(i).getGoodsID(), latLngSrc, latLngDes);
-			
-			System.out.println(latLngSrc.getLatitude() + " , "
-					+ latLngSrc.getLongitude());
-			System.out.println(latLngDes.getLatitude() + " , "
-					+ latLngDes.getLongitude());
+		for (int i = 0; i < l_city.size(); i++) {
+			LatLng latLng = mapsUtils.parseJson(mapsUtils
+					.getJSONFromUrl(mapsUtils.makeURL(l_city.get(i)
+							.getCityName())));
+			cityDao.updateLocationCity(l_city.get(i).getCityID(), latLng);
+
+			System.out.println(latLng.getLatitude() + " , "
+					+ latLng.getLongitude());
 		}
 	}
 
