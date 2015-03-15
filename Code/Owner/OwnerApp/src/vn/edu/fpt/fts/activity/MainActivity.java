@@ -15,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -111,7 +112,15 @@ public class MainActivity extends FragmentActivity implements TabListener {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
+    @Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {			
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 
 	@Override
 	public void onTabSelected(Tab tab, FragmentTransaction ft) {

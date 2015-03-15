@@ -86,7 +86,8 @@ public class InformationFragment extends Fragment {
 		WebServiceTask2 task2 = new WebServiceTask2(WebServiceTask2.GET_TASK,
 				getActivity(), "Đang xử lý...");
 		String url1 = Common.IP_URL + Common.Service_GoodsCategory_Get;
-		task2.execute(new String[] { url1 });
+//		task2.execute(new String[] { url1 });
+		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url1});
 
 		spinner = (Spinner) rootView.findViewById(R.id.spinner_goods_type);
 		dataAdapter = new ArrayAdapter<String>(getActivity(),
@@ -288,7 +289,8 @@ public class InformationFragment extends Fragment {
 				getActivity(), "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Goods_getGoodsByID;
 		wst3.addNameValuePair("goodsID", goodsID);
-		wst3.execute(new String[] { url });
+//		wst3.execute(new String[] { url });
+		wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		return rootView;
 	}
@@ -354,7 +356,8 @@ public class InformationFragment extends Fragment {
 
 		// the passed String is the URL we will POST to
 		String url = Common.IP_URL + Common.Service_Goods_Update;
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 	}
 

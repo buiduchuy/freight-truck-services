@@ -259,10 +259,9 @@ public class AlarmReceiver extends BroadcastReceiver {
 	public void displayNotification() {
 		String contentText = list.get(0).getDescription();
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				con).setTicker("FTS Owner")
-				.setSmallIcon(R.drawable.ic_action_alarms)
-				.setContentTitle("Thông báo").setContentText(contentText)
-				.setAutoCancel(true);
+				con).setSmallIcon(R.drawable.ic_action_alarms)
+				.setContentTitle("Đề nghị").setContentText(contentText)
+				.setAutoCancel(true).setTicker(contentText);
 
 		// Intent resultIntent = new Intent(con, MainActivity.class);
 		Intent resultIntent = new Intent(con, DealDetailActivity.class);

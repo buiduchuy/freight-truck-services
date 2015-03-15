@@ -26,10 +26,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.common.GeocoderHelper;
 import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
 import vn.edu.fpt.fts.fragment.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -41,6 +45,7 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,15 +73,15 @@ public class CreateGoodsActivity extends Activity {
 	private int cateId, spinnerPos;
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
 			deliverLng = 0.0;
-	private String ownerid;
+	private String ownerid, errorMsg = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_goods);
-		
-		
-		
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
+
 		etNotes = (EditText) findViewById(R.id.edittext_note);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etWeight = (EditText) findViewById(R.id.edittext_weight);
@@ -85,7 +90,9 @@ public class CreateGoodsActivity extends Activity {
 		WebServiceTask2 task2 = new WebServiceTask2(WebServiceTask2.GET_TASK,
 				this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_GoodsCategory_Get;
-		task2.execute(new String[] { url });
+		// task2.execute(new String[] { url });
+		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		spinner = (Spinner) findViewById(R.id.spinner_goods_type);
 		dataAdapter = new ArrayAdapter<String>(this,
@@ -158,11 +165,17 @@ public class CreateGoodsActivity extends Activity {
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if (hasFocus) {
-					DatePickerDialog dialog = new DatePickerDialog(
+					// DatePickerDialog dialog = new DatePickerDialog(
+					// CreateGoodsActivity.this, date1, calendar1
+					// .get(Calendar.YEAR), calendar1
+					// .get(Calendar.MONTH), calendar1
+					// .get(Calendar.DAY_OF_MONTH));
+					MyDatePickerDialog dialog = new MyDatePickerDialog(
 							CreateGoodsActivity.this, date1, calendar1
 									.get(Calendar.YEAR), calendar1
 									.get(Calendar.MONTH), calendar1
 									.get(Calendar.DAY_OF_MONTH));
+					dialog.setPermanentTitle("Ngày có thể nhận hàng");
 					DatePicker picker = dialog.getDatePicker();
 					cal = Calendar.getInstance();
 					picker.setMinDate(cal.getTimeInMillis() - 1000);
@@ -182,13 +195,19 @@ public class CreateGoodsActivity extends Activity {
 					public void onFocusChange(View v, boolean hasFocus) {
 						// TODO Auto-generated method stub
 						if (hasFocus) {
-							DatePickerDialog dialog = new DatePickerDialog(
+							// DatePickerDialog dialog = new DatePickerDialog(
+							// CreateGoodsActivity.this, date2, calendar2
+							// .get(Calendar.YEAR), calendar2
+							// .get(Calendar.MONTH), calendar2
+							// .get(Calendar.DAY_OF_MONTH));
+							MyDatePickerDialog dialog = new MyDatePickerDialog(
 									CreateGoodsActivity.this, date2, calendar2
 											.get(Calendar.YEAR), calendar2
 											.get(Calendar.MONTH), calendar2
 											.get(Calendar.DAY_OF_MONTH));
+							dialog.setPermanentTitle("Ngày có thể giao hàng");
 							DatePicker picker = dialog.getDatePicker();
-							Calendar cal = Calendar.getInstance();
+							Calendar cal = calendar1;
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
 							picker.setMaxDate(cal.getTimeInMillis());
@@ -242,27 +261,7 @@ public class CreateGoodsActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// Chi viec goi ham postData
-				Geocoder geocoder = new Geocoder(getBaseContext());
-				try {			
-					List<Address> list = geocoder.getFromLocationName(
-							actPickupAddr.getText().toString(), 1);
-					List<Address> list2 = geocoder.getFromLocationName(
-							actDeliverAddr.getText().toString(), 1);
-					if (list.size() > 0 && list2.size() > 0) {
-						pickupLng = list.get(0).getLongitude();
-						pickupLat = list.get(0).getLatitude();
-						
-						deliverLng = list2.get(0).getLongitude();
-						deliverLat = list2.get(0).getLatitude();
-					} else {
-						Toast.makeText(CreateGoodsActivity.this, "Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
-						return;
-					}									
-				} catch (IOException ex) {
-					ex.printStackTrace();
-					Toast.makeText(CreateGoodsActivity.this, "Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
-					return;
-				}
+				
 				postData(v);
 			}
 		});
@@ -279,14 +278,12 @@ public class CreateGoodsActivity extends Activity {
 				deliverLng = bundle.getDouble("lng");
 			}
 		}
-		
-		
 
 		// set owner id
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
-		
+
 		if (savedInstanceState != null) {
 			spinner.setSelection(savedInstanceState.getInt("spinner"));
 			etDeliverDate.setText(savedInstanceState.getString("deliverDate"));
@@ -298,14 +295,14 @@ public class CreateGoodsActivity extends Activity {
 			actDeliverAddr.setText(savedInstanceState.getString("deliver"));
 		}
 	}
-	
+
 	@Override
 	protected void onNewIntent(Intent intent) {
 		// TODO Auto-generated method stub
 		super.onNewIntent(intent);
 		setIntent(intent);
 	}
-	
+
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
@@ -319,7 +316,7 @@ public class CreateGoodsActivity extends Activity {
 		outState.putString("pickup", actPickupAddr.getText().toString());
 		outState.putString("deliver", actDeliverAddr.getText().toString());
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -332,7 +329,7 @@ public class CreateGoodsActivity extends Activity {
 		etWeight.setText(savedInstanceState.getString("weight"));
 		actPickupAddr.setText(savedInstanceState.getString("pickup"));
 		actDeliverAddr.setText(savedInstanceState.getString("deliver"));
-		
+
 		Bundle bundle = getIntent().getBundleExtra("info");
 		if (bundle != null) {
 			String flag = bundle.getString("flag");
@@ -363,10 +360,29 @@ public class CreateGoodsActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_homepage) {
-			Intent intent = new Intent(CreateGoodsActivity.this, MainActivity.class);
+			Intent intent = new Intent(CreateGoodsActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(CreateGoodsActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(CreateGoodsActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private void updateLabel(EditText et, Calendar calendar) {
@@ -379,6 +395,93 @@ public class CreateGoodsActivity extends Activity {
 		String format = "yyyy-MM-dd HH:mm:ss";
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		return sdf.format(calendar.getTime());
+	}
+
+	public class MyDatePickerDialog extends DatePickerDialog {
+
+		private CharSequence title;
+
+		public MyDatePickerDialog(Context context, OnDateSetListener callBack,
+				int year, int monthOfYear, int dayOfMonth) {
+			super(context, callBack, year, monthOfYear, dayOfMonth);
+		}
+
+		public void setPermanentTitle(CharSequence title) {
+			this.title = title;
+			setTitle(title);
+		}
+
+		@Override
+		public void onDateChanged(DatePicker view, int year, int month, int day) {
+			super.onDateChanged(view, year, month, day);
+			setTitle(title);
+		}
+	}
+
+	public boolean validate() {
+		boolean check = true;
+		String tmp = etWeight.getText().toString();
+		if (etWeight.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Khối lượng không được để trống";
+		}
+		if (etDeliverDate.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Ngày giao hàng không được để trống";
+		}
+		if (etPickupDate.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Ngày nhận hàng không được để trống";
+		}
+		if (etPrice.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Giá tiền không được để trống";
+		}
+		if (actDeliverAddr.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Địa chỉ giao hàng không được để trống";
+		}
+		if (actPickupAddr.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Địa chỉ nhận hàng không được để trống";
+		}
+		if (calendar1.compareTo(calendar2) <= 0) {
+			check = false;
+			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
+		}
+		
+		Geocoder geocoder = new Geocoder(getBaseContext());
+		try {
+			List<Address> list = geocoder.getFromLocationName(
+					actPickupAddr.getText().toString(), 1);
+			List<Address> list2 = geocoder.getFromLocationName(
+					actDeliverAddr.getText().toString(), 1);
+			if (list.size() > 0 && list2.size() > 0) {
+				pickupLng = list.get(0).getLongitude();
+				pickupLat = list.get(0).getLatitude();
+
+				deliverLng = list2.get(0).getLongitude();
+				deliverLat = list2.get(0).getLatitude();
+			} else {
+				errorMsg = "Địa chỉ không có thật";
+				check = false;
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			check = false;
+			errorMsg = "Địa chỉ không có thật";
+		}
+		
+		GeocoderHelper helper = new GeocoderHelper();
+		LatLng pickup = new LatLng(pickupLat, pickupLng);
+		LatLng deliver = new LatLng(deliverLat, deliverLng);
+		String url = helper.makeURL(pickup, deliver);
+		if (!helper.checkPath(url)) {
+			check = false;
+			errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
+		}
+
+		return check;
 	}
 
 	// ------------------------------------------------------------------------------
@@ -405,31 +508,39 @@ public class CreateGoodsActivity extends Activity {
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		// Cac cap gia tri gui ve server
-		currentTime = Calendar.getInstance();
-		wst.addNameValuePair("active", "1");
-		wst.addNameValuePair("createTime", formatDate(currentTime));
-		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
-				.toString());
-		wst.addNameValuePair("deliveryMarkerLatidute",
-				Double.toString(deliverLat));
-		wst.addNameValuePair("deliveryMarkerLongtitude",
-				Double.toString(deliverLng));
-		wst.addNameValuePair("deliveryTime", formatDate(calendar2));
-		wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
-		wst.addNameValuePair("notes", etNotes.getText().toString());
-		wst.addNameValuePair("ownerID", ownerid);
-		wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
-				.toString());
-		wst.addNameValuePair("pickupMarkerLatidute", Double.toString(pickupLat));
-		wst.addNameValuePair("pickupMarkerLongtitude",
-				Double.toString(pickupLng));
-		wst.addNameValuePair("pickupTime", formatDate(calendar1));
-		wst.addNameValuePair("price", etPrice.getText().toString());
-		wst.addNameValuePair("weight", etWeight.getText().toString());
+		if (validate()) {
+			currentTime = Calendar.getInstance();
+			wst.addNameValuePair("active", "1");
+			wst.addNameValuePair("createTime", formatDate(currentTime));
+			wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
+					.toString());
+			wst.addNameValuePair("deliveryMarkerLatidute",
+					Double.toString(deliverLat));
+			wst.addNameValuePair("deliveryMarkerLongtitude",
+					Double.toString(deliverLng));
+			wst.addNameValuePair("deliveryTime", formatDate(calendar2));
+			wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
+			wst.addNameValuePair("notes", etNotes.getText().toString());
+			wst.addNameValuePair("ownerID", ownerid);
+			wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
+					.toString());
+			wst.addNameValuePair("pickupMarkerLatidute",
+					Double.toString(pickupLat));
+			wst.addNameValuePair("pickupMarkerLongtitude",
+					Double.toString(pickupLng));
+			wst.addNameValuePair("pickupTime", formatDate(calendar1));
+			wst.addNameValuePair("price", etPrice.getText().toString());
+			wst.addNameValuePair("weight", etWeight.getText().toString());
 
-		// the passed String is the URL we will POST to
-		String url = Common.IP_URL + Common.Service_Goods_Create;
-		wst.execute(new String[] { url });
+			// the passed String is the URL we will POST to
+			String url = Common.IP_URL + Common.Service_Goods_Create;
+			// wst.execute(new String[] { url });
+			wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		} else {
+			Toast.makeText(CreateGoodsActivity.this, errorMsg,
+					Toast.LENGTH_LONG).show();
+		}
 
 	}
 

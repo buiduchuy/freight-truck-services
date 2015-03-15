@@ -90,7 +90,8 @@ public class LoginActivity extends Activity {
 		wst.addNameValuePair("email", etEmail.getText().toString());
 		wst.addNameValuePair("password", etPass.getText().toString());
 		String url = Common.IP_URL + Common.Service_Login;
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 	}
 	
 	private void hideKeyboard() {
@@ -114,7 +115,7 @@ public class LoginActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

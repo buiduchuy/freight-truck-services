@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import vn.edu.fpt.fts.activity.CreateGoodsActivity;
+import vn.edu.fpt.fts.activity.MainActivity;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Address;
@@ -31,6 +33,8 @@ public class CreateGoodsMapFragment extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_create_goods_fragment);
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
 
 		String address = getIntent().getStringExtra("address");
 		flag = getIntent().getStringExtra("flag");
@@ -92,6 +96,10 @@ public class CreateGoodsMapFragment extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(CreateGoodsMapFragment.this, MainActivity.class);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

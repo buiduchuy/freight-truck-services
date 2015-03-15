@@ -65,7 +65,8 @@ public class DealFragment extends Fragment {
 				getActivity(), "Đang xử lý...");
 		wst.addNameValuePair("gouteID", goodsID);
 		String url = Common.IP_URL + Common.Service_Deal_GetByGoodsID;
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -109,7 +110,7 @@ public class DealFragment extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -185,7 +186,7 @@ public class DealFragment extends Fragment {
 			if (response.equals("null")) {
 				tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
 				tvGone.setVisibility(View.VISIBLE);
-			} else {
+			} else {				
 				try {
 					JSONObject jsonObject = new JSONObject(response);
 					Object obj = jsonObject.get("deal");

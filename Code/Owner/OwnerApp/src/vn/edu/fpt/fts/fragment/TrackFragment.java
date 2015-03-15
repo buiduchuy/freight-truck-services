@@ -66,7 +66,8 @@ public class TrackFragment extends Fragment {
 				getActivity(), "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Order_get;
 		wst.addNameValuePair("ownerID", ownerID);
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,

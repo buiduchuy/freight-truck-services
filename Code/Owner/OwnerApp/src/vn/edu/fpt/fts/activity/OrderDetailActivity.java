@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -49,6 +50,8 @@ public class OrderDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_order_detail);
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
 
 		orderID = getIntent().getStringExtra("orderID");
 		tvStartAdd = (TextView) findViewById(R.id.textview_startAddr);
@@ -66,7 +69,8 @@ public class OrderDetailActivity extends Activity {
 				OrderDetailActivity.this, "Đang xử lý...");
 		wst.addNameValuePair("orderID", orderID);
 		String url = Common.IP_URL + Common.Service_Order_getOrderByID;
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		btnConfirm.setOnClickListener(new View.OnClickListener() {
 
@@ -80,7 +84,8 @@ public class OrderDetailActivity extends Activity {
 				//wst2.addNameValuePair("ownerConfirmDelivery", "true");
 				String url = Common.IP_URL
 						+ Common.Service_Order_ConfirmDelivery;
-				wst2.execute(new String[] { url });
+//				wst2.execute(new String[] { url });
+				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 			}
 		});
 	}
@@ -102,6 +107,10 @@ public class OrderDetailActivity extends Activity {
 			return true;
 		}
 		if  (id == R.id.action_homepage) {
+			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
+		if (id == android.R.id.home) {
 			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
 			startActivity(intent);
 		}
@@ -127,7 +136,7 @@ public class OrderDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -320,7 +329,7 @@ public class OrderDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

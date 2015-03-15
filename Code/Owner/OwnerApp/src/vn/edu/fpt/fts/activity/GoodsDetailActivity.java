@@ -53,7 +53,7 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		mAdapter = new GoodsDetailPagerAdapter(getSupportFragmentManager());
 
 		viewPager.setAdapter(mAdapter);
-		actionBar.setHomeButtonEnabled(false);
+		actionBar.setHomeButtonEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
 		for (String tab_name : tabs) {
@@ -112,6 +112,11 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		if (id == R.id.action_homepage) {
 			Intent intent = new Intent(GoodsDetailActivity.this, MainActivity.class);
 			startActivity(intent);
+		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(GoodsDetailActivity.this, MainActivity.class);
+			startActivity(intent);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

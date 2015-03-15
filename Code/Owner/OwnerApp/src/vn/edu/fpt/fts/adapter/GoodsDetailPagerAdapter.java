@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.adapter;
 
 import vn.edu.fpt.fts.fragment.DealFragment;
 import vn.edu.fpt.fts.fragment.InformationFragment;
+import vn.edu.fpt.fts.fragment.TrackFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +20,7 @@ public class GoodsDetailPagerAdapter extends FragmentPagerAdapter{
 			return new DealFragment();
 			
 		case 1:
-			return new InformationFragment();
+			return new InformationFragment();			
 		
 		}
 		return null;

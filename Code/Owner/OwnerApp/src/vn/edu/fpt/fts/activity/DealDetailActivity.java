@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
@@ -40,6 +41,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +54,7 @@ public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote;
 	private int dealID;
-	private String refDealID, dealStatus, routeID, goodsID;
+	private String refDealID, dealStatus, routeID, goodsID, goodsCategory;
 	private double price;
 	private String note, createBy;
 	private Button btn_counter, btnAccept, btnDecline, btnCancel;
@@ -65,8 +67,11 @@ public class DealDetailActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deal_detail);
 		
-		dealID = getIntent().getIntExtra("dealID", 0);		
-		
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
+
+		dealID = getIntent().getIntExtra("dealID", 0);
+
 		startAddr = (TextView) this.findViewById(R.id.textview_startAddr);
 		destAddr = (TextView) this.findViewById(R.id.textview_destAddr);
 		startTime = (TextView) this.findViewById(R.id.textview_startTime);
@@ -86,7 +91,6 @@ public class DealDetailActivity extends Activity {
 		// goodspickup = (TextView) findViewById(R.id.textview_pickupgoods);
 		// goodsdeliver = (TextView) findViewById(R.id.textview_delivergoods);
 
-		
 		// refDealID = getIntent().getIntExtra("refDealID", 0);
 		// dealStatus = getIntent().getIntExtra("dealStatus", 0);
 		// routeID = getIntent().getIntExtra("routeID", 0);
@@ -98,11 +102,9 @@ public class DealDetailActivity extends Activity {
 				this, "Đang xử lý...");
 		wst6.addNameValuePair("dealID", dealID + "");
 		String url = Common.IP_URL + Common.Service_Deal_getDealByID;
-		wst6.execute(new String[] { url });
-
-
-
-		
+		// wst6.execute(new String[] { url });
+		wst6.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		btn_counter.setOnClickListener(new View.OnClickListener() {
 
@@ -127,7 +129,9 @@ public class DealDetailActivity extends Activity {
 				}
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
-				wst2.execute(new String[] { url });
+				// wst2.execute(new String[] { url });
+				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
 			}
 		});
 
@@ -154,7 +158,9 @@ public class DealDetailActivity extends Activity {
 				}
 				wst3.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Accept;
-				wst3.execute(new String[] { url });
+				// wst3.execute(new String[] { url });
+				wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
 			}
 		});
 
@@ -181,7 +187,9 @@ public class DealDetailActivity extends Activity {
 				}
 				wst4.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Decline;
-				wst4.execute(new String[] { url });
+				// wst4.execute(new String[] { url });
+				wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
 			}
 		});
 
@@ -208,7 +216,9 @@ public class DealDetailActivity extends Activity {
 				}
 				wst5.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Cancel;
-				wst5.execute(new String[] { url });
+				// wst5.execute(new String[] { url });
+				wst5.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
 			}
 		});
 	}
@@ -234,7 +244,27 @@ public class DealDetailActivity extends Activity {
 					MainActivity.class);
 			startActivity(intent);
 		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(DealDetailActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(DealDetailActivity.this,
+					GoodsDetailActivity.class);
+			intent.putExtra("goodsID", goodsID);
+			intent.putExtra("goodsCategoryID", goodsCategory);
+			startActivity(intent);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	private String formatDate(Calendar calendar) {
@@ -262,7 +292,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -493,7 +523,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -658,7 +688,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -824,7 +854,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -989,7 +1019,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 100000;
+		private static final int SOCKET_TIMEOUT = 10000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -1237,7 +1267,8 @@ public class DealDetailActivity extends Activity {
 					price = Double.parseDouble(jsonObject.getString("price"));
 					note = jsonObject.getString("notes");
 					createBy = jsonObject.getString("createBy");
-					JSONObject jsonObject2 = jsonObject.getJSONObject("route");
+					JSONObject jsonObject2 = (jsonObject.getJSONObject("goods")).getJSONObject("goodsCategory");
+					goodsCategory = jsonObject2.getString("goodsCategoryId");  
 					if (dealStatus.equals("1") && createBy.equals("owner")) {
 						btn_counter.setVisibility(View.GONE);
 						btnAccept.setVisibility(View.GONE);
@@ -1247,13 +1278,18 @@ public class DealDetailActivity extends Activity {
 						btnCancel.setVisibility(View.VISIBLE);
 						viewLine.setVisibility(View.GONE);
 					}
-					WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
-							DealDetailActivity.this, "Đang xử lý...");
-					// String url = Common.IP_URL + Common.Service_Deal_getDealByID;
+					WebServiceTask wst = new WebServiceTask(
+							WebServiceTask.POST_TASK, DealDetailActivity.this,
+							"Đang xử lý...");
+					// String url = Common.IP_URL +
+					// Common.Service_Deal_getDealByID;
 					// wst.addNameValuePair("dealID", dealID + "");
-					String urlGetRoute = Common.IP_URL + Common.Service_Route_GetByID;
+					String urlGetRoute = Common.IP_URL
+							+ Common.Service_Route_GetByID;
 					wst.addNameValuePair("routeID", routeID + "");
-					wst.execute(new String[] { urlGetRoute });
+					// wst.execute(new String[] { urlGetRoute });
+					wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+							new String[] { urlGetRoute });
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

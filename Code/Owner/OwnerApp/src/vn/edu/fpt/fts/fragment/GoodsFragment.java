@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -64,7 +67,8 @@ public class GoodsFragment extends Fragment {
 				"MyPrefs", Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
 		wst.addNameValuePair("ownerID", ownerid);
-		wst.execute(new String[] { url });
+//		wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
 
 		goodsID = new ArrayList<String>();
 		goodsCategoryID = new ArrayList<String>();
@@ -91,6 +95,27 @@ public class GoodsFragment extends Fragment {
 		});
 
 		return rootView;
+	}
+	
+	private boolean expireDate(String date) {
+		Date todayDate = null;
+		Date inputDate = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String today = sdf.format(new Date());
+		try {
+			todayDate = sdf.parse(today);
+			inputDate = sdf.parse(date);
+			if (todayDate.compareTo(inputDate) < 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}		
+		
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -224,8 +249,10 @@ public class GoodsFragment extends Fragment {
 							// list.add(goods);
 							JSONObject jsonObject2 = array.getJSONObject(i);
 							int active = Integer.parseInt(jsonObject2.getString("active"));
+							String pickupDate = jsonObject2.getString("pickupTime");
+							String temp[] = pickupDate.split(" ");							
 							
-							if (active == 1) {
+							if (active == 1 && !expireDate(temp[0])) {
 								String a = jsonObject2.getString("goodsID");
 
 								goodsID.add(jsonObject2.getString("goodsID"));
@@ -249,8 +276,10 @@ public class GoodsFragment extends Fragment {
 					} else if (obj instanceof JSONObject) {
 						JSONObject jsonObject2 = jsonObject.getJSONObject("goods");
 						int active = Integer.parseInt(jsonObject2.getString("active"));
+						String pickupDate = jsonObject2.getString("pickupTime");
+						String temp[] = pickupDate.split(" ");			
 						
-						if (active == 1) {
+						if (active == 1 && expireDate(temp[0])) {
 							String a = jsonObject2.getString("goodsID");
 
 							goodsID.add(jsonObject2.getString("goodsID"));
