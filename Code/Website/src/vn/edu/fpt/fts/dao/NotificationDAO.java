@@ -14,46 +14,47 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.DBAccess;
-import vn.edu.fpt.fts.pojo.DealNotification;
+import vn.edu.fpt.fts.pojo.Notification;
 
 /**
  * @author Huy
  *
  */
-public class DealNotificationDAO {
-	private final static String TAG = "DealNotificationDAO";
+public class NotificationDAO {
+	private final static String TAG = "NotificationDAO";
 
-	public List<DealNotification> getDealNotificationByDealID(int dealID) {
+	public List<Notification> getNotificationByEmail(String email) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
-		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
+		List<Notification> l_notification = new ArrayList<Notification>();
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM DealNotification WHERE DealID=?";
+			String sql = "SELECT * FROM Notification WHERE Email=?";
 			stm = con.prepareStatement(sql);
 
-			stm.setInt(1, dealID);
+			stm.setString(1, email);
 
 			rs = stm.executeQuery();
-			DealNotification dealNoti;
+			Notification notification;
 			while (rs.next()) {
-				dealNoti = new DealNotification();
+				notification = new Notification();
 
-				dealNoti.setNotificationID(rs.getInt("NotificationID"));
-				dealNoti.setMessage(rs.getString("Message"));
-				dealNoti.setActive(rs.getInt("Active"));
-				dealNoti.setCreateTime(rs.getString("CreateTime"));
-				dealNoti.setDealID(rs.getInt("DealID"));
+				notification.setNotificationID(rs.getInt("NotificationID"));
+				notification.setMessage(rs.getString("Message"));
+				notification.setActive(rs.getInt("Active"));
+				notification.setCreateTime(rs.getString("CreateTime"));
+				notification.setType(rs.getString("Type"));
+				notification.setEmail(rs.getString("Email"));
 
-				listDealNoti.add(dealNoti);
+				l_notification.add(notification);
 			}
-			return listDealNoti;
+			return l_notification;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Can't load data from DealNotification table");
+			System.out.println("Can't load data from Notification table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -71,10 +72,10 @@ public class DealNotificationDAO {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
-		return listDealNoti;
+		return l_notification;
 	}
 
-	public int insertDealNotification(DealNotification bean) {
+	public int insertNotification(Notification bean) {
 		ResultSet rs = null;
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -83,8 +84,8 @@ public class DealNotificationDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO DealNotification ( " + "Message,"
-					+ "Active," + "CreateTime," + "DealID" + ") VALUES ("
+			String sql = "INSERT INTO Notification ( " + "Message," + "Active,"
+					+ "CreateTime," + "Type," + "Email" + ") VALUES (" + "?, "
 					+ "?, " + "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
@@ -92,7 +93,8 @@ public class DealNotificationDAO {
 			stmt.setString(i++, bean.getMessage()); // Message
 			stmt.setInt(i++, bean.getActive()); // Active
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			stmt.setInt(i++, bean.getDealID()); // DealID
+			stmt.setString(i++, bean.getType()); // Type
+			stmt.setString(i++, bean.getEmail()); // Email
 
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
@@ -103,7 +105,7 @@ public class DealNotificationDAO {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			System.out.println("Can't insert to DealNotification table");
+			System.out.println("Can't insert to Notification table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 
 		} finally {
@@ -125,25 +127,26 @@ public class DealNotificationDAO {
 		return ret;
 	}
 
-	public int updateDealNotificationStatus(int dealNotiID, int dealNotiStatus) {
+	public int updateNotificationStatus(int notificationID,
+			int notificationStatus) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE DealNotification SET " + " Active = ? "
-					+ " WHERE DealNotificationID = '" + dealNotiID + "' ";
+			String sql = "UPDATE Notification SET " + " Active = ? "
+					+ " WHERE NotificationID = '" + notificationID + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
-			stmt.setInt(i++, dealNotiStatus); // Active
+			stmt.setInt(i++, notificationStatus); // Active
 
 			ret = stmt.executeUpdate();
 
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-			System.out.println("Can't update Active to DealNotification table");
+			System.out.println("Can't update Active to Notification table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -161,34 +164,35 @@ public class DealNotificationDAO {
 		return ret;
 	}
 
-	public List<DealNotification> getAllDealNotification() {
+	public List<Notification> getAllNotification() {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
-		List<DealNotification> listDealNoti = new ArrayList<DealNotification>();
+		List<Notification> l_notification = new ArrayList<Notification>();
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM DealNotification";
+			String sql = "SELECT * FROM Notification";
 			stm = con.prepareStatement(sql);
 
 			rs = stm.executeQuery();
-			DealNotification dealNoti;
+			Notification notification;
 			while (rs.next()) {
-				dealNoti = new DealNotification();
+				notification = new Notification();
 
-				dealNoti.setNotificationID(rs.getInt("NotificationID"));
-				dealNoti.setMessage(rs.getString("Message"));
-				dealNoti.setActive(rs.getInt("Active"));
-				dealNoti.setCreateTime(rs.getString("CreateTime"));
-				dealNoti.setDealID(rs.getInt("DealID"));
+				notification.setNotificationID(rs.getInt("NotificationID"));
+				notification.setMessage(rs.getString("Message"));
+				notification.setActive(rs.getInt("Active"));
+				notification.setCreateTime(rs.getString("CreateTime"));
+				notification.setType(rs.getString("Type"));
+				notification.setEmail(rs.getString("Email"));
 
-				listDealNoti.add(dealNoti);
+				l_notification.add(notification);
 			}
-			return listDealNoti;
+			return l_notification;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Can't load data from DealNotification table");
+			System.out.println("Can't load data from Notification table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {
@@ -206,6 +210,6 @@ public class DealNotificationDAO {
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
-		return listDealNoti;
+		return l_notification;
 	}
 }

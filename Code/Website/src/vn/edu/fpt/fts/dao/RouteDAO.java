@@ -528,7 +528,7 @@ public class RouteDAO {
 		try {
 			con = DBAccess.makeConnection();
 			String sql = "SELECT * FROM [Route] WHERE DriverID ='" + driverID
-					+ "' ORDER BY CreateTime DESC)";
+					+ "' ORDER BY CreateTime DESC";
 			stm = con.prepareStatement(sql);
 			rs = stm.executeQuery();
 			List<Route> list = new ArrayList<Route>();

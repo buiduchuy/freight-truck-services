@@ -69,7 +69,7 @@ public class MapsProcess {
 		if (listMarker.size() != 0) {
 			// %7C is |
 			String waypoints = "";
-			waypoints += "&waypoints=via:";
+			waypoints += "&waypoints=";
 			for (int i = 0; i < s; i++) {
 				String marker = listMarker.get(i);
 				try {
@@ -79,9 +79,9 @@ public class MapsProcess {
 					e.printStackTrace();
 					Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 				}
-				waypoints += marker;
+				waypoints += "via:" + marker;
 				if (s > 1) {
-					waypoints += c_vertical + "via:";
+					waypoints += c_vertical;
 				}
 			}
 			urlString.append(waypoints);

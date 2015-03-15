@@ -5,14 +5,12 @@ package vn.edu.fpt.fts.process;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.DealNotificationDAO;
+import vn.edu.fpt.fts.dao.NotificationDAO;
 import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.DealNotification;
+import vn.edu.fpt.fts.pojo.Notification;
 
 /**
  * @author Huy
@@ -20,127 +18,128 @@ import vn.edu.fpt.fts.pojo.DealNotification;
  */
 public class NotificationProcess {
 
-	DealNotificationDAO dealNotiDao = new DealNotificationDAO();
+	NotificationDAO notificationDao = new NotificationDAO();
 	DealDAO dealDao = new DealDAO();
-	DealNotification dealNoti = new DealNotification();
 	NumberFormat nf = new DecimalFormat("#.####");
 
-	public int insertSendDealNoti(Deal deal) {
+	public int insertDealSendNotification(Deal deal) {
 		int ret = 0;
-		Deal db_deal = dealDao.getLastDealByGoodsAndRouteID(deal.getRouteID(),
-				deal.getGoodsID());
-		String msg = "";
-		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 
-			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã gửi đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
-		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã gửi đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
-		}
-		dealNoti.setMessage(msg);
-		dealNoti.setActive(Common.activate);
-		dealNoti.setCreateTime(deal.getCreateTime());
-		dealNoti.setDealID(deal.getDealID());
-		ret = dealNotiDao.insertDealNotification(dealNoti);
-		return ret;
-	}
-
-	public int insertAcceptDealNoti(Deal deal) {
-		int ret = 0;
+		Notification notification = new Notification();
 
 		Deal db_deal = dealDao.getLastDealByGoodsAndRouteID(deal.getRouteID(),
 				deal.getGoodsID());
+
 		String msg = "";
+		String email = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã đồng ý đề nghị với giá tiền "
+			email = db_deal.getGoods().getOwner().getEmail();
+			msg = "Chủ hàng " + email + " đã gửi đề nghị với giá tiền "
 					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã đồng ý đề nghị với giá tiền "
+			email = db_deal.getRoute().getDriver().getEmail();
+			msg = "Tài xế " + email + " đã gửi đề nghị với giá tiền "
 					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
-		dealNoti.setMessage(msg);
-		dealNoti.setActive(Common.activate);
-		dealNoti.setCreateTime(deal.getCreateTime());
-		dealNoti.setDealID(deal.getDealID());
-		ret = dealNotiDao.insertDealNotification(dealNoti);
+		notification.setMessage(msg);
+		notification.setActive(Common.activate);
+		notification.setCreateTime(deal.getCreateTime());
+		notification.setType("deal");
+		notification.setEmail(email);
+
+		ret = notificationDao.insertNotification(notification);
+
 		return ret;
 	}
 
-	public int insertDeclineDealNoti(Deal deal) {
+	public int insertDealAcceptNotification(Deal deal) {
 		int ret = 0;
+
+		Notification notification = new Notification();
+
 		Deal db_deal = dealDao.getLastDealByGoodsAndRouteID(deal.getRouteID(),
 				deal.getGoodsID());
+
 		String msg = "";
+		String email = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã từ chối đề nghị với giá tiền "
+			email = db_deal.getGoods().getOwner().getEmail();
+			msg = "Chủ hàng " + email + " đã đồng ý đề nghị với giá tiền "
 					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã từ chối đề nghị với giá tiền "
+			email = db_deal.getRoute().getDriver().getEmail();
+			msg = "Tài xế " + email + " đã đồng ý đề nghị với giá tiền "
 					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
-		dealNoti.setMessage(msg);
-		dealNoti.setActive(Common.activate);
-		dealNoti.setCreateTime(deal.getCreateTime());
-		dealNoti.setDealID(deal.getDealID());
-		ret = dealNotiDao.insertDealNotification(dealNoti);
+		notification.setMessage(msg);
+		notification.setActive(Common.activate);
+		notification.setCreateTime(deal.getCreateTime());
+		notification.setType("deal");
+		notification.setEmail(email);
+
+		ret = notificationDao.insertNotification(notification);
+
 		return ret;
 	}
 
-	public int insertCancelDealNoti(Deal deal) {
+	public int insertDealDeclineNotification(Deal deal) {
 		int ret = 0;
+
+		Notification notification = new Notification();
+
 		Deal db_deal = dealDao.getLastDealByGoodsAndRouteID(deal.getRouteID(),
 				deal.getGoodsID());
-		DealNotification dealNoti = new DealNotification();
+
 		String msg = "";
+		String email = "";
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
-			msg = "Chủ hàng " + db_deal.getGoods().getOwner().getEmail()
-					+ " đã hủy thương lượng với giá tiền "
+			email = db_deal.getGoods().getOwner().getEmail();
+			msg = "Chủ hàng " + email + " đã từ chối đề nghị với giá tiền "
 					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
-			msg = "Tài xế " + db_deal.getRoute().getDriver().getEmail()
-					+ " đã hủy thương lượng với giá tiền "
+			email = db_deal.getRoute().getDriver().getEmail();
+			msg = "Tài xế " + email + " đã từ chối đề nghị với giá tiền "
 					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
-		dealNoti.setMessage(msg);
-		dealNoti.setActive(Common.activate);
-		dealNoti.setCreateTime(deal.getCreateTime());
-		dealNoti.setDealID(deal.getDealID());
-		ret = dealNotiDao.insertDealNotification(dealNoti);
+		notification.setMessage(msg);
+		notification.setActive(Common.activate);
+		notification.setCreateTime(deal.getCreateTime());
+		notification.setType("deal");
+		notification.setEmail(email);
+
+		ret = notificationDao.insertNotification(notification);
+
 		return ret;
 	}
 
-	public List<DealNotification> getListDealNotiByDriver(int driverID) {
-		List<DealNotification> l_dealNoti = new ArrayList<DealNotification>();
-		List<Deal> l_deal = dealDao.getDealByDriverID(driverID);
-		for (int i = 0; i < l_deal.size(); i++) {
-			if (l_deal.get(i).getCreateBy().equalsIgnoreCase("owner")) {
-				l_dealNoti
-						.addAll(dealNotiDao.getDealNotificationByDealID(l_deal
-								.get(i).getDealID()));
-			}
-		}
+	public int insertDealCancelNotification(Deal deal) {
+		int ret = 0;
 
-		return l_dealNoti;
-	}
+		Notification notification = new Notification();
 
-	public List<DealNotification> getListDealNotiByOwner(int ownerID) {
-		List<DealNotification> l_dealNoti = new ArrayList<DealNotification>();
-		List<Deal> l_deal = dealDao.getDealByOwnerID(ownerID);
-		for (int i = 0; i < l_deal.size(); i++) {
-			if (l_deal.get(i).getCreateBy().equalsIgnoreCase("driver")) {
-				l_dealNoti
-						.addAll(dealNotiDao.getDealNotificationByDealID(l_deal
-								.get(i).getDealID()));
-			}
+		Deal db_deal = dealDao.getLastDealByGoodsAndRouteID(deal.getRouteID(),
+				deal.getGoodsID());
+
+		String msg = "";
+		String email = "";
+		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
+			email = db_deal.getGoods().getOwner().getEmail();
+			msg = "Chủ hàng " + email + " đã hủy thương lượng với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
+			email = db_deal.getRoute().getDriver().getEmail();
+			msg = "Tài xế " + email + " đã hủy thương lượng với giá tiền "
+					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
 		}
-		return l_dealNoti;
+		notification.setMessage(msg);
+		notification.setActive(Common.activate);
+		notification.setCreateTime(deal.getCreateTime());
+		notification.setType("deal");
+		notification.setEmail(email);
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
 	}
 
 }

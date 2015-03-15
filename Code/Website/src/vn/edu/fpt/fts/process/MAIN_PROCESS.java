@@ -6,7 +6,8 @@ package vn.edu.fpt.fts.process;
 import java.text.ParseException;
 import java.util.List;
 
-import vn.edu.fpt.fts.pojo.DealNotification;
+import vn.edu.fpt.fts.dao.NotificationDAO;
+import vn.edu.fpt.fts.pojo.Notification;
 
 /**
  * @author Huy
@@ -82,8 +83,8 @@ public class MAIN_PROCESS {
 		// List<Goods> listGoods = new ArrayList<Goods>();
 		// listGoods = goodsDao.getAllGoods();
 		//
-		 MatchingProcess mp = new MatchingProcess();
-		 System.out.println(mp.getSuggestionGoods(46).size());
+		MatchingProcess mp = new MatchingProcess();
+		System.out.println(mp.getSuggestionGoods(48).size());
 
 		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
 		// RouteGoodsCategoryDAO();
@@ -142,8 +143,9 @@ public class MAIN_PROCESS {
 		// } catch (ParseException e) {
 		// e.printStackTrace();
 		// }
-		NotificationProcess np = new NotificationProcess();
-		List<DealNotification> l_dealNoti = np.getListDealNotiByDriver(1);
+		NotificationDAO notificationDao = new NotificationDAO();
+		List<Notification> l_dealNoti = notificationDao
+				.getNotificationByEmail("driver");
 		for (int i = 0; i < l_dealNoti.size(); i++) {
 			System.out.println(l_dealNoti.get(i).getMessage());
 		}

@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.DealNotificationDAO;
 import vn.edu.fpt.fts.dao.DealOrderDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
@@ -29,7 +28,6 @@ public class DealProcess {
 	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
 	DealOrderDAO dealOrderDao = new DealOrderDAO();
-	DealNotificationDAO dealNotiDao = new DealNotificationDAO();
 	NotificationProcess notiProcess = new NotificationProcess();
 
 	// public String acceptDeal(int dealID) {
@@ -205,7 +203,7 @@ public class DealProcess {
 			}
 
 			// Insert Notification
-			notiProcess.insertAcceptDealNoti(deal);
+			notiProcess.insertDealAcceptNotification(deal);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -223,7 +221,7 @@ public class DealProcess {
 			ret = dealDao.updateDeal(deal);
 
 			// Insert new deal with decline status
-			notiProcess.insertDeclineDealNoti(deal);
+			notiProcess.insertDealDeclineNotification(deal);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -243,7 +241,7 @@ public class DealProcess {
 				ret = dealDao.updateDeal(deal);
 
 				// Insert Notification
-				notiProcess.insertCancelDealNoti(deal);
+				notiProcess.insertDealCancelNotification(deal);
 			} else {
 				System.out
 						.println("Khong thoa man de doi trang thai deal thanh cancel");
@@ -268,7 +266,7 @@ public class DealProcess {
 
 			// Insert Notification
 			deal.setDealID(ret); // Update last dealID
-			notiProcess.insertSendDealNoti(deal);
+			notiProcess.insertDealSendNotification(deal);
 		} else {
 			int db_dealStatusID = db_deal.getDealStatusID();
 
@@ -285,7 +283,7 @@ public class DealProcess {
 
 						// Insert Notification
 						deal.setDealID(ret); // Update last dealID
-						notiProcess.insertSendDealNoti(deal);
+						notiProcess.insertDealSendNotification(deal);
 					} else {
 						ret = 0;
 					}
@@ -298,13 +296,13 @@ public class DealProcess {
 
 				// Insert Notification
 				deal.setDealID(ret); // Update last dealID
-				notiProcess.insertSendDealNoti(deal);
+				notiProcess.insertDealSendNotification(deal);
 			} else if (db_dealStatusID == Common.deal_cancel) {
 				ret = dealDao.insertDeal(deal);
 
 				// Insert Notification
 				deal.setDealID(ret); // Update last dealID
-				notiProcess.insertSendDealNoti(deal);
+				notiProcess.insertDealSendNotification(deal);
 			}
 		}
 		return ret;
