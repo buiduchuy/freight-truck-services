@@ -24,13 +24,14 @@ public class Notification implements Serializable {
 	private String createTime;
 	private String type;
 	private String email;
+	private int idOfType;
 
 	public Notification() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public Notification(int notificationID, String message, int active,
-			String createTime, String type, String email) {
+			String createTime, String type, String email, int idOfType) {
 		super();
 		this.notificationID = notificationID;
 		this.message = message;
@@ -38,6 +39,7 @@ public class Notification implements Serializable {
 		this.createTime = createTime;
 		this.type = type;
 		this.email = email;
+		this.idOfType = idOfType;
 	}
 
 	public int getNotificationID() {
@@ -86,6 +88,14 @@ public class Notification implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public int getIdOfType() {
+		return idOfType;
+	}
+
+	public void setIdOfType(int idOfType) {
+		this.idOfType = idOfType;
 	}
 
 }

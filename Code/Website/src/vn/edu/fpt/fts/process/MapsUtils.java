@@ -24,9 +24,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import vn.edu.fpt.fts.dao.CityDAO;
-import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.pojo.City;
-import vn.edu.fpt.fts.pojo.Goods;
 
 /**
  * @author Huy

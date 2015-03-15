@@ -48,6 +48,7 @@ public class NotificationDAO {
 				notification.setCreateTime(rs.getString("CreateTime"));
 				notification.setType(rs.getString("Type"));
 				notification.setEmail(rs.getString("Email"));
+				notification.setIdOfType(rs.getInt("IdOfType"));
 
 				l_notification.add(notification);
 			}
@@ -85,8 +86,9 @@ public class NotificationDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO Notification ( " + "Message," + "Active,"
-					+ "CreateTime," + "Type," + "Email" + ") VALUES (" + "?, "
-					+ "?, " + "?, " + "?, " + "?)";
+					+ "CreateTime," + "Type," + "Email," + "IdOfType"
+					+ ") VALUES (" + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 
@@ -95,6 +97,7 @@ public class NotificationDAO {
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setString(i++, bean.getType()); // Type
 			stmt.setString(i++, bean.getEmail()); // Email
+			stmt.setInt(i++, bean.getIdOfType());
 
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
@@ -186,6 +189,7 @@ public class NotificationDAO {
 				notification.setCreateTime(rs.getString("CreateTime"));
 				notification.setType(rs.getString("Type"));
 				notification.setEmail(rs.getString("Email"));
+				notification.setIdOfType(rs.getInt("IdOfType"));
 
 				l_notification.add(notification);
 			}
