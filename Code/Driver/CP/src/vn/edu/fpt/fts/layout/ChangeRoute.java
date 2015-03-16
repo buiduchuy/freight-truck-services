@@ -318,6 +318,8 @@ public class ChangeRoute extends Fragment {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.HOUR_OF_DAY, 6);
 			String hr = String.valueOf(hourOfDay);
 			String min = String.valueOf(minute);
 			if (hr.length() == 1) {
@@ -326,7 +328,22 @@ public class ChangeRoute extends Fragment {
 			if (min.length() == 1) {
 				min = "0" + min;
 			}
-			startHour.setText(hr + ":" + min);
+			String sd = startDate.getText().toString() + " " + hr + ":" + min;
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+			Date sdd = new Date();
+			try {
+				sdd = format.parse(sd);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(sdd.compareTo(c.getTime()) >= 0)
+			{
+				startHour.setText(hr + ":" + min);
+			}
+			else {
+				Toast.makeText(getActivity(), "Thời gian bắt đầu phải lớn hơn thời gian hiện hành ít nhất 6 tiếng", Toast.LENGTH_SHORT).show();
+			}
 		}
 	};
 

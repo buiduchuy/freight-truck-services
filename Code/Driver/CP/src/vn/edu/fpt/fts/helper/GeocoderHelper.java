@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.helper;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +11,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Color;
+import android.location.Location;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.maps.GeoPoint;
 
 public class GeocoderHelper {
 	List<Polyline> polylines = new ArrayList<Polyline>();
@@ -37,15 +40,15 @@ public class GeocoderHelper {
 		urlString.append(Double.toString(des.latitude));
 		urlString.append(",");
 		urlString.append(Double.toString(des.longitude));
-		if(p1 != null || p2 != null) { 
+		if (p1 != null || p2 != null) {
 			urlString.append("&waypoints=");
 			String waypoints = "";
-			if(p1 != null) {
+			if (p1 != null) {
 				waypoints += Double.toString(p1.latitude);
 				waypoints += ",";
 				waypoints += Double.toString(p1.longitude);
 			}
-			if(p2 != null) {
+			if (p2 != null) {
 				waypoints += "|";
 				waypoints += Double.toString(p2.latitude);
 				waypoints += ",";
@@ -86,6 +89,22 @@ public class GeocoderHelper {
 
 		}
 	}
+	
+	public List<LatLng> getPoints(String result) {
+		try {
+			final JSONObject json = new JSONObject(result);
+			JSONArray routeArray = json.getJSONArray("routes");
+			JSONObject routes = routeArray.getJSONObject(0);
+			JSONObject overviewPolylines = routes
+					.getJSONObject("overview_polyline");
+			String encodedString = overviewPolylines.getString("points");
+			List<LatLng> list = decodePoly(encodedString);
+			return list;
+		} catch (JSONException e) {
+
+		}
+		return null;
+	}
 
 	private List<LatLng> decodePoly(String encoded) {
 
@@ -119,5 +138,28 @@ public class GeocoderHelper {
 		}
 
 		return poly;
+	}
+
+	public double CalculationByDistance(LatLng StartP, LatLng EndP) {
+		int Radius = 6371;
+		double lat1 = StartP.latitude;
+		double lat2 = EndP.latitude;
+		double lon1 = StartP.longitude;
+		double lon2 = EndP.longitude;
+		double dLat = Math.toRadians(lat2 - lat1);
+		double dLon = Math.toRadians(lon2 - lon1);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+				+ Math.cos(Math.toRadians(lat1))
+				* Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+				* Math.sin(dLon / 2);
+		double c = 2 * Math.asin(Math.sqrt(a));
+		double valueResult = Radius * c;
+		double km = valueResult / 1;
+		DecimalFormat newFormat = new DecimalFormat("####");
+		int kmInDec = Integer.valueOf(newFormat.format(km));
+		double meter = valueResult % 1000;
+		int meterInDec = Integer.valueOf(newFormat.format(meter));
+		
+		return Radius * c;
 	}
 }

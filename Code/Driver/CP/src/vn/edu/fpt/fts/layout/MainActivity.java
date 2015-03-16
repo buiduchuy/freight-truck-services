@@ -165,21 +165,11 @@ public class MainActivity extends FragmentActivity {
 			String id = getIntent().getStringExtra("dealID");
 			NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			mNotificationManager.cancel(Integer.parseInt(id));
+			String type = getIntent().getStringExtra("type");
 			String status = getIntent().getStringExtra("status");
 			String sender = getIntent().getStringExtra("sender");
-			if(status.equals("1")) {
-				if(sender.equals("driver")) {
-					FragmentManager mng = getSupportFragmentManager();
-					FragmentTransaction trs = mng.beginTransaction();
-					CancelOffer frag = new CancelOffer();
-					Bundle bundle = new Bundle();
-					bundle.putString("dealID", id);
-					frag.setArguments(bundle);
-					trs.replace(R.id.content_frame, frag);
-					trs.addToBackStack(null);
-					trs.commit();
-				}
-				else if(sender.equals("owner")) {
+			if (type.equals("deal")) {
+				if (status.equals("1")) {
 					FragmentManager mng = getSupportFragmentManager();
 					FragmentTransaction trs = mng.beginTransaction();
 					OfferResponse frag = new OfferResponse();
@@ -189,14 +179,25 @@ public class MainActivity extends FragmentActivity {
 					trs.replace(R.id.content_frame, frag);
 					trs.addToBackStack(null);
 					trs.commit();
+				} 
+				else {
+					FragmentManager mng = getSupportFragmentManager();
+					FragmentTransaction trs = mng.beginTransaction();
+					DealHistoryDetail frag = new DealHistoryDetail();
+					Bundle bundle = new Bundle();
+					bundle.putString("dealID", id);
+					frag.setArguments(bundle);
+					trs.replace(R.id.content_frame, frag);
+					trs.addToBackStack(null);
+					trs.commit();
 				}
 			}
-			else {
+			else if(type.equals("order")){
 				FragmentManager mng = getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
-				DealHistoryDetail frag = new DealHistoryDetail();
+				HistoryDetail frag = new HistoryDetail();
 				Bundle bundle = new Bundle();
-				bundle.putString("dealID", id);
+				bundle.putString("orderID", id);
 				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);

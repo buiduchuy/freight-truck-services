@@ -58,6 +58,7 @@ public class Login extends Activity {
 		if (share.contains("driverID")) {
 			Intent intent = new Intent(Login.this, MainActivity.class);
 			intent.putExtra("driverID", share.getString("driverID", ""));
+			intent.putExtra("email", share.getString("email", ""));
 			startActivity(intent);
 		} else {
 			setContentView(R.layout.activity_login);
@@ -194,18 +195,20 @@ public class Login extends Activity {
 			// handleResponse(response);
 			pDlg.dismiss();
 			if (Integer.parseInt(response) > 0) {
+				SharedPreferences share = getSharedPreferences("driver",
+						Context.MODE_PRIVATE);
+				Editor editor = share.edit();
 				if (remember.isChecked()) {
-					SharedPreferences share = getSharedPreferences("driver",
-							Context.MODE_PRIVATE);
-					Editor editor = share.edit();
 					editor.putString("driverID", response);
 					editor.commit();
 				}
+				editor.putString("email", params.get(0).getValue());
+				editor.commit();
 				Toast.makeText(Login.this, "Đăng nhập thành công",
 						Toast.LENGTH_SHORT).show();
 				Intent intent = new Intent(Login.this, MainActivity.class);
 				intent.putExtra("driverID", response);
-
+				intent.putExtra("email", params.get(0).getValue());
 				startActivity(intent);
 			} else {
 				Toast.makeText(Login.this,
