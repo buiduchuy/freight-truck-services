@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,10 +34,10 @@ public final class Common {
 
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
-//	 public static final String CONNECTION =
-//	 "jdbc:sqlserver://localhost:1433;databaseName=FTS";
-//	 public static final String usernamedb = "sa";
-//	 public static final String passworddb = "123456";
+	// public static final String CONNECTION =
+	// "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+	// public static final String usernamedb = "sa";
+	// public static final String passworddb = "123456";
 
 	public static final String CONNECTION = "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
 	public static final String usernamedb = "duchuy";
@@ -78,6 +80,14 @@ public final class Common {
 		} catch (ParseException pe) {
 			return dateInput;
 		}
+	}
+
+	public static String formatNumber(double number) {
+		DecimalFormat formatter = new DecimalFormat();
+		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
+		symbol.setGroupingSeparator('.');
+		formatter.setDecimalFormatSymbols(symbol);
+		return formatter.format(number);
 	}
 
 	private static final String GEOCODER_REQUEST_PREFIX_FOR_XML = "http://maps.google.com/maps/api/geocode/xml";
@@ -238,4 +248,5 @@ public final class Common {
 	public double rad2deg(double rad) {
 		return (rad * 180 / Math.PI);
 	}
+
 }

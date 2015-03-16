@@ -49,6 +49,7 @@ public class NotificationDAO {
 				notification.setType(rs.getString("Type"));
 				notification.setEmail(rs.getString("Email"));
 				notification.setIdOfType(rs.getInt("IdOfType"));
+				notification.setStatusOfType(rs.getInt("StatusOfType"));
 
 				l_notification.add(notification);
 			}
@@ -86,9 +87,9 @@ public class NotificationDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "INSERT INTO Notification ( " + "Message," + "Active,"
-					+ "CreateTime," + "Type," + "Email," + "IdOfType"
-					+ ") VALUES (" + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?)";
+					+ "CreateTime," + "Type," + "Email," + "IdOfType,"
+					+ "StatusOfType" + ") VALUES (" + "?, " + "?, " + "?, "
+					+ "?, " + "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
 
@@ -97,7 +98,8 @@ public class NotificationDAO {
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setString(i++, bean.getType()); // Type
 			stmt.setString(i++, bean.getEmail()); // Email
-			stmt.setInt(i++, bean.getIdOfType());
+			stmt.setInt(i++, bean.getIdOfType()); // IdOfType
+			stmt.setInt(i++, bean.getStatusOfType()); // StatusOfType
 
 			stmt.executeUpdate();
 			rs = stmt.getGeneratedKeys();
@@ -190,6 +192,7 @@ public class NotificationDAO {
 				notification.setType(rs.getString("Type"));
 				notification.setEmail(rs.getString("Email"));
 				notification.setIdOfType(rs.getInt("IdOfType"));
+				notification.setStatusOfType(rs.getInt("StatusOfType"));
 
 				l_notification.add(notification);
 			}

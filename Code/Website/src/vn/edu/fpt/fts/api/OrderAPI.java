@@ -19,6 +19,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.process.NotificationProcess;
 
 /**
  * @author Huy
@@ -28,6 +29,7 @@ import vn.edu.fpt.fts.pojo.Order;
 public class OrderAPI {
 	private final static String TAG = "GoodsCategoryAPI";
 	OrderDAO orderDao = new OrderDAO();
+	NotificationProcess notificationProcess = new NotificationProcess();
 
 	@GET
 	@Path("get")
@@ -132,7 +134,6 @@ public class OrderAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
 		return listOrderByOwner;
 	}
 
@@ -144,18 +145,20 @@ public class OrderAPI {
 		int ret = 0;
 		try {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			if (orderDao.getOrderByID(orderID) != null) {
+			Order db_order = orderDao.getOrderByID(orderID);
+			if (db_order != null) {
 				ret = orderDao
 						.updateOrderStatusID(orderID, Common.order_driver);
 
+				// Insert notification
+				notificationProcess
+						.insertDriverConfirmOrderNotification(db_order);
 			}
-
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
 		return String.valueOf(ret);
 	}
 
@@ -167,16 +170,19 @@ public class OrderAPI {
 		int ret = 0;
 		try {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			if (orderDao.getOrderByID(orderID) != null) {
+			Order db_order = orderDao.getOrderByID(orderID);
+			if (db_order != null) {
 				ret = orderDao.updateOrderStatusID(orderID, Common.order_owner);
-			}
 
+				// Insert notification
+				notificationProcess
+						.insertOwnerConfirmOrderNotification(db_order);
+			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
 		return String.valueOf(ret);
 	}
 

@@ -3,14 +3,13 @@
  */
 package vn.edu.fpt.fts.process;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.NotificationDAO;
+import vn.edu.fpt.fts.pojo.Account;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Notification;
+import vn.edu.fpt.fts.pojo.Order;
 
 /**
  * @author Huy
@@ -20,7 +19,6 @@ public class NotificationProcess {
 
 	NotificationDAO notificationDao = new NotificationDAO();
 	DealDAO dealDao = new DealDAO();
-	NumberFormat nf = new DecimalFormat("#.####");
 
 	public int insertDealSendNotification(Deal deal) {
 		int ret = 0;
@@ -35,12 +33,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã gửi đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã gửi đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
@@ -48,6 +46,7 @@ public class NotificationProcess {
 		notification.setCreateTime(deal.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
+		notification.setStatusOfType(deal.getDealStatusID());
 
 		ret = notificationDao.insertNotification(notification);
 
@@ -67,12 +66,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã đồng ý đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã đồng ý đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
@@ -80,6 +79,7 @@ public class NotificationProcess {
 		notification.setCreateTime(deal.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
+		notification.setStatusOfType(deal.getDealStatusID());
 
 		ret = notificationDao.insertNotification(notification);
 
@@ -99,12 +99,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã từ chối đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã từ chối đề nghị với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
@@ -112,6 +112,7 @@ public class NotificationProcess {
 		notification.setCreateTime(deal.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
+		notification.setStatusOfType(deal.getDealStatusID());
 
 		ret = notificationDao.insertNotification(notification);
 
@@ -131,12 +132,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã hủy thương lượng với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã hủy thương lượng với giá tiền "
-					+ nf.format(db_deal.getPrice()) + " nghìn đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
@@ -144,6 +145,67 @@ public class NotificationProcess {
 		notification.setCreateTime(deal.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
+		notification.setStatusOfType(deal.getDealStatusID());
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertOwnerConfirmOrderNotification(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification
+				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
+		notification.setMessage("Chủ hàng "
+				+ order.getDeal().getGoods().getOwner().getEmail()
+				+ " đã xác nhận đơn giao hàng thành công.");
+		notification.setStatusOfType(Common.order_owner);
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertDriverConfirmOrderNotification(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Tài xế "
+				+ order.getDeal().getRoute().getDriver().getEmail()
+				+ " đã xác nhận đơn giao hàng thành công.");
+		notification.setStatusOfType(Common.order_driver);
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertStaffConfirmOrderNotification(Order order, Account acc) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Nhân viên " + acc.getEmail()
+				+ " đã xác nhận đơn giao hàng thành công.");
+		notification.setStatusOfType(Common.order_staff);
+
+		ret = notificationDao.insertNotification(notification);
+
+		notification
+				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
 
 		ret = notificationDao.insertNotification(notification);
 

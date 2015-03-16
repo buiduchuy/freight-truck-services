@@ -24,6 +24,17 @@ public class MatchingProcess {
 	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
 
+	public boolean checkTimeOverlaps(Date startDate1, Date endDate1,
+			Date startDate2, Date endDate2) {
+		if (startDate1 == null || endDate1 == null || startDate2 == null
+				|| endDate2 == null)
+			return false;
+		if ((startDate1.getTime() <= endDate2.getTime())
+				&& (startDate2.getTime() <= endDate1.getTime()))
+			return true;
+		return false;
+	}
+
 	public List<Route> getSuggestionRoute(int goodsID) {
 
 		LatLng goodsStartLocation = new LatLng();
@@ -59,7 +70,8 @@ public class MatchingProcess {
 					l_routeOrigin1.add(l_routeOrigin.get(i));
 					System.out.println("Goods Weight: " + goodsWeight
 							+ " -- Route Weight:" + routeWeight
-							+ " -- Remaining Weight: " + (routeWeight - totalWeight));
+							+ " -- Remaining Weight: "
+							+ (routeWeight - totalWeight));
 				}
 			}
 
@@ -74,16 +86,24 @@ public class MatchingProcess {
 							.getStartTime());
 					Date routeFinishDate = sdf.parse(l_routeOrigin1.get(i)
 							.getFinishTime());
-
-					if (routeStartDate.compareTo(pickupDate) <= 0
-							&& routeStartDate.compareTo(deliveryDate) <= 0
-							&& !(routeFinishDate.compareTo(deliveryDate) < 0)) {
+					if (checkTimeOverlaps(pickupDate, deliveryDate,
+							routeStartDate, routeFinishDate)) {
 						l_routesFilter1.add(l_routeOrigin1.get(i));
 						System.out.println(routeStartDate.getTime() + " <= "
 								+ pickupDate.getTime() + " <= "
 								+ deliveryDate.getTime() + " <= "
 								+ routeFinishDate.getTime());
 					}
+
+					// if (routeStartDate.compareTo(pickupDate) <= 0
+					// && routeStartDate.compareTo(deliveryDate) <= 0
+					// && !(routeFinishDate.compareTo(deliveryDate) < 0)) {
+					// l_routesFilter1.add(l_routeOrigin1.get(i));
+					// System.out.println(routeStartDate.getTime() + " <= "
+					// + pickupDate.getTime() + " <= "
+					// + deliveryDate.getTime() + " <= "
+					// + routeFinishDate.getTime());
+					// }
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -125,7 +145,8 @@ public class MatchingProcess {
 					l_goodsBefore1.add(l_goodsBefore.get(i));
 					System.out.println("Goods Weight: " + goodsWeight
 							+ " -- Route Weight:" + routeWeight
-							+ " -- Remaining Weight: " + (routeWeight - totalWeight));
+							+ " -- Remaining Weight: "
+							+ (routeWeight - totalWeight));
 				}
 			}
 
@@ -139,15 +160,24 @@ public class MatchingProcess {
 							.getPickupTime());
 					Date goodsDelivery = sdf.parse(l_goodsBefore1.get(i)
 							.getDeliveryTime());
-					if (startingDate.compareTo(goodsPickup) <= 0
-							&& startingDate.compareTo(goodsDelivery) <= 0
-							&& !(finishDate.compareTo(goodsDelivery) < 0)) {
+					if (checkTimeOverlaps(startingDate, finishDate,
+							goodsPickup, goodsDelivery)) {
 						l_goodsFilter1.add(l_goodsBefore1.get(i));
 						System.out.println(startingDate.getTime() + " <= "
 								+ goodsPickup.getTime() + " <= "
 								+ goodsDelivery.getTime() + " <= "
 								+ finishDate.getTime());
 					}
+
+					// if (startingDate.compareTo(goodsPickup) <= 0
+					// && startingDate.compareTo(goodsDelivery) <= 0
+					// && !(finishDate.compareTo(goodsDelivery) < 0)) {
+					// l_goodsFilter1.add(l_goodsBefore1.get(i));
+					// System.out.println(startingDate.getTime() + " <= "
+					// + goodsPickup.getTime() + " <= "
+					// + goodsDelivery.getTime() + " <= "
+					// + finishDate.getTime());
+					// }
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
