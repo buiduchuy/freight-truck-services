@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.activity.DealDetailActivity;
 import vn.edu.fpt.fts.activity.MainActivity;
+import vn.edu.fpt.fts.activity.OrderDetailActivity;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.NotificationManager;
@@ -40,11 +41,11 @@ import android.support.v4.app.TaskStackBuilder;
 public class AlarmReceiver extends BroadcastReceiver {
 	Context con;
 	private static int oldSize, newSize;
-	String id;
+	String email;
 	private static ArrayList<ListItem> list = new ArrayList<ListItem>();
 
 	private static final String SERVICE_URL = Common.IP_URL
-			+ Common.Service_Notification_getNotiByOwnerID;
+			+ Common.Service_Notification_getNotificationByEmail;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -54,8 +55,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 				"Đang lấy dữ liệu ...");
 		SharedPreferences preferences = context.getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
-		id = preferences.getString("ownerID", "");
-		ws.addNameValuePair("ownerID", id);
+		email = preferences.getString("email", "");
+		ws.addNameValuePair("email", email);
 		ws.execute(new String[] { SERVICE_URL });
 	}
 
@@ -136,23 +137,26 @@ public class AlarmReceiver extends BroadcastReceiver {
 						try {
 							list = new ArrayList<ListItem>();
 							JSONObject obj = new JSONObject(response);
-							Object intervent = obj.get("dealNotification");
+							Object intervent = obj.get("notification");
 							if (intervent instanceof JSONArray) {
 								JSONArray array = obj
-										.getJSONArray("dealNotification");
+										.getJSONArray("notification");
 								for (int i = array.length() - 1; i >= 0; i--) {
 									JSONObject item = array.getJSONObject(i);
 									list.add(new ListItem(item
-											.getString("dealID"), item
-											.getString("message"), "", ""));
+											.getString("idOfType"), item
+											.getString("message"), item
+											.getString("type")));
 									// list.add(new ListItem(item
 									// .getString("message"), "", ""));
 								}
 							} else if (intervent instanceof JSONObject) {
 								JSONObject item = obj
-										.getJSONObject("dealNotification");
-								list.add(new ListItem(item.getString("dealID"),
-										item.getString("message"), "", ""));
+										.getJSONObject("notification");
+								list.add(new ListItem(item
+										.getString("idOfType"), item
+										.getString("message"), item
+										.getString("type")));
 							}
 							oldSize = list.size();
 						} catch (JSONException e) {
@@ -163,21 +167,24 @@ public class AlarmReceiver extends BroadcastReceiver {
 						try {
 							list = new ArrayList<ListItem>();
 							JSONObject obj = new JSONObject(response);
-							Object intervent = obj.get("dealNotification");
+							Object intervent = obj.get("notification");
 							if (intervent instanceof JSONArray) {
 								JSONArray array = obj
-										.getJSONArray("dealNotification");
+										.getJSONArray("notification");
 								for (int i = array.length() - 1; i >= 0; i--) {
 									JSONObject item = array.getJSONObject(i);
 									list.add(new ListItem(item
-											.getString("dealID"), item
-											.getString("message"), "", ""));
+											.getString("idOfType"), item
+											.getString("message"), item
+											.getString("type")));
 								}
 							} else if (intervent instanceof JSONObject) {
 								JSONObject item = obj
-										.getJSONObject("dealNotification");
-								list.add(new ListItem(item.getString("dealID"),
-										item.getString("message"), "", ""));
+										.getJSONObject("notification");
+								list.add(new ListItem(item
+										.getString("idOfType"), item
+										.getString("message"), item
+										.getString("type")));
 							}
 							newSize = list.size();
 						} catch (JSONException e) {
@@ -257,16 +264,25 @@ public class AlarmReceiver extends BroadcastReceiver {
 	}
 
 	public void displayNotification() {
-		String contentText = list.get(0).getDescription();
+		String contentText = list.get(0).getMessage();
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				con).setSmallIcon(R.drawable.ic_action_alarms)
 				.setContentTitle("Đề nghị").setContentText(contentText)
 				.setAutoCancel(true).setTicker(contentText);
+		Intent resultIntent = new Intent();
+		int id = 0;
+		if (list.get(0).getType().equals("deal")) {
+			resultIntent = new Intent(con, DealDetailActivity.class);
+			id = Integer.parseInt(list.get(0).getIdOfType());
+			resultIntent.putExtra("dealID", id);
+
+		} else if (list.get(0).getType().equals("order")) {
+			resultIntent = new Intent(con, OrderDetailActivity.class);
+			id = Integer.parseInt(list.get(0).getIdOfType());
+			resultIntent.putExtra("orderID", id);
+		}
 
 		// Intent resultIntent = new Intent(con, MainActivity.class);
-		Intent resultIntent = new Intent(con, DealDetailActivity.class);
-		int dealID = Integer.parseInt(list.get(0).getInfo());
-		resultIntent.putExtra("dealID", dealID);
 
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
 
@@ -274,12 +290,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		stackBuilder.addNextIntent(resultIntent);
 		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
-				dealID, PendingIntent.FLAG_UPDATE_CURRENT);
+				id, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		mBuilder.setContentIntent(resultPendingIntent);
 		NotificationManager mNotificationManager = (NotificationManager) con
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		mNotificationManager.notify(dealID, mBuilder.build());
+		mNotificationManager.notify(id, mBuilder.build());
 	}
 }

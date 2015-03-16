@@ -17,12 +17,13 @@
     <string name="title_activity_suggest">Gợi ý lộ trình</string>
     <string name="title_activity_suggest_list_fragment">SuggestListFragment</string>
     <string name="title_activity_suggest_detail_fragment">SuggestDetailFragment</string>
-    <string name="title_activity_create_goods_map_fragment">CreateGoodsMapFragment</string>
+    <string name="title_activity_create_goods_map_fragment">Chi tiết bản đồ</string>
     <string name="title_activity_login">Đăng nhập</string>
     <string name="prompt">Loại hàng</string>
     <string name="title_activity_suggest_detail">Thông tin lộ trình</string>
     <string name="title_activity_deal_detail">Thông tin giao dịch</string>
-    <string name="action_homepage">Trang chủ</string>
+    <string name="action_history">Lịch sử</string>
     <string name="title_activity_order_detail">Thông tin đơn hàng</string>
+    <string name="title_activity_history">HistoryActivity</string>
 
 </resources>

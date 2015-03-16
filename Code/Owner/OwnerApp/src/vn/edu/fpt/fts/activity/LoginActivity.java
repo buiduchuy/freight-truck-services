@@ -197,6 +197,7 @@ public class LoginActivity extends Activity {
 				SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = preferences.edit();
 				editor.putString("ownerID", response);
+				editor.putString("email", etEmail.getText().toString());
 				editor.commit();
 				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 				startActivity(intent);

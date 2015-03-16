@@ -109,8 +109,8 @@ public class GoodsDetailActivity extends FragmentActivity implements
 			intent.putExtra("goodsID", goodsID);
 			startActivity(intent);
 		}
-		if (id == R.id.action_homepage) {
-			Intent intent = new Intent(GoodsDetailActivity.this, MainActivity.class);
+		if (id == R.id.action_history) {
+			Intent intent = new Intent(GoodsDetailActivity.this, HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {

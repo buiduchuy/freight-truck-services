@@ -214,6 +214,10 @@ public class TrackFragment extends Fragment {
 						orderID.add(jsonObject2.getString("orderID"));
 
 					}
+					if (lv.size() == 0) {
+						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+						tvGone.setVisibility(View.VISIBLE);
+					}
 
 					adapter = new ArrayAdapter<String>(getActivity(),
 							android.R.layout.simple_list_item_1, lv);

@@ -53,7 +53,7 @@ public class GeocoderHelper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return true;
 	}
 
 	public void drawPath(String result, GoogleMap map) {

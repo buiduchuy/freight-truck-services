@@ -125,8 +125,8 @@ public class SuggestActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if (id == R.id.action_homepage) {
-			Intent intent = new Intent(SuggestActivity.this, MainActivity.class);
+		if (id == R.id.action_history) {
+			Intent intent = new Intent(SuggestActivity.this, HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {

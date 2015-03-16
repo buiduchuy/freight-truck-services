@@ -249,7 +249,7 @@ public class GoodsFragment extends Fragment {
 							// list.add(goods);
 							JSONObject jsonObject2 = array.getJSONObject(i);
 							int active = Integer.parseInt(jsonObject2.getString("active"));
-							String pickupDate = jsonObject2.getString("pickupTime");
+							String pickupDate = jsonObject2.getString("deliveryTime");
 							String temp[] = pickupDate.split(" ");							
 							
 							if (active == 1 && !expireDate(temp[0])) {
@@ -276,7 +276,7 @@ public class GoodsFragment extends Fragment {
 					} else if (obj instanceof JSONObject) {
 						JSONObject jsonObject2 = jsonObject.getJSONObject("goods");
 						int active = Integer.parseInt(jsonObject2.getString("active"));
-						String pickupDate = jsonObject2.getString("pickupTime");
+						String pickupDate = jsonObject2.getString("deliveryTime");
 						String temp[] = pickupDate.split(" ");			
 						
 						if (active == 1 && expireDate(temp[0])) {
@@ -298,6 +298,10 @@ public class GoodsFragment extends Fragment {
 							lv.add(object);
 							
 						}
+					}
+					if (lv.size() == 0) {
+						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+						tvGone.setVisibility(View.VISIBLE);
 					}
 					
 					adapter = new ArrayAdapter<String>(getActivity(),

@@ -359,9 +359,9 @@ public class CreateGoodsActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if (id == R.id.action_homepage) {
+		if (id == R.id.action_history) {
 			Intent intent = new Intent(CreateGoodsActivity.this,
-					MainActivity.class);
+					HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {
