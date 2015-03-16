@@ -1,55 +1,35 @@
 package vn.edu.fpt.fts.classes;
 
 public class ListItem {
-	private String info;
-	private String title;
-	private String description;
-	private String date;
-
-	public ListItem(String info, String description, String title, String date) {
-		super();
-		this.info = info;
-		this.title = title;
-		this.description = description;
-		this.date = date;
+	private String idOfType;
+	private String message;
+	private String type;
+	
+	public ListItem(String idOfType, String message, String type) {
+		// TODO Auto-generated constructor stub
+		this.idOfType = idOfType;
+		this.message = message;
+		this.type = type;
 	}
-
-	public ListItem(String description, String title, String date) {
-		super();
-		this.title = title;
-		this.description = description;
-		this.date = date;
+	public String getIdOfType() {
+		return idOfType;
 	}
-
-	public String getInfo() {
-		return info;
+	public void setIdOfType(String idOfType) {
+		this.idOfType = idOfType;
 	}
-
-	public void setInfo(String info) {
-		this.info = info;
+	public String getMessage() {
+		return message;
 	}
-
-	public String getTitle() {
-		return title;
+	public void setMessage(String message) {
+		this.message = message;
 	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	public String getType() {
+		return type;
 	}
-
-	public String getDescription() {
-		return description;
+	public void setType(String type) {
+		this.type = type;
 	}
+	
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
+	
 }

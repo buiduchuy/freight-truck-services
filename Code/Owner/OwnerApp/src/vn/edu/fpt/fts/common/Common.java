@@ -21,6 +21,7 @@ public final class Common {
 	public static final String Service_Order_ConfirmDelivery = "Order/ownerConfirmDelivery";
 	public static final String Service_Goods_getGoodsByID = "Goods/getGoodsByID";
 	public static final String Service_Goods_Update = "Goods/Update";
-	public static final String Service_Notification_getNotiByOwnerID = "DealNotification/getDealNotificationByOwnerID";
+	public static final String Service_Notification_getNotificationByEmail = "Notification/getNotificationByEmail";
 	public static final String Service_Deal_getDealByID = "Deal/getDealByID";
+	public static final String Service_Deal_getDealByOwnerID = "Deal/getDealByOwnerID";
 }

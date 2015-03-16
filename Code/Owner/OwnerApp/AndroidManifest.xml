@@ -48,11 +48,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="vn.edu.fpt.fts.fragment.GoodsFragment"
+            android:name=".GoodsFragment"
             android:label="@string/title_activity_goods_fragment" >
         </activity>
         <activity
-            android:name="vn.edu.fpt.fts.fragment.TrackFragment"
+            android:name=".TrackFragment"
             android:label="@string/title_activity_track_fragment" >
         </activity>
         <activity
@@ -64,11 +64,11 @@
             android:label="@string/title_activity_create_goods" >
         </activity>
         <activity
-            android:name="vn.edu.fpt.fts.fragment.InformationFragment"
+            android:name=".InformationFragment"
             android:label="@string/title_activity_information_fragment" >
         </activity>
         <activity
-            android:name="vn.edu.fpt.fts.fragment.DealFragment"
+            android:name=".DealFragment"
             android:label="@string/title_activity_deal_fragment" >
         </activity>
         <activity
@@ -76,7 +76,7 @@
             android:label="@string/title_activity_suggest" >
         </activity>
         <activity
-            android:name="vn.edu.fpt.fts.fragment.CreateGoodsMapFragment"
+            android:name=".CreateGoodsMapFragment"
             android:label="@string/title_activity_create_goods_map_fragment" >
         </activity>
         <activity
@@ -94,6 +94,10 @@
         <activity
             android:name="vn.edu.fpt.fts.activity.OrderDetailActivity"
             android:label="@string/title_activity_order_detail" >
+        </activity>
+        <activity
+            android:name="vn.edu.fpt.fts.activity.HistoryActivity"
+            android:label="@string/title_activity_history" >
         </activity>
     </application>
 

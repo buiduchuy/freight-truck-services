@@ -239,9 +239,9 @@ public class DealDetailActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if (id == R.id.action_homepage) {
+		if (id == R.id.action_history) {
 			Intent intent = new Intent(DealDetailActivity.this,
-					MainActivity.class);
+					HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {
@@ -257,11 +257,17 @@ public class DealDetailActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(DealDetailActivity.this,
-					GoodsDetailActivity.class);
-			intent.putExtra("goodsID", goodsID);
-			intent.putExtra("goodsCategoryID", goodsCategory);
-			startActivity(intent);
+			if (dealStatus.equals("1")) {
+				Intent intent = new Intent(DealDetailActivity.this,
+						GoodsDetailActivity.class);
+				intent.putExtra("goodsID", goodsID);
+				intent.putExtra("goodsCategoryID", goodsCategory);
+				startActivity(intent);				
+			} else {
+				Intent intent = new Intent(DealDetailActivity.this, HistoryActivity.class);
+				startActivity(intent);
+			}
+			
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -1276,6 +1282,13 @@ public class DealDetailActivity extends Activity {
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);
 						btnCancel.setVisibility(View.VISIBLE);
+						viewLine.setVisibility(View.GONE);
+					} else if (dealStatus.equals("2") || dealStatus.equals("3") || dealStatus.equals("4")) {
+						btn_counter.setVisibility(View.GONE);
+						btnAccept.setVisibility(View.GONE);
+						btnDecline.setVisibility(View.GONE);
+						etPrice.setVisibility(View.GONE);
+						etNote.setVisibility(View.GONE);						
 						viewLine.setVisibility(View.GONE);
 					}
 					WebServiceTask wst = new WebServiceTask(

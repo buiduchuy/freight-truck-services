@@ -42,7 +42,7 @@ public class MainActivity extends FragmentActivity implements TabListener {
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         
         viewPager.setAdapter(mAdapter);
-        actionBar.setHomeButtonEnabled(false);
+        actionBar.setHomeButtonEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         
         for(String tab_name : tabs) {
@@ -102,13 +102,17 @@ public class MainActivity extends FragmentActivity implements TabListener {
         	Intent intent = new Intent(this, CreateGoodsActivity.class);	
         	startActivity(intent);
         }
-        if (id == R.id.action_homepage) {
-        	finish();
-        	startActivity(getIntent());
+        if (id == R.id.action_history) {
+        	Intent intent = new Intent(this, HistoryActivity.class);
+        	startActivity(intent);        	
         }
         if (id == R.id.action_logout) {
         	Intent intent = new Intent(this, LoginActivity.class);
         	startActivity(intent);
+        }
+        if (id == android.R.id.home) {
+        	finish();
+        	startActivity(getIntent());
         }
         return super.onOptionsItemSelected(item);
     }
