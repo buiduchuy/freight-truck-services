@@ -4,16 +4,25 @@
 package vn.edu.fpt.fts.process;
 
 import java.text.ParseException;
-import java.util.List;
-
-import vn.edu.fpt.fts.dao.NotificationDAO;
-import vn.edu.fpt.fts.pojo.Notification;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Huy
  *
  */
 public class MAIN_PROCESS {
+
+	public static boolean checkTimeOverlaps(Date startDate1, Date endDate1,
+			Date startDate2, Date endDate2) {
+		if (startDate1 == null || endDate1 == null || startDate2 == null
+				|| endDate2 == null)
+			return false;
+		if ((startDate1.getTime() <= endDate2.getTime())
+				&& (startDate2.getTime() <= endDate1.getTime()))
+			return true;
+		return false;
+	}
 
 	/**
 	 * @param args
@@ -83,8 +92,8 @@ public class MAIN_PROCESS {
 		// List<Goods> listGoods = new ArrayList<Goods>();
 		// listGoods = goodsDao.getAllGoods();
 		//
-		MatchingProcess mp = new MatchingProcess();
-		System.out.println(mp.getSuggestionGoods(48).size());
+		// MatchingProcess mp = new MatchingProcess();
+		// System.out.println(mp.getSuggestionGoods(48).size());
 
 		// RouteGoodsCategoryDAO routeGoodsCategoryDao = new
 		// RouteGoodsCategoryDAO();
@@ -111,44 +120,50 @@ public class MAIN_PROCESS {
 
 		// List<Route> listRoute = routeDao.getListActiveRoute();
 		//
-		// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		// try {
-		// Date pickupDate = sdf.parse(goods.getPickupTime().toString());
-		// Date deliveryDate =
-		// sdf.parse(goods.getDeliveryTime().toString());
-		// for (int i = 0; i < listRoute.size(); i++) {
-		// Date routeStartDate = sdf
-		// .parse(listRoute.get(i).getStartTime());
-		// Date routeFinishDate = sdf.parse(listRoute.get(i)
-		// .getFinishTime());
-		// if (pickupDate.compareTo(routeStartDate) >= 0
-		// && deliveryDate.compareTo(routeFinishDate) <= 0) {
-		// System.out.println(routeStartDate.getTime() + " <= "
-		// + pickupDate.getTime() + " <= "
-		// + deliveryDate.getTime() + " <= "
-		// + routeFinishDate.getTime());
-		// }
-		// }
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			// Date pickupDate = sdf.parse(goods.getPickupTime().toString());
+			// Date deliveryDate =
+			// sdf.parse(goods.getDeliveryTime().toString());
+			// for (int i = 0; i < listRoute.size(); i++) {
+			// Date routeStartDate = sdf
+			// .parse(listRoute.get(i).getStartTime());
+			// Date routeFinishDate = sdf.parse(listRoute.get(i)
+			// .getFinishTime());
+			// if (pickupDate.compareTo(routeStartDate) >= 0
+			// && deliveryDate.compareTo(routeFinishDate) <= 0) {
+			// System.out.println(routeStartDate.getTime() + " <= "
+			// + pickupDate.getTime() + " <= "
+			// + deliveryDate.getTime() + " <= "
+			// + routeFinishDate.getTime());
+			// }
+			// }
 
-		// System.out.println(pickupDate.compareTo(deliveryDate));
+			// System.out.println(pickupDate.compareTo(deliveryDate));
 
-		// Date date1 = sdf.parse("2009-12-31");
-		// Date date2 = sdf.parse("2010-01-31");
-		//
-		// System.out.println(sdf.format(date1));
-		// System.out.println(sdf.format(date2));
-		//
-		// System.out.println(date1.compareTo(date2));
-		//
-		// } catch (ParseException e) {
-		// e.printStackTrace();
-		// }
-		NotificationDAO notificationDao = new NotificationDAO();
-		List<Notification> l_dealNoti = notificationDao
-				.getNotificationByEmail("driver");
-		for (int i = 0; i < l_dealNoti.size(); i++) {
-			System.out.println(l_dealNoti.get(i).getMessage());
+			Date startDate1 = sdf.parse("2015-03-04");
+			Date endDate1 = sdf.parse("2015-03-10");
+
+			Date startDate2 = sdf.parse("2015-03-05");
+			Date endDate2 = sdf.parse("2015-03-05");
+
+			System.out.println(checkTimeOverlaps(startDate1, endDate1,
+					startDate2, endDate2));
+			//
+			// System.out.println(sdf.format(date1));
+			// System.out.println(sdf.format(date2));
+			//
+			// System.out.println(date1.compareTo(date2));
+			//
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
+		// NotificationDAO notificationDao = new NotificationDAO();
+		// List<Notification> l_dealNoti = notificationDao
+		// .getNotificationByEmail("driver");
+		// for (int i = 0; i < l_dealNoti.size(); i++) {
+		// System.out.println(l_dealNoti.get(i).getMessage());
+		// }
 
 	}
 }

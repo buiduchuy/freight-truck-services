@@ -3,6 +3,10 @@
  */
 package vn.edu.fpt.fts.dao;
 
+import java.util.List;
+
+import vn.edu.fpt.fts.pojo.Notification;
+
 /**
  * @author Huy
  *
@@ -10,9 +14,11 @@ package vn.edu.fpt.fts.dao;
 public class MAIN_DAO {
 
 	public static void main(String[] args) {
-		GoodsDAO goodsDao = new GoodsDAO();
-		System.out.println(goodsDao.getRemainingWeightByRouteID(38));
-		System.out.println(goodsDao.getTotalWeightByRouteID(38));
+		NotificationDAO notificationDAO = new NotificationDAO();
+		List<Notification> l_notification = notificationDAO.getAllNotification();
+		for (int i = 0; i < l_notification.size(); i++) {
+			System.out.println(l_notification.get(i).getMessage());
+		}
 	}
 
 }
