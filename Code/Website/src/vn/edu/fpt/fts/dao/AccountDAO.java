@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,6 +64,26 @@ public class AccountDAO {
 			}
 		}
 		return null;
+	}
+
+	public int insertAccount(Account account, Connection con)
+			throws SQLException {
+		PreparedStatement stmt = null;
+		int ret = 0;
+		String sql = "INSERT INTO Account ( " + "Email," + "Password,"
+				+ "RoleID" + ") VALUES (" + "?, " + "?, " + "?)";
+		stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		int i = 1;
+		stmt.setString(i++, account.getEmail()); // Email
+		stmt.setString(i++, account.getPassword()); // Password
+		stmt.setInt(i++, account.getRoleID()); // RoleID
+		stmt.executeUpdate();
+
+		ResultSet rs = stmt.getGeneratedKeys();
+		if (rs != null && rs.next()) {
+			ret = (int) rs.getLong(1);
+		}
+		return ret;
 	}
 
 }

@@ -43,6 +43,12 @@ public final class Common {
 	public static final String usernamedb = "duchuy";
 	public static final String passworddb = "huy2108.";
 
+	// Role of Account
+	public static final int role_owner = 1;
+	public static final int role_driver = 2;
+	public static final int role_staff = 3;
+	public static final int role_admin = 4;
+
 	// Status of Goods, Route, Deal, Order
 	public static final int deactivate = 0;
 	public static final int activate = 1;
