@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -31,16 +33,21 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.Common;
+import vn.edu.fpt.fts.helper.GeocoderHelper;
+import vn.edu.fpt.fts.helper.JSONParser;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -104,11 +111,16 @@ public class CreateRoute extends Fragment {
 	String p1String = "";
 	String p2String = "";
 	String endString = "";
+	String startPoint, endPoint, Point1, Point2, startD, endD, brk, flm, frz,
+			fd, load, current;
 	ArrayList<String> pos = new ArrayList<String>();
 	Calendar cal = Calendar.getInstance();
 	LocationManager locationManager;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Route/Create";
+
+	private static final String SERVICE_URL2 = Constant.SERVICE_URL
+			+ "City/get";
 
 	@Override
 	public void onPause() {
@@ -184,9 +196,15 @@ public class CreateRoute extends Fragment {
 			end.setText(pos.get(pos.size() - 1));
 			if (pos.size() == 3) {
 				p1.setText(pos.get(1));
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
 			} else if (pos.size() == 4) {
 				p1.setText(pos.get(1));
 				p2.setText(pos.get(2));
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
 			}
 		}
 		intent.removeExtra("markerList");
@@ -264,6 +282,7 @@ public class CreateRoute extends Fragment {
 				DatePickerDialog dialog = new DatePickerDialog(getActivity(),
 						startListener, cal.get(Calendar.YEAR), cal
 								.get(Calendar.MONTH), cal.get(Calendar.DATE));
+				dialog.setTitle("Ngày bắt đầu");
 				DatePicker picker = dialog.getDatePicker();
 				Calendar calendar = Calendar.getInstance();
 				picker.setMinDate(calendar.getTimeInMillis() - 1000);
@@ -280,6 +299,7 @@ public class CreateRoute extends Fragment {
 				TimePickerDialog dialog = new TimePickerDialog(getActivity(),
 						startHourListener, cal.get(Calendar.HOUR_OF_DAY), cal
 								.get(Calendar.MINUTE), true);
+				dialog.setTitle("Giờ bắt đầu");
 				dialog.show();
 			}
 		});
@@ -290,6 +310,7 @@ public class CreateRoute extends Fragment {
 				DatePickerDialog dialog = new DatePickerDialog(getActivity(),
 						endListener, cal.get(Calendar.YEAR), cal
 								.get(Calendar.MONTH), cal.get(Calendar.DATE));
+				dialog.setTitle("Ngày kết thúc");
 				DatePicker picker = dialog.getDatePicker();
 				Calendar calendar = Calendar.getInstance();
 				picker.setMinDate(calendar.getTimeInMillis() - 1000);
@@ -351,6 +372,8 @@ public class CreateRoute extends Fragment {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.HOUR_OF_DAY, 6);
 			String hr = String.valueOf(hourOfDay);
 			String min = String.valueOf(minute);
 			if (hr.length() == 1) {
@@ -359,7 +382,23 @@ public class CreateRoute extends Fragment {
 			if (min.length() == 1) {
 				min = "0" + min;
 			}
-			startHour.setText(hr + ":" + min);
+			String sd = startDate.getText().toString() + " " + hr + ":" + min;
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+			Date sdd = new Date();
+			try {
+				sdd = format.parse(sd);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (sdd.compareTo(c.getTime()) >= 0) {
+				startHour.setText(hr + ":" + min);
+			} else {
+				Toast.makeText(
+						getActivity(),
+						"Thời gian bắt đầu phải lớn hơn thời gian hiện hành ít nhất 6 tiếng",
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 	};
 
@@ -456,6 +495,45 @@ public class CreateRoute extends Fragment {
 		}
 	};
 
+	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetLatLng.class.getName());
+
+		@Override
+		protected LatLng doInBackground(String... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
+					+ locations[0]
+					+ "&destination="
+					+ locations[0]
+					+ "&sensor=false";
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(
+								new HttpGet(googleMapUrl.replace(" ", "%20")),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse.get("routes");
+				JSONObject result = results.getJSONObject(0);
+				JSONObject location = result.getJSONObject("bounds")
+						.getJSONObject("northeast");
+				double latitude = location.getDouble("lat");
+				double longitude = location.getDouble("lng");
+				ANDROID_HTTP_CLIENT.close();
+				return new LatLng(latitude, longitude);
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(LatLng result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
+		}
+	}
+
 	private class GetAddress extends AsyncTask<Double, Void, String> {
 		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
 				.newInstance(GetAddress.class.getName());
@@ -523,6 +601,30 @@ public class CreateRoute extends Fragment {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			ANDROID_HTTP_CLIENT.close();
+		}
+	}
+
+	private class GetPoints extends AsyncTask<String, Void, List<LatLng>> {
+		long startTime;
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			startTime = System.nanoTime();
+		}
+
+		@Override
+		protected List<LatLng> doInBackground(String... params) {
+			JSONParser jParser = new JSONParser();
+			String json = jParser.getJSONFromUrl(params[0]);
+			GeocoderHelper helper = new GeocoderHelper();
+			return helper.getPoints(json);
+		}
+
+		@Override
+		protected void onPostExecute(List<LatLng> result) {
+			super.onPostExecute(result);
 		}
 	}
 
@@ -699,6 +801,165 @@ public class CreateRoute extends Fragment {
 
 	}
 
+	private class CalculateMiddlePoints extends
+			AsyncTask<String, String, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 30000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 15000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public CalculateMiddlePoints(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			pDlg.dismiss();
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (Exception e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
@@ -711,10 +972,10 @@ public class CreateRoute extends Fragment {
 			@Override
 			public void onClick(View v) {
 				Common common = new Common();
-				String startPoint = start.getText().toString();
-				String Point1 = p1.getText().toString();
-				String Point2 = p2.getText().toString();
-				String endPoint = end.getText().toString();
+				startPoint = start.getText().toString();
+				Point1 = p1.getText().toString();
+				Point2 = p2.getText().toString();
+				endPoint = end.getText().toString();
 				// try {
 				// if (!startPoint.equals("")) {
 				// startPoint = new GetFullAddress().execute(startPoint)
@@ -736,20 +997,19 @@ public class CreateRoute extends Fragment {
 				// // TODO Auto-generated catch block
 				// e1.printStackTrace();
 				// }
-				String startD = startDate.getText().toString()
-						.replace("/", "-");
+				startD = startDate.getText().toString().replace("/", "-");
 				startD = common.changeFormatDate(startD) + " "
 						+ startHour.getText().toString();
-				String endD = endDate.getText().toString().replace("/", "-");
+				endD = endDate.getText().toString().replace("/", "-");
 				endD = common.changeFormatDate(endD);
-				String frz = String.valueOf(frozen.isChecked());
-				String brk = String.valueOf(broken.isChecked());
-				String flm = String.valueOf(flammable.isChecked());
-				String fd = String.valueOf(food.isChecked());
-				String load = payload.getText().toString();
+				frz = String.valueOf(frozen.isChecked());
+				brk = String.valueOf(broken.isChecked());
+				flm = String.valueOf(flammable.isChecked());
+				fd = String.valueOf(food.isChecked());
+				load = payload.getText().toString();
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-				String current = String.valueOf(calendar.get(Calendar.YEAR))
+				current = String.valueOf(calendar.get(Calendar.YEAR))
 						+ "-"
 						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
 						+ "-"
@@ -812,31 +1072,230 @@ public class CreateRoute extends Fragment {
 									"Khối lượng chở không vượt quá 20 tấn",
 									Toast.LENGTH_SHORT).show();
 						} else {
-							WebService ws = new WebService(
-									WebService.POST_TASK, getActivity(),
-									"Đang xử lý ...");
-							ws.addNameValuePair("startingAddress", startPoint);
-							ws.addNameValuePair("destinationAddress", endPoint);
-							ws.addNameValuePair("routeMarkerLocation1", Point1);
-							ws.addNameValuePair("routeMarkerLocation2", Point2);
-							ws.addNameValuePair("startTime", startD);
-							ws.addNameValuePair("finishTime", endD);
-							ws.addNameValuePair("notes", null);
-							ws.addNameValuePair("weight", load);
-							ws.addNameValuePair("createTime", current);
-							ws.addNameValuePair("active", "1");
-							ws.addNameValuePair("driverID", getActivity()
-									.getIntent().getStringExtra("driverID"));
-							ws.addNameValuePair("Food", fd);
-							ws.addNameValuePair("Freeze", frz);
-							ws.addNameValuePair("Broken", brk);
-							ws.addNameValuePair("Flame", flm);
-							ws.execute(new String[] { SERVICE_URL });
+							JSONObject middle1 = new JSONObject();
+							JSONObject middle2 = new JSONObject();
+							if (Point1.equals("") && Point2.equals("")) {
+								ProgressDialog pDlg = new ProgressDialog(getActivity());
+								pDlg.setMessage("Đang tìm điểm đi qua ...");
+								pDlg.setProgressDrawable(getActivity().getWallpaper());
+								pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+								pDlg.setCancelable(false);
+								pDlg.show();
+								LatLng start = new GetLatLng().execute(
+										startPoint).get();
+								LatLng end = new GetLatLng().execute(endPoint)
+										.get();
+								GeocoderHelper helper = new GeocoderHelper();
+								double distance = helper.CalculationByDistance(
+										start, end);
+								List<LatLng> points = new GetPoints().execute(
+										helper.makeURL(start, null, null, end))
+										.get();
+								LatLng pnt1 = new LatLng(0, 0);
+								LatLng pnt2 = new LatLng(0, 0);
+								boolean flag1 = true;
+								boolean flag2 = true;
+								for (int i = 0; i < points.size(); i++) {
+									if (flag1) {
+										if (helper.CalculationByDistance(
+												points.get(0), points.get(i)) >= (helper
+												.CalculationByDistance(start,
+														end) / 3)) {
+											pnt1 = points.get(i);
+											flag1 = false;
+										}
+									}
+									if (flag2) {
+										if (helper.CalculationByDistance(
+												points.get(0), points.get(i)) >= (helper
+												.CalculationByDistance(start,
+														end) / 3 * 2)) {
+											pnt2 = points.get(i);
+											flag2 = false;
+										}
+									}
+								}
+
+								CalculateMiddlePoints service = new CalculateMiddlePoints(
+										CalculateMiddlePoints.GET_TASK,
+										getActivity(), "Đang tìm điểm đi qua");
+								String response = service.execute(SERVICE_URL2)
+										.get();
+								JSONArray cities = new JSONObject(response)
+										.getJSONArray("city");
+								middle1 = cities.getJSONObject(0);
+								middle2 = cities.getJSONObject(0);
+								LatLng min1 = new LatLng(Double
+										.parseDouble(middle1
+												.getString("latitude")), Double
+										.parseDouble(middle1
+												.getString("longitude")));
+
+								LatLng min2 = new LatLng(Double
+										.parseDouble(middle2
+												.getString("latitude")), Double
+										.parseDouble(middle2
+												.getString("longitude")));
+								for (int i = 0; i < cities.length(); i++) {
+									JSONObject obj = cities.getJSONObject(i);
+									LatLng point1 = new LatLng(Double
+											.parseDouble(obj
+													.getString("latitude")),
+											Double.parseDouble(obj
+													.getString("longitude")));
+									if (helper
+											.CalculationByDistance(point1, pnt1) <= helper
+											.CalculationByDistance(min1, pnt1)) {
+										middle1 = obj;
+									}
+									if (helper
+											.CalculationByDistance(point1, pnt2) <= helper
+											.CalculationByDistance(min2, pnt2)) {
+										middle2 = obj;
+									}
+								}
+								if (middle1.getString("cityName").equals(
+										middle2.getString("cityName"))) {
+									p1.setText(middle1.getString("cityName"));
+								} else {
+									p1.setText(middle1.getString("cityName"));
+									p2.setText(middle2.getString("cityName"));
+								}
+								show.setVisibility(View.GONE);
+								p1.setVisibility(View.VISIBLE);
+								p2.setVisibility(View.VISIBLE);
+								pDlg.dismiss();
+								AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+										getActivity());
+								alertDialogBuilder
+										.setMessage(
+												"Đã tìm được 2 điểm đi qua: \n" + middle1.getString("cityName") + "\n" + middle2.getString("cityName") + "\n" + "Bạn có muốn add 2 điểm này vào lộ trình không?")
+										.setCancelable(false)
+										.setPositiveButton(
+												"Đồng ý",
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int id) {
+														WebService ws = new WebService(
+																WebService.POST_TASK,
+																getActivity(),
+																"Đang xử lý ...");
+														ws.addNameValuePair(
+																"startingAddress",
+																startPoint);
+														ws.addNameValuePair(
+																"destinationAddress",
+																endPoint);
+														ws.addNameValuePair(
+																"routeMarkerLocation1",
+																p1.getText().toString());
+														ws.addNameValuePair(
+																"routeMarkerLocation2",
+																p2.getText().toString());
+														ws.addNameValuePair(
+																"startTime", startD);
+														ws.addNameValuePair(
+																"finishTime", endD);
+														ws.addNameValuePair(
+																"notes", null);
+														ws.addNameValuePair(
+																"weight", load);
+														ws.addNameValuePair(
+																"createTime",
+																current);
+														ws.addNameValuePair(
+																"active", "1");
+														ws.addNameValuePair(
+																"driverID",
+																getActivity()
+																		.getIntent()
+																		.getStringExtra(
+																				"driverID"));
+														ws.addNameValuePair("Food",
+																fd);
+														ws.addNameValuePair(
+																"Freeze", frz);
+														ws.addNameValuePair(
+																"Broken", brk);
+														ws.addNameValuePair(
+																"Flame", flm);
+														ws.execute(new String[] { SERVICE_URL });
+													}
+												})
+										.setNegativeButton(
+												"Không",
+												new DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int id) {
+														dialog.cancel();
+													}
+												});
+								AlertDialog alertDialog = alertDialogBuilder
+										.create();
+								alertDialog.show();
+							}
+							else {
+								WebService ws = new WebService(
+										WebService.POST_TASK,
+										getActivity(),
+										"Đang xử lý ...");
+								ws.addNameValuePair(
+										"startingAddress",
+										startPoint);
+								ws.addNameValuePair(
+										"destinationAddress",
+										endPoint);
+								ws.addNameValuePair(
+										"routeMarkerLocation1",
+										Point1);
+								ws.addNameValuePair(
+										"routeMarkerLocation2",
+										Point2);
+								ws.addNameValuePair(
+										"startTime", startD);
+								ws.addNameValuePair(
+										"finishTime", endD);
+								ws.addNameValuePair(
+										"notes", null);
+								ws.addNameValuePair(
+										"weight", load);
+								ws.addNameValuePair(
+										"createTime",
+										current);
+								ws.addNameValuePair(
+										"active", "1");
+								ws.addNameValuePair(
+										"driverID",
+										getActivity()
+												.getIntent()
+												.getStringExtra(
+														"driverID"));
+								ws.addNameValuePair("Food",
+										fd);
+								ws.addNameValuePair(
+										"Freeze", frz);
+								ws.addNameValuePair(
+										"Broken", brk);
+								ws.addNameValuePair(
+										"Flame", flm);
+								ws.execute(new String[] { SERVICE_URL });
+							}
 						}
 					} catch (NumberFormatException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}

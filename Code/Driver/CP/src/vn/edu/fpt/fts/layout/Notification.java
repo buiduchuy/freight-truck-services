@@ -75,16 +75,7 @@ public class Notification extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				int id = Integer.parseInt(map.get((int) arg3));
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				CurrentRoute frag = new CurrentRoute();
-				Bundle bundle = new Bundle();
-				bundle.putString("routeID", String.valueOf(id));
-				frag.setArguments(bundle);
-				trs.replace(R.id.content_frame, frag);
-				trs.addToBackStack(null);
-				trs.commit();
+				
 			}
 		}));
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
