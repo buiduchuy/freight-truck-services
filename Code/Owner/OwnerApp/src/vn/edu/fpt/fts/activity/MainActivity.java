@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.activity;
 
 import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
 import vn.edu.fpt.fts.classes.AlarmReceiver;
+import vn.edu.fpt.fts.classes.OrderAlarmReceiver;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -78,6 +79,12 @@ public class MainActivity extends FragmentActivity implements TabListener {
         
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
         
+        // order alarm
+        Intent intent2 = new Intent(MainActivity.this, OrderAlarmReceiver.class);
+        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval2 = 300000; //60000
+        alarmManager2.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval2, pendingIntent2);
     }
 
 

@@ -1,15 +1,24 @@
 package vn.edu.fpt.fts.common;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Color;
+import android.os.AsyncTask;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,10 +45,11 @@ public class GeocoderHelper {
 		urlString.append("&destination=");
 		urlString.append(Double.toString(des.latitude));
 		urlString.append(",");
-		urlString.append(Double.toString(des.longitude));		
+		urlString.append(Double.toString(des.longitude));
 		urlString.append("&mode=driving&region=vi");
 		return urlString.toString();
 	}
+
 	public boolean checkPath(String result) {
 		try {
 			JSONObject jsonObject = new JSONObject(result);
@@ -112,5 +122,65 @@ public class GeocoderHelper {
 		}
 
 		return poly;
+	}
+	
+	
+
+	public JSONObject getLocationInfo(String address) {
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+
+			address = address.replaceAll(" ", "%20");
+
+			HttpPost httppost = new HttpPost(
+					"http://maps.google.com/maps/api/geocode/json?address="
+							+ address + "&sensor=false");
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse response;
+			stringBuilder = new StringBuilder();
+
+			response = client.execute(httppost);
+			HttpEntity entity = response.getEntity();
+			InputStream stream = entity.getContent();
+			int b;
+			while ((b = stream.read()) != -1) {
+				stringBuilder.append((char) b);
+			}
+		} catch (ClientProtocolException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject = new JSONObject(stringBuilder.toString());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+		return jsonObject;
+	}
+
+	public LatLng getLatLong(JSONObject jsonObject) {
+		LatLng result;
+		try {
+
+			double longitute = ((JSONArray) jsonObject.get("results"))
+					.getJSONObject(0).getJSONObject("geometry")
+					.getJSONObject("location").getDouble("lng");
+
+			double latitude = ((JSONArray) jsonObject.get("results"))
+					.getJSONObject(0).getJSONObject("geometry")
+					.getJSONObject("location").getDouble("lat");
+			result = new LatLng(latitude, longitute);
+		} catch (JSONException e) {
+			return null;
+
+		}
+
+		return result;
 	}
 }

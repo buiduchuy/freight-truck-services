@@ -97,26 +97,7 @@ public class GoodsFragment extends Fragment {
 		return rootView;
 	}
 	
-	private boolean expireDate(String date) {
-		Date todayDate = null;
-		Date inputDate = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String today = sdf.format(new Date());
-		try {
-			todayDate = sdf.parse(today);
-			inputDate = sdf.parse(date);
-			if (todayDate.compareTo(inputDate) < 0) {
-				return false;
-			} else {
-				return true;
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}		
-		
-	}
+	
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -252,7 +233,7 @@ public class GoodsFragment extends Fragment {
 							String pickupDate = jsonObject2.getString("deliveryTime");
 							String temp[] = pickupDate.split(" ");							
 							
-							if (active == 1 && !expireDate(temp[0])) {
+							if (active == 1 && !Common.expireDate(temp[0])) {
 								String a = jsonObject2.getString("goodsID");
 
 								goodsID.add(jsonObject2.getString("goodsID"));
@@ -279,7 +260,7 @@ public class GoodsFragment extends Fragment {
 						String pickupDate = jsonObject2.getString("deliveryTime");
 						String temp[] = pickupDate.split(" ");			
 						
-						if (active == 1 && expireDate(temp[0])) {
+						if (active == 1 && Common.expireDate(temp[0])) {
 							String a = jsonObject2.getString("goodsID");
 
 							goodsID.add(jsonObject2.getString("goodsID"));

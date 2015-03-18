@@ -52,7 +52,8 @@ import android.widget.Toast;
 
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
-			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote;
+			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote,
+			tvStatus, tvNote1, tvStatus1;
 	private int dealID;
 	private String refDealID, dealStatus, routeID, goodsID, goodsCategory;
 	private double price;
@@ -66,7 +67,7 @@ public class DealDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deal_detail);
-		
+
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 
@@ -79,6 +80,9 @@ public class DealDetailActivity extends Activity {
 		category = (TextView) this.findViewById(R.id.textview_category);
 		tvPrice = (TextView) findViewById(R.id.textview_price);
 		tvNote = (TextView) findViewById(R.id.textview_note);
+		tvStatus = (TextView) findViewById(R.id.textview_status);
+		tvNote1 = (TextView) findViewById(R.id.textview_note1);
+		tvStatus1 = (TextView) findViewById(R.id.textview_status1);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btn_counter = (Button) findViewById(R.id.button_counter);
@@ -252,7 +256,7 @@ public class DealDetailActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -262,12 +266,13 @@ public class DealDetailActivity extends Activity {
 						GoodsDetailActivity.class);
 				intent.putExtra("goodsID", goodsID);
 				intent.putExtra("goodsCategoryID", goodsCategory);
-				startActivity(intent);				
+				startActivity(intent);
 			} else {
-				Intent intent = new Intent(DealDetailActivity.this, HistoryActivity.class);
+				Intent intent = new Intent(DealDetailActivity.this,
+						HistoryActivity.class);
 				startActivity(intent);
 			}
-			
+
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -432,17 +437,13 @@ public class DealDetailActivity extends Activity {
 					e.printStackTrace();
 				}
 				// String a = route.getStartingAddress();
-				startAddr.setText("Địa điểm bắt đầu: "
-						+ route.getStartingAddress());
-				destAddr.setText("Địa điểm kết thúc: "
-						+ route.getDestinationAddress());
-				startTime.setText("Thời gian bắt đầu: " + route.getStartTime());
-				finishTime.setText("Thời gian kết thúc: "
-						+ route.getFinishTime());
-				category.setText("Loại hàng không chở: " + route.getCategory());
-				tvPrice.setText("Giá đề nghị: " + formatNumber((int) price)
-						+ ".000 đồng");
-				tvNote.setText("Ghi chú: " + note);
+				startAddr.setText(route.getStartingAddress());
+				destAddr.setText(route.getDestinationAddress());
+				startTime.setText(route.getStartTime());
+				finishTime.setText(route.getFinishTime());
+				category.setText(route.getCategory());
+				tvPrice.setText(formatNumber((int) price) + ".000 đồng");
+				tvNote.setText(note);
 			} else {
 				Toast.makeText(DealDetailActivity.this,
 						"Lộ trình không tồn tại", Toast.LENGTH_LONG).show();
@@ -1273,8 +1274,9 @@ public class DealDetailActivity extends Activity {
 					price = Double.parseDouble(jsonObject.getString("price"));
 					note = jsonObject.getString("notes");
 					createBy = jsonObject.getString("createBy");
-					JSONObject jsonObject2 = (jsonObject.getJSONObject("goods")).getJSONObject("goodsCategory");
-					goodsCategory = jsonObject2.getString("goodsCategoryId");  
+					JSONObject jsonObject2 = (jsonObject.getJSONObject("goods"))
+							.getJSONObject("goodsCategory");
+					goodsCategory = jsonObject2.getString("goodsCategoryId");
 					if (dealStatus.equals("1") && createBy.equals("owner")) {
 						btn_counter.setVisibility(View.GONE);
 						btnAccept.setVisibility(View.GONE);
@@ -1283,13 +1285,57 @@ public class DealDetailActivity extends Activity {
 						etNote.setVisibility(View.GONE);
 						btnCancel.setVisibility(View.VISIBLE);
 						viewLine.setVisibility(View.GONE);
-					} else if (dealStatus.equals("2") || dealStatus.equals("3") || dealStatus.equals("4")) {
+						
+					} else if (dealStatus.equals("2")) {
 						btn_counter.setVisibility(View.GONE);
 						btnAccept.setVisibility(View.GONE);
 						btnDecline.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
-						etNote.setVisibility(View.GONE);						
+						etNote.setVisibility(View.GONE);
 						viewLine.setVisibility(View.GONE);
+						tvNote.setVisibility(View.GONE);						
+						tvStatus.setVisibility(View.VISIBLE);
+						tvNote1.setVisibility(View.GONE);						
+						tvStatus1.setVisibility(View.VISIBLE);
+						tvStatus.setText("Đã chấp nhận");
+					} else if (dealStatus.equals("4")) {
+						btn_counter.setVisibility(View.GONE);
+						btnAccept.setVisibility(View.GONE);
+						btnDecline.setVisibility(View.GONE);
+						etPrice.setVisibility(View.GONE);
+						etNote.setVisibility(View.GONE);
+						viewLine.setVisibility(View.GONE);
+						tvNote.setVisibility(View.GONE);
+						tvStatus.setVisibility(View.VISIBLE);
+						tvNote1.setVisibility(View.GONE);
+						tvStatus1.setVisibility(View.VISIBLE);
+						tvStatus.setText("Đã bị hủy");
+					} else if (dealStatus.equals("3")
+							&& createBy.equals("owner")) {
+						btn_counter.setVisibility(View.GONE);
+						btnAccept.setVisibility(View.GONE);
+						btnDecline.setVisibility(View.GONE);
+						etPrice.setVisibility(View.GONE);
+						etNote.setVisibility(View.GONE);
+						viewLine.setVisibility(View.GONE);
+						tvNote.setVisibility(View.GONE);
+						tvStatus.setVisibility(View.VISIBLE);
+						tvNote1.setVisibility(View.GONE);
+						tvStatus1.setVisibility(View.VISIBLE);
+						tvStatus.setText("Đã từ chối");
+					} else if (dealStatus.equals("3")
+							&& createBy.equals("driver")) {
+						btn_counter.setVisibility(View.GONE);
+						btnAccept.setVisibility(View.GONE);
+						btnDecline.setVisibility(View.GONE);
+						etPrice.setVisibility(View.GONE);
+						etNote.setVisibility(View.GONE);
+						viewLine.setVisibility(View.GONE);
+						tvNote.setVisibility(View.GONE);
+						tvStatus.setVisibility(View.VISIBLE);
+						tvNote1.setVisibility(View.GONE);
+						tvStatus1.setVisibility(View.VISIBLE);
+						tvStatus.setText("Đã bị từ chối");
 					}
 					WebServiceTask wst = new WebServiceTask(
 							WebServiceTask.POST_TASK, DealDetailActivity.this,

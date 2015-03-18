@@ -22,11 +22,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.activity.DealDetailActivity;
 import vn.edu.fpt.fts.activity.MainActivity;
 import vn.edu.fpt.fts.activity.OrderDetailActivity;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -38,32 +38,27 @@ import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-public class AlarmReceiver extends BroadcastReceiver {
+public class OrderAlarmReceiver extends BroadcastReceiver {
 	Context con;
-	private static int oldSize, newSize;
-	String email, ownerID;
-	private static ArrayList<ListItem> list = new ArrayList<ListItem>();
-	
-
-	private static final String SERVICE_URL = Common.IP_URL
-			+ Common.Service_Notification_getNotificationByEmail;
+	String ownerID;
+	private static ArrayList<Order> orderList = new ArrayList<Order>();
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub
 		con = context;
-		WebService ws = new WebService(WebService.POST_TASK, context,
-				"Đang lấy dữ liệu ...");
 		SharedPreferences preferences = context.getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
-		email = preferences.getString("email", "");
 		ownerID = preferences.getString("ownerID", "");
-		ws.addNameValuePair("email", email);
-		ws.execute(new String[] { SERVICE_URL });
-
+		WebService2 ws2 = new WebService2(WebService2.POST_TASK, context,
+				"Đang xử lý...");
+		ws2.addNameValuePair("ownerID", ownerID);
+		String url = Common.IP_URL + Common.Service_Order_getOrderByOwnerID;
+		ws2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 	}
 
-	private class WebService extends AsyncTask<String, Integer, String> {
+	private class WebService2 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
 		public static final int GET_TASK = 2;
@@ -84,7 +79,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		private ProgressDialog pDlg = null;
 
-		public WebService(int taskType, Context mContext, String processMessage) {
+		public WebService2(int taskType, Context mContext, String processMessage) {
 
 			this.taskType = taskType;
 			this.mContext = mContext;
@@ -134,71 +129,56 @@ public class AlarmReceiver extends BroadcastReceiver {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			if (!response.equals("") && !response.equals("null")) {
-				if (list != null) {
-					oldSize = list.size();
-					if (oldSize == 0) {
-						try {
-							list = new ArrayList<ListItem>();
-							JSONObject obj = new JSONObject(response);
-							Object intervent = obj.get("notification");
-							if (intervent instanceof JSONArray) {
-								JSONArray array = obj
-										.getJSONArray("notification");
-								for (int i = array.length() - 1; i >= 0; i--) {
-									JSONObject item = array.getJSONObject(i);
-									list.add(new ListItem(item
-											.getString("idOfType"), item
-											.getString("message"), item
-											.getString("type")));
-									// list.add(new ListItem(item
-									// .getString("message"), "", ""));
-								}
-							} else if (intervent instanceof JSONObject) {
-								JSONObject item = obj
-										.getJSONObject("notification");
-								list.add(new ListItem(item
-										.getString("idOfType"), item
-										.getString("message"), item
-										.getString("type")));
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					Object obj = jsonObject.get("order");
+					if (obj instanceof JSONArray) {
+						JSONArray array = jsonObject.getJSONArray("order");
+						for (int i = 0; i < array.length(); i++) {
+							JSONObject jsonObject2 = array.getJSONObject(i);
+							JSONObject jsonObject3 = jsonObject2
+									.getJSONObject("deal");
+							JSONObject jsonObject4 = jsonObject3
+									.getJSONObject("goods");
+							JSONObject jsonObject5 = jsonObject4
+									.getJSONObject("goodsCategory");
+							String deliveryTime = jsonObject4
+									.getString("deliveryTime");
+							String[] tmp = deliveryTime.split(" ");
+							String status = jsonObject2
+									.getString("orderStatusID");
+							if (Common.expireDate(tmp[0]) && status.equals("1")) {
+								orderList.add(new Order(jsonObject2
+										.getString("orderID"), jsonObject5
+										.getString("name"), jsonObject4
+										.getString("weight"), jsonObject2
+										.getString("price")));
 							}
-							oldSize = list.size();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
-					} else {
-						try {
-							list = new ArrayList<ListItem>();
-							JSONObject obj = new JSONObject(response);
-							Object intervent = obj.get("notification");
-							if (intervent instanceof JSONArray) {
-								JSONArray array = obj
-										.getJSONArray("notification");
-								for (int i = array.length() - 1; i >= 0; i--) {
-									JSONObject item = array.getJSONObject(i);
-									list.add(new ListItem(item
-											.getString("idOfType"), item
-											.getString("message"), item
-											.getString("type")));
-								}
-							} else if (intervent instanceof JSONObject) {
-								JSONObject item = obj
-										.getJSONObject("notification");
-								list.add(new ListItem(item
-										.getString("idOfType"), item
-										.getString("message"), item
-										.getString("type")));
-							}
-							newSize = list.size();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if (oldSize < newSize) {
-							displayNotification();
+					} else if (obj instanceof JSONObject) {
+						JSONObject jsonObject3 = jsonObject
+								.getJSONObject("deal");
+						JSONObject jsonObject4 = jsonObject3
+								.getJSONObject("goods");
+						JSONObject jsonObject5 = jsonObject4
+								.getJSONObject("goodsCategory");
+						String deliveryTime = jsonObject4
+								.getString("deliveryTime");
+						String[] tmp = deliveryTime.split(" ");
+						String status = jsonObject.getString("orderStatusID");
+						if (Common.expireDate(tmp[0]) && status.equals("1")) {
+							orderList.add(new Order(jsonObject
+									.getString("orderID"), jsonObject5
+									.getString("name"), jsonObject4
+									.getString("weight"), jsonObject
+									.getString("price")));
 						}
 					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				displayOrderNotification();
 			}
 		}
 
@@ -266,42 +246,34 @@ public class AlarmReceiver extends BroadcastReceiver {
 		}
 	}
 
-	
+	public void displayOrderNotification() {
+		for (Order item : orderList) {
+			String contentText = item.getCategory() + " - " + item.getWeight()
+					+ " kg - " + item.getPrice().replace(".0", "")
+					+ " nghìn đồng";
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+					con).setSmallIcon(R.drawable.ic_action_alarms)
+					.setContentTitle("Xác nhận giao hàng")
+					.setContentText(contentText)
+					.setAutoCancel(true)
+					.setTicker(contentText);
+			Intent resultIntent = new Intent(con, OrderDetailActivity.class);
+			int id = Integer.parseInt(item.getOrderID());
+			resultIntent.putExtra("orderID", item.getOrderID());
 
-	public void displayNotification() {
-		String contentText = list.get(0).getMessage();
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				con).setSmallIcon(R.drawable.ic_action_alarms)
-				.setContentTitle("Đề nghị").setContentText(contentText)
-				.setAutoCancel(true).setTicker(contentText);
-		Intent resultIntent = new Intent();
-		int id = 0;
-		if (list.get(0).getType().equals("deal")) {
-			resultIntent = new Intent(con, DealDetailActivity.class);
-			id = Integer.parseInt(list.get(0).getIdOfType());
-			resultIntent.putExtra("dealID", id);
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
 
-		} else if (list.get(0).getType().equals("order")) {
-			resultIntent = new Intent(con, OrderDetailActivity.class);			
-			resultIntent.putExtra("orderID", list.get(0).getIdOfType());
+			stackBuilder.addParentStack(MainActivity.class);
+
+			stackBuilder.addNextIntent(resultIntent);
+			PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(
+					id, PendingIntent.FLAG_UPDATE_CURRENT);
+
+			mBuilder.setContentIntent(resultPendingIntent);
+			NotificationManager mNotificationManager = (NotificationManager) con
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			mNotificationManager.notify(id, mBuilder.build());
 		}
-
-		// Intent resultIntent = new Intent(con, MainActivity.class);
-
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(con);
-
-		stackBuilder.addParentStack(MainActivity.class);
-
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(id,
-				PendingIntent.FLAG_UPDATE_CURRENT);
-
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) con
-				.getSystemService(Context.NOTIFICATION_SERVICE);
-
-		mNotificationManager.notify(id, mBuilder.build());
 	}
-
-	
 }

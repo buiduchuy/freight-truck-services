@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -112,6 +113,11 @@ public class OrderDetailActivity extends Activity {
 		}
 		if (id == android.R.id.home) {
 			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
+		if (id == R.id.action_call) {
+			Uri uri = Uri.parse("tel:" + tvPhone.getText().toString());
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -217,31 +223,28 @@ public class OrderDetailActivity extends Activity {
 						.getJSONObject("goodsCategory");
 				JSONObject jsonObject5 = jsonObject2.getJSONObject("route");
 				JSONObject jsonObject6 = jsonObject5.getJSONObject("driver");
-				tvStartAdd.setText("Địa chỉ nhận hàng: "
-						+ jsonObject3.getString("pickupAddress"));
-				tvDestAdd.setText("Địa chỉ giao hàng: "
-						+ jsonObject3.getString("deliveryAddress"));
+				tvStartAdd.setText(jsonObject3.getString("pickupAddress"));
+				tvDestAdd.setText(jsonObject3.getString("deliveryAddress"));
 				String startTime = jsonObject3.getString("pickupTime");
 				String endTime = jsonObject3.getString("deliveryTime");
 				String[] tmp = startTime.split(" ");
 				String[] tmp1 = endTime.split(" ");
-				tvStartTime.setText("Ngày nhận hàng: " + tmp[0]);
-				tvFinishTime.setText("Ngày giao hàng: " + tmp1[0]);
+				tvStartTime.setText(tmp[0]);
+				tvFinishTime.setText(tmp1[0]);
 				String test = jsonObject4.getString("name");
-				tvCate.setText("Loại hàng: " + jsonObject4.getString("name"));
+				tvCate.setText(jsonObject4.getString("name"));
 				int price = (int) Double.parseDouble(jsonObject2
 						.getString("price"));
-				tvPrice.setText("Giá hàng: " + formatNumber(price)
+				tvPrice.setText(formatNumber(price)
 						+ ".000 đồng");
-				tvNote.setText("Ghi chú: " + jsonObject2.getString("notes"));
-				tvPhone.setText("Số điện thoại tài xế: "
-						+ jsonObject6.getString("phone"));
+				tvNote.setText(jsonObject2.getString("notes"));
+				tvPhone.setText(jsonObject6.getString("phone"));
 				String count = jsonObject.getString("orderStatusID");
 				if (count.equals("3") || count.equals("4")) {
-					tvStatus.setText("Trạng thái hàng: " + "Đã nhận hàng");
+					tvStatus.setText("Đã nhận hàng");
 					btnConfirm.setVisibility(View.GONE);
 				} else {
-					tvStatus.setText("Trạng thái hàng: " + "Hàng chưa giao");
+					tvStatus.setText("Hàng chưa giao");
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

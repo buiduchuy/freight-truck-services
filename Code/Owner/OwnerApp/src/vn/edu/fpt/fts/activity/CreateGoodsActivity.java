@@ -10,8 +10,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -177,7 +179,7 @@ public class CreateGoodsActivity extends Activity {
 									.get(Calendar.DAY_OF_MONTH));
 					dialog.setPermanentTitle("Ngày có thể nhận hàng");
 					DatePicker picker = dialog.getDatePicker();
-					cal = Calendar.getInstance();
+					Calendar cal = Calendar.getInstance();
 					picker.setMinDate(cal.getTimeInMillis() - 1000);
 					cal.add(Calendar.MONTH, 1);
 					picker.setMaxDate(cal.getTimeInMillis());
@@ -207,10 +209,11 @@ public class CreateGoodsActivity extends Activity {
 											.get(Calendar.DAY_OF_MONTH));
 							dialog.setPermanentTitle("Ngày có thể giao hàng");
 							DatePicker picker = dialog.getDatePicker();
-							Calendar cal = calendar1;
+							Calendar cal = Calendar.getInstance();
+//							Calendar cal = calendar1;
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
-							picker.setMaxDate(cal.getTimeInMillis());
+							picker.setMaxDate(cal.getTimeInMillis());							
 							dialog.show();
 						}
 					}
@@ -261,7 +264,7 @@ public class CreateGoodsActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// Chi viec goi ham postData
-				
+
 				postData(v);
 			}
 		});
@@ -445,34 +448,58 @@ public class CreateGoodsActivity extends Activity {
 			check = false;
 			errorMsg = "Địa chỉ nhận hàng không được để trống";
 		}
-		if (calendar1.compareTo(calendar2) <= 0) {
+		String a = formatDate(calendar1);
+		String b = formatDate(calendar2);
+		if (calendar1.compareTo(calendar2) >= 0) {
 			check = false;
 			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
 		}
-		
-		Geocoder geocoder = new Geocoder(getBaseContext());
-		try {
-			List<Address> list = geocoder.getFromLocationName(
-					actPickupAddr.getText().toString(), 1);
-			List<Address> list2 = geocoder.getFromLocationName(
-					actDeliverAddr.getText().toString(), 1);
-			if (list.size() > 0 && list2.size() > 0) {
-				pickupLng = list.get(0).getLongitude();
-				pickupLat = list.get(0).getLatitude();
 
-				deliverLng = list2.get(0).getLongitude();
-				deliverLat = list2.get(0).getLatitude();
-			} else {
-				errorMsg = "Địa chỉ không có thật";
-				check = false;
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			check = false;
-			errorMsg = "Địa chỉ không có thật";
-		}
+		 Geocoder geocoder = new Geocoder(getBaseContext());
+		 try {
+		 List<Address> list = geocoder.getFromLocationName(actPickupAddr
+		 .getText().toString(), 1);
+		 List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
+		 .getText().toString(), 1);
+		 if (list.size() > 0 && list2.size() > 0) {
+		 pickupLng = list.get(0).getLongitude();
+		 pickupLat = list.get(0).getLatitude();
 		
+		 deliverLng = list2.get(0).getLongitude();
+		 deliverLat = list2.get(0).getLatitude();
+		 } else {
+		 errorMsg = "Địa chỉ không có thật";
+		 check = false;
+		 }
+		 } catch (IOException ex) {
+		 ex.printStackTrace();
+		 check = false;
+		 errorMsg = "Địa chỉ không có thật";
+		 }
+
 		GeocoderHelper helper = new GeocoderHelper();
+
+//		new GetLocation().execute(actPickupAddr.getText()
+//				.toString());
+//		JSONObject addr1 = helper.getLocationInfo(actPickupAddr.getText()
+//				.toString());
+//		JSONObject addr2 = helper.getLocationInfo(actDeliverAddr.getText()
+//				.toString());
+//		if (addr1 != null && addr2 != null) {
+//			LatLng latLng1 = helper.getLatLong(addr1);
+//			LatLng latLng2 = helper.getLatLong(addr2);
+//			if (latLng1 != null & latLng2 != null) {
+//				pickupLng = helper.getLatLong(addr1).longitude;
+//				pickupLat = helper.getLatLong(addr1).latitude;
+//				deliverLng = helper.getLatLong(addr2).longitude;
+//				deliverLat = helper.getLatLong(addr2).latitude;
+//			} else {
+//				errorMsg = "Địa chỉ không có thật";
+//				check = false;
+//			}
+//
+//		}
+
 		LatLng pickup = new LatLng(pickupLat, pickupLng);
 		LatLng deliver = new LatLng(deliverLat, deliverLng);
 		String url = helper.makeURL(pickup, deliver);
@@ -904,5 +931,54 @@ public class CreateGoodsActivity extends Activity {
 			return total.toString();
 		}
 
+	}
+	
+	private class GetLocation extends AsyncTask<String, Void, JSONObject> {
+		@Override
+		protected JSONObject doInBackground(String... address) {
+			// TODO Auto-generated method stub
+			StringBuilder stringBuilder = new StringBuilder();
+			try {
+
+				address[0] = address[0].replaceAll(" ", "%20");
+
+				HttpPost httppost = new HttpPost(
+						"http://maps.google.com/maps/api/geocode/json?address="
+								+ address + "&sensor=false");
+				HttpClient client = new DefaultHttpClient();
+				HttpResponse response;
+				stringBuilder = new StringBuilder();
+
+				response = client.execute(httppost);
+				HttpEntity entity = response.getEntity();
+				InputStream stream = entity.getContent();
+				int b;
+				while ((b = stream.read()) != -1) {
+					stringBuilder.append((char) b);
+				}
+			} catch (ClientProtocolException e) {
+				return null;
+			} catch (IOException e) {
+				return null;
+			}
+
+			JSONObject jsonObject = new JSONObject();
+			try {
+				jsonObject = new JSONObject(stringBuilder.toString());
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+
+			return jsonObject;
+		}
+		
+		@Override
+		protected void onPostExecute(JSONObject result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+
+		}
 	}
 }

@@ -25,5 +25,5 @@
     <string name="action_history">Lịch sử</string>
     <string name="title_activity_order_detail">Thông tin đơn hàng</string>
     <string name="title_activity_history">HistoryActivity</string>
-
+	<string name="action_call">Gọi tài xế</string>
 </resources>

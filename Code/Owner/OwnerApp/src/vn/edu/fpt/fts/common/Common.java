@@ -1,5 +1,9 @@
 package vn.edu.fpt.fts.common;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public final class Common {
 //	public static final String IP_URL = "http://192.168.43.10:8080/FTS/api/";
 	public static final String IP_URL = "http://fts2015.cloudapp.net/FTS/api/";
@@ -24,4 +28,26 @@ public final class Common {
 	public static final String Service_Notification_getNotificationByEmail = "Notification/getNotificationByEmail";
 	public static final String Service_Deal_getDealByID = "Deal/getDealByID";
 	public static final String Service_Deal_getDealByOwnerID = "Deal/getDealByOwnerID";
+	public static final String Service_Order_getOrderByOwnerID = "Order/getOrderByOwnerID";
+	
+	public static boolean expireDate(String date) {
+		Date todayDate = null;
+		Date inputDate = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String today = sdf.format(new Date());
+		try {
+			todayDate = sdf.parse(today);
+			inputDate = sdf.parse(date);
+			if (todayDate.compareTo(inputDate) <= 0) {
+				return false;
+			} else {
+				return true;
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}		
+		
+	}
 }

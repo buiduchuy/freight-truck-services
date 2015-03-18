@@ -12,5 +12,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_history"/>
+    <item android:id="@+id/action_call"
+        android:title="@string/action_call"
+        android:icon="@drawable/ic_action_call"
+        android:showAsAction="ifRoom"
+        />
 
 </menu>

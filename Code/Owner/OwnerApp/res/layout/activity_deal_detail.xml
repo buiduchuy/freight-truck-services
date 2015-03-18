@@ -1,117 +1,247 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_main"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/bg_main"
     tools:context="vn.edu.fpt.fts.ownerapp.DealDetailActivity" >
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/textview_startAddr"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/textview_destAddr"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Địa điểm bắt đầu:"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textview_startTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            <TextView
+                android:id="@+id/textview_startAddr"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/textview_finishTime"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/textview_category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
-        <TextView
-            android:id="@+id/textview_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
-        <TextView
-            android:id="@+id/textview_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Địa điểm kết thúc:"
+                android:textStyle="bold" />
 
-        <View
-            android:id="@+id/view_line"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
+            <TextView
+                android:id="@+id/textview_destAddr"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
 
-        <EditText
-            android:id="@+id/edittext_price"
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Giá tiền đề nghị"
-            android:inputType="number" />
+            android:layout_height="wrap_content" >
 
-        <EditText
-            android:id="@+id/edittext_note"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Thời gian bắt đầu:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_startTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Ghi chú" />
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Thời gian kết thúc:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_finishTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Loại hàng không chở:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_category"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Giá đề nghị:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textview_note1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Ghi chú:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_note"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textview_status1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
+                android:text="Trạng thái:"
+                android:textStyle="bold" 
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textview_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp"
+                android:visibility="gone" />
+        </TableRow>
+    </TableLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
         <Button
-            android:id="@+id/button_counter"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Trả giá đề nghị" />
+            android:id="@+id/button_accept"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="Chấp nhận" />
+
         <Button
-            android:visibility="gone"
-            android:id="@+id/button_cancel"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Hủy đề nghị" />
+            android:id="@+id/button_decline"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="Từ chối" />
+    </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
-            <Button
-                android:id="@+id/button_accept"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="Chấp nhận" />
+    <EditText
+        android:id="@+id/edittext_price"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Giá tiền đề nghị"
+        android:inputType="number"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" />
 
-            <Button
-                android:id="@+id/button_decline"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="Từ chối" />
-        </RelativeLayout>
-    </LinearLayout>
+    <EditText
+        android:id="@+id/edittext_note"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Ghi chú"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/button_counter"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:text="Trả giá đề nghị" />
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:text="Hủy đề nghị"
+        android:visibility="gone" />
+
+</LinearLayout>

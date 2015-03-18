@@ -127,16 +127,16 @@ public class HistoryActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
-			startActivity(intent);
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+//	@Override
+//	public boolean onKeyDown(int keyCode, KeyEvent event) {
+//		// TODO Auto-generated method stub
+//		if (keyCode == KeyEvent.KEYCODE_BACK) {
+//			Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
+//			startActivity(intent);
+//			return true;
+//		}
+//		return super.onKeyDown(keyCode, event);
+//	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
