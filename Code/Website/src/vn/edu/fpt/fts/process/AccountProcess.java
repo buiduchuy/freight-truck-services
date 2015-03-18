@@ -25,7 +25,7 @@ public class AccountProcess {
 	AccountDAO accountDao = new AccountDAO();
 	DriverDAO driverDao = new DriverDAO();
 
-	public int driverRegister(String email, String password, String firstName,
+	public int createDriverAccount(String email, String password, String firstName,
 			String lastName, int gender, String phone, String createBy,
 			String createTime, int age, String image) {
 		int ret = 0;
@@ -71,13 +71,20 @@ public class AccountProcess {
 			try {
 				if (con != null) {
 					con.close();
-
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
 		}
+		return ret;
+	}
+	
+	public int createOwnerAccount(String email, String password, String firstName,
+			String lastName, int gender, String phone, String address, String createBy,
+			String createTime, int age, String image) {
+		int ret = 0;
+		
 		return ret;
 	}
 

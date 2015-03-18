@@ -64,6 +64,7 @@ public final class Common {
 	public static final int order_driver = 2;
 	public static final int order_owner = 3;
 	public static final int order_staff = 4;
+	public static final int order_lost = 5;
 
 	// Max allow distance for matching goods and routes
 	public static final int maxAllowDistance = 30;
@@ -72,6 +73,7 @@ public final class Common {
 	public static final double perKilometer = 15;
 	public static final double perKilogram = 0.2;
 	public static final double priceCreateGood = 15;
+	
 	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";
 
 	public String changeFormatDate(String dateInput, String oldFormat,

@@ -203,7 +203,7 @@ public class DealProcess {
 			}
 
 			// Insert Notification
-			notiProcess.insertDealAcceptNotification(deal);
+			notiProcess.insertDealAcceptNotification(deal, newDealOrderID);
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();

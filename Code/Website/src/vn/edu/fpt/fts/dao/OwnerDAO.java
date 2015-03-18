@@ -21,12 +21,12 @@ public class OwnerDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Owner ( " + "Email," + "FirstName,"
+			String sql = "INSERT INTO [Owner] ( " + "Email," + "FirstName,"
 					+ "LastName," + "Gender," + "Phone," + "Address,"
 					+ "Active," + "CreateBy," + "CreateTime," + "UpdateBy,"
-					+ "UpdateTime" + ") VALUES (" + "?, " + "?, " + "?, "
+					+ "UpdateTime," + "Age" + ") VALUES (" + "?, " + "?, "
 					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?)";
+					+ "?, " + "?, " + "?)";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 			stmt.setString(i++, bean.getEmail()); // Email
@@ -40,6 +40,7 @@ public class OwnerDAO {
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setString(i++, bean.getUpdateBy()); // UpdateBy
 			stmt.setString(i++, bean.getUpdateTime()); // UpdateTime
+			stmt.setInt(i++, bean.getAge()); // Age
 
 			ret = stmt.executeUpdate();
 
@@ -95,6 +96,7 @@ public class OwnerDAO {
 				owner.setCreateTime(rs.getString("CreateTime"));
 				owner.setUpdateBy(rs.getString("UpdateBy"));
 				owner.setUpdateTime(rs.getString("UpdateTime"));
+				owner.setActive(rs.getInt("Age"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -145,6 +147,7 @@ public class OwnerDAO {
 				owner.setCreateTime(rs.getString("CreateTime"));
 				owner.setUpdateBy(rs.getString("UpdateBy"));
 				owner.setUpdateTime(rs.getString("UpdateTime"));
+				owner.setActive(rs.getInt("Age"));
 				return owner;
 			}
 		} catch (SQLException e) {

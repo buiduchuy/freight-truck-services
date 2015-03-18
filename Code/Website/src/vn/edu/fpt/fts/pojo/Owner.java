@@ -25,7 +25,8 @@ public class Owner implements java.io.Serializable {
 	private String createTime;
 	private String updateBy;
 	private String updateTime;
-	
+	private int age;
+
 	public Owner() {
 		// TODO Auto-generated constructor stub
 	}
@@ -33,7 +34,7 @@ public class Owner implements java.io.Serializable {
 	public Owner(int ownerID, String email, String firstName, String lastName,
 			int gender, String phone, String address, int active,
 			String createBy, String createTime, String updateBy,
-			String updateTime) {
+			String updateTime, int age) {
 		super();
 		this.ownerID = ownerID;
 		this.email = email;
@@ -47,6 +48,7 @@ public class Owner implements java.io.Serializable {
 		this.createTime = createTime;
 		this.updateBy = updateBy;
 		this.updateTime = updateTime;
+		this.age = age;
 	}
 
 	public int getOwnerID() {
@@ -144,5 +146,13 @@ public class Owner implements java.io.Serializable {
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
 }

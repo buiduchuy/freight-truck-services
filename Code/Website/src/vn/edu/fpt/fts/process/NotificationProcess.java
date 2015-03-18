@@ -33,12 +33,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã gửi đề nghị với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã gửi đề nghị với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
@@ -53,7 +53,7 @@ public class NotificationProcess {
 		return ret;
 	}
 
-	public int insertDealAcceptNotification(Deal deal) {
+	public int insertDealAcceptNotification(Deal deal, int orderID) {
 		int ret = 0;
 
 		Notification notification = new Notification();
@@ -66,19 +66,19 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã đồng ý đề nghị với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã đồng ý đề nghị với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
 		notification.setActive(Common.activate);
 		notification.setCreateTime(deal.getCreateTime());
-		notification.setType("deal");
-		notification.setIdOfType(deal.getDealID());
+		notification.setType("order");
+		notification.setIdOfType(orderID);
 		notification.setStatusOfType(deal.getDealStatusID());
 
 		ret = notificationDao.insertNotification(notification);
@@ -99,12 +99,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã từ chối đề nghị với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã từ chối đề nghị với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
@@ -132,12 +132,12 @@ public class NotificationProcess {
 		if (deal.getCreateBy().equalsIgnoreCase("owner")) {
 			email = db_deal.getGoods().getOwner().getEmail();
 			msg = "Chủ hàng " + email + " đã hủy thương lượng với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getRoute().getDriver().getEmail());
 		} else if (deal.getCreateBy().equalsIgnoreCase("driver")) {
 			email = db_deal.getRoute().getDriver().getEmail();
 			msg = "Tài xế " + email + " đã hủy thương lượng với giá tiền "
-					+ Common.formatNumber(db_deal.getPrice()) + ".000 đồng.";
+					+ Common.formatNumber(db_deal.getPrice()) + " nghìn đồng.";
 			notification.setEmail(db_deal.getGoods().getOwner().getEmail());
 		}
 		notification.setMessage(msg);
