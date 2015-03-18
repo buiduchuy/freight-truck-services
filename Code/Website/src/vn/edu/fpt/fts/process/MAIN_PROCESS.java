@@ -165,5 +165,8 @@ public class MAIN_PROCESS {
 		// System.out.println(l_dealNoti.get(i).getMessage());
 		// }
 
+		// AccountProcess accountProcess = new AccountProcess();
+		// System.out.println(accountProcess.driverRegister(account, driver));
+
 	}
 }

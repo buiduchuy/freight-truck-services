@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -85,7 +86,7 @@ public class DriverDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Driver";
+			String sql = "SELECT * FROM [Driver]";
 			stm = con.prepareStatement(sql);
 			rs = stm.executeQuery();
 			List<Driver> list = new ArrayList<Driver>();
@@ -187,5 +188,40 @@ public class DriverDAO {
 			}
 		}
 		return null;
+	}
+
+	public int insertDriver(Driver bean, Connection con) throws SQLException {
+		PreparedStatement stmt = null;
+		int ret = 0;
+
+		String sql = "INSERT INTO [Driver] ( " + "Email," + "FirstName,"
+				+ "LastName," + "Gender," + "Phone," + "Active," + "CreateBy,"
+				+ "CreateTime," + "UpdateBy," + "UpdateTime," + "Age,"
+				+ "Image," + "Point" + ") VALUES (" + "?, " + "?, " + "?, "
+				+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+				+ "?, " + "?)";
+		stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		int i = 1;
+		stmt.setString(i++, bean.getEmail()); // Email
+		stmt.setString(i++, bean.getFirstName()); // FirstName
+		stmt.setString(i++, bean.getLastName()); // LastName
+		stmt.setInt(i++, bean.getGender()); // Gender
+		stmt.setString(i++, bean.getPhone()); // Phone
+		stmt.setInt(i++, bean.getActive()); // Active
+		stmt.setString(i++, bean.getCreateBy()); // CreateBy
+		stmt.setString(i++, bean.getCreateTime()); // CreateTime
+		stmt.setString(i++, bean.getUpdateBy()); // UpdateBy
+		stmt.setString(i++, bean.getUpdateTime()); // UpdateTime
+		stmt.setInt(i++, bean.getAge()); // Age
+		stmt.setString(i++, bean.getImage()); // Image
+		stmt.setInt(i++, bean.getPoint()); // Point
+		stmt.executeUpdate();
+
+		ResultSet rs = stmt.getGeneratedKeys();
+		if (rs != null && rs.next()) {
+			ret = (int) rs.getLong(1);
+		}
+
+		return ret;
 	}
 }

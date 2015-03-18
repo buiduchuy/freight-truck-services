@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.helper.Common;
@@ -291,12 +292,19 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			long stopTime = System.nanoTime();
-			Log.d("message", ("Parse time: " + (stopTime - startTime)));
-			startTime = System.nanoTime();
-			helper.drawPath(result, map);
-			stopTime = System.nanoTime();
-			Log.d("message", ("Draw map time: " + (stopTime - startTime)));
+			JSONObject obj;
+			try {
+				obj = new JSONObject(result);
+				if(obj.getString("status").equals("ZERO_RESULTS")) {
+					Toast.makeText(getActivity(), "Không có lộ trình qua các điểm này", Toast.LENGTH_SHORT).show();
+				}
+				else {
+					helper.drawPath(result, map);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			pDlg.dismiss();
 		}
 	}

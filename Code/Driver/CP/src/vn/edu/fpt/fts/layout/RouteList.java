@@ -66,7 +66,7 @@ public class RouteList extends Fragment {
 	ListView list1;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Route/get";
+			+ "Route/getListRouteByDriverID";
 
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,8 +75,10 @@ public class RouteList extends Fragment {
 		map = new ArrayList<String>();
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Lộ trình");
-		WebService ws = new WebService(WebService.GET_TASK, getActivity(),
+		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
+		ws.addNameValuePair("driverID", getActivity().getIntent()
+				.getStringExtra("driverID"));
 		ws.execute(new String[] { SERVICE_URL });
 		myFragmentView = inflater.inflate(R.layout.activity_route_list,
 				container, false);
@@ -188,12 +190,9 @@ public class RouteList extends Fragment {
 					Object intervent1 = obj.get("route");
 					if (intervent1 instanceof JSONArray) {
 						JSONArray array = obj.getJSONArray("route");
-						for (int i = array.length() - 1; i >= 0; i--) {
+						for (int i = 0; i < array.length(); i++) {
 							JSONObject item = array.getJSONObject(i);
-							if (item.getString("driverID").equals(
-									getActivity().getIntent().getStringExtra(
-											"driverID"))
-									&& item.getString("active").equals("1")) {
+							if (item.getString("active").equals("1")) {
 								Object intervent;
 
 								String[] start = item
@@ -259,14 +258,14 @@ public class RouteList extends Fragment {
 								title += " - " + end[end.length - 1].trim();
 								SimpleDateFormat format = new SimpleDateFormat(
 										"yyyy-MM-dd hh:mm:ss");
-								Date finishDate = new Date();
+								Date startDate = new Date();
 								try {
-									Date startDate = format.parse(item
+									startDate = format.parse(item
 											.getString("startTime"));
 									format.applyPattern("dd/MM/yyyy");
 									String sd = format.format(startDate);
 									format.applyPattern("yyyy-MM-dd hh:mm:ss");
-									finishDate = format.parse(item
+									Date finishDate = format.parse(item
 											.getString("finishTime"));
 									format.applyPattern("dd/MM/yyyy");
 									String fd = format.format(finishDate);
@@ -277,19 +276,13 @@ public class RouteList extends Fragment {
 								}
 								ListItem itm = new ListItem(title, description,
 										"");
-//								if (Calendar.getInstance()
-//										.getTime().after(finishDate)) {
-									list.add(itm);
-									map.add(item.getString("routeID"));
-//								}
+								list.add(itm);
+								map.add(item.getString("routeID"));
 							}
 						}
 					} else if (intervent1 instanceof JSONObject) {
 						JSONObject item = obj.getJSONObject("route");
-						if (item.getString("driverID").equals(
-								getActivity().getIntent().getStringExtra(
-										"driverID"))
-								&& item.getString("active").equals("1")) {
+						if (item.getString("active").equals("1")) {
 							Object intervent;
 
 							String[] start = item.getString("startingAddress")
@@ -347,14 +340,14 @@ public class RouteList extends Fragment {
 							title += " - " + end[end.length - 1].trim();
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm:ss");
-							Date finishDate = new Date();
+							Date startDate = new Date();
 							try {
-								Date startDate = format.parse(item
+								startDate = format.parse(item
 										.getString("startTime"));
 								format.applyPattern("dd/MM/yyyy");
 								String sd = format.format(startDate);
 								format.applyPattern("yyyy-MM-dd hh:mm:ss");
-								finishDate = format.parse(item
+								Date finishDate = format.parse(item
 										.getString("finishTime"));
 								format.applyPattern("dd/MM/yyyy");
 								String fd = format.format(finishDate);
@@ -364,11 +357,8 @@ public class RouteList extends Fragment {
 								e.printStackTrace();
 							}
 							ListItem itm = new ListItem(title, description, "");
-//							if (Calendar.getInstance()
-//									.getTime().after(finishDate)) {
-								list.add(itm);
-								map.add(item.getString("routeID"));
-//							}
+							list.add(itm);
+							map.add(item.getString("routeID"));
 						}
 					}
 				} catch (JSONException e) {
@@ -421,7 +411,9 @@ public class RouteList extends Fragment {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						Toast.makeText(getActivity(), "Không thể kết nối tới máy chủ", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 			} catch (Exception e) {
