@@ -3,6 +3,7 @@
  */
 package vn.edu.fpt.fts.process;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,21 +14,6 @@ import java.util.Date;
  */
 public class MAIN_PROCESS {
 
-	public static boolean checkTimeOverlaps(Date startDate1, Date endDate1,
-			Date startDate2, Date endDate2) {
-		if (startDate1 == null || endDate1 == null || startDate2 == null
-				|| endDate2 == null)
-			return false;
-		if ((startDate1.getTime() <= endDate2.getTime())
-				&& (startDate2.getTime() <= endDate1.getTime()))
-			return true;
-		return false;
-	}
-
-	/**
-	 * @param args
-	 * @throws ParseException
-	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		// MatchingProcess matchingProcess = new MatchingProcess();
@@ -147,8 +133,9 @@ public class MAIN_PROCESS {
 			Date startDate2 = sdf.parse("2015-03-05");
 			Date endDate2 = sdf.parse("2015-03-05");
 
-			System.out.println(checkTimeOverlaps(startDate1, endDate1,
-					startDate2, endDate2));
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+			System.out.println(dateFormat.format(date));
 			//
 			// System.out.println(sdf.format(date1));
 			// System.out.println(sdf.format(date2));
