@@ -37,7 +37,7 @@ public class GeocoderHelper {
 
 	public String makeURL(LatLng org, LatLng des) {
 		StringBuilder urlString = new StringBuilder();
-		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+		urlString.append("https://maps.googleapis.com/maps/api/directions/json");
 		urlString.append("?origin=");
 		urlString.append(Double.toString(org.latitude));
 		urlString.append(",");
@@ -46,7 +46,7 @@ public class GeocoderHelper {
 		urlString.append(Double.toString(des.latitude));
 		urlString.append(",");
 		urlString.append(Double.toString(des.longitude));
-		urlString.append("&mode=driving&region=vi");
+		urlString.append("&mode=driving&region=vi&key=AIzaSyBdrGC2J34yLe3dBHxVuFb0kMh9jkNpzwE");
 		return urlString.toString();
 	}
 
@@ -62,8 +62,9 @@ public class GeocoderHelper {
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		return true;
+		
 	}
 
 	public void drawPath(String result, GoogleMap map) {

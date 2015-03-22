@@ -22,6 +22,7 @@
             android:layout_height="40dp"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
+            android:padding="4dp"            
             android:background="@android:color/white"
             android:gravity="center_vertical"
             android:hint="E-mail" />
@@ -32,6 +33,7 @@
             android:layout_height="40dp"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
+            android:padding="4dp"            
             android:background="@android:color/white"
             android:gravity="center_vertical"
             android:hint="Password"
@@ -44,7 +46,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="4dp"
-            android:background="@android:color/white"
+            android:background="@color/button_color"
             android:text="Login" />
     </LinearLayout>
 

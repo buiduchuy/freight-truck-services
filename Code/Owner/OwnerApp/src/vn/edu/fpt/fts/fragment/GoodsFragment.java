@@ -27,6 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.activity.GoodsDetailActivity;
+import vn.edu.fpt.fts.adapter.GoodsModelAdapter;
+import vn.edu.fpt.fts.classes.Goods;
+import vn.edu.fpt.fts.classes.GoodsModel;
 import vn.edu.fpt.fts.common.Common;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -48,7 +51,8 @@ import android.widget.TextView;
 
 public class GoodsFragment extends Fragment {
 	private ListView listView;
-	private ArrayAdapter<String> adapter;
+	// private ArrayAdapter<String> adapter;
+	private GoodsModelAdapter adapter;
 	private String ownerid;
 	private List<String> goodsID, goodsCategoryID;
 	private TextView tvGone;
@@ -67,8 +71,9 @@ public class GoodsFragment extends Fragment {
 				"MyPrefs", Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
 		wst.addNameValuePair("ownerID", ownerid);
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		goodsID = new ArrayList<String>();
 		goodsCategoryID = new ArrayList<String>();
@@ -96,8 +101,6 @@ public class GoodsFragment extends Fragment {
 
 		return rootView;
 	}
-	
-	
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -183,19 +186,21 @@ public class GoodsFragment extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if(response.equals("null")) {
-				tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+			if (response.equals("null")) {
+				tvGone = (TextView) getActivity().findViewById(
+						R.id.textview_gone);
 				tvGone.setVisibility(View.VISIBLE);
 			} else {
 				try {
 					JSONObject jsonObject = new JSONObject(response);
 					List<String> lv = new ArrayList<String>();
+					ArrayList<GoodsModel> goodsModels = new ArrayList<GoodsModel>();
 					Object obj = jsonObject.get("goods");
 					if (obj instanceof JSONArray) {
 						JSONArray array = jsonObject.getJSONArray("goods");
-						//String[] result = new String[array.length()];
-						
-						//int counter = 0;
+						// String[] result = new String[array.length()];
+
+						// int counter = 0;
 						for (int i = 0; i < array.length(); i++) {
 							// Goods goods = new Goods();
 							// goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
@@ -221,7 +226,8 @@ public class GoodsFragment extends Fragment {
 							// {goods.setDeliveryMarkerLatidute(Float.parseFloat(jsonObject2.getString("deliveryMarkerLatidute")));}
 							// catch (JSONException e)
 							// {goods.setDeliveryMarkerLatidute(0);}
-							// try {goods.setNotes(jsonObject2.getString("notes"));}
+							// try
+							// {goods.setNotes(jsonObject2.getString("notes"));}
 							// catch (JSONException e) {goods.setNotes("");}
 							// goods.setCreateTime(jsonObject2.getString("createTime"));
 							// goods.setActive(Integer.parseInt(jsonObject2.getString("active")));
@@ -229,10 +235,15 @@ public class GoodsFragment extends Fragment {
 							// goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
 							// list.add(goods);
 							JSONObject jsonObject2 = array.getJSONObject(i);
-							int active = Integer.parseInt(jsonObject2.getString("active"));
-							String pickupDate = jsonObject2.getString("deliveryTime");
-							String temp[] = pickupDate.split(" ");							
-							
+							int active = Integer.parseInt(jsonObject2
+									.getString("active"));
+							String deliveryDate = jsonObject2
+									.getString("deliveryTime");
+							String pickupDate = jsonObject2
+									.getString("pickupTime");
+							String temp[] = deliveryDate.split(" ");
+							String temp1[] = pickupDate.split(" ");
+
 							if (active == 1 && !Common.expireDate(temp[0])) {
 								String a = jsonObject2.getString("goodsID");
 
@@ -240,26 +251,45 @@ public class GoodsFragment extends Fragment {
 								goodsCategoryID.add(jsonObject2
 										.getString("goodsCategoryID"));
 
-								String createTime = jsonObject2.getString("createTime");
+								String createTime = jsonObject2
+										.getString("createTime");
 								String tmp[] = createTime.split(" ");
 								createTime = tmp[0].replace("-", "")
 										+ jsonObject2.getString("goodsID");
 
 								JSONObject jsonObject3 = jsonObject2
-										.getJSONObject("goodsCategory");						
-								String object = jsonObject3.getString("name") + " " + "#"
-										+ createTime;
+										.getJSONObject("goodsCategory");
+								String object = jsonObject3.getString("name")
+										+ " " + "#" + createTime;
 								lv.add(object);
-								
+
+								String name = jsonObject3.getString("name");
+								String price = jsonObject2.getString("price")
+										.replace(".0", "") + " nghìn";
+								String weight = jsonObject2.getString("weight")
+										+ " kg";
+								String date = Common
+										.formatDateFromString(temp1[0])
+										+ " - "
+										+ Common.formatDateFromString(temp[0]);
+								GoodsModel goodsModel = new GoodsModel(name,
+										weight, date, price);
+								goodsModels.add(goodsModel);
+
 							}
 
 						}
 					} else if (obj instanceof JSONObject) {
-						JSONObject jsonObject2 = jsonObject.getJSONObject("goods");
-						int active = Integer.parseInt(jsonObject2.getString("active"));
-						String pickupDate = jsonObject2.getString("deliveryTime");
-						String temp[] = pickupDate.split(" ");			
-						
+						JSONObject jsonObject2 = jsonObject
+								.getJSONObject("goods");
+						int active = Integer.parseInt(jsonObject2
+								.getString("active"));
+						String deliveryDate = jsonObject2
+								.getString("deliveryTime");
+						String pickupDate = jsonObject2.getString("pickupTime");
+						String temp[] = deliveryDate.split(" ");
+						String temp1[] = pickupDate.split(" ");
+
 						if (active == 1 && Common.expireDate(temp[0])) {
 							String a = jsonObject2.getString("goodsID");
 
@@ -267,33 +297,41 @@ public class GoodsFragment extends Fragment {
 							goodsCategoryID.add(jsonObject2
 									.getString("goodsCategoryID"));
 
-							String createTime = jsonObject2.getString("createTime");
+							String createTime = jsonObject2
+									.getString("createTime");
 							String tmp[] = createTime.split(" ");
 							createTime = tmp[0].replace("-", "")
 									+ jsonObject2.getString("goodsID");
 
 							JSONObject jsonObject3 = jsonObject2
-									.getJSONObject("goodsCategory");						
-							String object = jsonObject3.getString("name") + " " + "#"
-									+ createTime;
+									.getJSONObject("goodsCategory");
+							String object = jsonObject3.getString("name") + " "
+									+ "#" + createTime;
 							lv.add(object);
-							
+							String name = jsonObject3.getString("name");
+							String price = jsonObject2.getString("price")
+									.replace(".0", "") + " nghìn đồng";
+							String weight = jsonObject2.getString("weight");
+							String date = temp1[0] + " - " + temp[0];
+							GoodsModel goodsModel = new GoodsModel(name,
+									weight, date, price);
+							goodsModels.add(goodsModel);
 						}
 					}
-					if (lv.size() == 0) {
-						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+					if (goodsModels.size() == 0) {
+						tvGone = (TextView) getActivity().findViewById(
+								R.id.textview_gone);
 						tvGone.setVisibility(View.VISIBLE);
 					}
-					
-					adapter = new ArrayAdapter<String>(getActivity(),
-							android.R.layout.simple_list_item_1, lv);
+
+					adapter = new GoodsModelAdapter(getActivity(), goodsModels);
 					listView.setAdapter(adapter);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					Log.e(TAG, e.getLocalizedMessage());
 				}
 			}
-			
+
 			pDlg.dismiss();
 
 		}

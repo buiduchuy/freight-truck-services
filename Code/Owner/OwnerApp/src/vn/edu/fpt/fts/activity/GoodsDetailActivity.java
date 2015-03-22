@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -119,6 +120,16 @@ public class GoodsDetailActivity extends FragmentActivity implements
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(GoodsDetailActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override

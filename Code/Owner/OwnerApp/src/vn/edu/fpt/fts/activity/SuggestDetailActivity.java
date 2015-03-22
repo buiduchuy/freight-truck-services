@@ -105,7 +105,7 @@ public class SuggestDetailActivity extends Activity {
 				wst2.addNameValuePair("dealID", "0");
 				wst2.addNameValuePair("price", etPrice.getText().toString());
 				wst2.addNameValuePair("notes", etNote.getText().toString());
-				wst2.addNameValuePair("createTime", formatDate(calendar));
+				wst2.addNameValuePair("createTime", Common.formatDate(calendar));
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeid + "");
 				wst2.addNameValuePair("goodsID", goodsID + "");
@@ -159,13 +159,7 @@ public class SuggestDetailActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	private String formatDate(Calendar calendar) {
-		String format = "yyyy-MM-dd HH:mm:ss";
-		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-		return sdf.format(calendar.getTime());
-	}
+	}	
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 

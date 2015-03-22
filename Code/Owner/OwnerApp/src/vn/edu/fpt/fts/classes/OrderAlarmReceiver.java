@@ -147,7 +147,7 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 							String[] tmp = deliveryTime.split(" ");
 							String status = jsonObject2
 									.getString("orderStatusID");
-							if (Common.expireDate(tmp[0]) && status.equals("1")) {
+							if (Common.expireDate(tmp[0]) && (status.equals("1") || status.equals("2"))) {
 								orderList.add(new Order(jsonObject2
 										.getString("orderID"), jsonObject5
 										.getString("name"), jsonObject4
@@ -166,7 +166,7 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 								.getString("deliveryTime");
 						String[] tmp = deliveryTime.split(" ");
 						String status = jsonObject.getString("orderStatusID");
-						if (Common.expireDate(tmp[0]) && status.equals("1")) {
+						if (Common.expireDate(tmp[0]) && (status.equals("1") || status.equals("2"))) {
 							orderList.add(new Order(jsonObject
 									.getString("orderID"), jsonObject5
 									.getString("name"), jsonObject4

@@ -134,7 +134,7 @@ public class InformationFragment extends Fragment {
 				calendar1.set(Calendar.YEAR, year);
 				calendar1.set(Calendar.MONTH, monthOfYear);
 				calendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel(etPickupDate, calendar1);
+				Common.updateLabel(etPickupDate, calendar1);
 			}
 		};
 
@@ -148,7 +148,7 @@ public class InformationFragment extends Fragment {
 				calendar2.set(Calendar.YEAR, year);
 				calendar2.set(Calendar.MONTH, monthOfYear);
 				calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel(etDeliverDate, calendar2);
+				Common.updateLabel(etDeliverDate, calendar2);
 			}
 		};
 
@@ -295,18 +295,6 @@ public class InformationFragment extends Fragment {
 		return rootView;
 	}
 
-	private void updateLabel(EditText et, Calendar calendar) {
-		String format = "dd/MM/yy";
-		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-		et.setText(sdf.format(calendar.getTime()));
-	}
-
-	private String formatDate(Calendar calendar) {
-		String format = "yyyy-MM-dd HH:mm:ss";
-		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-		return sdf.format(calendar.getTime());
-	}
-
 	// ------------------------------------------------------------------------------
 
 	public void postData(View vw) {
@@ -334,14 +322,14 @@ public class InformationFragment extends Fragment {
 		currentTime = Calendar.getInstance();
 		wst.addNameValuePair("goodsID", goodsID);
 		wst.addNameValuePair("active", "1");
-		wst.addNameValuePair("createTime", formatDate(currentTime));
+		wst.addNameValuePair("createTime", Common.formatDate(currentTime));
 		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
 				.toString());
 		wst.addNameValuePair("deliveryMarkerLatidute",
 				Double.toString(deliverLat));
 		wst.addNameValuePair("deliveryMarkerLongtitude",
 				Double.toString(deliverLng));
-		wst.addNameValuePair("deliveryTime", formatDate(calendar2));
+		wst.addNameValuePair("deliveryTime", Common.formatDate(calendar2));
 		wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
 		wst.addNameValuePair("notes", etNotes.getText().toString());
 		wst.addNameValuePair("ownerID", ownerid);
@@ -350,7 +338,7 @@ public class InformationFragment extends Fragment {
 		wst.addNameValuePair("pickupMarkerLatidute", Double.toString(pickupLat));
 		wst.addNameValuePair("pickupMarkerLongtitude",
 				Double.toString(pickupLng));
-		wst.addNameValuePair("pickupTime", formatDate(calendar1));
+		wst.addNameValuePair("pickupTime", Common.formatDate(calendar1));
 		wst.addNameValuePair("price", etPrice.getText().toString());
 		wst.addNameValuePair("weight", etWeight.getText().toString());
 
@@ -809,19 +797,9 @@ public class InformationFragment extends Fragment {
 				String pickupDate = jsonObject.getString("pickupTime");
 				String[] tmp = deliverDate.split(" ");
 				String[] tmp1 = pickupDate.split(" ");
-				Date deliver = new Date();
-				Date pickup = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				try {
-					deliver = sdf.parse(tmp[0]);
-					pickup = sdf.parse(tmp1[0]);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				sdf = new SimpleDateFormat("dd/MM/yyyy");
-				deliverDate = sdf.format(deliver);
-				pickupDate = sdf.format(pickup);
+				
+				deliverDate = Common.formatDateFromString(tmp[0]);
+				pickupDate = Common.formatDateFromString(tmp1[0]);
 				
 				etDeliverDate.setText(deliverDate);
 				etNotes.setText(jsonObject.getString("notes"));

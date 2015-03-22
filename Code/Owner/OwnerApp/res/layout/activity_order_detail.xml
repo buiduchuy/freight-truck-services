@@ -123,6 +123,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:minHeight="40dp"
+                android:text="Khối lượng:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textview_weight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
                 android:text="Giá hàng:"
                 android:textStyle="bold" />
 
@@ -198,8 +218,19 @@
     <Button
         android:id="@+id/button_confirm"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
         android:text="Xác nhận giao hàng" />
+
+    <Button
+        android:id="@+id/button_lost"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:text="Báo mất hàng" />
 
 </LinearLayout>
