@@ -23,6 +23,9 @@ import vn.edu.fpt.fts.pojo.Deal;
 public class DealDAO {
 
 	private final static String TAG = "DealDAO";
+	GoodsDAO goodsDao = new GoodsDAO();
+	RouteDAO routeDao = new RouteDAO();
+	DealStatusDAO dealStatusDao = new DealStatusDAO();
 
 	public int insertDeal(Deal bean) {
 		ResultSet rs = null;
@@ -121,6 +124,11 @@ public class DealDAO {
 				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
+
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
 
 				list.add(deal);
 			}
@@ -223,10 +231,6 @@ public class DealDAO {
 			stm.setInt(i++, dealId);
 
 			rs = stm.executeQuery();
-
-			GoodsDAO goodsDao = new GoodsDAO();
-			RouteDAO routeDao = new RouteDAO();
-			DealStatusDAO dealStatusDao = new DealStatusDAO();
 
 			while (rs.next()) {
 				Deal deal = new Deal();
@@ -345,9 +349,6 @@ public class DealDAO {
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();
 
-			GoodsDAO goodsDao = new GoodsDAO();
-			RouteDAO routeDao = new RouteDAO();
-			DealStatusDAO dealStatusDao = new DealStatusDAO();
 			Deal deal;
 
 			while (rs.next()) {
@@ -412,9 +413,6 @@ public class DealDAO {
 
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();
-			GoodsDAO goodsDao = new GoodsDAO();
-			RouteDAO routeDao = new RouteDAO();
-			DealStatusDAO dealStatusDao = new DealStatusDAO();
 			Deal deal;
 
 			while (rs.next()) {
@@ -647,13 +645,9 @@ public class DealDAO {
 			stm = con.prepareStatement(sql);
 
 			rs = stm.executeQuery();
-
-			GoodsDAO goodsDao = new GoodsDAO();
-			RouteDAO routeDao = new RouteDAO();
-			DealStatusDAO dealStatusDao = new DealStatusDAO();
-
+			Deal deal;
 			while (rs.next()) {
-				Deal deal = new Deal();
+				deal = new Deal();
 
 				deal.setDealID(rs.getInt("DealID"));
 				deal.setPrice(rs.getDouble("Price"));
