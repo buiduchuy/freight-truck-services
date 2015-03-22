@@ -24,6 +24,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.activity.OrderDetailActivity;
+import vn.edu.fpt.fts.adapter.GoodsModelAdapter;
+import vn.edu.fpt.fts.adapter.OrderModelAdapter;
+import vn.edu.fpt.fts.classes.OrderModel;
 import vn.edu.fpt.fts.common.Common;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -45,7 +48,7 @@ import android.widget.TextView;
 
 public class TrackFragment extends Fragment {
 	private ListView listView;
-	private ArrayAdapter<String> adapter;
+	private OrderModelAdapter adapter;
 	private String ownerID;
 	List<String> orderID;
 	private TextView tvGone;
@@ -66,8 +69,9 @@ public class TrackFragment extends Fragment {
 				getActivity(), "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Order_get;
 		wst.addNameValuePair("ownerID", ownerID);
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -170,13 +174,15 @@ public class TrackFragment extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			if (response.equals("null")) {
-				tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+				tvGone = (TextView) getActivity().findViewById(
+						R.id.textview_gone);
 				tvGone.setVisibility(View.VISIBLE);
 			} else {
 				try {
 					JSONObject jsonObject = new JSONObject(response);
 					Object obj = jsonObject.get("order");
 					List<String> lv = new ArrayList<String>();
+					ArrayList<OrderModel> orderModels = new ArrayList<OrderModel>();
 					// String[] result = new String[array.length()];
 					if (obj instanceof JSONArray) {
 						JSONArray array = jsonObject.getJSONArray("order");
@@ -196,12 +202,42 @@ public class TrackFragment extends Fragment {
 							String object = categoryName + number;
 							lv.add(object);
 							orderID.add(jsonObject2.getString("orderID"));
+							// new list
+							String price = jsonObject2.getString("price")
+									.replace(".0", "") + " nghìn";
+							String weight = jsonObject4.getString("weight")
+									+ " kg";
+							String pickupDate = jsonObject4
+									.getString("pickupTime");
+							String deliverDate = jsonObject4
+									.getString("deliveryTime");
+							String[] tmp1 = pickupDate.split(" ");
+							String[] tmp2 = deliverDate.split(" ");
+							String date = Common.formatDateFromString(tmp1[0])
+									+ " - "
+									+ Common.formatDateFromString(tmp2[0]);
+							String count = jsonObject2
+									.getString("orderStatusID");
+							String status = "";
+							if (count.equals("1") || count.equals("2")) {
+								status = "Hàng chưa giao";
+							} else if (count.equals("3") || count.equals("4")) {
+								status = "Hàng đã nhận";
+							} else if (count.equals("5")) {
+								status = "Hàng bị mất";
+							}
+							OrderModel orderModel = new OrderModel(
+									categoryName, weight, date, price, status);
+							orderModels.add(orderModel);
 
 						}
 					} else if (obj instanceof JSONObject) {
-						JSONObject jsonObject2 = jsonObject.getJSONObject("order");
-						JSONObject jsonObject3 = jsonObject2.getJSONObject("deal");
-						JSONObject jsonObject4 = jsonObject3.getJSONObject("goods");
+						JSONObject jsonObject2 = jsonObject
+								.getJSONObject("order");
+						JSONObject jsonObject3 = jsonObject2
+								.getJSONObject("deal");
+						JSONObject jsonObject4 = jsonObject3
+								.getJSONObject("goods");
 						JSONObject jsonObject5 = jsonObject4
 								.getJSONObject("goodsCategory");
 						String categoryName = jsonObject5.getString("name");
@@ -212,22 +248,46 @@ public class TrackFragment extends Fragment {
 						String object = categoryName + number;
 						lv.add(object);
 						orderID.add(jsonObject2.getString("orderID"));
+						// new list
+						String price = jsonObject2.getString("price").replace(
+								".0", "")
+								+ " nghìn";
+						String weight = jsonObject4.getString("weight") + " kg";
+						String pickupDate = jsonObject4.getString("pickupTime");
+						String deliverDate = jsonObject4
+								.getString("deliveryTime");
+						String[] tmp1 = pickupDate.split(" ");
+						String[] tmp2 = deliverDate.split(" ");
+						String date = Common.formatDateFromString(tmp1[0])
+								+ " - " + Common.formatDateFromString(tmp2[0]);
+						String count = jsonObject2.getString("orderStatusID");
+						String status = "";
+						if (count.equals("1") || count.equals("2")) {
+							status = "Hàng chưa giao";
+						} else if (count.equals("3") || count.equals("4")) {
+							status = "Hàng đã nhận";
+						} else if (count.equals("5")) {
+							status = "Hàng bị mất";
+						}
+						OrderModel orderModel = new OrderModel(categoryName,
+								weight, date, price, status);
+						orderModels.add(orderModel);
 
 					}
-					if (lv.size() == 0) {
-						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+					if (orderModels.size() == 0) {
+						tvGone = (TextView) getActivity().findViewById(
+								R.id.textview_gone);
 						tvGone.setVisibility(View.VISIBLE);
 					}
 
-					adapter = new ArrayAdapter<String>(getActivity(),
-							android.R.layout.simple_list_item_1, lv);
+					adapter = new OrderModelAdapter(getActivity(), orderModels);
 					listView.setAdapter(adapter);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					Log.e(TAG, e.getLocalizedMessage());
 				}
 			}
-			
+
 			pDlg.dismiss();
 
 		}

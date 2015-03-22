@@ -4,5 +4,5 @@
     <color name="app_color">#ff9800</color>
     <color name="tab_color">#ef6c00</color>    
     <color name="tab_highlight">#e65100</color>
-
+	<color name="button_color">#ffa726</color>
 </resources>

@@ -43,8 +43,8 @@ import android.widget.Toast;
 
 public class OrderDetailActivity extends Activity {
 	private TextView tvStartAdd, tvDestAdd, tvStartTime, tvFinishTime, tvCate,
-			tvPrice, tvNote, tvPhone, tvStatus;
-	private Button btnConfirm;
+			tvPrice, tvNote, tvPhone, tvStatus, tvWeight;
+	private Button btnConfirm, btnLost;
 	private String orderID;
 
 	@Override
@@ -64,14 +64,17 @@ public class OrderDetailActivity extends Activity {
 		tvNote = (TextView) findViewById(R.id.textview_note);
 		tvPhone = (TextView) findViewById(R.id.textview_phone);
 		tvStatus = (TextView) findViewById(R.id.textview_status);
+		tvWeight = (TextView) findViewById(R.id.textview_weight);
 		btnConfirm = (Button) findViewById(R.id.button_confirm);
+		btnLost = (Button) findViewById(R.id.button_lost);
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				OrderDetailActivity.this, "Đang xử lý...");
 		wst.addNameValuePair("orderID", orderID);
 		String url = Common.IP_URL + Common.Service_Order_getOrderByID;
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		btnConfirm.setOnClickListener(new View.OnClickListener() {
 
@@ -82,11 +85,30 @@ public class OrderDetailActivity extends Activity {
 						WebServiceTask2.POST_TASK, OrderDetailActivity.this,
 						"Đang xử lý...");
 				wst2.addNameValuePair("orderID", orderID);
-				//wst2.addNameValuePair("ownerConfirmDelivery", "true");
+				// wst2.addNameValuePair("ownerConfirmDelivery", "true");
 				String url = Common.IP_URL
 						+ Common.Service_Order_ConfirmDelivery;
-//				wst2.execute(new String[] { url });
-				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+				// wst2.execute(new String[] { url });
+				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
+			}
+		});
+
+		btnLost.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				WebServiceTask3 wst3 = new WebServiceTask3(
+						WebServiceTask3.POST_TASK, OrderDetailActivity.this,
+						"Đang xử lý...");
+				wst3.addNameValuePair("orderID", orderID);
+				// wst2.addNameValuePair("ownerConfirmDelivery", "true");
+				String url = Common.IP_URL
+						+ Common.Service_Order_ownerNoticeLostGoods;
+				// wst2.execute(new String[] { url });
+				wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
 			}
 		});
 	}
@@ -107,12 +129,14 @@ public class OrderDetailActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if  (id == R.id.action_history) {
-			Intent intent = new Intent(OrderDetailActivity.this, HistoryActivity.class);
+		if (id == R.id.action_history) {
+			Intent intent = new Intent(OrderDetailActivity.this,
+					HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {
-			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+			Intent intent = new Intent(OrderDetailActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
 		if (id == R.id.action_call) {
@@ -121,14 +145,6 @@ public class OrderDetailActivity extends Activity {
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	public String formatNumber(int number) {
-		DecimalFormat formatter = new DecimalFormat();
-		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
-		symbol.setGroupingSeparator('.');
-		formatter.setDecimalFormatSymbols(symbol);
-		return formatter.format(number);
 	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
@@ -229,22 +245,33 @@ public class OrderDetailActivity extends Activity {
 				String endTime = jsonObject3.getString("deliveryTime");
 				String[] tmp = startTime.split(" ");
 				String[] tmp1 = endTime.split(" ");
-				tvStartTime.setText(tmp[0]);
-				tvFinishTime.setText(tmp1[0]);
+				tvStartTime.setText(Common.formatDateFromString(tmp[0]));
+				tvFinishTime.setText(Common.formatDateFromString(tmp1[0]));
 				String test = jsonObject4.getString("name");
 				tvCate.setText(jsonObject4.getString("name"));
 				int price = (int) Double.parseDouble(jsonObject2
 						.getString("price"));
-				tvPrice.setText(formatNumber(price)
-						+ ".000 đồng");
+				tvPrice.setText(price + " nghìn đồng");
+				tvWeight.setText(jsonObject3.getString("weight") + " kg");
 				tvNote.setText(jsonObject2.getString("notes"));
 				tvPhone.setText(jsonObject6.getString("phone"));
 				String count = jsonObject.getString("orderStatusID");
 				if (count.equals("3") || count.equals("4")) {
 					tvStatus.setText("Đã nhận hàng");
 					btnConfirm.setVisibility(View.GONE);
-				} else {
+					btnLost.setVisibility(View.GONE);
+				} else if (count.equals("1") || count.equals("2")){
 					tvStatus.setText("Hàng chưa giao");
+					btnLost.setVisibility(View.GONE);
+				} else if (count.equals("5")) {
+					tvStatus.setText("Hàng bị mất");
+					btnConfirm.setVisibility(View.GONE);
+					btnLost.setVisibility(View.GONE);
+				}
+				if (Common.expireDate(tmp1[0]) && (count.equals("1") || count.equals("2"))) {
+					btnLost.setVisibility(View.VISIBLE);
+				} else {
+					btnLost.setVisibility(View.GONE);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -405,13 +432,175 @@ public class OrderDetailActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (response.equals("1")) {				
+			if (response.equals("1")) {
 				finish();
-				startActivity(getIntent());				
+				startActivity(getIntent());
 			} else {
 				Toast.makeText(OrderDetailActivity.this,
 						"Không thể xác nhận giao hàng", Toast.LENGTH_LONG)
 						.show();
+			}
+			pDlg.dismiss();
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+
+	private class WebServiceTask3 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 10000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask3(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response.getEntity() == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			if (response.equals("1")) {
+				finish();
+				startActivity(getIntent());
+			} else {
+				Toast.makeText(OrderDetailActivity.this,
+						"Chức năng báo mất hàng hiện không hoạt động",
+						Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}

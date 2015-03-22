@@ -65,7 +65,7 @@ public class CreateGoodsActivity extends Activity {
 
 	private Spinner spinner;
 	private ArrayAdapter<String> dataAdapter;
-	private Calendar calendar1, calendar2, currentTime, cal;
+	private Calendar calendar1, calendar2, currentTime;
 	private DatePickerDialog.OnDateSetListener date1, date2;
 	private EditText etPickupDate, etDeliverDate, etNotes, etPrice, etWeight;
 	private AutoCompleteTextView actPickupAddr, actDeliverAddr;
@@ -141,7 +141,7 @@ public class CreateGoodsActivity extends Activity {
 				calendar1.set(Calendar.YEAR, year);
 				calendar1.set(Calendar.MONTH, monthOfYear);
 				calendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel(etPickupDate, calendar1);
+				Common.updateLabel(etPickupDate, calendar1);
 			}
 		};
 
@@ -155,7 +155,7 @@ public class CreateGoodsActivity extends Activity {
 				calendar2.set(Calendar.YEAR, year);
 				calendar2.set(Calendar.MONTH, monthOfYear);
 				calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel(etDeliverDate, calendar2);
+				Common.updateLabel(etDeliverDate, calendar2);
 			}
 		};
 
@@ -182,7 +182,7 @@ public class CreateGoodsActivity extends Activity {
 					Calendar cal = Calendar.getInstance();
 					picker.setMinDate(cal.getTimeInMillis() - 1000);
 					cal.add(Calendar.MONTH, 1);
-					picker.setMaxDate(cal.getTimeInMillis());
+					picker.setMaxDate(cal.getTimeInMillis());					
 					dialog.show();
 				}
 			}
@@ -210,6 +210,8 @@ public class CreateGoodsActivity extends Activity {
 							dialog.setPermanentTitle("Ngày có thể giao hàng");
 							DatePicker picker = dialog.getDatePicker();
 							Calendar cal = Calendar.getInstance();
+							cal.set(Calendar.MONTH, calendar1.get(Calendar.MONTH));
+							cal.set(Calendar.DAY_OF_MONTH, calendar1.get(Calendar.DAY_OF_MONTH));
 //							Calendar cal = calendar1;
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
@@ -388,17 +390,7 @@ public class CreateGoodsActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private void updateLabel(EditText et, Calendar calendar) {
-		String format = "dd/MM/yy";
-		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-		et.setText(sdf.format(calendar.getTime()));
-	}
-
-	private String formatDate(Calendar calendar) {
-		String format = "yyyy-MM-dd HH:mm:ss";
-		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-		return sdf.format(calendar.getTime());
-	}
+	
 
 	public class MyDatePickerDialog extends DatePickerDialog {
 
@@ -448,8 +440,8 @@ public class CreateGoodsActivity extends Activity {
 			check = false;
 			errorMsg = "Địa chỉ nhận hàng không được để trống";
 		}
-		String a = formatDate(calendar1);
-		String b = formatDate(calendar2);
+		String a = Common.formatDate(calendar1);
+		String b = Common.formatDate(calendar2);
 		if (calendar1.compareTo(calendar2) >= 0) {
 			check = false;
 			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
@@ -503,10 +495,10 @@ public class CreateGoodsActivity extends Activity {
 		LatLng pickup = new LatLng(pickupLat, pickupLng);
 		LatLng deliver = new LatLng(deliverLat, deliverLng);
 		String url = helper.makeURL(pickup, deliver);
-		if (!helper.checkPath(url)) {
-			check = false;
-			errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
-		}
+//		if (!helper.checkPath(url)) {
+//			check = false;
+//			errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
+//		}
 
 		return check;
 	}
@@ -538,14 +530,14 @@ public class CreateGoodsActivity extends Activity {
 		if (validate()) {
 			currentTime = Calendar.getInstance();
 			wst.addNameValuePair("active", "1");
-			wst.addNameValuePair("createTime", formatDate(currentTime));
+			wst.addNameValuePair("createTime", Common.formatDate(currentTime));
 			wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
 					.toString());
 			wst.addNameValuePair("deliveryMarkerLatidute",
 					Double.toString(deliverLat));
 			wst.addNameValuePair("deliveryMarkerLongtitude",
 					Double.toString(deliverLng));
-			wst.addNameValuePair("deliveryTime", formatDate(calendar2));
+			wst.addNameValuePair("deliveryTime", Common.formatDate(calendar2));
 			wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
 			wst.addNameValuePair("notes", etNotes.getText().toString());
 			wst.addNameValuePair("ownerID", ownerid);
@@ -555,7 +547,7 @@ public class CreateGoodsActivity extends Activity {
 					Double.toString(pickupLat));
 			wst.addNameValuePair("pickupMarkerLongtitude",
 					Double.toString(pickupLng));
-			wst.addNameValuePair("pickupTime", formatDate(calendar1));
+			wst.addNameValuePair("pickupTime", Common.formatDate(calendar1));
 			wst.addNameValuePair("price", etPrice.getText().toString());
 			wst.addNameValuePair("weight", etWeight.getText().toString());
 

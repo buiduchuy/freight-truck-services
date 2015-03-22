@@ -74,7 +74,7 @@ public final class Common {
 
 	// Price for 1 kilometer
 	public static final double perKilometer = 15;
-	public static final double perKilogram = 0.2;
+	public static final double perKilogram = 0.11;
 	public static final double priceCreateGood = 15;
 	
 	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";

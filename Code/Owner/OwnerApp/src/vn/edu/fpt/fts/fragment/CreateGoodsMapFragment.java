@@ -49,8 +49,13 @@ public class CreateGoodsMapFragment extends Activity {
 		try {			
 			List<Address> list = geocoder.getFromLocationName(
 					address, 1);
-			mlong = list.get(0).getLongitude();
-			mlat = list.get(0).getLatitude();
+			if (list.size() > 0) {
+				mlong = list.get(0).getLongitude();
+				mlat = list.get(0).getLatitude();	
+			} else {
+				getFragmentManager().beginTransaction().remove(mapFragment).commit();
+			}
+			
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -61,7 +66,7 @@ public class CreateGoodsMapFragment extends Activity {
 		map.addMarker(mMarker);
 
 		//zoom to marker	
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 18));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14));
 		
 		btn_accept = (Button)findViewById(R.id.button_accept);
 		btn_accept.setOnClickListener(new View.OnClickListener() {

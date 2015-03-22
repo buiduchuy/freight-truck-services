@@ -53,15 +53,14 @@ import android.widget.Toast;
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote,
-			tvStatus, tvNote1, tvStatus1;
+			tvStatus, tvNote1, tvStatus1, tvWeight;
 	private int dealID;
 	private String refDealID, dealStatus, routeID, goodsID, goodsCategory;
 	private double price;
 	private String note, createBy;
 	private Button btn_counter, btnAccept, btnDecline, btnCancel;
 	private EditText etPrice, etNote;
-	private View viewLine;
-	private NotificationManager manager;
+	private View viewLine;	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +82,7 @@ public class DealDetailActivity extends Activity {
 		tvStatus = (TextView) findViewById(R.id.textview_status);
 		tvNote1 = (TextView) findViewById(R.id.textview_note1);
 		tvStatus1 = (TextView) findViewById(R.id.textview_status1);
+		tvWeight = (TextView) findViewById(R.id.textview_weight);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btn_counter = (Button) findViewById(R.id.button_counter);
@@ -284,14 +284,6 @@ public class DealDetailActivity extends Activity {
 		return sdf.format(calendar.getTime());
 	}
 
-	public String formatNumber(int number) {
-		DecimalFormat formatter = new DecimalFormat();
-		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
-		symbol.setGroupingSeparator('.');
-		formatter.setDecimalFormatSymbols(symbol);
-		return formatter.format(number);
-	}
-
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -431,7 +423,7 @@ public class DealDetailActivity extends Activity {
 					route.setStartTime(startTime);
 					route.setFinishTime(finishTime);
 					route.setCategory(category);
-
+					route.setWeight(Integer.parseInt(jsonObject.getString("weight")));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -442,7 +434,8 @@ public class DealDetailActivity extends Activity {
 				startTime.setText(route.getStartTime());
 				finishTime.setText(route.getFinishTime());
 				category.setText(route.getCategory());
-				tvPrice.setText(formatNumber((int) price) + ".000 đồng");
+				tvPrice.setText((int)price + " nghìn đồng");
+				tvWeight.setText(route.getWeight() + " kg");
 				tvNote.setText(note);
 			} else {
 				Toast.makeText(DealDetailActivity.this,

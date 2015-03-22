@@ -234,7 +234,7 @@ public class HistoryActivity extends Activity {
 						JSONArray array = jsonObject.getJSONArray("deal");
 						list = new ArrayList<Deal>();
 
-						for (int i = 0; i < array.length(); i++) {
+						for (int i = 0; i < 10; i++) {
 							JSONObject jsonObject2 = array.getJSONObject(i);
 							Deal deal = new Deal();
 							int check = Integer.parseInt(jsonObject2
