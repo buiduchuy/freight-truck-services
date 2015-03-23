@@ -98,6 +98,21 @@ public class AccountAPI {
 	public String createOwnerAccount(MultivaluedMap<String, String> params) {
 		int ret = 0;
 		try {
+			String email = params.getFirst("email");
+			String password = params.getFirst("password");
+			String firstName = params.getFirst("firstName");
+			String lastName = params.getFirst("lastName");
+			int gender = Integer.valueOf(params.getFirst("gender"));
+			String phone = params.getFirst("phone");
+			String address = params.getFirst("address");
+			String createBy = params.getFirst("createBy");
+			String createTime = params.getFirst("createTime");
+			String dateOfBirth = params.getFirst("dateOfBirth");
+
+			ret = accountProcess.createOwnerAccount(email, password, firstName,
+					lastName, gender, phone, address, createBy, createTime,
+					dateOfBirth);
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -121,12 +136,12 @@ public class AccountAPI {
 			String phone = params.getFirst("phone");
 			String createBy = params.getFirst("createBy");
 			String createTime = params.getFirst("createTime");
-			int age = Integer.valueOf(params.getFirst("age"));
+			String dateOfBirth = params.getFirst("dateOfBirth");
 			String image = params.getFirst("image");
 
 			ret = accountProcess.createDriverAccount(email, password,
 					firstName, lastName, gender, phone, createBy, createTime,
-					age, image);
+					dateOfBirth, image);
 
 		} catch (Exception e) {
 			// TODO: handle exception

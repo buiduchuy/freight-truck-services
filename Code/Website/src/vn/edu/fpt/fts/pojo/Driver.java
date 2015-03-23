@@ -28,7 +28,7 @@ public class Driver implements Serializable {
 	private String createTime;
 	private String updateBy;
 	private String updateTime;
-	private int age;
+	private String dateOfBirth;
 	private String image;
 	private int point;
 
@@ -39,7 +39,7 @@ public class Driver implements Serializable {
 	public Driver(int driverID, String email, String firstName,
 			String lastName, int gender, String phone, int active,
 			String createBy, String createTime, String updateBy,
-			String updateTime, int age, String image, int point) {
+			String updateTime, String dateOfBirth, String image, int point) {
 		super();
 		this.driverID = driverID;
 		this.email = email;
@@ -52,7 +52,7 @@ public class Driver implements Serializable {
 		this.createTime = createTime;
 		this.updateBy = updateBy;
 		this.updateTime = updateTime;
-		this.age = age;
+		this.dateOfBirth = dateOfBirth;
 		this.image = image;
 		this.point = point;
 	}
@@ -145,12 +145,12 @@ public class Driver implements Serializable {
 		this.updateTime = updateTime;
 	}
 
-	public int getAge() {
-		return age;
+	public String getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public void setAge(int age) {
-		this.age = age;
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
 	}
 
 	public String getImage() {

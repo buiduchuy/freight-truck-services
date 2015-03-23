@@ -165,6 +165,7 @@ public class NotificationProcess {
 				+ order.getDeal().getGoods().getOwner().getEmail()
 				+ " đã xác nhận đơn giao hàng thành công.");
 		notification.setStatusOfType(Common.order_owner);
+		notification.setType("order");
 
 		ret = notificationDao.insertNotification(notification);
 
@@ -183,7 +184,8 @@ public class NotificationProcess {
 				+ order.getDeal().getRoute().getDriver().getEmail()
 				+ " đã xác nhận đơn giao hàng thành công.");
 		notification.setStatusOfType(Common.order_driver);
-
+		notification.setType("order");
+		
 		ret = notificationDao.insertNotification(notification);
 
 		return ret;
@@ -201,7 +203,8 @@ public class NotificationProcess {
 		notification.setMessage("Nhân viên " + acc.getEmail()
 				+ " đã xác nhận đơn giao hàng thành công.");
 		notification.setStatusOfType(Common.order_staff);
-
+		notification.setType("order");
+		
 		ret = notificationDao.insertNotification(notification);
 
 		notification

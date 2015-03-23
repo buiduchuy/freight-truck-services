@@ -82,4 +82,7 @@
     <servlet-name>ControllerManageOrder</servlet-name>
     <url-pattern>/ControllerManageOrder</url-pattern>
   </servlet-mapping>
+  <listener>
+        <listener-class>vn.edu.fpt.fts.servlet.ServletListener</listener-class>
+    </listener>
 </web-app>

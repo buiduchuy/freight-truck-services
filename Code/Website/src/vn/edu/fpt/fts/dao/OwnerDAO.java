@@ -13,56 +13,34 @@ import vn.edu.fpt.fts.pojo.Owner;
 public class OwnerDAO {
 	private final static String TAG = "OwnerDAO";
 
-	public int insertOwner(Owner bean) {
-		Connection con = null;
+	public int insertOwner(Owner bean, Connection con) throws SQLException {
 		PreparedStatement stmt = null;
 		int ret = 0;
 
-		try {
-			con = DBAccess.makeConnection();
+		con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO [Owner] ( " + "Email," + "FirstName,"
-					+ "LastName," + "Gender," + "Phone," + "Address,"
-					+ "Active," + "CreateBy," + "CreateTime," + "UpdateBy,"
-					+ "UpdateTime," + "Age" + ") VALUES (" + "?, " + "?, "
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
-					+ "?, " + "?, " + "?)";
-			stmt = con.prepareStatement(sql);
-			int i = 1;
-			stmt.setString(i++, bean.getEmail()); // Email
-			stmt.setString(i++, bean.getFirstName()); // FirstName
-			stmt.setString(i++, bean.getLastName()); // LastName
-			stmt.setInt(i++, bean.getGender()); // Gender
-			stmt.setString(i++, bean.getPhone()); // Phone
-			stmt.setString(i++, bean.getAddress()); // Address
-			stmt.setInt(i++, bean.getActive()); // Active
-			stmt.setString(i++, bean.getCreateBy()); // CreateBy
-			stmt.setString(i++, bean.getCreateTime()); // CreateTime
-			stmt.setString(i++, bean.getUpdateBy()); // UpdateBy
-			stmt.setString(i++, bean.getUpdateTime()); // UpdateTime
-			stmt.setInt(i++, bean.getAge()); // Age
+		String sql = "INSERT INTO [Owner] ( " + "Email," + "FirstName,"
+				+ "LastName," + "Gender," + "Phone," + "Address," + "Active,"
+				+ "CreateBy," + "CreateTime," + "UpdateBy," + "UpdateTime,"
+				+ "DateOfBirth" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
+				+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?)";
+		stmt = con.prepareStatement(sql);
+		int i = 1;
+		stmt.setString(i++, bean.getEmail()); // Email
+		stmt.setString(i++, bean.getFirstName()); // FirstName
+		stmt.setString(i++, bean.getLastName()); // LastName
+		stmt.setInt(i++, bean.getGender()); // Gender
+		stmt.setString(i++, bean.getPhone()); // Phone
+		stmt.setString(i++, bean.getAddress()); // Address
+		stmt.setInt(i++, bean.getActive()); // Active
+		stmt.setString(i++, bean.getCreateBy()); // CreateBy
+		stmt.setString(i++, bean.getCreateTime()); // CreateTime
+		stmt.setString(i++, bean.getUpdateBy()); // UpdateBy
+		stmt.setString(i++, bean.getUpdateTime()); // UpdateTime
+		stmt.setString(i++, bean.getDateOfBirth()); // DateOfBirth
 
-			ret = stmt.executeUpdate();
+		ret = stmt.executeUpdate();
 
-		} catch (SQLException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			System.out.println("Can't insert to Owner table");
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-
-		} finally {
-			try {
-				if (stmt != null) {
-					stmt.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-			}
-		}
 		return ret;
 	}
 
@@ -96,7 +74,7 @@ public class OwnerDAO {
 				owner.setCreateTime(rs.getString("CreateTime"));
 				owner.setUpdateBy(rs.getString("UpdateBy"));
 				owner.setUpdateTime(rs.getString("UpdateTime"));
-				owner.setActive(rs.getInt("Age"));
+				owner.setDateOfBirth(rs.getString("DateOfBirth"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -147,7 +125,7 @@ public class OwnerDAO {
 				owner.setCreateTime(rs.getString("CreateTime"));
 				owner.setUpdateBy(rs.getString("UpdateBy"));
 				owner.setUpdateTime(rs.getString("UpdateTime"));
-				owner.setActive(rs.getInt("Age"));
+				owner.setDateOfBirth(rs.getString("DateOfBirth"));
 				return owner;
 			}
 		} catch (SQLException e) {

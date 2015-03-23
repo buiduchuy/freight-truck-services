@@ -47,12 +47,12 @@ public class DriverDAO {
 				String createTime = rs.getString("CreateTime");
 				String updateBy = rs.getString("UpdateBy");
 				String updateTime = rs.getString("UpdateTime");
-				int age = rs.getInt("Age");
+				String dateOfBirth = rs.getString("DateOfBirth");
 				String image = rs.getString("Image");
 				int point = rs.getInt("Point");
 				Driver driver = new Driver(driverID, email, firstName,
 						lastName, gender, phone, Active, createBy, createTime,
-						updateBy, updateTime, age, image, point);
+						updateBy, updateTime, dateOfBirth, image, point);
 				return driver;
 			}
 		} catch (SQLException e) {
@@ -102,12 +102,12 @@ public class DriverDAO {
 				String createTime = rs.getString("CreateTime");
 				String updateBy = rs.getString("UpdateBy");
 				String updateTime = rs.getString("UpdateTime");
-				int age = rs.getInt("Age");
+				String dateOfBirth = rs.getString("DateOfBirth");
 				String image = rs.getString("Image");
 				int point = rs.getInt("Point");
 				Driver driver = new Driver(driverID, email, firstName,
 						lastName, gender, phone, active, createBy, createTime,
-						updateBy, updateTime, age, image, point);
+						updateBy, updateTime, dateOfBirth, image, point);
 
 				list.add(driver);
 			}
@@ -159,12 +159,12 @@ public class DriverDAO {
 				String createTime = rs.getString("CreateTime");
 				String updateBy = rs.getString("UpdateBy");
 				String updateTime = rs.getString("UpdateTime");
-				int age = rs.getInt("Age");
+				String dateOfBirth = rs.getString("DateOfBirth");
 				String image = rs.getString("Image");
 				int point = rs.getInt("Point");
 				Driver driver = new Driver(driverID, email, firstName,
 						lastName, gender, phone, Active, createBy, createTime,
-						updateBy, updateTime, age, image, point);
+						updateBy, updateTime, dateOfBirth, image, point);
 				return driver;
 			}
 		} catch (SQLException e) {
@@ -212,7 +212,7 @@ public class DriverDAO {
 		stmt.setString(i++, bean.getCreateTime()); // CreateTime
 		stmt.setString(i++, bean.getUpdateBy()); // UpdateBy
 		stmt.setString(i++, bean.getUpdateTime()); // UpdateTime
-		stmt.setInt(i++, bean.getAge()); // Age
+		stmt.setString(i++, bean.getDateOfBirth()); // DateOfBirth
 		stmt.setString(i++, bean.getImage()); // Image
 		stmt.setInt(i++, bean.getPoint()); // Point
 		stmt.executeUpdate();
