@@ -31,12 +31,12 @@ public class ServletListener implements javax.servlet.ServletContextListener {
 				DateFormat dateFormat = new SimpleDateFormat(
 						"yyyy/MM/dd HH:mm:ss");
 				Date date = new Date();
-				System.out.print(dateFormat.format(date));
-				System.out.println(": Servlet Context is initialized....");
+				System.out.println("-------" + dateFormat.format(date)
+						+ "-------");
 				OrderProcess orderProcess = new OrderProcess();
 				orderProcess.checkDelivery();
 			}
-		}, 0, 5, TimeUnit.SECONDS);
+		}, 0, 15, TimeUnit.SECONDS);
 	}
 
 	public void contextDestroyed(ServletContextEvent arg0) {

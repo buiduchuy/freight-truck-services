@@ -71,6 +71,9 @@ public final class Common {
 
 	// Max allow distance for matching goods and routes
 	public static final int maxAllowDistance = 30;
+	
+	// Period day for delivery
+	public static final int periodDay = 3;
 
 	// Price for 1 kilometer
 	public static final double perKilometer = 15;
