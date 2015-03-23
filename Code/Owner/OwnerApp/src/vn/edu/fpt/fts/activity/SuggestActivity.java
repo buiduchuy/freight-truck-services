@@ -22,10 +22,9 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import vn.edu.fpt.fts.adapter.Model;
-import vn.edu.fpt.fts.adapter.ModelAdapter;
+import vn.edu.fpt.fts.adapter.SuggestModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
+import vn.edu.fpt.fts.classes.SuggestModel;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
@@ -49,7 +48,7 @@ import android.widget.Toast;
 public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
-	private ModelAdapter adapter;
+	private SuggestModelAdapter adapter;
 	private String goodsID, price, notes;
 	private TextView tvGone;
 
@@ -60,15 +59,16 @@ public class SuggestActivity extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		goodsID = getIntent().getStringExtra("goodsID");
-//		price = getIntent().getStringExtra("price");
-//		notes = getIntent().getStringExtra("notes");
+		// price = getIntent().getStringExtra("price");
+		// notes = getIntent().getStringExtra("notes");
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Suggest_Route;
 		wst.addNameValuePair("goodsID", goodsID);
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		listView = (ListView) findViewById(R.id.listview_suggest);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -91,24 +91,6 @@ public class SuggestActivity extends Activity {
 
 	}
 
-	private ArrayList<Model> generateData() {
-		// TODO Auto-generated method stub
-		ArrayList<Model> models = new ArrayList<Model>();
-
-		for (Route route : list) {
-			String start = route.getStartingAddress().replace(", Vietnam", "");
-			start = route.getStartingAddress().replace(", Việt Nam", "");
-			String[] strings = start.split(",");
-			String end = route.getDestinationAddress().replace(", Vietnam", "");
-			end = route.getDestinationAddress().replace(", Việt Nam", "");
-			String[] strings2 = end.split(",");
-			models.add(new Model(strings[strings.length - 1] + " - "
-					+ strings2[strings2.length - 1], "1"));
-		}
-
-		return models;
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -126,7 +108,8 @@ public class SuggestActivity extends Activity {
 			return true;
 		}
 		if (id == R.id.action_history) {
-			Intent intent = new Intent(SuggestActivity.this, HistoryActivity.class);
+			Intent intent = new Intent(SuggestActivity.this,
+					HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {
@@ -135,15 +118,15 @@ public class SuggestActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-//			Intent intent = new Intent(SuggestActivity.this,
-//					GoodsDetailActivity.class);
-//			intent.putExtra("goodsID", goodsID);
-//			startActivity(intent);
+			// Intent intent = new Intent(SuggestActivity.this,
+			// GoodsDetailActivity.class);
+			// intent.putExtra("goodsID", goodsID);
+			// startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -303,17 +286,38 @@ public class SuggestActivity extends Activity {
 						list.add(route);
 					}
 
+					
+
 				} catch (JSONException e) {
 					Log.e(TAG, e.getLocalizedMessage());
-					Toast.makeText(SuggestActivity.this,
-							"Không tìm thấy lộ trình phù hợp",
-							Toast.LENGTH_LONG).show();
+					tvGone = (TextView) findViewById(R.id.textview_gone);
+					tvGone.setVisibility(View.VISIBLE);
 				}
-				pDlg.dismiss();
-				adapter = new ModelAdapter(SuggestActivity.this, generateData());
+				ArrayList<SuggestModel> models = new ArrayList<SuggestModel>();
 
+				for (Route route : list) {
+					String start = route.getStartingAddress();
+					start = Common.formatLocation(start);
+					String[] strings = start.split(",");
+					String end = route.getDestinationAddress();
+					end = Common.formatLocation(end);
+					String[] strings2 = end.split(",");
+					String tmp[] = route.getStartTime().split(" ");
+					String tmp1[] = route.getFinishTime().split(" ");
+					models.add(new SuggestModel("Lộ trình: " + strings[strings.length - 1]
+							+ " - " + strings2[strings2.length - 1], Common
+							.formatDateFromString(tmp[0])
+							+ " - "
+							+ Common.formatDateFromString(tmp1[0])));
+				}
+				if (models.size() == 0) {
+					tvGone = (TextView) findViewById(R.id.textview_gone);
+					tvGone.setVisibility(View.VISIBLE);
+				}
+				
+				adapter = new SuggestModelAdapter(SuggestActivity.this, models);
 				listView.setAdapter(adapter);
-
+				pDlg.dismiss();
 			}
 
 		}

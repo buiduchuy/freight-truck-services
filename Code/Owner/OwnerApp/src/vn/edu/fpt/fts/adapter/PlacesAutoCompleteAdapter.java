@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.edu.fpt.fts.common.Common;
+
 import android.content.Context;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -118,7 +120,8 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements
 	        // Extract the Place descriptions from the results
 	        resultList = new ArrayList<String>(predsJsonArray.length());
 	        for (int i = 0; i < predsJsonArray.length(); i++) {
-	            resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+	        	String result = predsJsonArray.getJSONObject(i).getString("description");
+	            resultList.add(Common.formatLocation(result));
 	        }
 	    } catch (JSONException e) {
 	        Log.e(LOG_TAG, "Cannot process JSON results", e);

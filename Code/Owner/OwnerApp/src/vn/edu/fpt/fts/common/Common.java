@@ -90,4 +90,16 @@ public final class Common {
 		String result = sdf.format(date);
 		return result;
 	}
+	
+	public static String formatLocation(String input) {
+		String keywords[] = {"Việt Nam", "vietnam", "Viet Nam", "Province", "City", "Vietnam"};				
+		for(int i = 0; i < keywords.length ; i++) {
+			if (input.contains(keywords[i])) {
+				input = input.replaceAll(", " + keywords[i], "");
+				input = input.replaceAll(keywords[i], "");
+				
+			}
+		}		
+		return input;
+	}
 }

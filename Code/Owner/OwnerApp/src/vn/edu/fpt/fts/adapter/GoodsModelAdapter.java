@@ -28,7 +28,7 @@ public class GoodsModelAdapter extends ArrayAdapter<GoodsModel> {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = null;
 		rowView = inflater.inflate(R.layout.goods_item, parent, false);
-		TextView name = (TextView) rowView.findViewById(R.id.txtName);
+		TextView name = (TextView) rowView.findViewById(R.id.txtNames);
 		TextView price = (TextView) rowView.findViewById(R.id.txtPrice);
 		TextView date = (TextView) rowView.findViewById(R.id.txtDate);
 		TextView weight = (TextView) rowView.findViewById(R.id.txtWeight);

@@ -201,39 +201,7 @@ public class GoodsFragment extends Fragment {
 						// String[] result = new String[array.length()];
 
 						// int counter = 0;
-						for (int i = 0; i < array.length(); i++) {
-							// Goods goods = new Goods();
-							// goods.setGoodsID(Integer.parseInt(jsonObject2.getString("goodsID")));
-							// goods.setWeight(Integer.parseInt(jsonObject2.getString("weight")));
-							// goods.setPrice(Double.parseDouble(jsonObject2.getString("price")));
-							// goods.setPickupTime(jsonObject2.getString("pickupTime"));
-							// goods.setPickupAddress(jsonObject2.getString("pickupAddress"));
-							// goods.setDeliveryTime(jsonObject2.getString("deliveryTime"));
-							// goods.setDeliveryAddress(jsonObject2.getString("deliveryAddress"));
-							// try
-							// {goods.setPickupMarkerLongtitude(Float.parseFloat(jsonObject2.getString("pickupMarkerLongtitude")));}
-							// catch (JSONException e)
-							// {goods.setPickupMarkerLongtitude(0);}
-							// try
-							// {goods.setPickupMarkerLatidute(Float.parseFloat(jsonObject2.getString("pickupMarkerLatidute")));}
-							// catch (JSONException e)
-							// {goods.setPickupMarkerLatidute(0);}
-							// try
-							// {goods.setDeliveryMarkerLongtitude(Float.parseFloat(jsonObject2.getString("deliveryMarkerLongtitude")));}
-							// catch (JSONException e)
-							// {goods.setDeliveryMarkerLongtitude(0);}
-							// try
-							// {goods.setDeliveryMarkerLatidute(Float.parseFloat(jsonObject2.getString("deliveryMarkerLatidute")));}
-							// catch (JSONException e)
-							// {goods.setDeliveryMarkerLatidute(0);}
-							// try
-							// {goods.setNotes(jsonObject2.getString("notes"));}
-							// catch (JSONException e) {goods.setNotes("");}
-							// goods.setCreateTime(jsonObject2.getString("createTime"));
-							// goods.setActive(Integer.parseInt(jsonObject2.getString("active")));
-							// goods.setOwnerID(Integer.parseInt(jsonObject2.getString("ownerID")));
-							// goods.setGoodsCategoryID(Integer.parseInt(jsonObject2.getString("goodsCategoryID")));
-							// list.add(goods);
+						for (int i = 0; i < array.length(); i++) {							
 							JSONObject jsonObject2 = array.getJSONObject(i);
 							int active = Integer.parseInt(jsonObject2
 									.getString("active"));

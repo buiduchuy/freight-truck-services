@@ -24,7 +24,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.activity.DealDetailActivity;
+import vn.edu.fpt.fts.adapter.DealModelAdapter;
 import vn.edu.fpt.fts.classes.Deal;
+import vn.edu.fpt.fts.classes.DealModel;
 import vn.edu.fpt.fts.common.Common;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -46,7 +48,7 @@ import android.widget.Toast;
 
 public class DealFragment extends Fragment {
 	private String goodsID;
-	private ArrayAdapter<String> adapter;
+	private DealModelAdapter adapter;
 	private List<Deal> list;
 	private ListView listView;
 	private TextView tvGone;
@@ -190,7 +192,9 @@ public class DealFragment extends Fragment {
 				try {
 					JSONObject jsonObject = new JSONObject(response);
 					Object obj = jsonObject.get("deal");
+					
 					String[] price = null;
+					ArrayList<DealModel> dealModels = new ArrayList<DealModel>();
 					if (obj instanceof JSONArray) {
 						JSONArray array = jsonObject.getJSONArray("deal");
 						list = new ArrayList<Deal>();
@@ -223,6 +227,23 @@ public class DealFragment extends Fragment {
 								deal.setRouteID(Integer.parseInt(jsonObject2
 										.getString("routeID")));
 								list.add(deal);
+								JSONObject jsonObject3 = jsonObject2.getJSONObject("route");
+								String start = jsonObject3.getString("startingAddress");
+								start = Common.formatLocation(start);
+								String end = jsonObject3.getString("destinationAddress");
+								end = Common.formatLocation(end);
+								String date = jsonObject2.getString("createTime");
+								String[] tmp = date.split(" ");
+								String dPrice = jsonObject2.getString("price").replace(".0", " nghìn");
+								String status = "";
+								String count = jsonObject2.getString("createBy");
+								if (count.equals("driver")) {
+									status = "Tài xế đã gửi đề nghị: ";
+								} else if (count.equals("owner")) {
+									status = "Bạn đã đã gửi đề nghị: ";
+								}
+								DealModel dealModel = new DealModel(start + " - " + end, Common.formatDateFromString(tmp[0]), dPrice, status);
+								dealModels.add(dealModel);
 							}
 
 						}
@@ -254,43 +275,64 @@ public class DealFragment extends Fragment {
 							deal.setRouteID(Integer.parseInt(jsonObject2
 									.getString("routeID")));
 							list.add(deal);
+							JSONObject jsonObject3 = jsonObject2.getJSONObject("route");
+							String start = jsonObject3.getString("startingAddress");
+							start = Common.formatLocation(start);
+							String end = jsonObject3.getString("destinationAddress");
+							end = Common.formatLocation(end);
+							String date = jsonObject2.getString("createTime");
+							String[] tmp = date.split(" ");
+							String dPrice = jsonObject2.getString("price").replace(".0", " nghìn");
+							String status = "";
+							String count = jsonObject2.getString("createBy");
+							if (count.equals("driver")) {
+								status = "Tài xế đã gửi đề nghị: ";
+							} else if (count.equals("owner")) {
+								status = "Bạn đã đã gửi đề nghị: ";
+							}
+							DealModel dealModel = new DealModel(start + " - " + end, Common.formatDateFromString(tmp[0]), dPrice, status);
+							dealModels.add(dealModel);
 						}
 					}
 
-					// for (Deal d : list) {
-					// if (d.getDealStatusID() == 3 || d.getDealStatusID() == 4
-					// || d.getActive() == 0) {
-					// list.remove(d);
-					// }
-					// }
-					int size = list.size();
-					if (size != 0) {
-						price = new String[list.size()];
-
-						for (int i = 0; i < list.size(); i++) {
-							price[i] = "Giao dịch giá: " + (int) list.get(i).getPrice() + " nghìn đồng";
-						}
-						// String a = price[0];
-
-						if (price[0] == null) {
-							Toast.makeText(getActivity(),
-									"Không có giao dịch mới",
-									Toast.LENGTH_LONG).show();
-						} else {
-							adapter = new ArrayAdapter<String>(getActivity(),
-									android.R.layout.simple_list_item_1, price);
-							listView.setAdapter(adapter);
-						}
-					} else {
+					if (dealModels.size() == 0) {
 						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
 						tvGone.setVisibility(View.VISIBLE);
 					}
+					adapter = new DealModelAdapter(getActivity(), dealModels);
+					listView.setAdapter(adapter);
+//					for (Deal d : list) {
+//						ArrayList<DealModel> dealModels = new ArrayList<DealModel>();
+//						
+//					}
+//					int size = list.size();
+//					if (size != 0) {
+//						price = new String[list.size()];
+//
+//						for (int i = 0; i < list.size(); i++) {
+//							price[i] = "Giao dịch giá: " + (int) list.get(i).getPrice() + " nghìn đồng";
+//						}
+//						// String a = price[0];
+//
+//						if (price[0] == null) {
+//							Toast.makeText(getActivity(),
+//									"Không có giao dịch mới",
+//									Toast.LENGTH_LONG).show();
+//						} else {
+//							adapter = new ArrayAdapter<String>(getActivity(),
+//									android.R.layout.simple_list_item_1, price);
+//							listView.setAdapter(adapter);
+//						}
+//					} else {
+//						tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+//						tvGone.setVisibility(View.VISIBLE);
+//					}
 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Toast.makeText(getActivity(), "Không có giao dịch mới",
-							Toast.LENGTH_LONG).show();
+					tvGone = (TextView)getActivity().findViewById(R.id.textview_gone);
+					tvGone.setVisibility(View.VISIBLE);
 				}
 			}
 			

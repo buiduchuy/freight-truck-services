@@ -41,7 +41,7 @@ import android.widget.Toast;
 public class LoginActivity extends Activity {
 
 	private EditText etEmail, etPass;
-	private Button btnLogin;
+	private Button btnLogin, btnReg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +50,13 @@ public class LoginActivity extends Activity {
 		etEmail = (EditText) findViewById(R.id.edittext_email);
 		etPass = (EditText) findViewById(R.id.edittext_pass);
 		btnLogin = (Button) findViewById(R.id.button_login);
-		
+		btnReg = (Button) findViewById(R.id.button_Register);
+
 		ActionBar actionBar = getActionBar();
 		actionBar.hide();
-		
+
 		btnLogin.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -63,7 +64,14 @@ public class LoginActivity extends Activity {
 			}
 		});
 
-		
+		btnReg.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	@Override
@@ -84,7 +92,7 @@ public class LoginActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -93,17 +101,18 @@ public class LoginActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	public void postData(View vw) {
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		wst.addNameValuePair("email", etEmail.getText().toString());
 		wst.addNameValuePair("password", etPass.getText().toString());
 		String url = Common.IP_URL + Common.Service_Login;
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 	}
-	
+
 	private void hideKeyboard() {
 
 		InputMethodManager inputManager = (InputMethodManager) LoginActivity.this
@@ -199,17 +208,20 @@ public class LoginActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			
+
 			if (response.equals("0") || response.length() == 0) {
-				Toast.makeText(LoginActivity.this, "Sai email hoặc password", Toast.LENGTH_LONG).show();
-				
+				Toast.makeText(LoginActivity.this, "Sai email hoặc password",
+						Toast.LENGTH_LONG).show();
+
 			} else {
-				SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+				SharedPreferences preferences = getSharedPreferences("MyPrefs",
+						Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = preferences.edit();
 				editor.putString("ownerID", response);
 				editor.putString("email", etEmail.getText().toString());
 				editor.commit();
-				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+				Intent intent = new Intent(LoginActivity.this,
+						MainActivity.class);
 				startActivity(intent);
 			}
 			pDlg.dismiss();
