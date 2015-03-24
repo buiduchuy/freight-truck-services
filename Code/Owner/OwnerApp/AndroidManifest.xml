@@ -106,6 +106,10 @@
             android:name="vn.edu.fpt.fts.activity.HistoryActivity"
             android:label="@string/title_activity_history" >
         </activity>
+        <activity
+            android:name="vn.edu.fpt.fts.activity.RegisterActivity"
+            android:label="@string/title_activity_register" >
+        </activity>
     </application>
 
 </manifest>
