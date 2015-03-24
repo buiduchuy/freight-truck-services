@@ -3,6 +3,7 @@
  */
 package vn.edu.fpt.fts.api;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
+import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.process.DealProcess;
 
@@ -30,6 +32,7 @@ public class DealAPI {
 	private final static String TAG = "DealAPI";
 	DealDAO dealDao = new DealDAO();
 	DealProcess dealProcess = new DealProcess();
+	GoodsDAO goodsDao = new GoodsDAO();
 
 	@GET
 	@Path("get")
@@ -95,9 +98,9 @@ public class DealAPI {
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
 			deal.setDealStatusID(Common.deal_pending);
 
-			if (!params.getFirst("refDealID").equals("")) {
-				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
-			}
+			// if (!params.getFirst("refDealID").equals("")) {
+			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
 			// Insert new deal with status pending
 			ret = dealProcess.sendDeal(deal);
@@ -111,12 +114,26 @@ public class DealAPI {
 	}
 
 	@POST
-	@Path("getDealByDriverID")
+	@Path("getPendingDealCreateByOwnerByDriverID")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Deal> getDealByDriverID(MultivaluedMap<String, String> params) {
-		List<Deal> l_deals = dealDao.getDealByDriverID(Integer.valueOf(params
-				.getFirst("driverID")));
+	public List<Deal> getPendingDealCreateByOwnerByDriverID(
+			MultivaluedMap<String, String> params) {
+		List<Deal> l_deals = dealDao.getDealByDriverID(
+				Integer.valueOf(params.getFirst("driverID")),
+				Common.deal_pending, "owner");
+		return l_deals;
+	}
+
+	@POST
+	@Path("getPendingDealCreateByDriverByDriverID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Deal> getPendingDealCreateByDriverByDriverID(
+			MultivaluedMap<String, String> params) {
+		List<Deal> l_deals = dealDao.getDealByDriverID(
+				Integer.valueOf(params.getFirst("driverID")),
+				Common.deal_pending, "driver");
 		return l_deals;
 	}
 
@@ -128,6 +145,40 @@ public class DealAPI {
 		List<Deal> l_deals = dealDao.getDealByOwnerID(Integer.valueOf(params
 				.getFirst("ownerID")));
 		return l_deals;
+	}
+
+	@POST
+	@Path("acceptFirst")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String acceptDealFirst(MultivaluedMap<String, String> params) {
+		Deal deal;
+		int ret = 0;
+		try {
+			deal = new Deal();
+			Date date = new Date();
+			int routeID = Integer.valueOf(params.getFirst("routeID"));
+			int goodsID = Integer.valueOf(params.getFirst("goodsID"));
+
+			deal.setPrice(goodsDao.getGoodsByID(goodsID).getPrice());
+			// deal.setNotes(params.getFirst("notes"));
+			// deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateTime(date.toString());
+			deal.setCreateBy(params.getFirst("createBy"));
+			deal.setRouteID(routeID);
+			deal.setGoodsID(goodsID);
+			deal.setDealStatusID(Common.deal_accept);
+
+			deal.setActive(Common.activate);
+			// Insert new deal with status accept
+			ret = dealProcess.acceptDealFirst(deal);
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return String.valueOf(ret);
 	}
 
 	@POST
@@ -149,9 +200,9 @@ public class DealAPI {
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
 			deal.setDealStatusID(Common.deal_accept);
 
-			if (!params.getFirst("refDealID").equals("")) {
-				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
-			}
+			// if (!params.getFirst("refDealID").equals("")) {
+			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
 			// Insert new deal with status accept
 			ret = dealProcess.acceptDeal1(deal);
@@ -183,9 +234,9 @@ public class DealAPI {
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
 			deal.setDealStatusID(Common.deal_decline);
 
-			if (!params.getFirst("refDealID").equals("")) {
-				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
-			}
+			// if (!params.getFirst("refDealID").equals("")) {
+			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
 			// Insert new deal with status decline
 			ret = dealProcess.declineDeal1(deal);
@@ -217,9 +268,9 @@ public class DealAPI {
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
 			deal.setDealStatusID(Common.deal_cancel);
 
-			if (!params.getFirst("refDealID").equals("")) {
-				deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
-			}
+			// if (!params.getFirst("refDealID").equals("")) {
+			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
+			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
 			// Insert new deal with status pending
 			ret = dealProcess.cancelDeal1(deal);

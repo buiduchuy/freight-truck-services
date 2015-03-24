@@ -213,7 +213,7 @@ public class OrderDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "SELECT * FROM [Order]";
+			String sql = "SELECT * FROM [Order] ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 

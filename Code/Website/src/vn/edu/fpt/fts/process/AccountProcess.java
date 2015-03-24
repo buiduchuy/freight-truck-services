@@ -113,7 +113,8 @@ public class AccountProcess {
 			owner.setUpdateBy(createBy);
 			owner.setUpdateTime(createTime);
 			ret = ownerDao.insertOwner(owner, con);
-
+			
+			con.commit();
 		} catch (SQLException e) {
 			// TODO: handle exception
 			try {

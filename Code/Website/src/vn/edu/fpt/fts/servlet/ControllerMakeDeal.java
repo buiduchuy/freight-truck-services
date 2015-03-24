@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -17,21 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.DealOrderDAO;
-import vn.edu.fpt.fts.dao.DriverDAO;
-import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
-import vn.edu.fpt.fts.dao.OrderDAO;
-import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.DealOrder;
-import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
-import vn.edu.fpt.fts.pojo.Order;
-import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.process.DealProcess;
 
@@ -70,25 +59,18 @@ public class ControllerMakeDeal extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
 			DealProcess dealProcess = new DealProcess();
-			AccountDAO accountDao = new AccountDAO();
 			RouteDAO routeDao = new RouteDAO();
 			GoodsDAO goodDao = new GoodsDAO();
-			OwnerDAO ownerDao = new OwnerDAO();
 			DealDAO dealDao = new DealDAO();
-			DriverDAO driverDao = new DriverDAO();
-			DealOrderDAO dealOrderDao = new DealOrderDAO();
-			OrderDAO orderDao = new OrderDAO();
-			Common common = new Common();
 			if ("viewDetailRouter".equals(action)) {
 				int idRouter = Integer.parseInt(request
 						.getParameter("idRouter"));
 				Route router = routeDao.getRouteByID(idRouter);
-				router.setStartTime(common.changeFormatDate(
+				router.setStartTime(Common.changeFormatDate(
 						router.getStartTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"hh:mm dd-MM-yyyy"));
-				router.setFinishTime(common.changeFormatDate(
+				router.setFinishTime(Common.changeFormatDate(
 						router.getFinishTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"dd-MM-yyyy"));
 				session.setAttribute("viewDetailRoute", router);
@@ -229,7 +211,7 @@ public class ControllerMakeDeal extends HttpServlet {
 					if (listDealByGoodId.get(i).getRouteID() == dealFa
 							.getRouteID()) {
 						listDealByGoodId.get(i).setCreateTime(
-								common.changeFormatDate(listDealByGoodId.get(i)
+								Common.changeFormatDate(listDealByGoodId.get(i)
 										.getCreateTime(),
 										"yyyy-MM-dd hh:mm:ss.s",
 										"hh:mm dd-MM-yyyy"));
@@ -328,8 +310,6 @@ public class ControllerMakeDeal extends HttpServlet {
 				} else {
 					Deal declineDeal = dealDao.getDealByID(idDeal);
 					declineDeal.setDealStatusID(3);
-					int update = dealDao.updateDeal(declineDeal);
-					int idgood = declineDeal.getGoodsID();
 					if (dealProcess.declineDeal1(declineDeal) != 0) {
 						RequestDispatcher rd = request
 								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
@@ -351,10 +331,8 @@ public class ControllerMakeDeal extends HttpServlet {
 				} else {
 					session.removeAttribute("listDeal");
 					Deal cancelDeal = dealDao.getDealByID(idDeal);
-					int idgood = cancelDeal.getGoodsID();
 					if (dealProcess.cancelDeal1(cancelDeal) != 0) {
 						cancelDeal.setDealStatusID(4);
-						int update = dealDao.updateDeal(cancelDeal);
 						RequestDispatcher rd = request
 								.getRequestDispatcher("ControllerMakeDeal?btnAction=viewDetailDeal&dealID="
 										+ dealDao.getDealByID(idDeal)

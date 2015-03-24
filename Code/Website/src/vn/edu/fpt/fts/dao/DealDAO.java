@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Deal;
 
@@ -283,7 +284,7 @@ public class DealDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "SELECT * FROM Deal";
+			String sql = "SELECT * FROM Deal ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 
@@ -331,20 +332,26 @@ public class DealDAO {
 		return null;
 	}
 
-	public List<Deal> getDealByDriverID(int driverID) {
+	public List<Deal> getDealByDriverID(int driverID, int dealStatusID,
+			String createBy) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "SELECT * FROM Deal WHERE RouteID IN "
-					+ "(SELECT RouteID FROM [Route] WHERE DriverID=?)";
+			String sql = " SELECT * FROM Deal WHERE RouteID IN "
+					+ "(SELECT RouteID FROM [Route] WHERE DriverID = ?) "
+					+ "AND GoodsID IN (SELECT GoodsID FROM Goods WHERE Active = ?) "
+					+ "AND DealStatusID = ? AND CreateBy = ? ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
 			stm.setInt(i++, driverID);
+			stm.setInt(i++, Common.activate);
+			stm.setInt(i++, dealStatusID);
+			stm.setString(i++, createBy);
 
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();
@@ -404,7 +411,7 @@ public class DealDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "SELECT * FROM Deal WHERE GoodsID IN "
-					+ "(SELECT GoodsID FROM Goods WHERE OwnerID=?)";
+					+ "(SELECT GoodsID FROM Goods WHERE OwnerID=?) ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 

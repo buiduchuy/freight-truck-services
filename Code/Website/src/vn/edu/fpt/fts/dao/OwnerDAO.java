@@ -17,8 +17,6 @@ public class OwnerDAO {
 		PreparedStatement stmt = null;
 		int ret = 0;
 
-		con = DBAccess.makeConnection();
-
 		String sql = "INSERT INTO [Owner] ( " + "Email," + "FirstName,"
 				+ "LastName," + "Gender," + "Phone," + "Address," + "Active,"
 				+ "CreateBy," + "CreateTime," + "UpdateBy," + "UpdateTime,"

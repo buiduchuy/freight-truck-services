@@ -2,11 +2,7 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -17,18 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.DealOrderDAO;
-import vn.edu.fpt.fts.dao.DriverDAO;
-import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OrderStatusDAO;
-import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.OrderStatus;
@@ -57,17 +47,11 @@ public class ControllerManageOrder extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
-			AccountDAO accountDao = new AccountDAO();
 			RouteDAO routeDao = new RouteDAO();
 			GoodsDAO goodDao = new GoodsDAO();
-			OwnerDAO ownerDao = new OwnerDAO();
 			DealDAO dealDao = new DealDAO();
-			DriverDAO driverDao = new DriverDAO();
-			DealOrderDAO dealOrderDao = new DealOrderDAO();
 			OrderDAO orderDao = new OrderDAO();
 			OrderStatusDAO orderStatusDao = new OrderStatusDAO();
-			Common common = new Common();
 
 			if ("manageOrder".equals(action)) {
 				Owner owner = (Owner) session.getAttribute("owner");
@@ -77,11 +61,11 @@ public class ControllerManageOrder extends HttpServlet {
 				for (int i = 0; i < manageGood.size(); i++) {
 					if (manageGood.get(i).getActive() == 0) {
 						manageGood.get(i).setPickupTime(
-								common.changeFormatDate(manageGood.get(i)
+								Common.changeFormatDate(manageGood.get(i)
 										.getPickupTime(),
 										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood.get(i).setDeliveryTime(
-								common.changeFormatDate(manageGood.get(i)
+								Common.changeFormatDate(manageGood.get(i)
 										.getDeliveryTime(),
 										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 						manageGood1.add(manageGood.get(i));
@@ -104,8 +88,6 @@ public class ControllerManageOrder extends HttpServlet {
 						dea = deal;
 					}
 				}
-				DealOrder dealOrder = dealOrderDao.getDealOrderByDealID(dea
-						.getDealID());
 				Route r = routeDao.getRouteByID(dea.getRouteID());
 				Order order = orderDao.getOrderByGoodsID(idGood);
 
@@ -113,10 +95,10 @@ public class ControllerManageOrder extends HttpServlet {
 					OrderStatus trackingStatus = orderStatusDao
 							.getOrderStatusByID(order.getOrderStatusID());
 					Goods goodDetail = goodDao.getGoodsByID(idGood);
-					goodDetail.setPickupTime(common.changeFormatDate(
+					goodDetail.setPickupTime(Common.changeFormatDate(
 							goodDetail.getPickupTime(),
 							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-					goodDetail.setDeliveryTime(common.changeFormatDate(
+					goodDetail.setDeliveryTime(Common.changeFormatDate(
 							goodDetail.getDeliveryTime(),
 							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 					session.setAttribute("detailOrder", goodDetail);
@@ -124,7 +106,8 @@ public class ControllerManageOrder extends HttpServlet {
 					session.setAttribute("routeOrder", r);
 					session.setAttribute("priceForDriver", dea.getPrice());
 					session.setAttribute("priceCreate", Common.priceCreateGood);
-					session.setAttribute("priceTotal", dea.getPrice()+Common.priceCreateGood);
+					session.setAttribute("priceTotal", dea.getPrice()
+							+ Common.priceCreateGood);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-order.jsp");
 					rd.forward(request, response);
@@ -134,7 +117,6 @@ public class ControllerManageOrder extends HttpServlet {
 			}
 			if ("lostGood".equals(action)) {
 				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				Goods good = goodDao.getGoodsByID(idGood);
 				Order order = orderDao.getOrderByGoodsID(idGood);
 				try {
 					order.setOrderStatusID(5);
@@ -157,17 +139,6 @@ public class ControllerManageOrder extends HttpServlet {
 			if ("confirmOrder".equals(action)) {
 
 			}
-
-			// out.println("<!DOCTYPE html>");
-			// out.println("<html>");
-			// out.println("<head>");
-			// out.println("<title>Servlet Controller</title>");
-			// out.println("</head>");
-			// out.println("<body>");
-			// out.println("<h1>Servlet Controller at " +
-			// request.getContextPath() + "</h1>");
-			// out.println("</body>");
-			// out.println("</html>");
 		}
 	}
 

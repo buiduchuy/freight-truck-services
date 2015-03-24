@@ -6,7 +6,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -20,19 +19,9 @@ import javax.xml.xpath.XPathExpressionException;
 import org.xml.sax.SAXException;
 
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.dao.AccountDAO;
-import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.DealOrderDAO;
-import vn.edu.fpt.fts.dao.DriverDAO;
-import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
-import vn.edu.fpt.fts.dao.OrderDAO;
-import vn.edu.fpt.fts.dao.OwnerDAO;
-import vn.edu.fpt.fts.dao.RouteDAO;
-import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
-import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * Servlet implementation class ControllerCreateGoods
@@ -79,16 +68,7 @@ public class ControllerCreateGoods extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
-			AccountDAO accountDao = new AccountDAO();
-			RouteDAO routeDao = new RouteDAO();
 			GoodsDAO goodDao = new GoodsDAO();
-			OwnerDAO ownerDao = new OwnerDAO();
-			DealDAO dealDao = new DealDAO();
-			DriverDAO driverDao = new DriverDAO();
-			DealOrderDAO dealOrderDao = new DealOrderDAO();
-			OrderDAO orderDao = new OrderDAO();
-			Common commonDao = new Common();
 			if ("next1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
@@ -122,28 +102,31 @@ public class ControllerCreateGoods extends HttpServlet {
 						.format(Common.perKilometer
 								* Common.perKilogram
 								* weight
-								* commonDao.distance(commonDao.latGeoCoding(r
-										.getPickupAddress()), commonDao
+								* Common.distance(Common.latGeoCoding(r
+										.getPickupAddress()), Common
 										.lngGeoCoding(r.getPickupAddress()),
-										commonDao.latGeoCoding(r
-												.getDeliveryAddress()), commonDao
+										Common.latGeoCoding(r
+												.getDeliveryAddress()), Common
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-3.jsp");
 				rd.forward(request, response);
-			}if ("next3".equals(action)) {
-				double priceSuggest = (Double) session.getAttribute("priceSuggest");
-				double price=0;
+			}
+			if ("next3".equals(action)) {
+				double priceSuggest = (Double) session
+						.getAttribute("priceSuggest");
+				double price = 0;
 				try {
-					price = Double.parseDouble(request.getParameter("txtPrice"));
+					price = Double
+							.parseDouble(request.getParameter("txtPrice"));
 
 				} catch (Exception ex) {
 
 				}
-				if(price==0){
-					price=priceSuggest;
+				if (price == 0) {
+					price = priceSuggest;
 				}
 				double total = price + Common.priceCreateGood;
 				session.setAttribute("priceCreate", Common.priceCreateGood);
@@ -168,7 +151,8 @@ public class ControllerCreateGoods extends HttpServlet {
 							.getRequestDispatcher("tao-hang-4.jsp");
 					rd.forward(request, response);
 				}
-			}if ("viewCreate_1".equals(action)) {
+			}
+			if ("viewCreate_1".equals(action)) {
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-1.jsp");
 				rd.forward(request, response);
@@ -186,11 +170,11 @@ public class ControllerCreateGoods extends HttpServlet {
 						.format(Common.perKilometer
 								* Common.perKilogram
 								* g.getWeight()
-								* commonDao.distance(commonDao.latGeoCoding(r
-										.getPickupAddress()), commonDao
+								* Common.distance(Common.latGeoCoding(r
+										.getPickupAddress()), Common
 										.lngGeoCoding(r.getPickupAddress()),
-										commonDao.latGeoCoding(r
-												.getDeliveryAddress()), commonDao
+										Common.latGeoCoding(r
+												.getDeliveryAddress()), Common
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
@@ -234,11 +218,11 @@ public class ControllerCreateGoods extends HttpServlet {
 						.format(Common.perKilometer
 								* Common.perKilogram
 								* weight
-								* commonDao.distance(commonDao.latGeoCoding(r
-										.getPickupAddress()), commonDao
+								* Common.distance(Common.latGeoCoding(r
+										.getPickupAddress()), Common
 										.lngGeoCoding(r.getPickupAddress()),
-										commonDao.latGeoCoding(r
-												.getDeliveryAddress()), commonDao
+										Common.latGeoCoding(r
+												.getDeliveryAddress()), Common
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
@@ -246,18 +230,20 @@ public class ControllerCreateGoods extends HttpServlet {
 						.getRequestDispatcher("tao-hang-2.jsp");
 				rd.forward(request, response);
 			}
-			
+
 			if ("save3".equals(action)) {
-				double priceSuggest = (Double) session.getAttribute("priceSuggest");
-				double price=0;
+				double priceSuggest = (Double) session
+						.getAttribute("priceSuggest");
+				double price = 0;
 				try {
-					price = Double.parseDouble(request.getParameter("txtPrice"));
+					price = Double
+							.parseDouble(request.getParameter("txtPrice"));
 
 				} catch (Exception ex) {
 
 				}
-				if(price==0){
-					price=priceSuggest;
+				if (price == 0) {
+					price = priceSuggest;
 				}
 				session.setAttribute("price", price);
 				RequestDispatcher rd = request
@@ -300,30 +286,30 @@ public class ControllerCreateGoods extends HttpServlet {
 				String notes = ((Goods) session.getAttribute("good"))
 						.getNotes();
 				Double price = (Double) session.getAttribute("price");
-				float lngpickAddress = commonDao.lngGeoCoding(pickupAdress);
+				float lngpickAddress = Common.lngGeoCoding(pickupAdress);
 				if (session.getAttribute("lngpickupAddress") != null) {
 					lngpickAddress = (float) session
 							.getAttribute("lngpickupAddress");
 				}
-				float latpickAddress = commonDao.latGeoCoding(pickupAdress);
+				float latpickAddress = Common.latGeoCoding(pickupAdress);
 				if (session.getAttribute("latpickupAddress") != null) {
 					latpickAddress = (float) session
 							.getAttribute("latpickupAddress");
 				}
-				float lngdeliveryAddress = commonDao.lngGeoCoding(deliveryAddress);
+				float lngdeliveryAddress = Common.lngGeoCoding(deliveryAddress);
 				if (session.getAttribute("lngdeliveryAddress") != null) {
 					lngpickAddress = (float) session
 							.getAttribute("lngdeliveryAddress");
 				}
-				float latdeliveryAddress = commonDao.latGeoCoding(deliveryAddress);
+				float latdeliveryAddress = Common.latGeoCoding(deliveryAddress);
 				if (session.getAttribute("latdeliveryAddress") != null) {
 					latpickAddress = (float) session
 							.getAttribute("latdeliveryAddress");
 				}
 				Owner owner = (Owner) session.getAttribute("owner");
-				Goods goo = new Goods(weight, price, commonDao.changeFormatDate(
+				Goods goo = new Goods(weight, price, Common.changeFormatDate(
 						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"), pickupAdress,
-						commonDao.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+						Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
 								"MM-dd-yyyy"), deliveryAddress, lngpickAddress,
 						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
 						notes, createTime, Common.activate, owner.getOwnerID(),
@@ -333,7 +319,8 @@ public class ControllerCreateGoods extends HttpServlet {
 					session.removeAttribute("router");
 					session.removeAttribute("good");
 					session.removeAttribute("price");
-					session.setAttribute("detailGood1", goodDao.getGoodsByID(idnewGood));
+					session.setAttribute("detailGood1",
+							goodDao.getGoodsByID(idnewGood));
 					session.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
 					RequestDispatcher rd = request
@@ -348,15 +335,15 @@ public class ControllerCreateGoods extends HttpServlet {
 					rd.forward(request, response);
 				}
 			}
-			
+
 			if ("detailroutepickupAddress".equals(action)) {
 
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getPickupAddress();
 				session.setAttribute("latpickupAddress",
-						commonDao.latGeoCoding(address));
+						Common.latGeoCoding(address));
 				session.setAttribute("lngpickupAddress",
-						commonDao.lngGeoCoding(address));
+						Common.lngGeoCoding(address));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("clearpickupAddress.jsp");
 				rd.forward(request, response);
@@ -381,9 +368,9 @@ public class ControllerCreateGoods extends HttpServlet {
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getDeliveryAddress();
 				session.setAttribute("latdeliveryAddress",
-						commonDao.latGeoCoding(address));
+						Common.latGeoCoding(address));
 				session.setAttribute("lngdeliveryAddress",
-						commonDao.lngGeoCoding(address));
+						Common.lngGeoCoding(address));
 				RequestDispatcher rd = request
 						.getRequestDispatcher("cleardeliveryAddress.jsp");
 				rd.forward(request, response);
@@ -403,16 +390,6 @@ public class ControllerCreateGoods extends HttpServlet {
 						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);
 			}
-			// out.println("<!DOCTYPE html>");
-			// out.println("<html>");
-			// out.println("<head>");
-			// out.println("<title>Servlet Controller</title>");
-			// out.println("</head>");
-			// out.println("<body>");
-			// out.println("<h1>Servlet Controller at " +
-			// request.getContextPath() + "</h1>");
-			// out.println("</body>");
-			// out.println("</html>");
 		}
 	}
 

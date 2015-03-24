@@ -158,6 +158,57 @@ public class DealProcess {
 	//
 	// }
 
+	public int acceptDealFirst(Deal deal) {
+		int ret = 0;
+		try {
+			// Insert new deal with accept status and CreateTime
+			ret = dealDao.insertDeal(deal);
+
+			// Change Cancel status to other deal
+			int totalGoodsWeightOfRoute = goodsDao.getTotalWeightByRouteID(deal
+					.getRouteID());
+			int weightRoute = routeDao.getActiveRouteByID(deal.getRouteID())
+					.getWeight();
+			int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
+					deal.getGoodsID(), (weightRoute - totalGoodsWeightOfRoute),
+					deal.getRouteID());
+			System.out.println("Co " + n
+					+ " deal da thay doi trang thai la cancel");
+
+			// Deactivate goods of this deal
+			goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
+
+			// Insert new order
+			Order order = new Order();
+			order.setPrice(deal.getPrice());
+			order.setCreateTime(deal.getCreateTime());
+			order.setOrderStatusID(Common.order_pending);
+			int newOrderID = orderDao.insertOrder(order);
+
+			// Insert into DealOrder Table
+			DealOrder dealOrder = new DealOrder();
+			dealOrder.setOrderID(newOrderID);
+			// dealOrder.setDealID(newDealID);
+			dealOrder.setDealID(deal.getDealID());
+			int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
+			ret = 1;
+			if (newDealOrderID == 0) {
+				System.out.println("Deal nay da xuat Order roi!!");
+				ret = 0;
+			}
+
+			// Insert Notification
+			notiProcess.insertDealAcceptNotification(deal, newDealOrderID);
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+
+		return ret;
+	}
+
 	public int acceptDeal1(Deal deal) {
 		int ret = 0;
 		try {
