@@ -28,7 +28,7 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerCreateGoods" method="post"
+				<form action="GoodsServlet" method="post"
 					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
@@ -106,7 +106,7 @@
 										<div class="small-9 columns">
 											<input type="text" id="right-label"
 												value="${router.pickupAddress}" readonly="" />
-												<a href="ControllerCreateGoods?btnAction=detailroutepickupAddress"
+												<a href="GoodsServlet?btnAction=detailroutepickupAddress"
 										class="button secondary">
 										Tìm vị trí chính xác</a>
 										</div>
@@ -135,7 +135,7 @@
 										<div class="small-9 columns">
 											<input type="text" id="right-label"
 												value="${router.deliveryAddress}" readonly="" />
-												<a href="ControllerCreateGoods?btnAction=detailroutedeliveryAddress"
+												<a href="GoodsServlet?btnAction=detailroutedeliveryAddress"
 										class="button secondary">
 										Tìm vị trí chính xác</a>
 										</div>
@@ -198,7 +198,7 @@
 							</div>
 							<div class="large-12 columns">
 								<div class="submit-area right">
-									<a href="ControllerCreateGoods?btnAction=viewCreate_3"
+									<a href="GoodsServlet?btnAction=viewCreate_3"
 										class="button secondary"><i class="icon-mail-reply"></i>
 										Trở về</a>
 									<button class="success"

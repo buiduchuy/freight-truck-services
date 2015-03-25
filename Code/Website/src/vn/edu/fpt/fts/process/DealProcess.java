@@ -162,7 +162,7 @@ public class DealProcess {
 		int ret = 0;
 		try {
 			// Insert new deal with accept status and CreateTime
-			ret = dealDao.insertDeal(deal);
+			int newDealID = dealDao.insertDeal(deal);
 
 			// Change Cancel status to other deal
 			int totalGoodsWeightOfRoute = goodsDao.getTotalWeightByRouteID(deal
@@ -183,22 +183,19 @@ public class DealProcess {
 			order.setPrice(deal.getPrice());
 			order.setCreateTime(deal.getCreateTime());
 			order.setOrderStatusID(Common.order_pending);
-			int newOrderID = orderDao.insertOrder(order);
+			ret = orderDao.insertOrder(order);
 
 			// Insert into DealOrder Table
 			DealOrder dealOrder = new DealOrder();
-			dealOrder.setOrderID(newOrderID);
-			// dealOrder.setDealID(newDealID);
-			dealOrder.setDealID(deal.getDealID());
+			dealOrder.setOrderID(ret);
+			dealOrder.setDealID(newDealID);
 			int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
-			ret = 1;
 			if (newDealOrderID == 0) {
 				System.out.println("Deal nay da xuat Order roi!!");
-				ret = 0;
 			}
 
 			// Insert Notification
-			notiProcess.insertDealAcceptNotification(deal, newDealOrderID);
+			notiProcess.insertDealAcceptNotification(deal, ret);
 
 		} catch (Exception e) {
 			// TODO: handle exception

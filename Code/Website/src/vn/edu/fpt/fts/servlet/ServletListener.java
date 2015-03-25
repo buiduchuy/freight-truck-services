@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import vn.edu.fpt.fts.process.OrderProcess;
 
@@ -18,7 +19,8 @@ import vn.edu.fpt.fts.process.OrderProcess;
  * @author Duc Huy
  *
  */
-public class ServletListener implements javax.servlet.ServletContextListener {
+public class ServletListener implements ServletContextListener {
+	OrderProcess orderProcess = new OrderProcess();
 
 	public void contextInitialized(ServletContextEvent arg0) {
 
@@ -33,7 +35,7 @@ public class ServletListener implements javax.servlet.ServletContextListener {
 				Date date = new Date();
 				System.out.println("-------" + dateFormat.format(date)
 						+ "-------");
-				OrderProcess orderProcess = new OrderProcess();
+
 				orderProcess.checkDelivery();
 			}
 		}, 0, 15, TimeUnit.SECONDS);

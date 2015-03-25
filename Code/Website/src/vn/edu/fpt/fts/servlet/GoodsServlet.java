@@ -24,15 +24,15 @@ import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 
 /**
- * Servlet implementation class ControllerCreateGoods
+ * Servlet implementation class GoodsServlet
  */
-public class ControllerCreateGoods extends HttpServlet {
+public class GoodsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public ControllerCreateGoods() {
+	public GoodsServlet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

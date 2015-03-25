@@ -3,6 +3,7 @@
  */
 package vn.edu.fpt.fts.api;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -138,6 +139,16 @@ public class DealAPI {
 	}
 
 	@POST
+	@Path("getDealByDriverID")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Deal> getDealByDriverID(MultivaluedMap<String, String> params) {
+		List<Deal> l_deals = dealDao.getDealByOwnerIDForHistory(Integer
+				.valueOf(params.getFirst("driverID")));
+		return l_deals;
+	}
+
+	@POST
 	@Path("getDealByOwnerID")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -156,14 +167,16 @@ public class DealAPI {
 		int ret = 0;
 		try {
 			deal = new Deal();
-			Date date = new Date();
 			int routeID = Integer.valueOf(params.getFirst("routeID"));
 			int goodsID = Integer.valueOf(params.getFirst("goodsID"));
 
 			deal.setPrice(goodsDao.getGoodsByID(goodsID).getPrice());
 			// deal.setNotes(params.getFirst("notes"));
 			// deal.setCreateTime(params.getFirst("createTime"));
-			deal.setCreateTime(date.toString());
+			Date current = new Date();
+			String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S")
+					.format(current);
+			deal.setCreateTime(date);
 			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(routeID);
 			deal.setGoodsID(goodsID);

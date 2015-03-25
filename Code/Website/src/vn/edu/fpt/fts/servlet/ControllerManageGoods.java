@@ -66,8 +66,10 @@ public class ControllerManageGoods extends HttpServlet {
 			MatchingProcess matchingProcess = new MatchingProcess();
 			if ("suggestFromSystem".equals(action)) {
 				session.removeAttribute("listRouter");
-				int IdGood = Integer
-						.parseInt(request.getParameter("txtIdGood"));
+				Goods goods = (Goods) session.getAttribute("detailGood1");
+				int IdGood = goods.getGoodsID();
+				// int IdGood = Integer
+				// .parseInt(request.getParameter("txtIdGood"));
 				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
 				if (list.size() != 0) {
 					Route[] listRou = new Route[list.size()];
@@ -196,17 +198,19 @@ public class ControllerManageGoods extends HttpServlet {
 						e.printStackTrace();
 					}
 				}
-				Goods good=new Goods();
+				Goods good = new Goods();
 				try {
 					good = new Goods(go.getGoodsID(), weight, price,
 							Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
 									"MM-dd-yyyy"), pickupAddress,
-									Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+							Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
 									"MM-dd-yyyy"), deliveryAddress,
-									Common.lngGeoCoding(pickupAddress), Common.latGeoCoding(pickupAddress),
-									Common.lngGeoCoding(deliveryAddress), Common.latGeoCoding(deliveryAddress), notes, go
-									.getCreateTime().toString(), Common.activate,
-							go.getOwnerID(), goodsCategoryID);
+							Common.lngGeoCoding(pickupAddress),
+							Common.latGeoCoding(pickupAddress),
+							Common.lngGeoCoding(deliveryAddress),
+							Common.latGeoCoding(deliveryAddress), notes, go
+									.getCreateTime().toString(),
+							Common.activate, go.getOwnerID(), goodsCategoryID);
 				} catch (XPathExpressionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -268,16 +272,16 @@ public class ControllerManageGoods extends HttpServlet {
 				}
 			}
 			if ("filter".equals(action)) {
-//				try {
-//					String startDate = request.getParameter("txtstartdate");
-//				} catch (Exception ex) {
-//
-//				}
-//				try {
-//					String endDate = request.getParameter("txtenddate");
-//				} catch (Exception ex) {
-//
-//				}
+				// try {
+				// String startDate = request.getParameter("txtstartdate");
+				// } catch (Exception ex) {
+				//
+				// }
+				// try {
+				// String endDate = request.getParameter("txtenddate");
+				// } catch (Exception ex) {
+				//
+				// }
 				Owner owner = (Owner) session.getAttribute("owner");
 				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
 						.getOwnerID());

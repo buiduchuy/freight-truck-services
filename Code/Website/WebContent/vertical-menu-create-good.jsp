@@ -10,7 +10,7 @@
 	<ul class="">
 		<c:choose>
 			<c:when test="${not empty router}">
-				<li><a href="ControllerCreateGoods?btnAction=viewCreate_1"
+				<li><a href="GoodsServlet?btnAction=viewCreate_1"
 					class="button secondary expand left"> Địa chỉ
 						giao nhận hàng</a></li>
 			</c:when>
@@ -25,7 +25,7 @@
 		</c:choose>
 		<c:choose>
 			<c:when test="${not empty good}">
-				<li><a href="ControllerCreateGoods?btnAction=viewCreate_2"
+				<li><a href="GoodsServlet?btnAction=viewCreate_2"
 					class="button secondary expand "> Thông tin
 						hàng hoá</a></li>
 			</c:when>
@@ -39,7 +39,7 @@
 		</c:choose>
 		<c:choose>
 			<c:when test="${not empty price}">
-				<li><a href="ControllerCreateGoods?btnAction=viewCreate_3"
+				<li><a href="GoodsServlet?btnAction=viewCreate_3"
 					class="button secondary expand"> Chi phí</a></li>
 			</c:when>
 			<c:when test="${namePage=='tao-hang-3.jsp'}">
