@@ -137,7 +137,7 @@ public class OfferResponse extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -207,10 +207,6 @@ public class OfferResponse extends Fragment {
 			// handleResponse(response);
 			JSONObject obj;
 			try {
-				DecimalFormat formatter = new DecimalFormat();
-				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
-				symbol.setGroupingSeparator('.');
-				formatter.setDecimalFormatSymbols(symbol);
 				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("goods");
 				startPlace.setText(good.getString("pickupAddress"));
@@ -222,9 +218,8 @@ public class OfferResponse extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText(formatter.format(Double.parseDouble(obj
-						.getString("price").replace(".0", "") + "000"))
-						+ " đồng");
+				price.setText(obj.getString("price").replace(".0", "")
+						+ " nghìn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (obj.has("notes")) {
 					if (obj.getString("notes").equals("")
@@ -416,7 +411,7 @@ public class OfferResponse extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -587,7 +582,7 @@ public class OfferResponse extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

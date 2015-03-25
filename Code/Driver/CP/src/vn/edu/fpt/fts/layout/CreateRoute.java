@@ -119,9 +119,6 @@ public class CreateRoute extends Fragment {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Route/Create";
 
-	private static final String SERVICE_URL2 = Constant.SERVICE_URL
-			+ "City/get";
-
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
@@ -639,7 +636,7 @@ public class CreateRoute extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -813,7 +810,7 @@ public class CreateRoute extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -1009,8 +1006,7 @@ public class CreateRoute extends Fragment {
 				load = payload.getText().toString();
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-				current = String.valueOf(calendar.get(Calendar.YEAR))
-						+ "-"
+				current = String.valueOf(calendar.get(Calendar.YEAR)) + "-"
 						+ String.valueOf(calendar.get(Calendar.MONTH) + 1)
 						+ "-"
 						+ String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
@@ -1049,6 +1045,10 @@ public class CreateRoute extends Fragment {
 					Toast.makeText(getActivity(),
 							"Ngày bắt đầu không được để trống.",
 							Toast.LENGTH_SHORT).show();
+				} else if (startHour.getText().toString().equals("")) {
+					Toast.makeText(getActivity(),
+							"Giờ bắt đầu không được để trống.",
+							Toast.LENGTH_SHORT).show();
 				} else if (endD.equals("")) {
 					Toast.makeText(getActivity(),
 							"Ngày kết thúc không được để trống.",
@@ -1072,104 +1072,45 @@ public class CreateRoute extends Fragment {
 									"Khối lượng chở không vượt quá 20 tấn",
 									Toast.LENGTH_SHORT).show();
 						} else {
-							JSONObject middle1 = new JSONObject();
-							JSONObject middle2 = new JSONObject();
 							if (Point1.equals("") && Point2.equals("")) {
-								ProgressDialog pDlg = new ProgressDialog(getActivity());
-								pDlg.setMessage("Đang tìm điểm đi qua ...");
-								pDlg.setProgressDrawable(getActivity().getWallpaper());
-								pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-								pDlg.setCancelable(false);
-								pDlg.show();
-								LatLng start = new GetLatLng().execute(
-										startPoint).get();
-								LatLng end = new GetLatLng().execute(endPoint)
-										.get();
-								GeocoderHelper helper = new GeocoderHelper();
-								double distance = helper.CalculationByDistance(
-										start, end);
-								List<LatLng> points = new GetPoints().execute(
-										helper.makeURL(start, null, null, end))
-										.get();
-								LatLng pnt1 = new LatLng(0, 0);
-								LatLng pnt2 = new LatLng(0, 0);
-								boolean flag1 = true;
-								boolean flag2 = true;
-								for (int i = 0; i < points.size(); i++) {
-									if (flag1) {
-										if (helper.CalculationByDistance(
-												points.get(0), points.get(i)) >= (helper
-												.CalculationByDistance(start,
-														end) / 3)) {
-											pnt1 = points.get(i);
-											flag1 = false;
-										}
+								GeocoderHelper helper = new GeocoderHelper(
+										getActivity());
+								ArrayList<String> list = helper
+										.getMiddlePoints(startPoint, endPoint);
+								String sp1 = list.get(0);
+								String sp2 = list.get(1);
+								if (sp1.equals(sp2)) {
+									if (!sp1.equals(startPoint)
+											&& !sp1.equals(endPoint)) {
+										p1.setText(sp1);
 									}
-									if (flag2) {
-										if (helper.CalculationByDistance(
-												points.get(0), points.get(i)) >= (helper
-												.CalculationByDistance(start,
-														end) / 3 * 2)) {
-											pnt2 = points.get(i);
-											flag2 = false;
-										}
-									}
-								}
-
-								CalculateMiddlePoints service = new CalculateMiddlePoints(
-										CalculateMiddlePoints.GET_TASK,
-										getActivity(), "Đang tìm điểm đi qua");
-								String response = service.execute(SERVICE_URL2)
-										.get();
-								JSONArray cities = new JSONObject(response)
-										.getJSONArray("city");
-								middle1 = cities.getJSONObject(0);
-								middle2 = cities.getJSONObject(0);
-								LatLng min1 = new LatLng(Double
-										.parseDouble(middle1
-												.getString("latitude")), Double
-										.parseDouble(middle1
-												.getString("longitude")));
-
-								LatLng min2 = new LatLng(Double
-										.parseDouble(middle2
-												.getString("latitude")), Double
-										.parseDouble(middle2
-												.getString("longitude")));
-								for (int i = 0; i < cities.length(); i++) {
-									JSONObject obj = cities.getJSONObject(i);
-									LatLng point1 = new LatLng(Double
-											.parseDouble(obj
-													.getString("latitude")),
-											Double.parseDouble(obj
-													.getString("longitude")));
-									if (helper
-											.CalculationByDistance(point1, pnt1) <= helper
-											.CalculationByDistance(min1, pnt1)) {
-										middle1 = obj;
-									}
-									if (helper
-											.CalculationByDistance(point1, pnt2) <= helper
-											.CalculationByDistance(min2, pnt2)) {
-										middle2 = obj;
-									}
-								}
-								if (middle1.getString("cityName").equals(
-										middle2.getString("cityName"))) {
-									p1.setText(middle1.getString("cityName"));
 								} else {
-									p1.setText(middle1.getString("cityName"));
-									p2.setText(middle2.getString("cityName"));
+									if (!sp1.equals(startPoint)
+											&& !sp1.equals(endPoint)) {
+										p1.setText(sp1);
+									}
+									if (!sp2.equals(startPoint)
+											&& !sp2.equals(endPoint)) {
+										if (p1.getText().equals("")) {
+											p1.setText(sp2);
+										} else {
+											p2.setText(sp2);
+										}
+									}
 								}
 								show.setVisibility(View.GONE);
 								p1.setVisibility(View.VISIBLE);
 								p2.setVisibility(View.VISIBLE);
-								pDlg.dismiss();
 								AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 										getActivity());
 								alertDialogBuilder
 										.setMessage(
-												"Đã tìm được 2 điểm đi qua: \n" + middle1.getString("cityName") + "\n" + middle2.getString("cityName") + "\n" + "Bạn có muốn add 2 điểm này vào lộ trình không?")
+												"Đã tìm được 2 điểm đi qua: \n"
+														+ sp1
+														+ "\n"
+														+ sp2
+														+ "\n"
+														+ "Bạn có muốn thêm 2 điểm này vào lộ trình không?")
 										.setCancelable(false)
 										.setPositiveButton(
 												"Đồng ý",
@@ -1189,14 +1130,18 @@ public class CreateRoute extends Fragment {
 																endPoint);
 														ws.addNameValuePair(
 																"routeMarkerLocation1",
-																p1.getText().toString());
+																p1.getText()
+																		.toString());
 														ws.addNameValuePair(
 																"routeMarkerLocation2",
-																p2.getText().toString());
+																p2.getText()
+																		.toString());
 														ws.addNameValuePair(
-																"startTime", startD);
+																"startTime",
+																startD);
 														ws.addNameValuePair(
-																"finishTime", endD);
+																"finishTime",
+																endD);
 														ws.addNameValuePair(
 																"notes", null);
 														ws.addNameValuePair(
@@ -1212,8 +1157,8 @@ public class CreateRoute extends Fragment {
 																		.getIntent()
 																		.getStringExtra(
 																				"driverID"));
-														ws.addNameValuePair("Food",
-																fd);
+														ws.addNameValuePair(
+																"Food", fd);
 														ws.addNameValuePair(
 																"Freeze", frz);
 														ws.addNameValuePair(
@@ -1229,57 +1174,81 @@ public class CreateRoute extends Fragment {
 													public void onClick(
 															DialogInterface dialog,
 															int id) {
-														dialog.cancel();
+														WebService ws = new WebService(
+																WebService.POST_TASK,
+																getActivity(),
+																"Đang xử lý ...");
+														ws.addNameValuePair(
+																"startingAddress",
+																startPoint);
+														ws.addNameValuePair(
+																"destinationAddress",
+																endPoint);
+														ws.addNameValuePair(
+																"routeMarkerLocation1",
+																"");
+														ws.addNameValuePair(
+																"routeMarkerLocation2",
+																"");
+														ws.addNameValuePair(
+																"startTime",
+																startD);
+														ws.addNameValuePair(
+																"finishTime",
+																endD);
+														ws.addNameValuePair(
+																"notes", null);
+														ws.addNameValuePair(
+																"weight", load);
+														ws.addNameValuePair(
+																"createTime",
+																current);
+														ws.addNameValuePair(
+																"active", "1");
+														ws.addNameValuePair(
+																"driverID",
+																getActivity()
+																		.getIntent()
+																		.getStringExtra(
+																				"driverID"));
+														ws.addNameValuePair(
+																"Food", fd);
+														ws.addNameValuePair(
+																"Freeze", frz);
+														ws.addNameValuePair(
+																"Broken", brk);
+														ws.addNameValuePair(
+																"Flame", flm);
+														ws.execute(new String[] { SERVICE_URL });
 													}
 												});
 								AlertDialog alertDialog = alertDialogBuilder
 										.create();
 								alertDialog.show();
-							}
-							else {
+							} else {
 								WebService ws = new WebService(
-										WebService.POST_TASK,
-										getActivity(),
+										WebService.POST_TASK, getActivity(),
 										"Đang xử lý ...");
-								ws.addNameValuePair(
-										"startingAddress",
+								ws.addNameValuePair("startingAddress",
 										startPoint);
-								ws.addNameValuePair(
-										"destinationAddress",
+								ws.addNameValuePair("destinationAddress",
 										endPoint);
-								ws.addNameValuePair(
-										"routeMarkerLocation1",
+								ws.addNameValuePair("routeMarkerLocation1",
 										Point1);
-								ws.addNameValuePair(
-										"routeMarkerLocation2",
+								ws.addNameValuePair("routeMarkerLocation2",
 										Point2);
-								ws.addNameValuePair(
-										"startTime", startD);
-								ws.addNameValuePair(
-										"finishTime", endD);
-								ws.addNameValuePair(
-										"notes", null);
-								ws.addNameValuePair(
-										"weight", load);
-								ws.addNameValuePair(
-										"createTime",
-										current);
-								ws.addNameValuePair(
-										"active", "1");
-								ws.addNameValuePair(
-										"driverID",
-										getActivity()
-												.getIntent()
-												.getStringExtra(
-														"driverID"));
-								ws.addNameValuePair("Food",
-										fd);
-								ws.addNameValuePair(
-										"Freeze", frz);
-								ws.addNameValuePair(
-										"Broken", brk);
-								ws.addNameValuePair(
-										"Flame", flm);
+								ws.addNameValuePair("startTime", startD);
+								ws.addNameValuePair("finishTime", endD);
+								ws.addNameValuePair("notes", null);
+								ws.addNameValuePair("weight", load);
+								ws.addNameValuePair("createTime", current);
+								ws.addNameValuePair("active", "1");
+								ws.addNameValuePair("driverID", getActivity()
+										.getIntent().getStringExtra("driverID"));
+								ws.addNameValuePair("Food", fd);
+								ws.addNameValuePair("Freeze", frz);
+								ws.addNameValuePair("Broken", brk);
+								ws.addNameValuePair("Flame", flm);
 								ws.execute(new String[] { SERVICE_URL });
 							}
 						}
@@ -1287,15 +1256,6 @@ public class CreateRoute extends Fragment {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}

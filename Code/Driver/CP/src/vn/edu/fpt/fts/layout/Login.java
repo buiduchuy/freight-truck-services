@@ -66,17 +66,6 @@ public class Login extends Activity {
 			remember = (CheckBox) findViewById(R.id.checkBox1);
 			password.setTypeface(Typeface.DEFAULT);
 			password.setTransformationMethod(new PasswordTransformationMethod());
-			if (Build.VERSION.SDK_INT < 16) {
-				getWindow().setFlags(
-						WindowManager.LayoutParams.FLAG_FULLSCREEN,
-						WindowManager.LayoutParams.FLAG_FULLSCREEN);
-			} else {
-				View decorView = getWindow().getDecorView();
-				int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-				decorView.setSystemUiVisibility(uiOptions);
-				ActionBar actionBar = getActionBar();
-				actionBar.hide();
-			}
 		}
 	}
 
@@ -125,7 +114,7 @@ public class Login extends Activity {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;

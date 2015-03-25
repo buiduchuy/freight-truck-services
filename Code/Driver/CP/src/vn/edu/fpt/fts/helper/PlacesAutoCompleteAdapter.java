@@ -110,7 +110,7 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
 
 	        resultList = new ArrayList<String>(predsJsonArray.length());
 	        for (int i = 0; i < predsJsonArray.length(); i++) {
-	            resultList.add(predsJsonArray.getJSONObject(i).getString("description"));
+	            resultList.add(Common.formatLocation(predsJsonArray.getJSONObject(i).getString("description")));
 	        }
 	    } catch (JSONException e) {
 	        Log.e(LOG_TAG, "Cannot process JSON results", e);

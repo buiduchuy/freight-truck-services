@@ -3,8 +3,18 @@ package vn.edu.fpt.fts.drawer;
 public class ListItem {
 	private String info;
 	private String title;
+	private String title2;
 	private String description;
 	private String date;
+	
+	public ListItem(String info, String title, String title2, String description, String date) {
+		super();
+		this.info = info;
+		this.title = title;
+		this.title2 = title2;
+		this.description = description;
+		this.date = date;
+	}
 	
 	public ListItem(String info, String title, String description, String date) {
 		super();
@@ -38,6 +48,12 @@ public class ListItem {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public String getTitle2() {
+		return title2;
+	}
+	public void setTitle2(String title2) {
+		this.title2 = title2;
 	}
 	public String getDescription() {
 		return description;

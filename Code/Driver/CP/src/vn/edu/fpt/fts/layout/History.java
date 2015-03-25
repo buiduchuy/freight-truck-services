@@ -69,7 +69,7 @@ public class History extends Fragment {
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		getActivity().getActionBar().setTitle("Lịch sử");
+		getActivity().getActionBar().setTitle("Hóa đơn");
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
@@ -149,7 +149,7 @@ public class History extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -274,9 +274,11 @@ public class History extends Fragment {
 									.getString("orderStatusID");
 							String price = item.getString("price");
 							if (driverStatus.equals("1")) {
-								status += "Đã giao hàng";
+								status += "Đang chở hàng";
+							} else if (driverStatus.equals("5")) {
+								status += "Mất hàng";
 							} else {
-								status += "Chưa giao hàng";
+								status += "Đã giao hàng";
 							}
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm:ss");
@@ -339,9 +341,11 @@ public class History extends Fragment {
 						String driverStatus = item.getString("orderStatusID");
 						String price = item.getString("price");
 						if (driverStatus.equals("1")) {
-							status += "Đã giao hàng";
+							status += "Đang chở hàng";
+						} else if (driverStatus.equals("5")) {
+							status += "Mất hàng";
 						} else {
-							status += "Chưa giao hàng";
+							status += "Đã giao hàng";
 						}
 						SimpleDateFormat format = new SimpleDateFormat(
 								"yyyy-MM-dd hh:mm:ss");
