@@ -8,11 +8,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.EditText;
 
 public final class Common {
-//	public static final String IP_URL = "http://192.168.43.10:8080/FTS/api/";
-	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
+	public static final String IP_URL = "http://192.168.0.102:8080/FTS/api/";
+//	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
 	public static final String Service_Goods_Create = "Goods/Create";
 	public static final String Service_Login = "Account/OwnerLogin";
 	public static final String Service_GoodsCategory_Get = "GoodsCategory/get";
@@ -36,6 +38,7 @@ public final class Common {
 	public static final String Service_Deal_getDealByOwnerID = "Deal/getDealByOwnerID";
 	public static final String Service_Order_getOrderByOwnerID = "Order/getOrderByOwnerID";
 	public static final String Service_Order_ownerNoticeLostGoods = "Order/ownerNoticeLostGoods";
+	public static final String Service_Account_CreateOwnerAccount = "Account/CreateOwnerAccount";
 	
 	public static boolean expireDate(String date) {
 		Date todayDate = null;
@@ -101,5 +104,13 @@ public final class Common {
 			}
 		}		
 		return input;
+	}
+	
+	public static void logout(Context context) {
+		SharedPreferences preferences = context.getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.clear();
+		editor.commit();
 	}
 }

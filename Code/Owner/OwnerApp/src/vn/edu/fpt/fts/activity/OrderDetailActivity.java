@@ -253,14 +253,20 @@ public class OrderDetailActivity extends Activity {
 						.getString("price"));
 				tvPrice.setText(price + " nghìn đồng");
 				tvWeight.setText(jsonObject3.getString("weight") + " kg");
-				tvNote.setText(jsonObject2.getString("notes"));
+				String sNote = "";
+				try {
+					sNote = jsonObject2.getString("notes");
+				} catch (JSONException e) {
+					sNote = "Không có";
+				}
+				tvNote.setText(sNote);
 				tvPhone.setText(jsonObject6.getString("phone"));
 				String count = jsonObject.getString("orderStatusID");
 				if (count.equals("3") || count.equals("4")) {
 					tvStatus.setText("Đã nhận hàng");
 					btnConfirm.setVisibility(View.GONE);
 					btnLost.setVisibility(View.GONE);
-				} else if (count.equals("1") || count.equals("2")){
+				} else if (count.equals("1") || count.equals("2")) {
 					tvStatus.setText("Hàng chưa giao");
 					btnLost.setVisibility(View.GONE);
 				} else if (count.equals("5")) {
@@ -268,7 +274,8 @@ public class OrderDetailActivity extends Activity {
 					btnConfirm.setVisibility(View.GONE);
 					btnLost.setVisibility(View.GONE);
 				}
-				if (Common.expireDate(tmp1[0]) && (count.equals("1") || count.equals("2"))) {
+				if (Common.expireDate(tmp1[0])
+						&& (count.equals("1") || count.equals("2"))) {
 					btnLost.setVisibility(View.VISIBLE);
 				} else {
 					btnLost.setVisibility(View.GONE);

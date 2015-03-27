@@ -50,7 +50,7 @@ import android.widget.Toast;
 
 public class SuggestDetailActivity extends Activity {
 	private int routeid;
-	private TextView startAddr, destAddr, startTime, finishTime, category;
+	private TextView startAddr, destAddr, startTime, finishTime, category, weight;
 	private EditText etPrice, etNote;
 	private Button btnSend;
 	private String goodsID, ownerID, price, notes;
@@ -70,8 +70,9 @@ public class SuggestDetailActivity extends Activity {
 				SuggestDetailActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Route_GetByID;
 		wst.addNameValuePair("routeID", routeid + "");
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
@@ -82,13 +83,15 @@ public class SuggestDetailActivity extends Activity {
 		startTime = (TextView) this.findViewById(R.id.textview_startTime);
 		finishTime = (TextView) this.findViewById(R.id.textview_finishTime);
 		category = (TextView) this.findViewById(R.id.textview_category);
+		weight = (TextView) this.findViewById(R.id.textview_weight);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btnSend = (Button) findViewById(R.id.button_send);
-		
-//		etPrice.setText(price);
-//		etNote.setText(notes);
-		WebServiceTask3 wst3 = new WebServiceTask3(WebServiceTask3.POST_TASK, this, "Đang xử lý");
+
+		// etPrice.setText(price);
+		// etNote.setText(notes);
+		WebServiceTask3 wst3 = new WebServiceTask3(WebServiceTask3.POST_TASK,
+				this, "Đang xử lý");
 		String urlString = Common.IP_URL + Common.Service_Goods_getGoodsByID;
 		wst3.addNameValuePair("goodsID", goodsID);
 		wst3.execute(new String[] { urlString });
@@ -112,8 +115,9 @@ public class SuggestDetailActivity extends Activity {
 				wst2.addNameValuePair("refDealID", "0");
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
-//				wst2.execute(new String[] { url });
-				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+				// wst2.execute(new String[] { url });
+				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						new String[] { url });
 			}
 		});
 
@@ -147,7 +151,7 @@ public class SuggestDetailActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
@@ -159,7 +163,7 @@ public class SuggestDetailActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
-	}	
+	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -291,7 +295,7 @@ public class SuggestDetailActivity extends Activity {
 					} else {
 						category = "Không có";
 					}
-
+					String rWeight = jsonObject.getString("weight");
 					route.setStartingAddress(jsonObject
 							.getString("startingAddress"));
 					route.setDestinationAddress(jsonObject
@@ -299,23 +303,21 @@ public class SuggestDetailActivity extends Activity {
 					route.setStartTime(startTime);
 					route.setFinishTime(finishTime);
 					route.setCategory(category);
-
+					route.setWeight(Integer.parseInt(rWeight));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				// String a = route.getStartingAddress();
-				startAddr.setText("Địa điểm bắt đầu: "
-						+ route.getStartingAddress());
-				destAddr.setText("Địa điểm kết thúc: "
-						+ route.getDestinationAddress());
-				startTime.setText("Thời gian bắt đầu: " + route.getStartTime());
-				finishTime.setText("Thời gian kết thúc: "
-						+ route.getFinishTime());
-				category.setText("Loại hàng không chở: " + route.getCategory());
+				startAddr.setText(route.getStartingAddress());
+				destAddr.setText(route.getDestinationAddress());
+				startTime.setText(route.getStartTime());
+				finishTime.setText(route.getFinishTime());
+				category.setText(route.getCategory());
+				weight.setText(route.getWeight() + " kg");
 			} else {
 				Toast.makeText(SuggestDetailActivity.this,
-						"Lộ trình không tồn tại", Toast.LENGTH_LONG).show();
+						"Lộ trình không còn tồn tại", Toast.LENGTH_LONG).show();
 			}
 
 			pDlg.dismiss();
@@ -552,7 +554,7 @@ public class SuggestDetailActivity extends Activity {
 		}
 
 	}
-	
+
 	private class WebServiceTask3 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;

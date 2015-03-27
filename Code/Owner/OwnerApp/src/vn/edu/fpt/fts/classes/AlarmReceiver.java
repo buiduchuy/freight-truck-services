@@ -144,7 +144,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 							if (intervent instanceof JSONArray) {
 								JSONArray array = obj
 										.getJSONArray("notification");
-								for (int i = array.length() - 1; i >= 0; i--) {
+								for (int i = 0; i < array.length(); i++) {
 									JSONObject item = array.getJSONObject(i);
 									list.add(new ListItem(item
 											.getString("idOfType"), item
@@ -174,7 +174,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 							if (intervent instanceof JSONArray) {
 								JSONArray array = obj
 										.getJSONArray("notification");
-								for (int i = array.length() - 1; i >= 0; i--) {
+								for (int i = 0; i < array.length(); i++) {
 									JSONObject item = array.getJSONObject(i);
 									list.add(new ListItem(item
 											.getString("idOfType"), item

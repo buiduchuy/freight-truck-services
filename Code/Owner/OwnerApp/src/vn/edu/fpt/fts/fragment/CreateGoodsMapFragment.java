@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class CreateGoodsMapFragment extends Activity {	
@@ -38,6 +40,8 @@ public class CreateGoodsMapFragment extends Activity {
 
 		String address = getIntent().getStringExtra("address");
 		flag = getIntent().getStringExtra("flag");
+		mlat = getIntent().getDoubleExtra("lat", 0.0);
+		mlong = getIntent().getDoubleExtra("long", 0.0);
 		
 		// khoi tao map
 		MapFragment mapFragment = (MapFragment) getFragmentManager()
@@ -45,26 +49,50 @@ public class CreateGoodsMapFragment extends Activity {
 		map = mapFragment.getMap();
 		
 		// tao marker tren map
-		Geocoder geocoder = new Geocoder(getBaseContext());
-		try {			
-			List<Address> list = geocoder.getFromLocationName(
-					address, 1);
-			if (list.size() > 0) {
-				mlong = list.get(0).getLongitude();
-				mlat = list.get(0).getLatitude();	
-			} else {
-				getFragmentManager().beginTransaction().remove(mapFragment).commit();
+		if (mlat == 0 && mlong == 0) {
+			Geocoder geocoder = new Geocoder(getBaseContext());
+			try {			
+				List<Address> list = geocoder.getFromLocationName(
+						address, 1);
+				if (list.size() > 0) {
+					mlong = list.get(0).getLongitude();
+					mlat = list.get(0).getLatitude();	
+				} else {
+					getFragmentManager().beginTransaction().remove(mapFragment).commit();
+				}
+				
+			} catch (IOException ex) {
+				ex.printStackTrace();
 			}
-			
-		} catch (IOException ex) {
-			ex.printStackTrace();
 		}
+		
 		MarkerOptions mMarker = new MarkerOptions();
 		point = new LatLng(mlat, mlong);
 		mMarker.position(point);
 		mMarker.draggable(true);
 		map.addMarker(mMarker);
-
+		map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+			
+			@Override
+			public void onMarkerDragStart(Marker arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onMarkerDragEnd(Marker arg0) {
+				// TODO Auto-generated method stub
+				LatLng pos = arg0.getPosition();
+				mlat = pos.latitude;
+				mlong = pos.longitude;
+			}
+			
+			@Override
+			public void onMarkerDrag(Marker arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		//zoom to marker	
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 14));
 		

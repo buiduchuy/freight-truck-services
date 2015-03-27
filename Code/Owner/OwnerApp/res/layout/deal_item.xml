@@ -12,6 +12,7 @@
         android:paddingRight="16dp"
         android:paddingTop="4dp"
         android:text="AAAAAAAAAAA"
+        android:textColor="@color/tab_highlight"
         android:textSize="14sp" />
 
     <TextView
@@ -37,6 +38,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="AAAAAAAAAAA"
+            android:textColor="@color/tab_highlight"
             android:textSize="14sp" />
 
         <TextView
@@ -48,6 +50,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="AAAAAAAAA"
+            android:textColor="@color/tab_highlight"
             android:textSize="14sp" />
     </LinearLayout>
 

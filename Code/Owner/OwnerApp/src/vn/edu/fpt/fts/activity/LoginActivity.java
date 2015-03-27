@@ -55,6 +55,14 @@ public class LoginActivity extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.hide();
 
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		String ownerid = preferences.getString("ownerID", "");
+		if (!ownerid.equals("")) {
+			Intent intent = new Intent(LoginActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+		}
 		btnLogin.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -69,7 +77,9 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				
+				Intent intent = new Intent(LoginActivity.this,
+						RegisterActivity.class);
+				startActivity(intent);
 			}
 		});
 	}

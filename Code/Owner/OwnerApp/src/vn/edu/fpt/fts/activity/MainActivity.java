@@ -3,6 +3,7 @@ package vn.edu.fpt.fts.activity;
 import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
 import vn.edu.fpt.fts.classes.AlarmReceiver;
 import vn.edu.fpt.fts.classes.OrderAlarmReceiver;
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -28,6 +29,8 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	ColorDrawable colorDrawable;
 	private ActionBar actionBar;
 	private String[] tabs = {"Hàng hóa", "Đơn hàng"};
+	private AlarmManager alarmManager, alarmManager2;
+	private PendingIntent pendingIntent, pendingIntent2;
 	
 	
 	
@@ -73,16 +76,17 @@ public class MainActivity extends FragmentActivity implements TabListener {
         
         // alarm receiver
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         int interval = 10000;
         
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+
         
         // order alarm
         Intent intent2 = new Intent(MainActivity.this, OrderAlarmReceiver.class);
-        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        pendingIntent2 = PendingIntent.getBroadcast(this, 0, intent2, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager2 = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         int interval2 = 300000; //60000
         alarmManager2.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval2, pendingIntent2);
     }
@@ -114,6 +118,9 @@ public class MainActivity extends FragmentActivity implements TabListener {
         	startActivity(intent);        	
         }
         if (id == R.id.action_logout) {
+        	alarmManager.cancel(pendingIntent);
+        	alarmManager2.cancel(pendingIntent2);
+        	Common.logout(MainActivity.this);
         	Intent intent = new Intent(this, LoginActivity.class);
         	startActivity(intent);
         }

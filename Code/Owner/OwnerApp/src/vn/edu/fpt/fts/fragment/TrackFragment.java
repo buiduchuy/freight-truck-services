@@ -100,7 +100,7 @@ public class TrackFragment extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 10000;
+		private static final int SOCKET_TIMEOUT = 20000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -220,11 +220,11 @@ public class TrackFragment extends Fragment {
 									.getString("orderStatusID");
 							String status = "";
 							if (count.equals("1") || count.equals("2")) {
-								status = "Hàng chưa giao";
+								status = "Trạng thái: Hàng chưa giao";
 							} else if (count.equals("3") || count.equals("4")) {
-								status = "Hàng đã nhận";
+								status = "Trạng thái: Hàng đã nhận";
 							} else if (count.equals("5")) {
-								status = "Hàng bị mất";
+								status = "Trạng thái: Hàng bị mất";
 							}
 							OrderModel orderModel = new OrderModel(
 									categoryName, weight, date, price, status);
@@ -285,6 +285,9 @@ public class TrackFragment extends Fragment {
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					Log.e(TAG, e.getLocalizedMessage());
+					tvGone = (TextView) getActivity().findViewById(
+							R.id.textview_gone);
+					tvGone.setVisibility(View.VISIBLE);
 				}
 			}
 

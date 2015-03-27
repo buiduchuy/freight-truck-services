@@ -31,12 +31,15 @@ import org.json.JSONObject;
 import com.google.android.gms.maps.model.LatLng;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
+import vn.edu.fpt.fts.classes.ConfirmCreateDialog;
+import vn.edu.fpt.fts.classes.Goods;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.GeocoderHelper;
 import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -46,6 +49,9 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -61,7 +67,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class CreateGoodsActivity extends Activity {
+public class CreateGoodsActivity extends FragmentActivity {
 
 	private Spinner spinner;
 	private ArrayAdapter<String> dataAdapter;
@@ -75,7 +81,7 @@ public class CreateGoodsActivity extends Activity {
 	private int cateId, spinnerPos;
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
 			deliverLng = 0.0;
-	private String ownerid, errorMsg = "";
+	private String ownerid, errorMsg = "", selected;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +114,7 @@ public class CreateGoodsActivity extends Activity {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				String selected = parent.getItemAtPosition(position).toString();
+				selected = parent.getItemAtPosition(position).toString();
 				spinnerPos = position;
 				if (selected.equals("Hàng thực phẩm")) {
 					cateId = 1;
@@ -182,7 +188,7 @@ public class CreateGoodsActivity extends Activity {
 					Calendar cal = Calendar.getInstance();
 					picker.setMinDate(cal.getTimeInMillis() - 1000);
 					cal.add(Calendar.MONTH, 1);
-					picker.setMaxDate(cal.getTimeInMillis());					
+					picker.setMaxDate(cal.getTimeInMillis());
 					dialog.show();
 				}
 			}
@@ -210,12 +216,14 @@ public class CreateGoodsActivity extends Activity {
 							dialog.setPermanentTitle("Ngày có thể giao hàng");
 							DatePicker picker = dialog.getDatePicker();
 							Calendar cal = Calendar.getInstance();
-							cal.set(Calendar.MONTH, calendar1.get(Calendar.MONTH));
-							cal.set(Calendar.DAY_OF_MONTH, calendar1.get(Calendar.DAY_OF_MONTH));
-//							Calendar cal = calendar1;
+							cal.set(Calendar.MONTH,
+									calendar1.get(Calendar.MONTH));
+							cal.set(Calendar.DAY_OF_MONTH,
+									calendar1.get(Calendar.DAY_OF_MONTH));
+							// Calendar cal = calendar1;
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
-							picker.setMaxDate(cal.getTimeInMillis());							
+							picker.setMaxDate(cal.getTimeInMillis());
 							dialog.show();
 						}
 					}
@@ -233,6 +241,8 @@ public class CreateGoodsActivity extends Activity {
 						CreateGoodsMapFragment.class);
 				intent.putExtra("flag", "pickup");
 				intent.putExtra("address", actPickupAddr.getText().toString());
+				intent.putExtra("lat", pickupLat);
+				intent.putExtra("long", pickupLng);
 				startActivity(intent);
 			}
 		});
@@ -249,6 +259,8 @@ public class CreateGoodsActivity extends Activity {
 						CreateGoodsMapFragment.class);
 				intent.putExtra("flag", "delivery");
 				intent.putExtra("address", actDeliverAddr.getText().toString());
+				intent.putExtra("lat", deliverLat);
+				intent.putExtra("long", deliverLng);
 				startActivity(intent);
 			}
 		});
@@ -266,8 +278,28 @@ public class CreateGoodsActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// Chi viec goi ham postData
+				if (validate()) {
+					Goods goods = new Goods();
+					goods.setGoodsCategory(selected);
+					goods.setPickupTime(etPickupDate.getText().toString());
+					goods.setDeliveryTime(etDeliverDate.getText().toString());
+					goods.setPickupAddress(actPickupAddr.getText().toString());
+					goods.setDeliveryAddress(actDeliverAddr.getText()
+							.toString());
+					goods.setWeight(Integer.parseInt(etWeight.getText()
+							.toString()));
+					goods.setPrice(Double.parseDouble(etPrice.getText()
+							.toString()));
+					goods.setNotes(etNotes.getText().toString());
+					DialogFragment dialog = ConfirmCreateDialog
+							.newInstance(goods);
+					dialog.show(getSupportFragmentManager(), "");
 
-				postData(v);
+					// postData();
+				} else {
+					Toast.makeText(CreateGoodsActivity.this, errorMsg,
+							Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 
@@ -289,16 +321,16 @@ public class CreateGoodsActivity extends Activity {
 				Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
 
-		if (savedInstanceState != null) {
-			spinner.setSelection(savedInstanceState.getInt("spinner"));
-			etDeliverDate.setText(savedInstanceState.getString("deliverDate"));
-			etNotes.setText(savedInstanceState.getString("note"));
-			etPickupDate.setText(savedInstanceState.getString("pickupDate"));
-			etPrice.setText(savedInstanceState.getString("price"));
-			etWeight.setText(savedInstanceState.getString("weight"));
-			actPickupAddr.setText(savedInstanceState.getString("pickup"));
-			actDeliverAddr.setText(savedInstanceState.getString("deliver"));
-		}
+		// if (savedInstanceState != null) {
+		// spinner.setSelection(savedInstanceState.getInt("spinner"));
+		// etDeliverDate.setText(savedInstanceState.getString("deliverDate"));
+		// etNotes.setText(savedInstanceState.getString("note"));
+		// etPickupDate.setText(savedInstanceState.getString("pickupDate"));
+		// etPrice.setText(savedInstanceState.getString("price"));
+		// etWeight.setText(savedInstanceState.getString("weight"));
+		// actPickupAddr.setText(savedInstanceState.getString("pickup"));
+		// actDeliverAddr.setText(savedInstanceState.getString("deliver"));
+		// }
 	}
 
 	@Override
@@ -334,6 +366,66 @@ public class CreateGoodsActivity extends Activity {
 		etWeight.setText(savedInstanceState.getString("weight"));
 		actPickupAddr.setText(savedInstanceState.getString("pickup"));
 		actDeliverAddr.setText(savedInstanceState.getString("deliver"));
+
+		Bundle bundle = getIntent().getBundleExtra("info");
+		if (bundle != null) {
+			String flag = bundle.getString("flag");
+			if (flag.equals("pickup")) {
+				pickupLat = bundle.getDouble("lat");
+				pickupLng = bundle.getDouble("lng");
+			} else if (flag.equals("delivery")) {
+				deliverLat = bundle.getDouble("lat");
+				deliverLng = bundle.getDouble("lng");
+			}
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+
+		editor.putInt("spinner", spinnerPos);
+		editor.putString("weight", etWeight.getText().toString());
+		editor.putString("pickupDate", etPickupDate.getText().toString());
+		editor.putString("deliverDate", etDeliverDate.getText().toString());
+		editor.putString("price", etPrice.getText().toString());
+		editor.putString("note", etNotes.getText().toString());
+		editor.putString("pickup", actPickupAddr.getText().toString());
+		editor.putString("deliver", actDeliverAddr.getText().toString());
+		editor.commit();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		int check = preferences.getInt("spinner", 0);
+		if (!(check == 0)) {
+			spinner.setSelection(preferences.getInt("spinner", 0));
+			etDeliverDate.setText(preferences.getString("deliverDate", "sai roi"));
+			etNotes.setText(preferences.getString("note", "sai roi"));
+			etPickupDate.setText(preferences.getString("pickupDate", "sai roi"));
+			etPrice.setText(preferences.getString("price", ""));
+			etWeight.setText(preferences.getString("weight", ""));
+			actPickupAddr.setText(preferences.getString("pickup", ""));
+			actDeliverAddr.setText(preferences.getString("deliver", ""));
+		}
+			
+		editor.remove("spinner");
+		editor.remove("deliverDate");
+		editor.remove("note");
+		editor.remove("pickupDate");
+		editor.remove("price");
+		editor.remove("weight");
+		editor.remove("pickup");
+		editor.remove("deliver");
 
 		Bundle bundle = getIntent().getBundleExtra("info");
 		if (bundle != null) {
@@ -390,8 +482,6 @@ public class CreateGoodsActivity extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	
-
 	public class MyDatePickerDialog extends DatePickerDialog {
 
 		private CharSequence title;
@@ -447,65 +537,65 @@ public class CreateGoodsActivity extends Activity {
 			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
 		}
 
-		 Geocoder geocoder = new Geocoder(getBaseContext());
-		 try {
-		 List<Address> list = geocoder.getFromLocationName(actPickupAddr
-		 .getText().toString(), 1);
-		 List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
-		 .getText().toString(), 1);
-		 if (list.size() > 0 && list2.size() > 0) {
-		 pickupLng = list.get(0).getLongitude();
-		 pickupLat = list.get(0).getLatitude();
-		
-		 deliverLng = list2.get(0).getLongitude();
-		 deliverLat = list2.get(0).getLatitude();
-		 } else {
-		 errorMsg = "Địa chỉ không có thật";
-		 check = false;
-		 }
-		 } catch (IOException ex) {
-		 ex.printStackTrace();
-		 check = false;
-		 errorMsg = "Địa chỉ không có thật";
-		 }
+		Geocoder geocoder = new Geocoder(getBaseContext());
+		try {
+			List<Address> list = geocoder.getFromLocationName(actPickupAddr
+					.getText().toString(), 1);
+			List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
+					.getText().toString(), 1);
+			if (list.size() > 0 && list2.size() > 0) {
+				pickupLng = list.get(0).getLongitude();
+				pickupLat = list.get(0).getLatitude();
+
+				deliverLng = list2.get(0).getLongitude();
+				deliverLat = list2.get(0).getLatitude();
+			} else {
+				errorMsg = "Địa chỉ không có thật";
+				check = false;
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			check = false;
+			errorMsg = "Địa chỉ không có thật";
+		}
 
 		GeocoderHelper helper = new GeocoderHelper();
 
-//		new GetLocation().execute(actPickupAddr.getText()
-//				.toString());
-//		JSONObject addr1 = helper.getLocationInfo(actPickupAddr.getText()
-//				.toString());
-//		JSONObject addr2 = helper.getLocationInfo(actDeliverAddr.getText()
-//				.toString());
-//		if (addr1 != null && addr2 != null) {
-//			LatLng latLng1 = helper.getLatLong(addr1);
-//			LatLng latLng2 = helper.getLatLong(addr2);
-//			if (latLng1 != null & latLng2 != null) {
-//				pickupLng = helper.getLatLong(addr1).longitude;
-//				pickupLat = helper.getLatLong(addr1).latitude;
-//				deliverLng = helper.getLatLong(addr2).longitude;
-//				deliverLat = helper.getLatLong(addr2).latitude;
-//			} else {
-//				errorMsg = "Địa chỉ không có thật";
-//				check = false;
-//			}
-//
-//		}
+		// new GetLocation().execute(actPickupAddr.getText()
+		// .toString());
+		// JSONObject addr1 = helper.getLocationInfo(actPickupAddr.getText()
+		// .toString());
+		// JSONObject addr2 = helper.getLocationInfo(actDeliverAddr.getText()
+		// .toString());
+		// if (addr1 != null && addr2 != null) {
+		// LatLng latLng1 = helper.getLatLong(addr1);
+		// LatLng latLng2 = helper.getLatLong(addr2);
+		// if (latLng1 != null & latLng2 != null) {
+		// pickupLng = helper.getLatLong(addr1).longitude;
+		// pickupLat = helper.getLatLong(addr1).latitude;
+		// deliverLng = helper.getLatLong(addr2).longitude;
+		// deliverLat = helper.getLatLong(addr2).latitude;
+		// } else {
+		// errorMsg = "Địa chỉ không có thật";
+		// check = false;
+		// }
+		//
+		// }
 
 		LatLng pickup = new LatLng(pickupLat, pickupLng);
 		LatLng deliver = new LatLng(deliverLat, deliverLng);
 		String url = helper.makeURL(pickup, deliver);
-//		if (!helper.checkPath(url)) {
-//			check = false;
-//			errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
-//		}
+		// if (!helper.checkPath(url)) {
+		// check = false;
+		// errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
+		// }
 
 		return check;
 	}
 
 	// ------------------------------------------------------------------------------
 
-	public void postData(View vw) {
+	public void postData() {
 
 		// Code sample lay cac gia tri tu edittext tren man hinh, lam tuong tu
 
@@ -527,39 +617,34 @@ public class CreateGoodsActivity extends Activity {
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		// Cac cap gia tri gui ve server
-		if (validate()) {
-			currentTime = Calendar.getInstance();
-			wst.addNameValuePair("active", "1");
-			wst.addNameValuePair("createTime", Common.formatDate(currentTime));
-			wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
-					.toString());
-			wst.addNameValuePair("deliveryMarkerLatidute",
-					Double.toString(deliverLat));
-			wst.addNameValuePair("deliveryMarkerLongtitude",
-					Double.toString(deliverLng));
-			wst.addNameValuePair("deliveryTime", Common.formatDate(calendar2));
-			wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
-			wst.addNameValuePair("notes", etNotes.getText().toString());
-			wst.addNameValuePair("ownerID", ownerid);
-			wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
-					.toString());
-			wst.addNameValuePair("pickupMarkerLatidute",
-					Double.toString(pickupLat));
-			wst.addNameValuePair("pickupMarkerLongtitude",
-					Double.toString(pickupLng));
-			wst.addNameValuePair("pickupTime", Common.formatDate(calendar1));
-			wst.addNameValuePair("price", etPrice.getText().toString());
-			wst.addNameValuePair("weight", etWeight.getText().toString());
 
-			// the passed String is the URL we will POST to
-			String url = Common.IP_URL + Common.Service_Goods_Create;
-			// wst.execute(new String[] { url });
-			wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					new String[] { url });
-		} else {
-			Toast.makeText(CreateGoodsActivity.this, errorMsg,
-					Toast.LENGTH_LONG).show();
-		}
+		currentTime = Calendar.getInstance();
+		wst.addNameValuePair("active", "1");
+		wst.addNameValuePair("createTime", Common.formatDate(currentTime));
+		wst.addNameValuePair("deliveryAddress", actDeliverAddr.getText()
+				.toString());
+		wst.addNameValuePair("deliveryMarkerLatidute",
+				Double.toString(deliverLat));
+		wst.addNameValuePair("deliveryMarkerLongtitude",
+				Double.toString(deliverLng));
+		wst.addNameValuePair("deliveryTime", Common.formatDate(calendar2));
+		wst.addNameValuePair("goodsCategoryID", Integer.toString(cateId));
+		wst.addNameValuePair("notes", etNotes.getText().toString());
+		wst.addNameValuePair("ownerID", ownerid);
+		wst.addNameValuePair("pickupAddress", actPickupAddr.getText()
+				.toString());
+		wst.addNameValuePair("pickupMarkerLatidute", Double.toString(pickupLat));
+		wst.addNameValuePair("pickupMarkerLongtitude",
+				Double.toString(pickupLng));
+		wst.addNameValuePair("pickupTime", Common.formatDate(calendar1));
+		wst.addNameValuePair("price", etPrice.getText().toString());
+		wst.addNameValuePair("weight", etWeight.getText().toString());
+
+		// the passed String is the URL we will POST to
+		String url = Common.IP_URL + Common.Service_Goods_Create;
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 	}
 
@@ -924,7 +1009,7 @@ public class CreateGoodsActivity extends Activity {
 		}
 
 	}
-	
+
 	private class GetLocation extends AsyncTask<String, Void, JSONObject> {
 		@Override
 		protected JSONObject doInBackground(String... address) {
@@ -965,7 +1050,7 @@ public class CreateGoodsActivity extends Activity {
 
 			return jsonObject;
 		}
-		
+
 		@Override
 		protected void onPostExecute(JSONObject result) {
 			// TODO Auto-generated method stub

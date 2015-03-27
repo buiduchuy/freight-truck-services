@@ -28,10 +28,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.common.GeocoderHelper;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -68,7 +72,7 @@ public class InformationFragment extends Fragment {
 	private int cateId, spinnerPos;
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
 			deliverLng = 0.0;
-	private String ownerid, goodsID;
+	private String ownerid, goodsID, selected, errorMsg = "";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -76,7 +80,7 @@ public class InformationFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View rootView = inflater.inflate(R.layout.fragment_information,
 				container, false);
-		goodsID = getActivity().getIntent().getStringExtra("goodsID");		
+		goodsID = getActivity().getIntent().getStringExtra("goodsID");
 
 		etNotes = (EditText) rootView.findViewById(R.id.edittext_note);
 		etPrice = (EditText) rootView.findViewById(R.id.edittext_price);
@@ -86,8 +90,9 @@ public class InformationFragment extends Fragment {
 		WebServiceTask2 task2 = new WebServiceTask2(WebServiceTask2.GET_TASK,
 				getActivity(), "Đang xử lý...");
 		String url1 = Common.IP_URL + Common.Service_GoodsCategory_Get;
-//		task2.execute(new String[] { url1 });
-		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url1});
+		// task2.execute(new String[] { url1 });
+		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url1 });
 
 		spinner = (Spinner) rootView.findViewById(R.id.spinner_goods_type);
 		dataAdapter = new ArrayAdapter<String>(getActivity(),
@@ -161,10 +166,11 @@ public class InformationFragment extends Fragment {
 			public void onFocusChange(View v, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if (hasFocus) {
-					DatePickerDialog dialog = new DatePickerDialog(
+					MyDatePickerDialog dialog = new MyDatePickerDialog(
 							getActivity(), date1, calendar1.get(Calendar.YEAR),
 							calendar1.get(Calendar.MONTH), calendar1
 									.get(Calendar.DAY_OF_MONTH));
+					dialog.setPermanentTitle("Ngày có thể nhận hàng");
 					DatePicker picker = dialog.getDatePicker();
 					Calendar cal = Calendar.getInstance();
 					picker.setMinDate(cal.getTimeInMillis() - 1000);
@@ -185,13 +191,18 @@ public class InformationFragment extends Fragment {
 					public void onFocusChange(View v, boolean hasFocus) {
 						// TODO Auto-generated method stub
 						if (hasFocus) {
-							DatePickerDialog dialog = new DatePickerDialog(
+							MyDatePickerDialog dialog = new MyDatePickerDialog(
 									getActivity(), date2, calendar2
 											.get(Calendar.YEAR), calendar2
 											.get(Calendar.MONTH), calendar2
 											.get(Calendar.DAY_OF_MONTH));
+							dialog.setPermanentTitle("Ngày có thể giao hàng");
 							DatePicker picker = dialog.getDatePicker();
 							Calendar cal = Calendar.getInstance();
+							cal.set(Calendar.MONTH,
+									calendar1.get(Calendar.MONTH));
+							cal.set(Calendar.DAY_OF_MONTH,
+									calendar1.get(Calendar.DAY_OF_MONTH));
 							picker.setMinDate(cal.getTimeInMillis() - 1000);
 							cal.add(Calendar.MONTH, 1);
 							picker.setMaxDate(cal.getTimeInMillis());
@@ -249,20 +260,13 @@ public class InformationFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// Chi viec goi ham postData
-				Geocoder geocoder = new Geocoder(getActivity());
-				try {
-					List<Address> list = geocoder.getFromLocationName(
-							actPickupAddr.getText().toString(), 1);
-					pickupLng = list.get(0).getLongitude();
-					pickupLat = list.get(0).getLatitude();
-					List<Address> list2 = geocoder.getFromLocationName(
-							actDeliverAddr.getText().toString(), 1);
-					deliverLng = list2.get(0).getLongitude();
-					deliverLat = list2.get(0).getLatitude();
-				} catch (IOException ex) {
-					ex.printStackTrace();
+				if (validate()) {
+					postData(v);
+				} else {
+					Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG)
+							.show();
 				}
-				postData(v);
+
 			}
 		});
 
@@ -284,15 +288,127 @@ public class InformationFragment extends Fragment {
 		SharedPreferences preferences = getActivity().getSharedPreferences(
 				"MyPrefs", Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
-		
+
 		WebServiceTask3 wst3 = new WebServiceTask3(WebServiceTask3.POST_TASK,
 				getActivity(), "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Goods_getGoodsByID;
 		wst3.addNameValuePair("goodsID", goodsID);
-//		wst3.execute(new String[] { url });
-		wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst3.execute(new String[] { url });
+		wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 		return rootView;
+	}
+
+	public class MyDatePickerDialog extends DatePickerDialog {
+
+		private CharSequence title;
+
+		public MyDatePickerDialog(Context context, OnDateSetListener callBack,
+				int year, int monthOfYear, int dayOfMonth) {
+			super(context, callBack, year, monthOfYear, dayOfMonth);
+		}
+
+		public void setPermanentTitle(CharSequence title) {
+			this.title = title;
+			setTitle(title);
+		}
+
+		@Override
+		public void onDateChanged(DatePicker view, int year, int month, int day) {
+			super.onDateChanged(view, year, month, day);
+			setTitle(title);
+		}
+	}
+
+	public boolean validate() {
+		boolean check = true;
+		String tmp = etWeight.getText().toString();
+		if (etWeight.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Khối lượng không được để trống";
+		}
+		if (etDeliverDate.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Ngày giao hàng không được để trống";
+		}
+		if (etPickupDate.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Ngày nhận hàng không được để trống";
+		}
+		if (etPrice.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Giá tiền không được để trống";
+		}
+		if (actDeliverAddr.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Địa chỉ giao hàng không được để trống";
+		}
+		if (actPickupAddr.getText().toString().trim().length() == 0) {
+			check = false;
+			errorMsg = "Địa chỉ nhận hàng không được để trống";
+		}
+		String a = Common.formatDate(calendar1);
+		String b = Common.formatDate(calendar2);
+		if (calendar1.compareTo(calendar2) >= 0) {
+			check = false;
+			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
+		}
+
+		Geocoder geocoder = new Geocoder(getActivity());
+		try {
+			List<Address> list = geocoder.getFromLocationName(actPickupAddr
+					.getText().toString(), 1);
+			List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
+					.getText().toString(), 1);
+			if (list.size() > 0 && list2.size() > 0) {
+				pickupLng = list.get(0).getLongitude();
+				pickupLat = list.get(0).getLatitude();
+
+				deliverLng = list2.get(0).getLongitude();
+				deliverLat = list2.get(0).getLatitude();
+			} else {
+				errorMsg = "Địa chỉ không có thật";
+				check = false;
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			check = false;
+			errorMsg = "Địa chỉ không có thật";
+		}
+
+		GeocoderHelper helper = new GeocoderHelper();
+
+		// new GetLocation().execute(actPickupAddr.getText()
+		// .toString());
+		// JSONObject addr1 = helper.getLocationInfo(actPickupAddr.getText()
+		// .toString());
+		// JSONObject addr2 = helper.getLocationInfo(actDeliverAddr.getText()
+		// .toString());
+		// if (addr1 != null && addr2 != null) {
+		// LatLng latLng1 = helper.getLatLong(addr1);
+		// LatLng latLng2 = helper.getLatLong(addr2);
+		// if (latLng1 != null & latLng2 != null) {
+		// pickupLng = helper.getLatLong(addr1).longitude;
+		// pickupLat = helper.getLatLong(addr1).latitude;
+		// deliverLng = helper.getLatLong(addr2).longitude;
+		// deliverLat = helper.getLatLong(addr2).latitude;
+		// } else {
+		// errorMsg = "Địa chỉ không có thật";
+		// check = false;
+		// }
+		//
+		// }
+
+		LatLng pickup = new LatLng(pickupLat, pickupLng);
+		LatLng deliver = new LatLng(deliverLat, deliverLng);
+		String url = helper.makeURL(pickup, deliver);
+		// if (!helper.checkPath(url)) {
+		// check = false;
+		// errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
+		// }
+
+		return check;
 	}
 
 	// ------------------------------------------------------------------------------
@@ -344,8 +460,9 @@ public class InformationFragment extends Fragment {
 
 		// the passed String is the URL we will POST to
 		String url = Common.IP_URL + Common.Service_Goods_Update;
-//		wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[] {url});
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
 	}
 
@@ -797,10 +914,20 @@ public class InformationFragment extends Fragment {
 				String pickupDate = jsonObject.getString("pickupTime");
 				String[] tmp = deliverDate.split(" ");
 				String[] tmp1 = pickupDate.split(" ");
-				
+
 				deliverDate = Common.formatDateFromString(tmp[0]);
 				pickupDate = Common.formatDateFromString(tmp1[0]);
-				
+				String[] pickup = pickupDate.split("/");
+				calendar1.set(Calendar.DAY_OF_MONTH,
+						Integer.parseInt(pickup[0]));
+				calendar1.set(Calendar.MONTH, Integer.parseInt(pickup[1]));
+				calendar1.set(Calendar.YEAR, Integer.parseInt(pickup[2]));
+				String[] deliver = deliverDate.split("/");
+				calendar2.set(Calendar.DAY_OF_MONTH,
+						Integer.parseInt(deliver[0]));
+				calendar2.set(Calendar.MONTH, Integer.parseInt(deliver[1]));
+				calendar2.set(Calendar.YEAR, Integer.parseInt(deliver[2]));
+
 				etDeliverDate.setText(deliverDate);
 				etNotes.setText(jsonObject.getString("notes"));
 				etPickupDate.setText(pickupDate);
@@ -808,8 +935,9 @@ public class InformationFragment extends Fragment {
 				etWeight.setText(jsonObject.getString("weight"));
 				actPickupAddr.setText(jsonObject.getString("pickupAddress"));
 				actDeliverAddr.setText(jsonObject.getString("deliveryAddress"));
-				
-				int cate = Integer.parseInt(jsonObject.getString("goodsCategoryID"));
+
+				int cate = Integer.parseInt(jsonObject
+						.getString("goodsCategoryID"));
 				int pos = 0;
 				switch (cate) {
 				case 1:
