@@ -186,20 +186,43 @@
 											<label class="right inline">Chi phí tài xế: </label>
 										</div>
 										<div class="small-4 columns left">
-											<input type="text" id="right-label" name="txtPrice"
-												value="${detailGood1.price}" readonly="readonly" />
+											<c:set var="priceDriver"
+												value="${sessionScope.priceForDriver }" />
+											<input type="text" id="right-label"
+												value="${priceDriver}" readonly="readonly" />
 										</div>
 									</div>
-
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Chi phí tạo hàng: </label>
+										</div>
+										<div class="small-4 columns left">
+											<c:set var="priceCreate"
+												value="${sessionScope.priceCreate }" />
+											<input type="text" id="right-label" 
+												value="${priceCreate}" readonly="readonly" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="small-4 columns">
+											<label class="right inline">Chi phí tổng cộng: </label>
+										</div>
+										<div class="small-4 columns left">
+											<c:set var="priceTotal"
+												value="${sessionScope.priceTotal }" />
+											<input type="text" id="right-label" 
+												value="${priceTotal}" readonly="readonly" />
+										</div>
+									</div>
 								</div>
-						
+
 								<div class="row">
 									<div class="extra-title">
 										<h3>
 											<font color="blue">Thông tin tuyến đường</font>
 										</h3>
 									</div>
-									<c:set var="detailRoute" value="${sessionScope.routeOrder }"/>
+									<c:set var="detailRoute" value="${sessionScope.routeOrder }" />
 									<div class="row">
 										<div class="small-4 columns ">
 											<label class="right inline">Địa điểm bắt đầu:</label>
@@ -257,7 +280,7 @@
 									</div>
 
 								</div>
-										<div class="row">
+								<div class="row">
 									<div class="extra-title">
 										<h3>
 											<font color="blue">Tracking hoá đơn</font>

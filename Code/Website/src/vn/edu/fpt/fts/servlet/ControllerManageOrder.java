@@ -122,6 +122,9 @@ public class ControllerManageOrder extends HttpServlet {
 					session.setAttribute("detailOrder", goodDetail);
 					session.setAttribute("orderStatus", trackingStatus);
 					session.setAttribute("routeOrder", r);
+					session.setAttribute("priceForDriver", dea.getPrice());
+					session.setAttribute("priceCreate", Common.priceCreateGood);
+					session.setAttribute("priceTotal", dea.getPrice()+Common.priceCreateGood);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-order.jsp");
 					rd.forward(request, response);
