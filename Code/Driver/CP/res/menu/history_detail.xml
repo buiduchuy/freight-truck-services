@@ -2,10 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="test.example.cp.HistoryDetail" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+   <item
+        android:id="@+id/action_accept"
+        android:showAsAction="always|withText"
+        android:icon="@drawable/ic_action_accept"
+        android:title="@string/goodSent"/>
 
+   <item
+        android:id="@+id/action_phone"
+        android:showAsAction="always|withText"
+        android:icon="@drawable/ic_action_call"
+        android:title="@string/call"/>
+   
 </menu>

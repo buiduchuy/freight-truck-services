@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Deal;
 
@@ -283,7 +284,7 @@ public class DealDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "SELECT * FROM Deal";
+			String sql = "SELECT * FROM Deal ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 
@@ -331,7 +332,78 @@ public class DealDAO {
 		return null;
 	}
 
-	public List<Deal> getDealByDriverID(int driverID) {
+	public List<Deal> getDealByDriverID(int driverID, int dealStatusID,
+			String createBy) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = " SELECT * FROM Deal WHERE RouteID IN "
+					+ "(SELECT RouteID FROM [Route] WHERE DriverID = ?) "
+					+ "AND GoodsID IN (SELECT GoodsID FROM Goods WHERE Active = ?) "
+					+ "AND DealStatusID = ? AND CreateBy = ? ORDER BY CreateTime DESC";
+
+			stm = con.prepareStatement(sql);
+
+			int i = 1;
+			stm.setInt(i++, driverID);
+			stm.setInt(i++, Common.activate);
+			stm.setInt(i++, dealStatusID);
+			stm.setString(i++, createBy);
+
+			rs = stm.executeQuery();
+			List<Deal> list = new ArrayList<Deal>();
+
+			Deal deal;
+
+			while (rs.next()) {
+				deal = new Deal();
+
+				deal.setDealID(rs.getInt("DealID"));
+				deal.setPrice(rs.getDouble("Price"));
+				deal.setNotes(rs.getString("Notes"));
+				deal.setCreateTime(rs.getString("CreateTime"));
+				deal.setCreateBy(rs.getString("CreateBy"));
+				deal.setRouteID(rs.getInt("RouteID"));
+				deal.setGoodsID(rs.getInt("GoodsID"));
+				deal.setRefDealID(rs.getInt("RefDealID"));
+				deal.setDealStatusID(rs.getInt("DealStatusID"));
+				deal.setActive(rs.getInt("Active"));
+
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
+				list.add(deal);
+			}
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Deal table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public List<Deal> getDealByOwnerIDForHistory(int driverID) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -339,7 +411,7 @@ public class DealDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "SELECT * FROM Deal WHERE RouteID IN "
-					+ "(SELECT RouteID FROM [Route] WHERE DriverID=?)";
+					+ "(SELECT RouteID FROM [Route] WHERE DriverID=?) ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 
@@ -348,7 +420,6 @@ public class DealDAO {
 
 			rs = stm.executeQuery();
 			List<Deal> list = new ArrayList<Deal>();
-
 			Deal deal;
 
 			while (rs.next()) {
@@ -404,7 +475,7 @@ public class DealDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "SELECT * FROM Deal WHERE GoodsID IN "
-					+ "(SELECT GoodsID FROM Goods WHERE OwnerID=?)";
+					+ "(SELECT GoodsID FROM Goods WHERE OwnerID=?) ORDER BY CreateTime DESC";
 
 			stm = con.prepareStatement(sql);
 

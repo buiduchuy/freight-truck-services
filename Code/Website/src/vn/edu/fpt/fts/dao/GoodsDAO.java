@@ -228,7 +228,7 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods";
+			String sql = "SELECT * FROM Goods ORDER BY CreateTime DESC";
 			stm = con.prepareStatement(sql);
 			rs = stm.executeQuery();
 			List<Goods> list = new ArrayList<Goods>();
@@ -523,7 +523,7 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods WHERE Active=?";
+			String sql = "SELECT * FROM Goods WHERE Active=? ORDER BY CreateTime DESC";
 			stm = con.prepareStatement(sql);
 			int i = 1;
 			stm.setInt(i++, Common.activate);
@@ -659,7 +659,7 @@ public class GoodsDAO {
 		try {
 			con = DBAccess.makeConnection();
 			String sql = "SELECT * FROM Goods WHERE Active = 1 AND GoodsCategoryID NOT IN (SELECT GoodsCategoryID FROM RouteGoodsCategory WHERE RouteID = '"
-					+ routeID + "')";
+					+ routeID + "') ORDER BY CreateTime DESC";
 			stm = con.prepareStatement(sql);
 
 			rs = stm.executeQuery();

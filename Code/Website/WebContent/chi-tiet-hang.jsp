@@ -25,9 +25,9 @@
 					class="button info expand left">Quản lý hàng</a>
 				<ul class="">
 
-					<li><a
-						href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
-						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
+					<!-- <li><a
+						href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID}"
+						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>-->
 					<li><a
 						href="ControllerMakeDeal?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
 						class="button expand secondary">Danh sách các đề nghị</a></li>
@@ -230,13 +230,13 @@
 									</div>
 									<div class="row">
 										<div class="small-4 columns">
-											<label class="right inline"><small
-													class="validate">*</small>Chi phí tài xế: </label>
+											<label class="right inline"><small class="validate">*</small>Chi
+												phí tài xế: </label>
 										</div>
 										<div class="small-4 columns left">
 											<input type="text" id="right-label" name="txtPrice"
 												value="${detailGood1.price}" required=""
-												data-errormessage-value-missing="Vui lòng điền đầy đủ chi phí!"/>
+												data-errormessage-value-missing="Vui lòng điền đầy đủ chi phí!" />
 										</div>
 										<div class="small-4 columns left">
 											<label class="left inline">(Ngàn đồng) </label>
@@ -256,15 +256,14 @@
 											<label class="left inline">(Ngàn đồng) </label>
 										</div>
 									</div>
-									<c:set var="priceTotal"
-										value="${sessionScope.priceTotal }" />
+									<c:set var="priceTotal" value="${sessionScope.priceTotal }" />
 									<div class="row">
 										<div class="small-4 columns">
 											<label class="right inline">Tổng Cộng: </label>
 										</div>
 										<div class="small-4 columns left">
-											<input type="text" id="right-label"
-												value="${priceTotal}" readonly="readonly" />
+											<input type="text" id="right-label" value="${priceTotal}"
+												readonly="readonly" />
 										</div>
 										<div class="small-4 columns left">
 											<label class="left inline">(Ngàn đồng) </label>
@@ -274,6 +273,10 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area right">
+											<button class="success" name="btnAction"
+												value="suggestFromSystem">
+												<i class="icon-mail-forward"></i> Nhận gợi ý tuyến đường
+											</button>
 
 											<button class="button "
 												onclick="return confirm('Bạn có muốn cập nhật hàng không?')"
@@ -281,7 +284,7 @@
 												<i class="icon-wrench"></i> Cập nhật hàng
 											</button>
 
-											<button class="button  alert"
+											<button class="alert"
 												onclick="return confirm('Bạn có muốn xoá hàng không?')"
 												name="btnAction" value="deleteGood">
 												<i class="icon-remove"> Xoá hàng</i>

@@ -9,6 +9,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.http.HttpResponse;
@@ -35,9 +36,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +87,7 @@ public class DealHistoryDetail extends Fragment {
 		private static final int CONN_TIMEOUT = 30000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 15000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -154,10 +158,6 @@ public class DealHistoryDetail extends Fragment {
 			JSONObject obj;
 			try {
 				obj = new JSONObject(response);
-				DecimalFormat formatter = new DecimalFormat();
-				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
-				symbol.setGroupingSeparator('.');
-				formatter.setDecimalFormatSymbols(symbol);
 				JSONObject good = obj.getJSONObject("goods");
 				startPlace.setText(good.getString("pickupAddress"));
 				endPlace.setText(good.getString("deliveryAddress"));
@@ -168,9 +168,8 @@ public class DealHistoryDetail extends Fragment {
 				format.applyPattern("dd/MM/yyyy");
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
-				price.setText(formatter.format(Double.parseDouble(obj
-						.getString("price").replace(".0", "") + "000"))
-						+ " đồng");
+				price.setText(obj.getString("price").replace(".0", "")
+						+ " nghìn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				if (obj.getString("createBy").equals("owner")

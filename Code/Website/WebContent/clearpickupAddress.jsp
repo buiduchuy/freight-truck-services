@@ -118,7 +118,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerCreateGoods" method="post"
+				<form action="GoodsServlet" method="post"
 					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">

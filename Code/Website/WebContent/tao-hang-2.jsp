@@ -29,7 +29,7 @@
 
 			<jsp:include page="process-create-good.jsp" />
 
-			<form action="ControllerCreateGoods" method="post"
+			<form action="GoodsServlet" method="post"
 				accept-charset="utf-8">
 					<div class="row">
 				<c:choose>
@@ -90,7 +90,7 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area right">
-											<a href="ControllerCreateGoods?btnAction=viewCreate_1"
+											<a href="GoodsServlet?btnAction=viewCreate_1"
 												class="button secondary"><i class="icon-mail-reply"></i>
 												Trở về</a>
 											<button class="" name="btnAction" value="save2">
@@ -166,7 +166,7 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="submit-area right">
-											<a href="ControllerCreateGoods?btnAction=viewCreate_1"
+											<a href="GoodsServlet?btnAction=viewCreate_1"
 												class="button secondary"><i class="icon-mail-reply"></i>
 												Trở về</a>
 

@@ -26,6 +26,7 @@ import com.google.android.gms.internal.hi;
 
 import vn.edu.fpt.fts.classes.AlarmReceiver;
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.classes.OrderAlarmReceiver;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListNotiAdapter;
 import vn.edu.fpt.fts.drawer.NavDrawerAdapter;
@@ -81,7 +82,7 @@ public class MainActivity extends FragmentActivity {
 	ArrayList<ListItem> list = new ArrayList<ListItem>();
 	ArrayList<String> map;
 	ListNotiAdapter notiAdapter;
-	private PendingIntent pendingIntent;
+	private PendingIntent pendingIntent, pendingIntent2;
 
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "DealNotification/getDealNotificationByDriverID";
@@ -144,16 +145,22 @@ public class MainActivity extends FragmentActivity {
 		getActionBar().setHomeButtonEnabled(true);
 
 		Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
-		alarmIntent
-				.putExtra("driverID", getIntent().getStringExtra("driverID"));
+		alarmIntent.putExtra("driverID", getIntent().getStringExtra("driverID"));
+		
+		Intent alarmIntent2 = new Intent(MainActivity.this, OrderAlarmReceiver.class);
+		alarmIntent2.putExtra("driverID", getIntent().getStringExtra("driverID"));
 
 		pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
 				alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+		pendingIntent2 = PendingIntent.getBroadcast(MainActivity.this, 0,
+				alarmIntent2, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		int interval = 60000;
 
 		manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis(), interval, pendingIntent);
+		manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis(), interval, pendingIntent2);
 
 		if (getIntent().getStringExtra("dealID") == null) {
 			FragmentManager mng = getSupportFragmentManager();
@@ -204,6 +211,18 @@ public class MainActivity extends FragmentActivity {
 				trs.commit();
 			}
 		}
+		
+		if (getIntent().getStringExtra("orderID") != null) {
+			FragmentManager mng = getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			HistoryDetail frag = new HistoryDetail();
+			Bundle bundle = new Bundle();
+			bundle.putString("orderID", getIntent().getStringExtra("orderID"));
+			frag.setArguments(bundle);
+			trs.replace(R.id.content_frame, frag);
+			trs.addToBackStack(null);
+			trs.commit();
+		} 
 	}
 
 	private class DrawerItemClickListener implements

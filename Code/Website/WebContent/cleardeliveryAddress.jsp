@@ -118,7 +118,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerCreateGoods" method="post"
+				<form action="GoodsServlet" method="post"
 					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
@@ -133,12 +133,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
 							<input type="hidden" name="latdeliveryAddress" id="textlat" readonly="readonly"> <input
 								type="hidden" name="lngdeliveryAddress" id="textlng" readonly="readonly">
 						</div>
-
-
-
-
-
-
 						<div class="large-12 columns">
 							<div class="submit-area right">
 								<a href="tao-hang-4.jsp" class="button secondary"><i
@@ -152,14 +146,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 						<div class="row"></div>
 						<div class="row"></div>
 				</form>
-
-
 			</div>
 		</div>
 	</div>
-
 </div>
-
-
-
 <jsp:include page="footer.jsp" />

@@ -14,28 +14,23 @@ import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
-import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.DealOrderDAO;
-import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
-import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
-import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Owner;
 
 /**
- * Servlet implementation class ControllerAccount
+ * Servlet implementation class AccountServlet
  */
-public class ControllerAccount extends HttpServlet {
+public class AccountServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public ControllerAccount() {
+	public AccountServlet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -67,14 +62,8 @@ public class ControllerAccount extends HttpServlet {
 			HttpSession session = request.getSession(true);
 			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
 			AccountDAO accountDao = new AccountDAO();
-			RouteDAO routeDao = new RouteDAO();
 			GoodsDAO goodDao = new GoodsDAO();
 			OwnerDAO ownerDao = new OwnerDAO();
-			DealDAO dealDao = new DealDAO();
-			DriverDAO driverDao = new DriverDAO();
-			DealOrderDAO dealOrderDao = new DealOrderDAO();
-			OrderDAO orderDao = new OrderDAO();
-			Common common= new Common();
 			/* TODO output your page here. You may use following sample code. */
 			if ("login".equals(action)) {
 				String email = request.getParameter("txtEmail");
@@ -82,7 +71,6 @@ public class ControllerAccount extends HttpServlet {
 				session.removeAttribute("errorLogin");
 				session.removeAttribute("account");
 				if (accountDao.checkLoginAccount(email, password) != null) {
-					String start_date="";
 					Owner owner = ownerDao.getOwnerByEmail(accountDao.checkLoginAccount(email,
 							password).getEmail());
 					List<GoodsCategory> list = goodCa.getAllGoodsCategory();
@@ -98,11 +86,11 @@ public class ControllerAccount extends HttpServlet {
 					for (int i = 0; i < manageGood.size(); i++) {
 						if (manageGood.get(i).getActive() == 1) {
 							manageGood.get(i).setPickupTime(
-									common.changeFormatDate(manageGood.get(i)
+									Common.changeFormatDate(manageGood.get(i)
 											.getPickupTime(),
 											"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 							manageGood.get(i).setDeliveryTime(
-									common.changeFormatDate(manageGood.get(i)
+									Common.changeFormatDate(manageGood.get(i)
 											.getDeliveryTime(),
 											"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
 							manageGood1.add(manageGood.get(i));
@@ -137,16 +125,6 @@ public class ControllerAccount extends HttpServlet {
 				RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
 				rd.forward(request, response);
 			}
-			// out.println("<!DOCTYPE html>");
-			// out.println("<html>");
-			// out.println("<head>");
-			// out.println("<title>Servlet Controller</title>");
-			// out.println("</head>");
-			// out.println("<body>");
-			// out.println("<h1>Servlet Controller at " +
-			// request.getContextPath() + "</h1>");
-			// out.println("</body>");
-			// out.println("</html>");
 		}
 	}
 

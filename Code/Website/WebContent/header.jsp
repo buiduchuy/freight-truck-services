@@ -39,9 +39,8 @@
 
 
 <link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" language="javascript"
-	src="js/jquery.dataTables.js"></script>
-<script type="text/javascript" language="javascript" class="init">
+<script type="text/javascript" src="js/jquery.dataTables.js"></script>
+<script type="text/javascript" class="init">
 	$.extend($.fn.dataTable.defaults, {
 		"searching" : false,
 		"ordering" : false
@@ -58,16 +57,8 @@
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 
-
-
-
-
-
-
-
 </head>
 <body onload="auto()">
-	<div class="site-wrapper">
 		<div class="top-bar">
 			<div class="row">
 				<div class="large-12 columns">
@@ -87,7 +78,7 @@
 												<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
 														hình tài khoản</a></li>
 
-												<li><a href="ControllerAccount?btnAction=offAccount"><i
+												<li><a href="AccountServlet?btnAction=offAccount"><i
 														class="icon-off"></i>Đăng xuất</a></li>
 											</ul></li>
 									</ul>
@@ -135,25 +126,21 @@
 
 								</c:otherwise>
 							</c:choose>
-							
+
 							<c:choose>
-								<c:when test="${namePage=='quan-ly-order.jsp' or namePage=='chi-tiet-order.jsp'}">
-									<li class="active"><a href="ControllerManageOrder?btnAction=manageOrder"><i
+								<c:when
+									test="${namePage=='quan-ly-order.jsp' or namePage=='chi-tiet-order.jsp'}">
+									<li class="active"><a
+										href="ControllerManageOrder?btnAction=manageOrder"><i
 											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 								</c:when>
 								<c:otherwise>
 									<li><a href="ControllerManageOrder?btnAction=manageOrder"><i
 											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
-
 								</c:otherwise>
 							</c:choose>
-
-
 						</ul>
 					</nav>
-
-				</div>
-
 			</div>
 		</div>
-		</br>
+	</div>

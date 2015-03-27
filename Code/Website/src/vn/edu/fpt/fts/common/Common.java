@@ -34,17 +34,19 @@ public final class Common {
 
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
-//	 public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
-//	 public static final String usernamedb = "sa";
-//	 public static final String passworddb = "123456";
-	
-//	public static final String CONNECTION = "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
-//	public static final String usernamedb = "duchuy";
-//	public static final String passworddb = "huy2108.";
-	
-	public static final String CONNECTION = "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
-	public static final String usernamedb = "duchuy";
-	public static final String passworddb = "huy2108.";
+	public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+	public static final String usernamedb = "sa";
+	public static final String passworddb = "123456";
+
+	// public static final String CONNECTION =
+	// "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
+	// public static final String usernamedb = "duchuy";
+	// public static final String passworddb = "huy2108.";
+
+	// public static final String CONNECTION =
+	// "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
+	// public static final String usernamedb = "duchuy";
+	// public static final String passworddb = "huy2108.";
 
 	// Role of Account
 	public static final int role_owner = 1;
@@ -71,18 +73,18 @@ public final class Common {
 
 	// Max allow distance for matching goods and routes
 	public static final int maxAllowDistance = 30;
-	
+
 	// Period day for delivery
 	public static final int periodDay = 3;
 
 	// Price for 1 kilometer
-	public static final double perKilometer = 15;
-	public static final double perKilogram = 0.11;
-	public static final double priceCreateGood = 15;
-	
+	public static final double perKilometer = 0;
+	public static final double perKilogram = 0;
+	public static final double priceCreateGood = 0;
+
 	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";
 
-	public String changeFormatDate(String dateInput, String oldFormat,
+	public static String changeFormatDate(String dateInput, String oldFormat,
 			String newFormat) {
 		try {
 			SimpleDateFormat sdfSource = new SimpleDateFormat(oldFormat);
@@ -106,7 +108,7 @@ public final class Common {
 
 	private static final String GEOCODER_REQUEST_PREFIX_FOR_XML = "http://maps.google.com/maps/api/geocode/xml";
 
-	public float latGeoCoding(String address) throws IOException,
+	public static float latGeoCoding(String address) throws IOException,
 			XPathExpressionException, ParserConfigurationException,
 			SAXException {
 
@@ -158,18 +160,15 @@ public final class Common {
 				"/GeocodeResponse/result[1]/geometry/location/*",
 				geocoderResultDocument, XPathConstants.NODESET);
 		float lat = Float.NaN;
-		float lng = Float.NaN;
 		for (int i = 0; i < resultNodeList.getLength(); ++i) {
 			Node node = resultNodeList.item(i);
 			if ("lat".equals(node.getNodeName()))
 				lat = Float.parseFloat(node.getTextContent());
-			if ("lng".equals(node.getNodeName()))
-				lng = Float.parseFloat(node.getTextContent());
 		}
 		return lat;
 	}
 
-	public float lngGeoCoding(String address) throws IOException,
+	public static float lngGeoCoding(String address) throws IOException,
 			XPathExpressionException, ParserConfigurationException,
 			SAXException {
 
@@ -220,20 +219,17 @@ public final class Common {
 		resultNodeList = (NodeList) xpath.evaluate(
 				"/GeocodeResponse/result[1]/geometry/location/*",
 				geocoderResultDocument, XPathConstants.NODESET);
-		float lat = Float.NaN;
 		float lng = Float.NaN;
 		for (int i = 0; i < resultNodeList.getLength(); ++i) {
 			Node node = resultNodeList.item(i);
-			if ("lat".equals(node.getNodeName()))
-				lat = Float.parseFloat(node.getTextContent());
 			if ("lng".equals(node.getNodeName()))
 				lng = Float.parseFloat(node.getTextContent());
 		}
 		return lng;
 	}
 
-	public double distance(double lat1, double lon1, double lat2, double lon2,
-			String unit) {
+	public static double distance(double lat1, double lon1, double lat2,
+			double lon2, String unit) {
 		double theta = lon1 - lon2;
 		double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
 				+ Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
@@ -252,14 +248,14 @@ public final class Common {
 	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 	/* :: This function converts decimal degrees to radians : */
 	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-	public double deg2rad(double deg) {
+	public static double deg2rad(double deg) {
 		return (deg * Math.PI / 180.0);
 	}
 
 	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 	/* :: This function converts radians to decimal degrees : */
 	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-	public double rad2deg(double rad) {
+	public static double rad2deg(double rad) {
 		return (rad * 180 / Math.PI);
 	}
 
