@@ -72,7 +72,6 @@
 										<div data-alert class="alert-box alert radius inline">
 											${messageError} <a href="#" class="close">&times;</a>
 										</div>
-
 									</div>
 									<%
 										request.getSession().removeAttribute("messageError");
@@ -81,7 +80,6 @@
 							</div>
 
 							<div class="large-12 columns">
-
 								<table id="example" class="display" cellspacing="0" width="100%">
 									<thead>
 										<tr>
@@ -92,11 +90,7 @@
 											<th><font color="orange">Điểm uy tín</font></th>
 											<th></th>
 										</tr>
-
 									</thead>
-
-
-
 									<tbody>
 										<c:set var="rou" value="${sessionScope.listRouter}" />
 										<c:if test="${not empty rou}">
@@ -115,12 +109,6 @@
 															</c:if>
 														</c:forEach>
 													</c:if>
-
-
-
-
-
-
 													<td><a class="button"
 														href="ControllerMakeDeal?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
 															<i class="icon-ok"></i> Xem chi tiết

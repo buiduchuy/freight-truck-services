@@ -32,7 +32,7 @@ public class NotificationDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Notification WHERE Email=? ORDER BY CreateTime DESC";
+			String sql = "SELECT * FROM Notification WHERE Email=? ORDER BY NotificationID DESC";
 			stm = con.prepareStatement(sql);
 
 			stm.setString(1, email);
