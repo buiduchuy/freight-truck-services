@@ -29,10 +29,10 @@
 						href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID}"
 						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>-->
 					<li><a
-						href="ControllerMakeDeal?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
+						href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
 						class="button expand secondary">Danh sách các đề nghị</a></li>
 				</ul>
-				<a href="ControllerManageOrder?btnAction=manageOrder"
+				<a href="OrderServlet?btnAction=manageOrder"
 					class="button info expand left">Quản lý hoá đơn</a>
 				<div class="row"></div>
 			</div>

@@ -26,10 +26,10 @@
 					href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
 					class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
 				<li><a
-					href="ControllerMakeDeal?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
+					href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
 					class="button expand secondary">Danh sách các đề nghị</a></li>
 			</ul>
-			<a href="ControllerManageOrder?btnAction=manageOrder"
+			<a href="OrderServlet?btnAction=manageOrder"
 				class="button info expand left">Quản lý hoá đơn</a>
 			<div class="row"></div>
 		</div>
@@ -45,7 +45,7 @@
 
 
 			<div class="form-content">
-				<form action="ControllerMakeDeal" method="get"
+				<form action="DealServlet" method="get"
 					accept-charset="utf-8">
 					<div class="row">
 						<div class="row">
@@ -110,7 +110,7 @@
 														</c:forEach>
 													</c:if>
 													<td><a class="button"
-														href="ControllerMakeDeal?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
+														href="DealServlet?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
 															<i class="icon-ok"></i> Xem chi tiết
 													</a></td>
 												</tr>

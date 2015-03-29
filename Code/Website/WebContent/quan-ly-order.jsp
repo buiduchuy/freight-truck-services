@@ -168,7 +168,7 @@
 										nhận:${good1.deliveryTime }
 									</td>
 													<td><a class="button"
-														href="ControllerManageOrder?btnAction=viewDetailOrder&idGood=${good1.goodsID }">Xem
+														href="OrderServlet?btnAction=viewDetailOrder&idGood=${good1.goodsID }">Xem
 															chi tiết</a></td>
 												</tr>
 											</c:forEach>

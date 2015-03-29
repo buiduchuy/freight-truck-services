@@ -95,7 +95,7 @@
 																</c:forEach>
 															</c:if>
 															<td><a class="button "
-																href="ControllerMakeDeal?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
+																href="DealServlet?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
 																	class="icon-remove"></i>Xem chi tiết</a></td>
 
 														</tr>

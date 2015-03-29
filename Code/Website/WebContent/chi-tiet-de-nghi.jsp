@@ -29,7 +29,7 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerMakeDeal" method="post"
+				<form action="DealServlet" method="post"
 					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
@@ -104,17 +104,17 @@
 																<c:choose>
 																	<c:when test="${history.createBy== 'driver'}">
 																		<td><a class="button alert"
-																			href="ControllerMakeDeal?btnAction=declineDeal&idDeal=${history.dealID }"
+																			href="DealServlet?btnAction=declineDeal&idDeal=${history.dealID }"
 																			onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')">Từ
 																				chối</a> <a class="button success"
-																			href="ControllerMakeDeal?btnAction=confirmDeal&idDeal=${history.dealID }"
+																			href="DealServlet?btnAction=confirmDeal&idDeal=${history.dealID }"
 																			onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
 																				nhận</a></td>
 
 																	</c:when>
 																	<c:otherwise>
 																		<td><a class="button alert"
-																			href="ControllerMakeDeal?btnAction=cancelDeal&idDeal=${history.dealID }"
+																			href="DealServlet?btnAction=cancelDeal&idDeal=${history.dealID }"
 																			onclick="return confirm('Bạn có muốn huỷ đề nghị này không?')">Huỷ</a>
 																		</td>
 																	</c:otherwise>
@@ -142,7 +142,7 @@
 						</div>
 						</br>
 				</form>
-				<form action="ControllerMakeDeal" method="post"
+				<form action="DealServlet" method="post"
 					accept-charset="utf-8">
 					<div class="large-12 columns">
 						</br>

@@ -316,7 +316,7 @@
 												<c:if
 													test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
 													<a class="button alert"
-														href="ControllerManageOrder?btnAction=lostGood&idGood=${detailGood1.goodsID }"
+														href="OrderServlet?btnAction=lostGood&idGood=${detailGood1.goodsID }"
 														onclick="return confirm('Bạn có muốn báo mất hàng không?')">
 														<i class="icon-ok"></i> Báo mất hàng
 													</a>
@@ -325,7 +325,7 @@
 
 											<c:if test="${orderStatus.orderStatusID==3}">
 												<a class="button success"
-													href="ControllerManageOrder?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
+													href="OrderServlet?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
 													onclick="return confirm('Bạn có muốn xác nhận hoá đơn không?')">
 													<i class="icon-ok"></i> Xác nhận hoá đơn
 												</a>

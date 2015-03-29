@@ -131,11 +131,11 @@
 								<c:when
 									test="${namePage=='quan-ly-order.jsp' or namePage=='chi-tiet-order.jsp'}">
 									<li class="active"><a
-										href="ControllerManageOrder?btnAction=manageOrder"><i
+										href="OrderServlet?btnAction=manageOrder"><i
 											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="ControllerManageOrder?btnAction=manageOrder"><i
+									<li><a href="OrderServlet?btnAction=manageOrder"><i
 											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 								</c:otherwise>
 							</c:choose>

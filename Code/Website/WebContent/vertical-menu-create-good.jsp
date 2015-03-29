@@ -65,7 +65,7 @@
 
 <a href="ControllerManageGoods?btnAction=manageGoods"
 	class="button info expand left">Quản lý hàng</a>
-<a href="ControllerManageOrder?btnAction=manageOrder"
+<a href="OrderServlet?btnAction=manageOrder"
 	class="button info expand left">Quản lý hoá đơn</a>
 
 
