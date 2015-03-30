@@ -32,7 +32,7 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ControllerManageGoods" method="post"
+				<form action="GoodsServlet" method="post"
 					accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
@@ -130,7 +130,7 @@
 										nhận:${good1.deliveryTime }
 									</td>
 									<td><a class="button"
-										href="ControllerManageGoods?btnAction=viewDetailGood1&idGood=${good1.goodsID }">Xem
+										href="GoodsServlet?btnAction=viewDetailGood1&idGood=${good1.goodsID }">Xem
 											chi tiết</a></td>
 								</tr>
 							</c:forEach>

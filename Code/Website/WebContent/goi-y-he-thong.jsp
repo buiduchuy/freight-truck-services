@@ -18,12 +18,12 @@
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<a class="button alert expand center">MENU</a> <a href="tao-hang-1.jsp"
 				class="button info expand center">Tạo hàng</a> <a
-				href="ControllerManageGoods?btnAction=manageGoods"
+				href="GoodsServlet?btnAction=manageGoods"
 				class="button info expand left">Quản lý hàng</a>
 			<ul class="">
 
 				<li><a
-					href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
+					href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
 					class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
 				<li><a
 					href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
@@ -99,18 +99,18 @@
 												<tr>
 													<c:set var="count" value="${count+1 }" />
 													<td>${count}</td>
-													<td>${fn:substringBefore(fn:replace(rows.createTime, '-', ''),' ')}${rows.routeID }</td>
+													<td>${fn:substringBefore(fn:replace(rows.createTime, '-', ''),' ')}${rows.routeID}</td>
 													<td>${rows.startingAddress}</td>
 													<td>${rows.destinationAddress}</td>
 													<c:if test="${not empty dri }">
-														<c:forEach var="driver" items="${dri }">
-															<c:if test="${driver.driverID==rows.driverID }">
+														<c:forEach var="driver" items="${dri}">
+															<c:if test="${driver.driverID==rows.driverID}">
 																<td>${driver.point }</td>
 															</c:if>
 														</c:forEach>
 													</c:if>
 													<td><a class="button"
-														href="DealServlet?btnAction=viewDetailRouter&idRouter=${rows.routeID }"">
+														href="DealServlet?btnAction=routeDetail&routeID=${rows.routeID}"">
 															<i class="icon-ok"></i> Xem chi tiết
 													</a></td>
 												</tr>

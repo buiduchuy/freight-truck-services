@@ -73,12 +73,12 @@
 												${account}!</a>
 											<ul class="sub-topbar">
 												<li><a
-													href="ControllerManageGoods?btnAction=manageGoods"><i
+													href="GoodsServlet?btnAction=manageGoods"><i
 														class="icon-desktop"></i>Quản lý hàng</a></li>
 												<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
 														hình tài khoản</a></li>
 
-												<li><a href="AccountServlet?btnAction=offAccount"><i
+												<li><a href="AccountServlet?btnAction=logout"><i
 														class="icon-off"></i>Đăng xuất</a></li>
 											</ul></li>
 									</ul>
@@ -117,11 +117,11 @@
 								<c:when
 									test="${namePage=='quan-ly-hang.jsp' or namePage=='chi-tiet-hang.jsp'or namePage=='goi-y-he-thong.jsp' or namePage=='chi-tiet-route.jsp' or namePage=='chi-tiet-de-nghi.jsp'or namePage=='danh-sach-de-nghi.jsp'or namePage=='cleardeliveryAddress.jsp' or namePage=='clearpickupAddress.jsp'}">
 									<li class="active"><a
-										href="ControllerManageGoods?btnAction=manageGoods"><i
+										href="GoodsServlet?btnAction=manageGoods"><i
 											class="icon-truck"></i> Quản lý hàng</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="ControllerManageGoods?btnAction=manageGoods"><i
+									<li><a href="GoodsServlet?btnAction=manageGoods"><i
 											class="icon-truck"></i> Quản lý hàng</a></li>
 
 								</c:otherwise>

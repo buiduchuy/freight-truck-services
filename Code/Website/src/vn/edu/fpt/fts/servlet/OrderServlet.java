@@ -29,7 +29,11 @@ import vn.edu.fpt.fts.pojo.Route;
  * Servlet implementation class OrderServlet
  */
 public class OrderServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2214798247911372640L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()

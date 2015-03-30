@@ -33,7 +33,6 @@
 						<form action="#" method="post" accept-charset="utf-8"
 							enctype="multipart/form-data" data-abide=""
 							novalidate="novalidate">
-							<div class="row">
 								<div class="row">
 									<div class="large-12 columns">
 										<h2 class="page-title">
@@ -65,7 +64,7 @@
 											%>
 										</c:if>
 									</div>
-									<c:set var="error" value="${sessionScope.errorSendSuggest}" />
+									<c:set var="error" value="${sessionScope.errorSendDeal}" />
 									<c:if test="${not empty error}">
 										<font color="red">${error}</font>
 									</c:if>
@@ -128,28 +127,19 @@
 										</div>
 
 
-
-
 										<div class="row">
 											<div class="submit-area right">
 												<a class="button success"
-													href="DealServlet?btnAction=sendSuggest&txtrouteID=${detailRoute.routeID }&txtgoodID=${detailGood1.goodsID}"
+													href="DealServlet?btnAction=sendDeal&routeID=${detailRoute.routeID }&goodsID=${detailGood1.goodsID}"
 													onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 													<i class="icon-envelope"></i> Gửi để nghị
 												</a>
 
 											</div>
-
-											</br>
-
 										</div>
-
 									</div>
 									<div class="row"></div>
 									<div class="row"></div>
-
-
-
 								</div>
 						</form>
 					</c:when>
@@ -157,8 +147,6 @@
 						<jsp:forward page="goi-y-he-thong.jsp" />
 					</c:otherwise>
 				</c:choose>
-
-
 			</div>
 		</div>
 	</div>

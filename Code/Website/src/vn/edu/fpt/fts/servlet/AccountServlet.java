@@ -25,7 +25,15 @@ import vn.edu.fpt.fts.pojo.Owner;
  * Servlet implementation class AccountServlet
  */
 public class AccountServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7417093355444344728L;
+	GoodsCategoryDAO goodsCategory = new GoodsCategoryDAO();
+	AccountDAO accountDao = new AccountDAO();
+	GoodsDAO goodsDao = new GoodsDAO();
+	OwnerDAO ownerDao = new OwnerDAO();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -60,39 +68,39 @@ public class AccountServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			GoodsCategoryDAO goodCa = new GoodsCategoryDAO();
-			AccountDAO accountDao = new AccountDAO();
-			GoodsDAO goodDao = new GoodsDAO();
-			OwnerDAO ownerDao = new OwnerDAO();
-			/* TODO output your page here. You may use following sample code. */
-			if ("login".equals(action)) {
+			
+			if (action.equalsIgnoreCase("login")) {
 				String email = request.getParameter("txtEmail");
 				String password = request.getParameter("txtPassword");
+				
 				session.removeAttribute("errorLogin");
 				session.removeAttribute("account");
+				
 				if (accountDao.checkLoginAccount(email, password) != null) {
-					Owner owner = ownerDao.getOwnerByEmail(accountDao.checkLoginAccount(email,
-							password).getEmail());
-					List<GoodsCategory> list = goodCa.getAllGoodsCategory();
+					Owner owner = ownerDao.getOwnerByEmail(accountDao
+							.checkLoginAccount(email, password).getEmail());
+					List<GoodsCategory> l_goodsCategory = goodsCategory
+							.getAllGoodsCategory();
 
-					GoodsCategory[] typeGoods = new GoodsCategory[list.size()];
-					list.toArray(typeGoods);
-					session.setAttribute("typeGoods", typeGoods);
+					session.setAttribute("typeGoods", l_goodsCategory);
 					session.setAttribute("owner", owner);
 					session.setAttribute("account", owner.getLastName());
-					List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
-							.getOwnerID());
+					
+					List<Goods> manageGood = goodsDao
+							.getListGoodsByOwnerID(owner.getOwnerID());
 					List<Goods> manageGood1 = new ArrayList<Goods>();
 					for (int i = 0; i < manageGood.size(); i++) {
 						if (manageGood.get(i).getActive() == 1) {
 							manageGood.get(i).setPickupTime(
 									Common.changeFormatDate(manageGood.get(i)
 											.getPickupTime(),
-											"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+											"yyyy-MM-dd hh:mm:ss.s",
+											"dd-MM-yyyy"));
 							manageGood.get(i).setDeliveryTime(
 									Common.changeFormatDate(manageGood.get(i)
 											.getDeliveryTime(),
-											"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
+											"yyyy-MM-dd hh:mm:ss.s",
+											"dd-MM-yyyy"));
 							manageGood1.add(manageGood.get(i));
 						}
 					}
@@ -100,7 +108,8 @@ public class AccountServlet extends HttpServlet {
 					manageGood1.toArray(list1);
 					session.setAttribute("listGood1", list1);
 					if (session.getAttribute("namePage") != null) {
-						String prePage = (String) session.getAttribute("namePage");
+						String prePage = (String) session
+								.getAttribute("namePage");
 						RequestDispatcher rd = request
 								.getRequestDispatcher(prePage);
 						rd.forward(request, response);
@@ -116,13 +125,15 @@ public class AccountServlet extends HttpServlet {
 							.getRequestDispatcher("dang-nhap.jsp");
 					rd.forward(request, response);
 				}
-			}if ("offAccount".equals(action)) {
+			}
+			if (action.equalsIgnoreCase("logout")) {
 				session.removeAttribute("account");
 				session.removeAttribute("router");
 				session.removeAttribute("good");
 				session.removeAttribute("price");
 				session.removeAttribute("typeGoods");
-				RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+				RequestDispatcher rd = request
+						.getRequestDispatcher("index.jsp");
 				rd.forward(request, response);
 			}
 		}

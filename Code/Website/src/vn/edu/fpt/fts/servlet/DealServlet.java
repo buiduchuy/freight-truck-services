@@ -28,7 +28,15 @@ import vn.edu.fpt.fts.process.DealProcess;
  * Servlet implementation class DealServlet
  */
 public class DealServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8407199342277331481L;
+	DealProcess dealProcess = new DealProcess();
+	RouteDAO routeDao = new RouteDAO();
+	GoodsDAO goodDao = new GoodsDAO();
+	DealDAO dealDao = new DealDAO();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -59,52 +67,46 @@ public class DealServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			DealProcess dealProcess = new DealProcess();
-			RouteDAO routeDao = new RouteDAO();
-			GoodsDAO goodDao = new GoodsDAO();
-			DealDAO dealDao = new DealDAO();
-			if ("viewDetailRouter".equals(action)) {
-				int idRouter = Integer.parseInt(request
-						.getParameter("idRouter"));
-				Route router = routeDao.getRouteByID(idRouter);
-				router.setStartTime(Common.changeFormatDate(
-						router.getStartTime(), "yyyy-MM-dd hh:mm:ss.s",
+
+			if (action.equalsIgnoreCase("routeDetail")) {
+				int routeID = Integer.parseInt(request.getParameter("routeID"));
+				Route route = routeDao.getRouteByID(routeID);
+				route.setStartTime(Common.changeFormatDate(
+						route.getStartTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"hh:mm dd-MM-yyyy"));
-				router.setFinishTime(Common.changeFormatDate(
-						router.getFinishTime(), "yyyy-MM-dd hh:mm:ss.s",
+				route.setFinishTime(Common.changeFormatDate(
+						route.getFinishTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"dd-MM-yyyy"));
-				session.setAttribute("viewDetailRoute", router);
+				session.setAttribute("viewDetailRoute", route);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("chi-tiet-route.jsp");
 				rd.forward(request, response);
-			}
-			if ("sendSuggest".equals(action)) {
+			} else if (action.equalsIgnoreCase("sendDeal")) {
 				session.getAttribute("detailGood1");
-				int idGood = Integer
-						.parseInt(request.getParameter("txtgoodID"));
-				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+				int goodsID = Integer.parseInt(request.getParameter("goodsID"));
+				Goods goods = goodDao.getGoodsByID(goodsID);
+				if (goods.getActive() == Common.deactivate) {
 					session.setAttribute("messageError",
 							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
 					rd.forward(request, response);
 				} else {
-					int idRoute = Integer.parseInt(request
-							.getParameter("txtrouteID"));
-					if (goodDao.getGoodsByID(idGood) != null) {
-						Goods good = goodDao.getGoodsByID(idGood);
-						Route route = routeDao.getRouteByID(idRoute);
+					int routeID = Integer.parseInt(request
+							.getParameter("routeID"));
+					if (goods != null) {
+						Route route = routeDao.getRouteByID(routeID);
 						DateFormat dateFormat = new SimpleDateFormat(
 								"yyyy/MM/dd HH:mm:ss");
 						Date date = new Date();
 						String createTime = dateFormat.format(date);
 						List<Deal> listDealByGoodID = dealDao
-								.getDealByGoodsID(good.getGoodsID());
+								.getDealByGoodsID(goods.getGoodsID());
 						int idDealFa = 0;
 						if (listDealByGoodID.size() != 0) {
 
 							for (int i = 0; i < listDealByGoodID.size(); i++) {
-								if (listDealByGoodID.get(i).getRouteID() == idRoute
+								if (listDealByGoodID.get(i).getRouteID() == routeID
 										&& listDealByGoodID.get(i)
 												.getRefDealID() == 0) {
 									idDealFa = listDealByGoodID.get(i)
@@ -113,9 +115,9 @@ public class DealServlet extends HttpServlet {
 							}
 						}
 						if (idDealFa == 0) {
-							Deal newDeal = new Deal(good.getPrice(),
-									good.getNotes(), createTime, "owner",
-									route.getRouteID(), good.getGoodsID(), 0,
+							Deal newDeal = new Deal(goods.getPrice(),
+									goods.getNotes(), createTime, "owner",
+									route.getRouteID(), goods.getGoodsID(), 0,
 									1, 1);
 
 							if (dealDao.insertDeal(newDeal) != -1) {
@@ -123,21 +125,21 @@ public class DealServlet extends HttpServlet {
 								session.setAttribute("messageSuccess",
 										"Gửi đề nghị thành công");
 								RequestDispatcher rd = request
-										.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
-												+ idGood);
+										.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
+												+ goodsID);
 								rd.forward(request, response);
 							} else {
 								session.setAttribute("messageError",
 										"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
 								RequestDispatcher rd = request
-										.getRequestDispatcher("DealServlet?btnAction=sendSuggest&routeID="
-												+ idRoute);
+										.getRequestDispatcher("DealServlet?btnAction=sendDeal&routeID="
+												+ routeID);
 								rd.forward(request, response);
 							}
 						} else {
-							Deal newDeal = new Deal(good.getPrice(),
-									good.getNotes(), createTime, "owner",
-									route.getRouteID(), good.getGoodsID(),
+							Deal newDeal = new Deal(goods.getPrice(),
+									goods.getNotes(), createTime, "owner",
+									route.getRouteID(), goods.getGoodsID(),
 									idDealFa, 1, 1);
 
 							if (dealDao.insertDeal(newDeal) != -1) {
@@ -145,23 +147,22 @@ public class DealServlet extends HttpServlet {
 								session.setAttribute("messageSuccess",
 										"Gửi đề nghị thành công");
 								RequestDispatcher rd = request
-										.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
-												+ idGood);
+										.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
+												+ goodsID);
 								rd.forward(request, response);
 							} else {
 								session.setAttribute("messageError",
 										"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
 								RequestDispatcher rd = request
-										.getRequestDispatcher("DealServlet?btnAction=sendSuggest&routeID="
-												+ idRoute);
+										.getRequestDispatcher("DealServlet?btnAction=sendDeal&routeID="
+												+ routeID);
 								rd.forward(request, response);
 							}
 						}
 
 					}
 				}
-			}
-			if ("viewSuggest".equals(action)) {
+			} else if (action.equalsIgnoreCase("viewSuggest")) {
 				int idGood = Integer
 						.parseInt(request.getParameter("txtIdGood"));
 				List<Deal> listDealByGoodId = dealDao.getDealByGoodsID(idGood);
@@ -170,7 +171,7 @@ public class DealServlet extends HttpServlet {
 					session.setAttribute("messageError",
 							"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
 					RequestDispatcher rd = request
-							.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+							.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
 									+ idGood);
 					rd.forward(request, response);
 				} else {
@@ -194,14 +195,13 @@ public class DealServlet extends HttpServlet {
 						session.setAttribute("messageError",
 								"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
 						RequestDispatcher rd = request
-								.getRequestDispatcher("ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood="
+								.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
 										+ idGood);
 						rd.forward(request, response);
 					}
 
 				}
-			}
-			if ("viewDetailDeal".equals(action)) {
+			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
 				int idDeal = Integer.parseInt(request.getParameter("dealID"));
 				Deal dealFa = dealDao.getDealByID(idDeal);
 				List<Deal> list = new ArrayList<Deal>();
@@ -226,8 +226,7 @@ public class DealServlet extends HttpServlet {
 				RequestDispatcher rd = request
 						.getRequestDispatcher("chi-tiet-de-nghi.jsp");
 				rd.forward(request, response);
-			}
-			if ("sendOffer".equals(action)) {
+			} else if (action.equalsIgnoreCase("sendOffer")) {
 				int idDealFa = ((Deal) session.getAttribute("dealFa"))
 						.getDealID();
 
@@ -274,8 +273,7 @@ public class DealServlet extends HttpServlet {
 						rd.forward(request, response);
 					}
 				}
-			}
-			if ("confirmDeal".equals(action)) {
+			} else if (action.equalsIgnoreCase("confirmDeal")) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
@@ -297,8 +295,7 @@ public class DealServlet extends HttpServlet {
 
 					}
 				}
-			}
-			if ("declineDeal".equals(action)) {
+			} else if (action.equalsIgnoreCase("declineDeal")) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
@@ -318,8 +315,7 @@ public class DealServlet extends HttpServlet {
 						rd.forward(request, response);
 					}
 				}
-			}
-			if ("cancelDeal".equals(action)) {
+			} else if (action.equalsIgnoreCase("cancelDeal")) {
 				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
 				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {

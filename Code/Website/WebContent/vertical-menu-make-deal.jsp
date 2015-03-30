@@ -6,11 +6,11 @@
 
 <a href="tao-hang-1.jsp" class="button info expand center">Tạo
 			hàng</a>
-<a href="ControllerManageGoods?btnAction=manageGoods"
+<a href="GoodsServlet?btnAction=manageGoods"
 	class="button info expand left">Quản lý hàng</a>
 	<ul class="">
 
-	<li><a href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }" class="button expand secondary">Gợi ý lộ trình
+	<li><a href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }" class="button expand secondary">Gợi ý lộ trình
 			phù hợp</a></li>
 	<li><a href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }" class="button expand secondary">Danh sách các đề nghị</a></li>
 </ul>

@@ -57,16 +57,6 @@
 	</servlet-mapping>
 	<servlet>
 		<description></description>
-		<display-name>ControllerManageGoods</display-name>
-		<servlet-name>ControllerManageGoods</servlet-name>
-		<servlet-class>vn.edu.fpt.fts.servlet.ControllerManageGoods</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ControllerManageGoods</servlet-name>
-		<url-pattern>/ControllerManageGoods</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<description></description>
 		<display-name>DealServlet</display-name>
 		<servlet-name>DealServlet</servlet-name>
 		<servlet-class>vn.edu.fpt.fts.servlet.DealServlet</servlet-class>

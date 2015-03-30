@@ -21,12 +21,12 @@
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 				<a class="button alert expand center">MENU</a> <a
 					href="tao-hang-1.jsp" class="button info expand center">Tạo
-					hàng</a> <a href="ControllerManageGoods?btnAction=manageGoods"
+					hàng</a> <a href="GoodsServlet?btnAction=manageGoods"
 					class="button info expand left">Quản lý hàng</a>
 				<ul class="">
 
 					<!-- <li><a
-						href="ControllerManageGoods?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID}"
+						href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID}"
 						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>-->
 					<li><a
 						href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
@@ -46,7 +46,7 @@
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 				<div class="form-content">
-					<form action="ControllerManageGoods" method="post"
+					<form action="GoodsServlet" method="post"
 						accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
