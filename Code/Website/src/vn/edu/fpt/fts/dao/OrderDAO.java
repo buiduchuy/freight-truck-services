@@ -280,4 +280,24 @@ public class OrderDAO {
 		}
 		return order;
 	}
+
+	public List<Order> getOrderByOwnerID(int ownerID) {
+		OrderDAO orderDao = new OrderDAO();
+		List<Order> list = new ArrayList<Order>();
+		
+		List<Order> listOrder = new ArrayList<Order>();
+
+		list = orderDao.getAllOrder();
+
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getDeal() != null) {
+				if (list.get(i).getDeal().getGoods() != null) {
+					if (list.get(i).getDeal().getGoods().getOwnerID() == ownerID) {
+						listOrder.add(list.get(i));
+					}
+				}
+			}
+		}
+		return listOrder;
+	}
 }

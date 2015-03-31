@@ -1,9 +1,3 @@
-<%-- 
-    Document   : chi-tiet-de-nghi
-    Created on : Jan 31, 2015, 12:01:24 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Chi tiết đề nghị</title>
@@ -17,11 +11,6 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<jsp:include page="vertical-menu-make-deal.jsp" />
-			<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>

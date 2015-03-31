@@ -86,27 +86,25 @@ public class AccountServlet extends HttpServlet {
 					session.setAttribute("owner", owner);
 					session.setAttribute("account", owner.getLastName());
 					
-					List<Goods> manageGood = goodsDao
+					List<Goods> listGoodsByOwner = goodsDao
 							.getListGoodsByOwnerID(owner.getOwnerID());
-					List<Goods> manageGood1 = new ArrayList<Goods>();
-					for (int i = 0; i < manageGood.size(); i++) {
-						if (manageGood.get(i).getActive() == 1) {
-							manageGood.get(i).setPickupTime(
-									Common.changeFormatDate(manageGood.get(i)
+					List<Goods> listGoods = new ArrayList<Goods>();
+					for (int i = 0; i < listGoodsByOwner.size(); i++) {
+						if (listGoodsByOwner.get(i).getActive() == 1) {
+							listGoodsByOwner.get(i).setPickupTime(
+									Common.changeFormatDate(listGoodsByOwner.get(i)
 											.getPickupTime(),
 											"yyyy-MM-dd hh:mm:ss.s",
 											"dd-MM-yyyy"));
-							manageGood.get(i).setDeliveryTime(
-									Common.changeFormatDate(manageGood.get(i)
+							listGoodsByOwner.get(i).setDeliveryTime(
+									Common.changeFormatDate(listGoodsByOwner.get(i)
 											.getDeliveryTime(),
 											"yyyy-MM-dd hh:mm:ss.s",
 											"dd-MM-yyyy"));
-							manageGood1.add(manageGood.get(i));
+							listGoods.add(listGoodsByOwner.get(i));
 						}
 					}
-					Goods[] list1 = new Goods[manageGood1.size()];
-					manageGood1.toArray(list1);
-					session.setAttribute("listGood1", list1);
+					session.setAttribute("listGoods", listGoods);
 					if (session.getAttribute("namePage") != null) {
 						String prePage = (String) session
 								.getAttribute("namePage");
@@ -132,9 +130,7 @@ public class AccountServlet extends HttpServlet {
 				session.removeAttribute("good");
 				session.removeAttribute("price");
 				session.removeAttribute("typeGoods");
-				RequestDispatcher rd = request
-						.getRequestDispatcher("index.jsp");
-				rd.forward(request, response);
+				response.sendRedirect("index.jsp");
 			}
 		}
 	}

@@ -44,6 +44,18 @@ public class ProcessServlet extends HttpServlet {
 		if (action.equalsIgnoreCase("Login")) {
 			request.getRequestDispatcher(accountServlet).forward(request,
 					response);
+		} else if (action.equalsIgnoreCase("createGoods")) {
+			request.getRequestDispatcher("tao-hang-1.jsp").forward(request,
+					response);
+		} else if (action.equalsIgnoreCase("manageGoods")) {
+			request.getRequestDispatcher(goodsServlet).forward(request,
+					response);
+		} else if (action.equalsIgnoreCase("manageDeal")) {
+			request.getRequestDispatcher(dealServlet)
+					.forward(request, response);
+		} else if (action.equalsIgnoreCase("manageOrder")) {
+			request.getRequestDispatcher(orderServlet).forward(request,
+					response);
 		} else if (action.equalsIgnoreCase("Logout")) {
 			request.getRequestDispatcher(accountServlet).forward(request,
 					response);
@@ -56,11 +68,15 @@ public class ProcessServlet extends HttpServlet {
 		} else if (action.equalsIgnoreCase("sendDeal")) {
 			request.getRequestDispatcher(dealServlet)
 					.forward(request, response);
-		}
-
-		else if (action.equalsIgnoreCase("getNotification")) {
+		} else if (action.equalsIgnoreCase("getNotification")) {
 			request.getRequestDispatcher(notificationServlet).forward(request,
 					response);
+		} else if (action.equalsIgnoreCase("viewDetailOrder")) {
+			request.getRequestDispatcher(orderServlet).forward(request,
+					response);
+		} else if (action.equalsIgnoreCase("viewDetailDeal")) {
+			request.getRequestDispatcher(dealServlet)
+					.forward(request, response);
 		}
 
 	}

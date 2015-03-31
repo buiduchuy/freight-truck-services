@@ -5,7 +5,6 @@
 <title>Hello jQuery</title>
 <script src="js/jquery.js"></script>
 <script type="text/javascript">
-	var oldListNoti;
 	$(document)
 			.ready(
 					function() {

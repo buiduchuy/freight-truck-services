@@ -1,9 +1,3 @@
-<%-- 
-    Document   : chi-tiet-tai-xe
-    Created on : Jan 30, 2015, 10:58:01 PM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Chi tiết tài xế</title>

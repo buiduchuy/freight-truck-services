@@ -1,9 +1,3 @@
-<%-- 
-    Document   : dang-nhap
-    Created on : Jan 30, 2015, 7:59:25 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -60,13 +54,13 @@
 						</c:if>
 						<div class="row text-left">
 							<label><i class="icon-user"></i> Tài khoản</label> <input
-								type="email"
+								type="text"
 								placeholder="Xin hãy nhập email đăng nhập vào đây..."
 								required=""
 								data-errormessage-value-missing="Vui lòng nhập Email!"
-								data-errormessage-type-mismatch="Bạn nhập email không đúng dạng. Email phải có dạng: abc@abc.com"
 								name="txtEmail" />
 						</div>
+						<!--  type="email" data-errormessage-type-mismatch="Bạn nhập email không đúng dạng. Email phải có dạng: abc@abc.com"-->
 						<div class="row text-left">
 							<label><i class="icon-key"></i> Mật khẩu</label> <input
 								type="password" placeholder="Nhập mật khẩu đăng nhập"

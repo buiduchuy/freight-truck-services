@@ -1,9 +1,3 @@
-<%-- 
-    Document   : tao-hang-1
-    Created on : Jan 30, 2015, 11:21:10 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Chi Tiết Hàng</title>
@@ -19,26 +13,25 @@
 		<div class="small-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-				<a class="button alert expand center">MENU</a> <a
-					href="tao-hang-1.jsp" class="button info expand center">Tạo
-					hàng</a> <a href="GoodsServlet?btnAction=manageGoods"
-					class="button info expand left">Quản lý hàng</a>
-				<ul class="">
+				<a class="button alert expand left">Trình đơn</a>
+				<a
+					href="ProcessServlet?btnAction=createGoods"
+					class="button info expand left">Tạo hàng</a>
+				<a	href="ProcessServlet?btnAction=manageGoods"
+					class="button info expand left">Quản lý hàng</a> 
+				<a	href="ProcessServlet?btnAction=manageDeal"
+					class="button info expand left">Quản lý đề nghị</a>
+				<!-- <ul class="">
 
-					<!-- <li><a
+					<li><a
 						href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID}"
-						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>-->
+						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
 					<li><a
 						href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
-						class="button expand secondary">Danh sách các đề nghị</a></li>
+						class="button expand secondary">Danh sách các đề nghị</a></li>-->
 				</ul>
-				<a href="OrderServlet?btnAction=manageOrder"
+				<a href="ProcessServlet?btnAction=manageOrder"
 					class="button info expand left">Quản lý hoá đơn</a>
-				<div class="row"></div>
-			</div>
-			<div class="form-content "
-				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-				<jsp:include page="vertical-pr.jsp" />
 				<div class="row"></div>
 			</div>
 		</div>
@@ -46,8 +39,7 @@
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 				<div class="form-content">
-					<form action="GoodsServlet" method="post"
-						accept-charset="utf-8">
+					<form action="GoodsServlet" method="post" accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
@@ -81,8 +73,6 @@
 									%>
 								</c:if>
 							</div>
-
-
 
 
 							<div class="large-12 columns">
@@ -291,8 +281,6 @@
 
 											</button>
 
-
-
 										</div>
 										</br>
 									</div>
@@ -300,104 +288,96 @@
 								<div class="row"></div>
 							</div>
 					</form>
-
-
 				</div>
 			</div>
 		</div>
 
 	</div>
 
-
-
-
-
-
 </c:if>
 
 <!-- autocomplete place google API -->
-<script> src = "https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places" ></script>
+<script
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 <script>
-            // Script autocomplete place for location pick up and location delivery
-            // of the Google Places API to help users fill in the information.
+	// Script autocomplete place for location pick up and location delivery
+	// of the Google Places API to help users fill in the information.
 
-            var placeSearch, place_start, place_end
-    var options = {
-        types: ['geocode'],
-        componentRestrictions: {country: "vn"}
-    };
-    function auto() {
-        place_start = new google.maps.places.Autocomplete(
-                (document.getElementById('place_start')), options);
-        place_end = new google.maps.places.Autocomplete(
-                (document.getElementById('place_end')), options);
-    }
+	var placeSearch, place_start, place_end
+	var options = {
+		types : [ 'geocode' ],
+		componentRestrictions : {
+			country : "vn"
+		}
+	};
+	function auto() {
+		place_start = new google.maps.places.Autocomplete((document
+				.getElementById('place_start')), options);
+		place_end = new google.maps.places.Autocomplete((document
+				.getElementById('place_end')), options);
+	}
 
-    function geolocate() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                var geolocation = new google.maps.LatLng(
-                        position.coords.latitude, position.coords.longitude);
-                var circle = new google.maps.Circle({
-                    center: geolocation,
-                    radius: position.coords.accuracy
-                });
-                autocomplete.setBounds(circle.getBounds());
-            });
-        }
-    }
+	function geolocate() {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(position) {
+				var geolocation = new google.maps.LatLng(
+						position.coords.latitude, position.coords.longitude);
+				var circle = new google.maps.Circle({
+					center : geolocation,
+					radius : position.coords.accuracy
+				});
+				autocomplete.setBounds(circle.getBounds());
+			});
+		}
+	}
 </script>
 <!-- end -->
 
 <script>
+	$(function() {
+		window.prettyPrint && prettyPrint();
+		$('#d-pick-up-date').fdatepicker({});
+		$('#d-dilivery-date').fdatepicker({});
 
-            $(function () {
-                window.prettyPrint && prettyPrint();
-                $('#d-pick-up-date').fdatepicker({
-                });
-                $('#d-dilivery-date').fdatepicker({
-                });
-            
-                var nowTemp = new Date();
-                var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-                var checkin = $('#pick-up-date').fdatepicker({
-                    onRender: function (date) {
-                        return date.valueOf() < now.valueOf() ? 'disabled' : '';
-                    }
-                })
-                .on('changeDate', function (ev) {
-                    if (ev.date.valueOf() > checkout.date.valueOf()) {
-                        var newDate = new Date(ev.date)
-                        newDate.setDate(newDate.getDate() + 1);
-                        checkout.update(newDate);
-                    }
-                    checkin.hide();
-                 
-                }).data('datepicker');
-                
-            
-                
-                
-                
-                
-                var checkout = $('#dilivery-date').fdatepicker({
-                    onRender: function (date) {
-                        return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
-                    }
-                }).on('changeDate', function (ev) {
-                    checkout.hide();
-                }).data('datepicker');
-                
-                
-                
-                var checkout1 = $('#dilivery-date').fdatepicker({
-                    onRender: function (date) {
-                        return date.valueOf() >= (checkin.date.valueOf()+3) ? 'disabled' : '';
-                    }
-                }).on('changeDate1', function (ev) {
-                    checkout1.hide();
-                }).data('datepicker');
-            });
-        </script>
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp
+				.getDate(), 0, 0, 0, 0);
+		var checkin = $('#pick-up-date').fdatepicker({
+			onRender : function(date) {
+				return date.valueOf() < now.valueOf() ? 'disabled' : '';
+			}
+		}).on('changeDate', function(ev) {
+			if (ev.date.valueOf() > checkout.date.valueOf()) {
+				var newDate = new Date(ev.date)
+				newDate.setDate(newDate.getDate() + 1);
+				checkout.update(newDate);
+			}
+			checkin.hide();
+
+		}).data('datepicker');
+
+		var checkout = $('#dilivery-date')
+				.fdatepicker(
+						{
+							onRender : function(date) {
+								return date.valueOf() <= checkin.date.valueOf() ? 'disabled'
+										: '';
+							}
+						}).on('changeDate', function(ev) {
+					checkout.hide();
+				}).data('datepicker');
+
+		var checkout1 = $('#dilivery-date')
+				.fdatepicker(
+						{
+							onRender : function(date) {
+								return date.valueOf() >= (checkin.date
+										.valueOf() + 3) ? 'disabled' : '';
+							}
+						}).on('changeDate1', function(ev) {
+					checkout1.hide();
+				}).data('datepicker');
+	});
+</script>
 
 <jsp:include page="footer.jsp" />

@@ -445,7 +445,7 @@ public class GoodsServlet extends HttpServlet {
 				}
 				Goods[] list1 = new Goods[manageGood1.size()];
 				manageGood1.toArray(list1);
-				session.setAttribute("listGood1", list1);
+				session.setAttribute("listGoods", list1);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("quan-ly-hang.jsp");
 				rd.forward(request, response);
@@ -582,7 +582,7 @@ public class GoodsServlet extends HttpServlet {
 					session.setAttribute("messageSuccess",
 							"Xoá hàng thành công!");
 					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=manageGoods");
+							.getRequestDispatcher("ProcessServlet?btnAction=manageGoods");
 					rd.forward(request, response);
 				} else {
 					session.setAttribute("messageError",
@@ -636,7 +636,7 @@ public class GoodsServlet extends HttpServlet {
 				}
 				Goods[] list1 = new Goods[manageGood1.size()];
 				manageGood1.toArray(list1);
-				session.setAttribute("listGood1", list1);
+				session.setAttribute("listGoods", list1);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("quan-ly-hang.jsp");
 				rd.forward(request, response);

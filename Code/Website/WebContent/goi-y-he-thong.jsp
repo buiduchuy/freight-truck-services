@@ -1,9 +1,3 @@
-<%-- 
-    Document   : tao-hang-1
-    Created on : Jan 30, 2015, 11:21:10 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Gợi ý hệ thống</title>
@@ -16,26 +10,25 @@
 	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<a class="button alert expand center">MENU</a> <a href="tao-hang-1.jsp"
-				class="button info expand center">Tạo hàng</a> <a
-				href="GoodsServlet?btnAction=manageGoods"
+			<a class="button alert expand left">Trình đơn</a> 
+			
+			<a href="ProcessServlet?btnAction=createGoods"
+				class="button info expand left">Tạo hàng</a> 
+			<a	href="ProcessServlet?btnAction=manageGoods"
 				class="button info expand left">Quản lý hàng</a>
-			<ul class="">
+				<a	href="ProcessServlet?btnAction=manageDeal"
+				class="button info expand left">Quản lý đề nghị</a>
+			<!--<ul class="">
 
 				<li><a
 					href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
 					class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
 				<li><a
 					href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
-					class="button expand secondary">Danh sách các đề nghị</a></li>
+					class="button expand secondary">Danh sách các đề nghị</a></li>-->
 			</ul>
-			<a href="OrderServlet?btnAction=manageOrder"
+			<a href="ProcessServlet?btnAction=manageOrder"
 				class="button info expand left">Quản lý hoá đơn</a>
-			<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>
@@ -51,7 +44,7 @@
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
-									<font color="orange">Danh sách các lộ trình thích hợp</font>
+									<font color="orange">Danh sách tuyến đường phù hợp</font>
 								</h2>
 								<c:set var="messageSuccess"
 									value="${sessionScope.messageSuccess }" />
@@ -84,10 +77,10 @@
 									<thead>
 										<tr>
 											<th><font color="orange">#</font></th>
-											<th><font color="orange">Mã tuyến đường</font></th>
-											<th><font color="orange">Địa điểm bắt đầu</font></th>
-											<th><font color="orange">Địa điểm kết thúc</font></th>
-											<th><font color="orange">Điểm uy tín</font></th>
+											<th><font color="orange">MÃ</font></th>
+											<th><font color="orange">ĐIỂM BẮT ĐẦU</font></th>
+											<th><font color="orange">ĐIỂM KẾT THÚC</font></th>
+											<th><font color="orange">ĐIỂM UY TÍN</font></th>
 											<th></th>
 										</tr>
 									</thead>
@@ -115,32 +108,17 @@
 													</a></td>
 												</tr>
 											</c:forEach>
-
 										</c:if>
 									</tbody>
 								</table>
 								</br> </br>
 							</div>
-
-
 						</div>
 				</form>
-
-
 			</div>
-
 		</div>
 	</div>
 
 </div>
-
-
-
-
-
-
-
-
-
 
 <jsp:include page="footer.jsp" />

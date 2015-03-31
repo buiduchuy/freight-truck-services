@@ -396,7 +396,8 @@
 		 * sZeroRecords - assuming that is given.
 		 */
 		if ( ! lang.sEmptyTable && zeroRecords &&
-			defaults.sEmptyTable === "No data available in table" )
+			//defaults.sEmptyTable === "No data available in table" )
+				defaults.sEmptyTable === "Không có kết quả nào" )
 		{
 			_fnMap( lang, lang, 'sZeroRecords', 'sEmptyTable' );
 		}
@@ -11073,7 +11074,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sEmptyTable": "No data available in table",
+			"sEmptyTable": "Không có kết quả nào",
 	
 	
 			/**
@@ -11104,8 +11105,9 @@
 			 *        }
 			 *      } );
 			 *    } );
+			 *    "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
 			 */
-			"sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+			"sInfo": "Hiển thị từ _START_ đến _END_ của _TOTAL_ kết quả",
 	
 	
 			/**
@@ -11126,7 +11128,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoEmpty": "Showing 0 to 0 of 0 entries",
+			"sInfoEmpty": "Hiển thị từ 0 đến 0 của 0 kết quả",
 	
 	
 			/**

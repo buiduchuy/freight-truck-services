@@ -1,9 +1,3 @@
-<%-- 
-    Document   : quan-ly-hang.jsp
-    Created on : Jan 30, 2015, 11:21:10 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Quản lý hàng</title>
@@ -15,16 +9,13 @@
 <jsp:include page="header.jsp" />
 <script src="js/foundation-datepicker.js"></script>
 <link rel="stylesheet" href="css/foundation-datepicker.css">
+
+
 <div class="large-12 columns">
 	<div class="small-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<jsp:include page="vertical-menu-manage-good.jsp" />
-			<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>
@@ -40,60 +31,51 @@
 								<font color="orange">Quản lý hàng</font>
 							</h2>
 						</div>
-
-
-
-
 						<div class="large-12 columns">
 							<div class="filter-bar">
 
-								<div class="row">
-									<div class="large-5 columns">
-										<div class="large-4 columns ">
-											<label class="right inline">Loại hàng: </label>
-										</div>
-										<div class="large-8 columns">
+								<form action="OrderServlet" accept-charset="utf-8" id="frm-list-lading"	method="GET">									<div class="row">
+										<div class="large-3 columns">
 											<select required
 												data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 												name="ddlgoodsCategoryID">
-												<option value="0" selected="selected">Tất cả</option>
-												<c:forEach var="row" items="${typeGoods }">
-
-
-													<option value="${row.goodsCategoryId }">${row.name }</option>
-
+												<option value="0"
+																selected="selected">Tất cả</option>
+												<c:forEach var="row" items="${typeGoods}">
+													<c:choose>
+														<c:when test="${row.goodsCategoryId==1 }">
+															<option value="${row.goodsCategoryId}">${row.name}</option>
+														</c:when>
+														<c:otherwise>
+															<option value="${row.goodsCategoryId}">${row.name }</option>
+														</c:otherwise>
+													</c:choose>
 												</c:forEach>
 											</select>
 										</div>
+
+										<div class="large-3 columns">
+											<div class="date-picker-wrap">
+												<input type="text" value="Từ ngày" name="from_date"
+													placeholder="Từ ngày" class="date-picker" /> <i
+													class="icon-calendar"></i>
+											</div>
+										</div>
+
+										<div class="large-3 columns date-picker-wrap">
+											<div class="date-picker-wrap">
+												<input type="text" value="Đến ngày" name="to_date"
+													placeholder="Đến ngày" class="date-picker" /> <i
+													class="icon-calendar"></i>
+											</div>
+										</div>
+
+										<div class="large-3 columns">
+											<button class="js_search_lading">
+												<i class="icon-filter"></i> Lọc
+											</button>
+										</div>
 									</div>
-
-									<div class="large-5 columns">
-										<div class="large-4 columns ">
-											<label class="right inline">Ngày giao: </label>
-										</div>
-										<div class="large-8 columns">
-											<input type="text" name="txtstartdate" value="" id="dp1"
-												readonly="readonly">
-										</div>
-										</br> </br> </br>
-										<div class="large-4 columns ">
-											<label class="right inline">Ngày nhận: </label>
-										</div>
-										<div class="large-8 columns">
-											<input type="text" name="txtenddate" value="" id="dp2"
-												readonly="readonly">
-										</div>
-
-									</div>
-
-
-
-									<div class="large-2 columns">
-										<button name="btnAction" value="filter">
-											<i class="icon-filter"></i> Lọc
-										</button>
-									</div>
-								</div>
 				</form>
 
 			</div>
@@ -105,7 +87,7 @@
 							<th><font color="orange">#</font></th>
 							<th><font color="orange">MÃ HÀNG</font></th>
 							<th><font color="orange">LOẠI HÀNG</font></th>
-							<th><font color="orange">THỜI GIAN GIAO NHẬN HÀNG</font></th>
+							<th><font color="orange">THỜI GIAN</font></th>
 
 							<th><h4>
 									<font color="orange"></font>
@@ -114,7 +96,7 @@
 					</thead>
 					<tbody>
 						<c:set var="count" value="0" />
-						<c:set var="list1" value="${sessionScope.listGood1 }" />
+						<c:set var="list1" value="${sessionScope.listGoods}" />
 						<c:if test="${not empty list1 }">
 							<c:forEach var="good1" items="${list1 }">
 								<c:set var="count" value="${count+1 }" />
@@ -126,33 +108,24 @@
 											<td>${row.name }</td>
 										</c:if>
 									</c:forEach>
-									<td>Ngày giao: ${good1.pickupTime } </br>Ngày
-										nhận:${good1.deliveryTime }
+									<td>Ngày giao: ${good1.pickupTime }</br></br>Ngày
+										nhận: ${good1.deliveryTime }
 									</td>
 									<td><a class="button"
 										href="GoodsServlet?btnAction=viewDetailGood1&idGood=${good1.goodsID }">Xem
 											chi tiết</a></td>
 								</tr>
 							</c:forEach>
-
 						</c:if>
 					</tbody>
 
 				</table>
 			</div>
-
-
-
-			<div class="row"></div>
 			<div class="row"></div>
 		</div>
-
-
-
 	</div>
 </div>
 </div>
-
 </div>
 <script>
 	$(function() {

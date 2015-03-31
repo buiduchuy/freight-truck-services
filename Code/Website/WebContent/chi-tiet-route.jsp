@@ -1,9 +1,3 @@
-<%-- 
-    Document   : chi-tiet-route
-    Created on : Jan 30, 2015, 10:58:01 PM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Chi tiết lộ trình</title>
@@ -16,11 +10,6 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<jsp:include page="vertical-menu-make-deal.jsp" />
-			<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>

@@ -1,9 +1,3 @@
-<%-- 
-    Document   : dang-ky
-    Created on : Jan 30, 2015, 8:55:34 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Đăng ký</title>

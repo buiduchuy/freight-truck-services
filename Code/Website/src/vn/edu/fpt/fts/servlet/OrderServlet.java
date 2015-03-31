@@ -2,7 +2,6 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -13,11 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.dao.DealDAO;
-import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OrderStatusDAO;
-import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
@@ -51,73 +47,18 @@ public class OrderServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			RouteDAO routeDao = new RouteDAO();
-			GoodsDAO goodDao = new GoodsDAO();
-			DealDAO dealDao = new DealDAO();
 			OrderDAO orderDao = new OrderDAO();
 			OrderStatusDAO orderStatusDao = new OrderStatusDAO();
 
-			if ("manageOrder".equals(action)) {
+			if (action.equalsIgnoreCase("manageOrder")) {
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
+				List<Order> listOrder = orderDao.getOrderByOwnerID(owner
 						.getOwnerID());
-				List<Goods> manageGood1 = new ArrayList<Goods>();
-				for (int i = 0; i < manageGood.size(); i++) {
-					if (manageGood.get(i).getActive() == 0) {
-						manageGood.get(i).setPickupTime(
-								Common.changeFormatDate(manageGood.get(i)
-										.getPickupTime(),
-										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-						manageGood.get(i).setDeliveryTime(
-								Common.changeFormatDate(manageGood.get(i)
-										.getDeliveryTime(),
-										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-						manageGood1.add(manageGood.get(i));
-					}
-				}
-				Goods[] list1 = new Goods[manageGood1.size()];
-				manageGood1.toArray(list1);
+				
 				session.removeAttribute("orderStatus");
-				session.setAttribute("listOrder", list1);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("quan-ly-order.jsp");
-				rd.forward(request, response);
-			}
-			if ("viewDetailOrder".equals(action)) {
-				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				List<Deal> listDeal = dealDao.getDealByGoodsID(idGood);
-				Deal dea = new Deal();
-				for (Deal deal : listDeal) {
-					if (deal.getDealStatusID() == Common.deal_accept) {
-						dea = deal;
-					}
-				}
-				Route r = routeDao.getRouteByID(dea.getRouteID());
-				Order order = orderDao.getOrderByGoodsID(idGood);
-
-				try {
-					OrderStatus trackingStatus = orderStatusDao
-							.getOrderStatusByID(order.getOrderStatusID());
-					Goods goodDetail = goodDao.getGoodsByID(idGood);
-					goodDetail.setPickupTime(Common.changeFormatDate(
-							goodDetail.getPickupTime(),
-							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-					goodDetail.setDeliveryTime(Common.changeFormatDate(
-							goodDetail.getDeliveryTime(),
-							"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-					session.setAttribute("detailOrder", goodDetail);
-					session.setAttribute("orderStatus", trackingStatus);
-					session.setAttribute("routeOrder", r);
-					session.setAttribute("priceForDriver", dea.getPrice());
-					session.setAttribute("priceCreate", Common.priceCreateGood);
-					session.setAttribute("priceTotal", dea.getPrice()
-							+ Common.priceCreateGood);
-					RequestDispatcher rd = request
-							.getRequestDispatcher("chi-tiet-order.jsp");
-					rd.forward(request, response);
-				} catch (Exception ex) {
-
-				}
+				session.setAttribute("listOrder", listOrder);
+				request.getRequestDispatcher("quan-ly-order.jsp").forward(
+						request, response);
 			}
 			if ("lostGood".equals(action)) {
 				int idGood = Integer.parseInt(request.getParameter("idGood"));
@@ -142,6 +83,34 @@ public class OrderServlet extends HttpServlet {
 			}
 			if ("confirmOrder".equals(action)) {
 
+			}
+			if (action.equalsIgnoreCase("viewDetailOrder")) {
+				int orderID = Integer.parseInt(request.getParameter("orderID"));
+				Order order = orderDao.getOrderByID(orderID);
+
+				Goods goods = order.getDeal().getGoods();
+				Route route = order.getDeal().getRoute();
+				Deal deal = order.getDeal();
+
+				OrderStatus trackingStatus = orderStatusDao
+						.getOrderStatusByID(order.getOrderStatusID());
+
+				goods.setPickupTime(Common.changeFormatDate(
+						goods.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
+						"dd-MM-yyyy"));
+				goods.setDeliveryTime(Common.changeFormatDate(order.getDeal()
+						.getGoods().getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
+						"dd-MM-yyyy"));
+				session.setAttribute("detailOrder", goods);
+				session.setAttribute("orderStatus", trackingStatus);
+				session.setAttribute("routeOrder", route);
+				session.setAttribute("priceForDriver", deal.getPrice());
+				session.setAttribute("priceCreate", Common.priceCreateGood);
+				session.setAttribute("priceTotal", deal.getPrice()
+						+ Common.priceCreateGood);
+
+				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+						request, response);
 			}
 		}
 	}
