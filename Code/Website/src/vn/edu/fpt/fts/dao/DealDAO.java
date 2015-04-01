@@ -284,7 +284,7 @@ public class DealDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "SELECT * FROM Deal ORDER BY CreateTime DESC";
+			String sql = "SELECT * FROM Deal ORDER BY DealID DESC";
 
 			stm = con.prepareStatement(sql);
 
@@ -343,7 +343,7 @@ public class DealDAO {
 			String sql = " SELECT * FROM Deal WHERE RouteID IN "
 					+ "(SELECT RouteID FROM [Route] WHERE DriverID = ?) "
 					+ "AND GoodsID IN (SELECT GoodsID FROM Goods WHERE Active = ?) "
-					+ "AND DealStatusID = ? AND CreateBy = ? ORDER BY CreateTime DESC";
+					+ "AND DealStatusID = ? AND CreateBy = ? ORDER BY DealID DESC";
 
 			stm = con.prepareStatement(sql);
 
@@ -411,7 +411,7 @@ public class DealDAO {
 			con = DBAccess.makeConnection();
 
 			String sql = "SELECT * FROM Deal WHERE RouteID IN "
-					+ "(SELECT RouteID FROM [Route] WHERE DriverID=?) ORDER BY CreateTime DESC";
+					+ "(SELECT RouteID FROM [Route] WHERE DriverID=?) ORDER BY DealID DESC";
 
 			stm = con.prepareStatement(sql);
 

@@ -1,9 +1,3 @@
-<%-- 
-    Document   : chi-tiet-hang-chua-giao-dich
-    Created on : Jan 31, 2015, 12:18:21 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -15,11 +9,6 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<jsp:include page="vertical-menu-manage-good.jsp" />
-			<div class="row"></div>
-		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>
@@ -316,7 +305,7 @@
 												<c:if
 													test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
 													<a class="button alert"
-														href="ControllerManageOrder?btnAction=lostGood&idGood=${detailGood1.goodsID }"
+														href="OrderServlet?btnAction=lostGood&idGood=${detailGood1.goodsID }"
 														onclick="return confirm('Bạn có muốn báo mất hàng không?')">
 														<i class="icon-ok"></i> Báo mất hàng
 													</a>
@@ -325,7 +314,7 @@
 
 											<c:if test="${orderStatus.orderStatusID==3}">
 												<a class="button success"
-													href="ControllerManageOrder?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
+													href="OrderServlet?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
 													onclick="return confirm('Bạn có muốn xác nhận hoá đơn không?')">
 													<i class="icon-ok"></i> Xác nhận hoá đơn
 												</a>

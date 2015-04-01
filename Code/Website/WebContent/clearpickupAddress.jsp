@@ -1,9 +1,3 @@
-<%-- 
-    Document   : tao-hang-4
-    Created on : Jan 30, 2015, 11:21:10 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <title>Tạo hàng</title>
@@ -110,8 +104,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
 		</div>
 		<div class="form-content "
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
-
 		</div>
 	</div>
 	<div class="small-9 columns">

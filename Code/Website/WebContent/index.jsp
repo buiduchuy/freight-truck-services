@@ -1,17 +1,11 @@
-<%-- 
-    Document   : index
-    Created on : Jan 28, 2015, 3:49:08 PM
-    Author     : KhuongNguyen-PC
-    Test
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
-    <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  </meta>
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-        <title>Trang chủ</title>
+        <title>FTS | Trang chủ</title>
         <link rel="shortcut icon" type="image/x-icon" href="css/img/favicon.png"/>
         <link href="css/font-awesome/font-awesome.css" rel="stylesheet" type="text/css"/>
         <link href="css/style-index.css" rel="stylesheet" type="text/css"/>
@@ -36,8 +30,8 @@
                             </c:when>
                             <c:otherwise>
                             <ul id="nav" class="nav navbar-nav navbar-right">
-                                <li class="menu-dang-nhap"><a title="Đăng nhập" target="_blank" href="dang-nhap.jsp"><font color="gray" size="+1">ĐĂNG NHẬP</font></a></li>
-                                <li class="menu-dang-ky-dich-vu"><a target="_blank" href="dang-ky.jsp"><font color="gray" size="+1">ĐĂNG KÝ</font></a></li>
+                                <li class="menu-dang-nhap"><a title="Đăng nhập" target="_blank" href="ProcessServlet?btnAction=loginPage"><font color="gray" size="+1">ĐĂNG NHẬP</font></a></li>
+                                <li class="menu-dang-ky-dich-vu"><a target="_blank" href="ProcessServlet?btnAction=registerPage"><font color="gray" size="+1">ĐĂNG KÝ</font></a></li>
                             </ul> 
                         </c:otherwise>
                     </c:choose>
@@ -66,7 +60,7 @@
                             <div class="media text-center ">
                                 <div class="media-body"><h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-truck"></i></font> Tạo hàng nhanh</a>
                                     </h4><p>Tạo hàng nhanh và dễ dàng với hướng dẫn chi tiết cho người sử dụng</p>
-                                    <a class="button" href="tao-hang-1.jsp"><i class="icon-ok"></i> Tạo hàng</a>
+                                    <a class="button" href="ProcessServlet?btnAction=createGoods"><i class="icon-ok"></i> Tạo hàng</a>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +71,7 @@
                                 <div class="media-body">
                                     <h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-desktop"></i></font> Quản lý hàng</a></h4>
                                     <p>Giúp người sử dụng quản lý các hàng đã đăng cũng như tìm tài xế cho hàng</p>
-                                    <a class="button" href="quan-ly-hang.jsp"><i class="icon-ok"></i> Quản lý hàng</a>
+                                    <a class="button" href="ProcessServlet?btnAction=manageGoods"><i class="icon-ok"></i> Quản lý hàng</a>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +84,7 @@
                                         <a href=""> <font size="+3"><i class="icon-bar-chart"></i></font> Xem lịch sử hàng</a>
                                     </h4><p>Quản lý giao hàng chuyên nghiệp hơn, kiểm soát giao hàng, nhận hàng.</p>
 
-                                    <a class="button" href="ControllerManageOrder?btnAction=manageOrder"><i class="icon-ok"></i> Xem lịch sử hàng</a>
+                                    <a class="button" href="ProcessServlet?btnAction=manageOrder"><i class="icon-ok"></i> Xem lịch sử hàng</a>
                                 </div>
                             </div>
                         </div>

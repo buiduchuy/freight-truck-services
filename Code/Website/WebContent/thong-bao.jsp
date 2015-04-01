@@ -5,7 +5,6 @@
 <title>Hello jQuery</title>
 <script src="js/jquery.js"></script>
 <script type="text/javascript">
-	var oldListNoti;
 	$(document)
 			.ready(
 					function() {
@@ -41,13 +40,13 @@
 																var content;
 
 																if (type == "deal") {
-																	content += '<br/><font size="3" color="red"> <a href="/FTS/ControllerManageGoods?btnAction=viewDetailGood1&idGood=110">'
+																	content += '<br/><font size="3" color="red"> <a href="/FTS/GoodsServlet?btnAction=viewDetailGood1&idGood=110">'
 																			+ mess
 																			+ '</a> loại thông báo '
 																			+ type
 																			+ '</font>';
 																} else if (type == "order") {
-																	content += '<br/><font size="3" color="blue"> <a href="/FTS/ControllerManageGoods?btnAction=viewDetailGood1&idGood=110">'
+																	content += '<br/><font size="3" color="blue"> <a href="/FTS/GoodsServlet?btnAction=viewDetailGood1&idGood=110">'
 																			+ mess
 																			+ '</a> loại thông báo '
 																			+ type

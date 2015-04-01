@@ -13,11 +13,6 @@
 			<jsp:include page="vertical-menu-make-deal.jsp" />
 			<div class="row"></div>
 		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-pr.jsp" />
-			<div class="row"></div>
-		</div>
 	</div>
 	<div class="large-9 columns">
 		<div class="form-content"
@@ -95,7 +90,7 @@
 																</c:forEach>
 															</c:if>
 															<td><a class="button "
-																href="ControllerMakeDeal?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
+																href="DealServlet?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
 																	class="icon-remove"></i>Xem chi tiết</a></td>
 
 														</tr>

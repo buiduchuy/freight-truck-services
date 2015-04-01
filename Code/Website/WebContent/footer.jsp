@@ -1,11 +1,4 @@
-<%-- 
-    Document   : footer
-    Created on : Jan 30, 2015, 8:10:56 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
 <footer>
     <section class="footer-copyright">
         <div class="row">
@@ -28,6 +21,7 @@
         </div>
     </section>
 </footer>
+<div id="notify" class="notify">
 </div>
 <script>
     function dlgCancel() {

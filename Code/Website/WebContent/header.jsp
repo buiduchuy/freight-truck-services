@@ -1,9 +1,3 @@
-<%-- 
-    Document   : header
-    Created on : Jan 30, 2015, 8:03:10 AM
-    Author     : KhuongNguyen-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -31,10 +25,10 @@
 <link rel="stylesheet" href="css/alertify.core.css" />
 <link rel="stylesheet" href="css/alertify.default.css" id="toggleCSS" />
 
-
-
 <script src="js/jquery.js"></script>
 <script src="js/alertify.min.js"></script>
+<script src="js/notify.js"></script>
+
 
 
 
@@ -54,8 +48,7 @@
 		$('#example1').dataTable();
 	});
 </script>
-<script
-	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+<script	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 
 </head>
 <body onload="auto()">
@@ -68,23 +61,24 @@
 							<c:set var="account" value="${sessionScope.account}" />
 							<c:choose>
 								<c:when test="${not empty account}">
+								<input type="hidden" id="email" value="${owner.email}" />
 									<ul class="inline-list top-links right">
 										<li><a href="#"><i class="icon-user"></i> Xin chào,
 												${account}!</a>
 											<ul class="sub-topbar">
 												<li><a
-													href="ControllerManageGoods?btnAction=manageGoods"><i
+													href="ProcessServlet?btnAction=manageGoods"><i
 														class="icon-desktop"></i>Quản lý hàng</a></li>
 												<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
 														hình tài khoản</a></li>
 
-												<li><a href="AccountServlet?btnAction=offAccount"><i
+												<li><a href="ProcessServlet?btnAction=logout"><i
 														class="icon-off"></i>Đăng xuất</a></li>
 											</ul></li>
 									</ul>
 								</c:when>
 								<c:otherwise>
-									<jsp:forward page="dang-nhap.jsp" />
+									<jsp:forward page="ProcessServlet?btnAction=loginPage" />
 								</c:otherwise>
 							</c:choose>
 						</div>
@@ -96,7 +90,7 @@
 			<div class="row">
 				<div class="large-2 columns top-logo">
 					<h1>
-						<a href="index.jsp">fts.vn</a>
+						<a href="index.jsp">FTS</a>
 					</h1>
 				</div>
 				<div class="large-7 columns top-bar-section">
@@ -105,11 +99,11 @@
 							<c:choose>
 								<c:when
 									test="${namePage=='tao-hang-1.jsp' or namePage=='tao-hang-2.jsp' or namePage=='tao-hang-3.jsp' or namePage=='tao-hang-4.jsp'}">
-									<li class="active"><a href="tao-hang-1.jsp"><i
+									<li class="active"><a href="ProcessServlet?btnAction=createGoods"><i
 											class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="tao-hang-1.jsp"><i class="icon-truck"></i>
+									<li><a href="ProcessServlet?btnAction=createGoods"><i class="icon-truck"></i>
 											Tạo hàng&nbsp;&nbsp;</a></li>
 								</c:otherwise>
 							</c:choose>
@@ -117,11 +111,11 @@
 								<c:when
 									test="${namePage=='quan-ly-hang.jsp' or namePage=='chi-tiet-hang.jsp'or namePage=='goi-y-he-thong.jsp' or namePage=='chi-tiet-route.jsp' or namePage=='chi-tiet-de-nghi.jsp'or namePage=='danh-sach-de-nghi.jsp'or namePage=='cleardeliveryAddress.jsp' or namePage=='clearpickupAddress.jsp'}">
 									<li class="active"><a
-										href="ControllerManageGoods?btnAction=manageGoods"><i
+										href="ProcessServlet?btnAction=manageGoods"><i
 											class="icon-truck"></i> Quản lý hàng</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="ControllerManageGoods?btnAction=manageGoods"><i
+									<li><a href="ProcessServlet?btnAction=manageGoods"><i
 											class="icon-truck"></i> Quản lý hàng</a></li>
 
 								</c:otherwise>
@@ -131,11 +125,11 @@
 								<c:when
 									test="${namePage=='quan-ly-order.jsp' or namePage=='chi-tiet-order.jsp'}">
 									<li class="active"><a
-										href="ControllerManageOrder?btnAction=manageOrder"><i
+										href="OrderServlet?btnAction=manageOrder"><i
 											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="ControllerManageOrder?btnAction=manageOrder"><i
+									<li><a href="OrderServlet?btnAction=manageOrder"><i
 											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
 								</c:otherwise>
 							</c:choose>
