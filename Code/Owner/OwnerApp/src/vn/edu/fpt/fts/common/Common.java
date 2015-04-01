@@ -8,13 +8,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.EditText;
 
 public final class Common {
-	public static final String IP_URL = "http://192.168.0.102:8080/FTS/api/";
-//	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
+//	public static final String IP_URL = "http://192.168.0.102:8080/FTS/api/";
+	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
 	public static final String Service_Goods_Create = "Goods/Create";
 	public static final String Service_Login = "Account/OwnerLogin";
 	public static final String Service_GoodsCategory_Get = "GoodsCategory/get";
@@ -95,7 +96,7 @@ public final class Common {
 	}
 	
 	public static String formatLocation(String input) {
-		String keywords[] = {"Việt Nam", "vietnam", "Viet Nam", "Province", "City", "Vietnam"};				
+		String keywords[] = {"Việt Nam", "vietnam", "Viet Nam", "Province", "City", "Vietnam", "District"};				
 		for(int i = 0; i < keywords.length ; i++) {
 			if (input.contains(keywords[i])) {
 				input = input.replaceAll(", " + keywords[i], "");
@@ -112,5 +113,7 @@ public final class Common {
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.clear();
 		editor.commit();
+		NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		manager.cancelAll();
 	}
 }

@@ -10,9 +10,55 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="vn.edu.fpt.fts.ownerapp.SuggestDetailActivity" >
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:paddingLeft="13dp"
+        android:paddingTop="5dp"
+        android:text="Đề nghị"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <EditText
+        android:id="@+id/edittext_price"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Giá tiền đề nghị"
+        android:inputType="number"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" />
+
+    <EditText
+        android:id="@+id/edittext_note"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="Ghi chú"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:paddingLeft="13dp"
+        android:paddingTop="5dp"
+        android:text="Thông tin"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp" >
 
         <TableRow
             android:layout_width="match_parent"
@@ -93,6 +139,7 @@
                 android:layout_weight="1"
                 android:minHeight="40dp" />
         </TableRow>
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
@@ -134,33 +181,21 @@
         </TableRow>
     </TableLayout>
 
-    <View
+    <TextView
+        android:id="@+id/tvMap"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
-    <EditText
-        android:id="@+id/edittext_price"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:hint="Giá tiền đề nghị"
-        android:inputType="number"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" />
-
-    <EditText
-        android:id="@+id/edittext_note"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:hint="Ghi chú"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" />
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="Xem lộ trình"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/button_send"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Gửi đề nghị" />
+        android:text="Gửi đề nghị"
+        android:visibility="gone" />
 
 </LinearLayout>

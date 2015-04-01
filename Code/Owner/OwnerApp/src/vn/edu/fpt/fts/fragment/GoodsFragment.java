@@ -188,7 +188,7 @@ public class GoodsFragment extends Fragment {
 			// handleResponse(response);
 			if (response.equals("null")) {
 				tvGone = (TextView) getActivity().findViewById(
-						R.id.textview_gone);
+						R.id.tvGone);
 				tvGone.setVisibility(View.VISIBLE);
 			} else {
 				try {
@@ -258,7 +258,7 @@ public class GoodsFragment extends Fragment {
 						String temp[] = deliveryDate.split(" ");
 						String temp1[] = pickupDate.split(" ");
 
-						if (active == 1 && Common.expireDate(temp[0])) {
+						if (active == 1 && !Common.expireDate(temp[0])) {
 							String a = jsonObject2.getString("goodsID");
 
 							goodsID.add(jsonObject2.getString("goodsID"));
@@ -288,7 +288,7 @@ public class GoodsFragment extends Fragment {
 					}
 					if (goodsModels.size() == 0) {
 						tvGone = (TextView) getActivity().findViewById(
-								R.id.textview_gone);
+								R.id.tvGone);
 						tvGone.setVisibility(View.VISIBLE);
 					}
 

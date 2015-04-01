@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -49,8 +50,8 @@ public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
 	private SuggestModelAdapter adapter;
-	private String goodsID, price, notes;
-	private TextView tvGone;
+	private String goodsID, price, notes, cate;
+	private TextView tvGone, tvInfo, tvInfo2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,31 @@ public class SuggestActivity extends Activity {
 		setContentView(R.layout.activity_suggest);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
+		tvInfo = (TextView) findViewById(R.id.tvInfo);
+		tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
 		goodsID = getIntent().getStringExtra("goodsID");
+		cate = getIntent().getStringExtra("cate");
+		Bundle bundle = getIntent().getBundleExtra("bundle");
+		if (bundle != null) {
+			String[] tmp = bundle.getString("pickup").split(",");
+			String[] tmp2 = bundle.getString("deliver").split(",");
+			String text = "Hàng: " + bundle.getString("weight") + " - "
+					+ bundle.getString("price");
+			String text2 = "Nhận: " + tmp[tmp.length - 1] + " - " + "Giao: "
+					+ tmp2[tmp2.length - 1];
+
+			tvInfo.setText(text);
+			tvInfo2.setText(text2);
+		} else {
+			WebServiceTask3 wst3 = new WebServiceTask3(
+					WebServiceTask3.POST_TASK, SuggestActivity.this,
+					"Đang xử lý...");
+			String url = Common.IP_URL + Common.Service_Goods_getGoodsByID;
+			wst3.addNameValuePair("goodsID", goodsID);
+			wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
+
 		// price = getIntent().getStringExtra("price");
 		// notes = getIntent().getStringExtra("notes");
 
@@ -123,10 +148,11 @@ public class SuggestActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			// Intent intent = new Intent(SuggestActivity.this,
-			// GoodsDetailActivity.class);
-			// intent.putExtra("goodsID", goodsID);
-			// startActivity(intent);
+			Intent intent = new Intent(SuggestActivity.this,
+					GoodsDetailActivity.class);
+			intent.putExtra("goodsID", goodsID);
+			intent.putExtra("goodsCategoryID", cate);
+			startActivity(intent);
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
@@ -143,7 +169,7 @@ public class SuggestActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 10000;
+		private static final int SOCKET_TIMEOUT = 20000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -286,8 +312,6 @@ public class SuggestActivity extends Activity {
 						list.add(route);
 					}
 
-					
-
 				} catch (JSONException e) {
 					Log.e(TAG, e.getLocalizedMessage());
 					tvGone = (TextView) findViewById(R.id.textview_gone);
@@ -304,8 +328,9 @@ public class SuggestActivity extends Activity {
 					String[] strings2 = end.split(",");
 					String tmp[] = route.getStartTime().split(" ");
 					String tmp1[] = route.getFinishTime().split(" ");
-					models.add(new SuggestModel("Lộ trình: " + strings[strings.length - 1]
-							+ " - " + strings2[strings2.length - 1], Common
+					models.add(new SuggestModel("Lộ trình: "
+							+ strings[strings.length - 1] + " - "
+							+ strings2[strings2.length - 1], Common
 							.formatDateFromString(tmp[0])
 							+ " - "
 							+ Common.formatDateFromString(tmp1[0])));
@@ -314,7 +339,7 @@ public class SuggestActivity extends Activity {
 					tvGone = (TextView) findViewById(R.id.textview_gone);
 					tvGone.setVisibility(View.VISIBLE);
 				}
-				
+
 				adapter = new SuggestModelAdapter(SuggestActivity.this, models);
 				listView.setAdapter(adapter);
 				pDlg.dismiss();
@@ -349,6 +374,180 @@ public class SuggestActivity extends Activity {
 					// Add parameters
 					httppost.setEntity(new UrlEncodedFormEntity(params,
 							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+
+	private class WebServiceTask3 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask2";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask3(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			try {
+				JSONObject jsonObject = new JSONObject(response);
+				String price = jsonObject.getString("price").replace(".0", "")
+						+ " nghìn đồng";
+				String weight = jsonObject.getString("weight") + " kg";
+				String pickup = Common.formatLocation(jsonObject
+						.getString("pickupAddress"));
+				String deliver = Common.formatLocation(jsonObject
+						.getString("deliveryAddress"));
+				String tmp[] = pickup.split(",");
+				String tmp2[] = deliver.split(",");
+				String text = "Hàng: " + weight + " - " + price;
+				String text2 = "Nhận: " + tmp[tmp.length - 1] + " - "
+						+ "Giao: " + tmp2[tmp2.length - 1];
+				tvInfo.setText(text);
+				tvInfo2.setText(text2);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, e.getLocalizedMessage());
+			}
+			pDlg.dismiss();
+
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
 
 					response = httpclient.execute(httppost);
 					break;

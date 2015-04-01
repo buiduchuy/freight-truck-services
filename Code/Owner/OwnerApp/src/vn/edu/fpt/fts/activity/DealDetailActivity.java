@@ -53,14 +53,15 @@ import android.widget.Toast;
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote,
-			tvStatus, tvNote1, tvStatus1, tvWeight;
+			tvStatus, tvNote1, tvStatus1, tvWeight, tvText;
 	private int dealID;
 	private String refDealID, dealStatus, routeID, goodsID, goodsCategory;
 	private double price;
 	private String note, createBy;
-	private Button btn_counter, btnAccept, btnDecline, btnCancel;
+	private Button btn_counter;
 	private EditText etPrice, etNote;
-	private View viewLine;	
+	private View viewLine;
+	private MenuItem accept, decline, cancel;	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +87,9 @@ public class DealDetailActivity extends Activity {
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btn_counter = (Button) findViewById(R.id.button_counter);
-		btnAccept = (Button) findViewById(R.id.button_accept);
-		btnDecline = (Button) findViewById(R.id.button_decline);
-		btnCancel = (Button) findViewById(R.id.button_cancel);
+
 		viewLine = (View) findViewById(R.id.view_line);
+		tvText = (TextView) findViewById(R.id.tvText);
 		// goodscate = (TextView) findViewById(R.id.textview_categorygoods);
 		// goodsweight = (TextView) findViewById(R.id.textview_weightgoods);
 		// goodspickup = (TextView) findViewById(R.id.textview_pickupgoods);
@@ -139,92 +139,6 @@ public class DealDetailActivity extends Activity {
 			}
 		});
 
-		btnAccept.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Calendar calendar = Calendar.getInstance();
-				WebServiceTask3 wst3 = new WebServiceTask3(
-						WebServiceTask3.POST_TASK, DealDetailActivity.this,
-						"Đang xử lý...");
-				wst3.addNameValuePair("dealID", dealID + "");
-				wst3.addNameValuePair("price", price + "");
-				wst3.addNameValuePair("notes", note + "");
-				wst3.addNameValuePair("createTime", formatDate(calendar));
-				wst3.addNameValuePair("createBy", "owner");
-				wst3.addNameValuePair("routeID", routeID + "");
-				wst3.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID.equals("0")) {
-					wst3.addNameValuePair("refDealID", dealID + "");
-				} else {
-					wst3.addNameValuePair("refDealID", refDealID + "");
-				}
-				wst3.addNameValuePair("active", "1");
-				String url = Common.IP_URL + Common.Service_Deal_Accept;
-				// wst3.execute(new String[] { url });
-				wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						new String[] { url });
-			}
-		});
-
-		btnDecline.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Calendar calendar = Calendar.getInstance();
-				WebServiceTask4 wst4 = new WebServiceTask4(
-						WebServiceTask4.POST_TASK, DealDetailActivity.this,
-						"Đang xử lý...");
-				wst4.addNameValuePair("dealID", dealID + "");
-				wst4.addNameValuePair("price", price + "");
-				wst4.addNameValuePair("notes", note + "");
-				wst4.addNameValuePair("createTime", formatDate(calendar));
-				wst4.addNameValuePair("createBy", "owner");
-				wst4.addNameValuePair("routeID", routeID + "");
-				wst4.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID.equals("0")) {
-					wst4.addNameValuePair("refDealID", dealID + "");
-				} else {
-					wst4.addNameValuePair("refDealID", refDealID + "");
-				}
-				wst4.addNameValuePair("active", "1");
-				String url = Common.IP_URL + Common.Service_Deal_Decline;
-				// wst4.execute(new String[] { url });
-				wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						new String[] { url });
-			}
-		});
-
-		btnCancel.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Calendar calendar = Calendar.getInstance();
-				WebServiceTask5 wst5 = new WebServiceTask5(
-						WebServiceTask5.POST_TASK, DealDetailActivity.this,
-						"Đang xử lý...");
-				wst5.addNameValuePair("dealID", dealID + "");
-				wst5.addNameValuePair("price", price + "");
-				wst5.addNameValuePair("notes", note + "");
-				wst5.addNameValuePair("createTime", formatDate(calendar));
-				wst5.addNameValuePair("createBy", "owner");
-				wst5.addNameValuePair("routeID", routeID + "");
-				wst5.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID.equals("0")) {
-					wst5.addNameValuePair("refDealID", dealID + "");
-				} else {
-					wst5.addNameValuePair("refDealID", refDealID + "");
-				}
-				wst5.addNameValuePair("active", "1");
-				String url = Common.IP_URL + Common.Service_Deal_Cancel;
-				// wst5.execute(new String[] { url });
-				wst5.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						new String[] { url });
-			}
-		});
 	}
 
 	@Override
@@ -235,24 +149,103 @@ public class DealDetailActivity extends Activity {
 	}
 
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		accept = menu.findItem(R.id.accept_deal);
+		decline = menu.findItem(R.id.decline_deal);
+		cancel = menu.findItem(R.id.cancel_deal);
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		if (id == R.id.action_history) {
-			Intent intent = new Intent(DealDetailActivity.this,
-					HistoryActivity.class);
-			startActivity(intent);
-		}
+		// if (id == R.id.action_settings) {
+		// return true;
+		// }
+		// if (id == R.id.action_history) {
+		// Intent intent = new Intent(DealDetailActivity.this,
+		// HistoryActivity.class);
+		// startActivity(intent);
+		// }
 		if (id == android.R.id.home) {
 			Intent intent = new Intent(DealDetailActivity.this,
 					MainActivity.class);
 			startActivity(intent);
 			return true;
+		}
+		if (id == R.id.accept_deal) {
+			Calendar calendar = Calendar.getInstance();
+			WebServiceTask3 wst3 = new WebServiceTask3(
+					WebServiceTask3.POST_TASK, DealDetailActivity.this,
+					"Đang xử lý...");
+			wst3.addNameValuePair("dealID", dealID + "");
+			wst3.addNameValuePair("price", price + "");
+			wst3.addNameValuePair("notes", note + "");
+			wst3.addNameValuePair("createTime", formatDate(calendar));
+			wst3.addNameValuePair("createBy", "owner");
+			wst3.addNameValuePair("routeID", routeID + "");
+			wst3.addNameValuePair("goodsID", goodsID + "");
+			if (refDealID.equals("0")) {
+				wst3.addNameValuePair("refDealID", dealID + "");
+			} else {
+				wst3.addNameValuePair("refDealID", refDealID + "");
+			}
+			wst3.addNameValuePair("active", "1");
+			String url = Common.IP_URL + Common.Service_Deal_Accept;
+			// wst3.execute(new String[] { url });
+			wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
+		if (id == R.id.decline_deal) {
+			Calendar calendar = Calendar.getInstance();
+			WebServiceTask4 wst4 = new WebServiceTask4(
+					WebServiceTask4.POST_TASK, DealDetailActivity.this,
+					"Đang xử lý...");
+			wst4.addNameValuePair("dealID", dealID + "");
+			wst4.addNameValuePair("price", price + "");
+			wst4.addNameValuePair("notes", note + "");
+			wst4.addNameValuePair("createTime", formatDate(calendar));
+			wst4.addNameValuePair("createBy", "owner");
+			wst4.addNameValuePair("routeID", routeID + "");
+			wst4.addNameValuePair("goodsID", goodsID + "");
+			if (refDealID.equals("0")) {
+				wst4.addNameValuePair("refDealID", dealID + "");
+			} else {
+				wst4.addNameValuePair("refDealID", refDealID + "");
+			}
+			wst4.addNameValuePair("active", "1");
+			String url = Common.IP_URL + Common.Service_Deal_Decline;
+			// wst4.execute(new String[] { url });
+			wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
+		if (id == R.id.cancel_deal) {
+			Calendar calendar = Calendar.getInstance();
+			WebServiceTask5 wst5 = new WebServiceTask5(
+					WebServiceTask5.POST_TASK, DealDetailActivity.this,
+					"Đang xử lý...");
+			wst5.addNameValuePair("dealID", dealID + "");
+			wst5.addNameValuePair("price", price + "");
+			wst5.addNameValuePair("notes", note + "");
+			wst5.addNameValuePair("createTime", formatDate(calendar));
+			wst5.addNameValuePair("createBy", "owner");
+			wst5.addNameValuePair("routeID", routeID + "");
+			wst5.addNameValuePair("goodsID", goodsID + "");
+			if (refDealID.equals("0")) {
+				wst5.addNameValuePair("refDealID", dealID + "");
+			} else {
+				wst5.addNameValuePair("refDealID", refDealID + "");
+			}
+			wst5.addNameValuePair("active", "1");
+			String url = Common.IP_URL + Common.Service_Deal_Cancel;
+			// wst5.execute(new String[] { url });
+			wst5.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -423,7 +416,8 @@ public class DealDetailActivity extends Activity {
 					route.setStartTime(startTime);
 					route.setFinishTime(finishTime);
 					route.setCategory(category);
-					route.setWeight(Integer.parseInt(jsonObject.getString("weight")));
+					route.setWeight(Integer.parseInt(jsonObject
+							.getString("weight")));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -434,7 +428,7 @@ public class DealDetailActivity extends Activity {
 				startTime.setText(route.getStartTime());
 				finishTime.setText(route.getFinishTime());
 				category.setText(route.getCategory());
-				tvPrice.setText((int)price + " nghìn đồng");
+				tvPrice.setText((int) price + " nghìn đồng");
 				tvWeight.setText(route.getWeight() + " kg");
 				tvNote.setText(note);
 			} else {
@@ -1272,63 +1266,72 @@ public class DealDetailActivity extends Activity {
 					goodsCategory = jsonObject2.getString("goodsCategoryId");
 					if (dealStatus.equals("1") && createBy.equals("owner")) {
 						btn_counter.setVisibility(View.GONE);
-						btnAccept.setVisibility(View.GONE);
-						btnDecline.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);
-						btnCancel.setVisibility(View.VISIBLE);
 						viewLine.setVisibility(View.GONE);
-						
+						tvText.setVisibility(View.GONE);
+						accept.setVisible(false);
+						decline.setVisible(false);
+						cancel.setVisible(true);
+
 					} else if (dealStatus.equals("2")) {
 						btn_counter.setVisibility(View.GONE);
-						btnAccept.setVisibility(View.GONE);
-						btnDecline.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);
 						viewLine.setVisibility(View.GONE);
-						tvNote.setVisibility(View.GONE);						
+						tvText.setVisibility(View.GONE);
+						tvNote.setVisibility(View.GONE);
 						tvStatus.setVisibility(View.VISIBLE);
-						tvNote1.setVisibility(View.GONE);						
+						tvNote1.setVisibility(View.GONE);
 						tvStatus1.setVisibility(View.VISIBLE);
 						tvStatus.setText("Đã chấp nhận");
+						accept.setVisible(false);
+						decline.setVisible(false);
+						cancel.setVisible(false);
 					} else if (dealStatus.equals("4")) {
 						btn_counter.setVisibility(View.GONE);
-						btnAccept.setVisibility(View.GONE);
-						btnDecline.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);
 						viewLine.setVisibility(View.GONE);
+						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
 						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
 						tvStatus1.setVisibility(View.VISIBLE);
 						tvStatus.setText("Đã bị hủy");
+						accept.setVisible(false);
+						decline.setVisible(false);
+						cancel.setVisible(false);
 					} else if (dealStatus.equals("3")
 							&& createBy.equals("owner")) {
 						btn_counter.setVisibility(View.GONE);
-						btnAccept.setVisibility(View.GONE);
-						btnDecline.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);
 						viewLine.setVisibility(View.GONE);
+						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
 						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
 						tvStatus1.setVisibility(View.VISIBLE);
 						tvStatus.setText("Đã từ chối");
+						accept.setVisible(false);
+						decline.setVisible(false);
+						cancel.setVisible(false);
 					} else if (dealStatus.equals("3")
 							&& createBy.equals("driver")) {
 						btn_counter.setVisibility(View.GONE);
-						btnAccept.setVisibility(View.GONE);
-						btnDecline.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);
 						viewLine.setVisibility(View.GONE);
+						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
 						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
 						tvStatus1.setVisibility(View.VISIBLE);
 						tvStatus.setText("Đã bị từ chối");
+						accept.setVisible(false);
+						decline.setVisible(false);
+						cancel.setVisible(false);
 					}
 					WebServiceTask wst = new WebServiceTask(
 							WebServiceTask.POST_TASK, DealDetailActivity.this,

@@ -230,8 +230,10 @@ public class DealFragment extends Fragment {
 								JSONObject jsonObject3 = jsonObject2.getJSONObject("route");
 								String start = jsonObject3.getString("startingAddress");
 								start = Common.formatLocation(start);
+								String[] starts = start.split(",");
 								String end = jsonObject3.getString("destinationAddress");
 								end = Common.formatLocation(end);
+								String[] ends = end.split(",");
 								String date = jsonObject2.getString("createTime");
 								String[] tmp = date.split(" ");
 								String dPrice = jsonObject2.getString("price").replace(".0", " nghìn");
@@ -242,7 +244,7 @@ public class DealFragment extends Fragment {
 								} else if (count.equals("owner")) {
 									status = "Bạn đã đã gửi đề nghị: ";
 								}
-								DealModel dealModel = new DealModel(start + " - " + end, Common.formatDateFromString(tmp[0]), dPrice, status);
+								DealModel dealModel = new DealModel(starts[starts.length - 1] + " - " + ends[ends.length - 1], Common.formatDateFromString(tmp[0]), dPrice, status);
 								dealModels.add(dealModel);
 							}
 
@@ -278,8 +280,10 @@ public class DealFragment extends Fragment {
 							JSONObject jsonObject3 = jsonObject2.getJSONObject("route");
 							String start = jsonObject3.getString("startingAddress");
 							start = Common.formatLocation(start);
+							String[] starts = start.split(",");
 							String end = jsonObject3.getString("destinationAddress");
 							end = Common.formatLocation(end);
+							String[] ends = end.split(",");
 							String date = jsonObject2.getString("createTime");
 							String[] tmp = date.split(" ");
 							String dPrice = jsonObject2.getString("price").replace(".0", " nghìn");
@@ -290,7 +294,7 @@ public class DealFragment extends Fragment {
 							} else if (count.equals("owner")) {
 								status = "Bạn đã đã gửi đề nghị: ";
 							}
-							DealModel dealModel = new DealModel(start + " - " + end, Common.formatDateFromString(tmp[0]), dPrice, status);
+							DealModel dealModel = new DealModel(starts[starts.length - 1] + " - " + ends[ends.length - 1], Common.formatDateFromString(tmp[0]), dPrice, status);
 							dealModels.add(dealModel);
 						}
 					}

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -148,6 +149,15 @@ public class CreateGoodsActivity extends FragmentActivity {
 				calendar1.set(Calendar.MONTH, monthOfYear);
 				calendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 				Common.updateLabel(etPickupDate, calendar1);
+				if (etDeliverDate.getText().toString().trim().length() == 0) {
+					calendar2 = Calendar.getInstance();
+					calendar2
+							.set(Calendar.MONTH, calendar1.get(Calendar.MONTH));
+					calendar2.set(Calendar.DAY_OF_MONTH,
+							calendar1.get(Calendar.DAY_OF_MONTH));
+					calendar2.set(Calendar.YEAR, calendar1.get(Calendar.YEAR));
+					etDeliverDate.setText(etPickupDate.getText().toString());
+				}
 			}
 		};
 
@@ -190,6 +200,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 					cal.add(Calendar.MONTH, 1);
 					picker.setMaxDate(cal.getTimeInMillis());
 					dialog.show();
+
 				}
 			}
 		});
@@ -231,6 +242,41 @@ public class CreateGoodsActivity extends FragmentActivity {
 
 		// pickup address and map button
 		actPickupAddr = (AutoCompleteTextView) findViewById(R.id.edittext_pickup_address);
+		actPickupAddr
+				.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						// TODO Auto-generated method stub
+						if (!hasFocus) {
+							if (!(actPickupAddr.getText().toString().trim()
+									.length() == 0)) {
+								WebServiceTask3 wst3 = new WebServiceTask3(
+										WebServiceTask3.POST_TASK,
+										CreateGoodsActivity.this,
+										"Đang xử lý...");
+								String url = "http://maps.google.com/maps/api/geocode/json?address="
+										+ actPickupAddr.getText().toString()
+												.replaceAll(" ", "%20")
+										+ "&sensor=false";
+								try {
+									String test = wst3
+											.executeOnExecutor(
+													AsyncTask.THREAD_POOL_EXECUTOR,
+													url).get();
+									test = "abc";
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (ExecutionException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+
+							}
+						}
+					}
+				});
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
 
@@ -249,6 +295,38 @@ public class CreateGoodsActivity extends FragmentActivity {
 
 		// deliver address and map button
 		actDeliverAddr = (AutoCompleteTextView) findViewById(R.id.edittext_deliver_address);
+		actDeliverAddr
+				.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						// TODO Auto-generated method stub
+						if (!hasFocus) {
+							if (!(actDeliverAddr.getText().toString().trim()
+									.length() == 0)) {
+								WebServiceTask4 wst4 = new WebServiceTask4(
+										WebServiceTask3.POST_TASK,
+										CreateGoodsActivity.this,
+										"Đang xử lý...");
+								String url2 = "http://maps.google.com/maps/api/geocode/json?address="
+										+ actDeliverAddr.getText().toString()
+												.replaceAll(" ", "%20")
+										+ "&sensor=false";
+								try {
+									wst4.executeOnExecutor(
+											AsyncTask.THREAD_POOL_EXECUTOR,
+											url2).get();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (ExecutionException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				});
 		ibDeliverMap = (ImageButton) findViewById(R.id.imagebtn_deliver_address);
 		ibDeliverMap.setOnClickListener(new View.OnClickListener() {
 
@@ -409,15 +487,17 @@ public class CreateGoodsActivity extends FragmentActivity {
 		int check = preferences.getInt("spinner", 0);
 		if (!(check == 0)) {
 			spinner.setSelection(preferences.getInt("spinner", 0));
-			etDeliverDate.setText(preferences.getString("deliverDate", "sai roi"));
+			etDeliverDate.setText(preferences.getString("deliverDate",
+					"sai roi"));
 			etNotes.setText(preferences.getString("note", "sai roi"));
-			etPickupDate.setText(preferences.getString("pickupDate", "sai roi"));
+			etPickupDate
+					.setText(preferences.getString("pickupDate", "sai roi"));
 			etPrice.setText(preferences.getString("price", ""));
 			etWeight.setText(preferences.getString("weight", ""));
 			actPickupAddr.setText(preferences.getString("pickup", ""));
 			actDeliverAddr.setText(preferences.getString("deliver", ""));
 		}
-			
+
 		editor.remove("spinner");
 		editor.remove("deliverDate");
 		editor.remove("note");
@@ -537,29 +617,27 @@ public class CreateGoodsActivity extends FragmentActivity {
 			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
 		}
 
-		Geocoder geocoder = new Geocoder(getBaseContext());
-		try {
-			List<Address> list = geocoder.getFromLocationName(actPickupAddr
-					.getText().toString(), 1);
-			List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
-					.getText().toString(), 1);
-			if (list.size() > 0 && list2.size() > 0) {
-				pickupLng = list.get(0).getLongitude();
-				pickupLat = list.get(0).getLatitude();
-
-				deliverLng = list2.get(0).getLongitude();
-				deliverLat = list2.get(0).getLatitude();
-			} else {
-				errorMsg = "Địa chỉ không có thật";
-				check = false;
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			check = false;
-			errorMsg = "Địa chỉ không có thật";
-		}
-
-		GeocoderHelper helper = new GeocoderHelper();
+		// Geocoder geocoder = new Geocoder(getBaseContext());
+		// try {
+		// List<Address> list = geocoder.getFromLocationName(actPickupAddr
+		// .getText().toString(), 1);
+		// List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
+		// .getText().toString(), 1);
+		// if (list.size() > 0 && list2.size() > 0) {
+		// pickupLng = list.get(0).getLongitude();
+		// pickupLat = list.get(0).getLatitude();
+		//
+		// deliverLng = list2.get(0).getLongitude();
+		// deliverLat = list2.get(0).getLatitude();
+		// } else {
+		// errorMsg = "Địa chỉ không có thật";
+		// check = false;
+		// }
+		// } catch (IOException ex) {
+		// ex.printStackTrace();
+		// check = false;
+		// errorMsg = "Địa chỉ không có thật";
+		// }
 
 		// new GetLocation().execute(actPickupAddr.getText()
 		// .toString());
@@ -582,9 +660,9 @@ public class CreateGoodsActivity extends FragmentActivity {
 		//
 		// }
 
-		LatLng pickup = new LatLng(pickupLat, pickupLng);
-		LatLng deliver = new LatLng(deliverLat, deliverLng);
-		String url = helper.makeURL(pickup, deliver);
+		// LatLng pickup = new LatLng(pickupLat, pickupLng);
+		// LatLng deliver = new LatLng(deliverLat, deliverLng);
+		// String url = helper.makeURL(pickup, deliver);
 		// if (!helper.checkPath(url)) {
 		// check = false;
 		// errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
@@ -769,6 +847,17 @@ public class CreateGoodsActivity extends FragmentActivity {
 				Intent intent = new Intent(CreateGoodsActivity.this,
 						SuggestActivity.class);
 				intent.putExtra("goodsID", response);
+				intent.putExtra("cate", cateId + "");
+				Bundle bundle = new Bundle();
+				bundle.putString("price", etPrice.getText().toString()
+						+ " nghìn đồng");
+				bundle.putString("weight", etWeight.getText().toString()
+						+ " kg");
+				bundle.putString("pickup", Common.formatLocation(actPickupAddr
+						.getText().toString()));
+				bundle.putString("deliver", Common
+						.formatLocation(actDeliverAddr.getText().toString()));
+				intent.putExtra("bundle", bundle);
 				intent.putExtra("price", etPrice.getText().toString());
 				intent.putExtra("notes", etNotes.getText().toString());
 				startActivity(intent);
@@ -940,8 +1029,8 @@ public class CreateGoodsActivity extends FragmentActivity {
 				// TODO Auto-generated catch block
 				Log.e(TAG, e.getLocalizedMessage());
 			}
-			pDlg.dismiss();
 
+			pDlg.dismiss();
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
@@ -1010,52 +1099,320 @@ public class CreateGoodsActivity extends FragmentActivity {
 
 	}
 
-	private class GetLocation extends AsyncTask<String, Void, JSONObject> {
+	private class WebServiceTask3 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask2";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask3(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
+
+		}
+
 		@Override
-		protected JSONObject doInBackground(String... address) {
-			// TODO Auto-generated method stub
-			StringBuilder stringBuilder = new StringBuilder();
-			try {
+		protected void onPreExecute() {
 
-				address[0] = address[0].replaceAll(" ", "%20");
+			showProgressDialog();
 
-				HttpPost httppost = new HttpPost(
-						"http://maps.google.com/maps/api/geocode/json?address="
-								+ address + "&sensor=false");
-				HttpClient client = new DefaultHttpClient();
-				HttpResponse response;
-				stringBuilder = new StringBuilder();
+		}
 
-				response = client.execute(httppost);
-				HttpEntity entity = response.getEntity();
-				InputStream stream = entity.getContent();
-				int b;
-				while ((b = stream.read()) != -1) {
-					stringBuilder.append((char) b);
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
-			} catch (ClientProtocolException e) {
-				return null;
-			} catch (IOException e) {
-				return null;
+
 			}
 
-			JSONObject jsonObject = new JSONObject();
-			try {
-				jsonObject = new JSONObject(stringBuilder.toString());
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
-			}
-
-			return jsonObject;
+			return result;
 		}
 
 		@Override
-		protected void onPostExecute(JSONObject result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			try {
+				JSONObject jsonObject = new JSONObject(response);
+				GeocoderHelper geocoderHelper = new GeocoderHelper();
+				LatLng latLng = geocoderHelper.getLatLong(jsonObject);
+				pickupLat = latLng.latitude;
+				pickupLng = latLng.longitude;
+				if (pickupLat == 0 || pickupLng == 0) {
+					Toast.makeText(CreateGoodsActivity.this,
+							"Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
+				}
+			} catch (JSONException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+	}
+
+	private class WebServiceTask4 extends AsyncTask<String, Integer, String> {
+
+		public static final int POST_TASK = 1;
+		public static final int GET_TASK = 2;
+
+		private static final String TAG = "WebServiceTask2";
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private int taskType = GET_TASK;
+		private Context mContext = null;
+		private String processMessage = "Processing...";
+
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+		private ProgressDialog pDlg = null;
+
+		public WebServiceTask4(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		private void showProgressDialog() {
 
 		}
+
+		@Override
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			try {
+				JSONObject jsonObject = new JSONObject(response);
+				GeocoderHelper geocoderHelper = new GeocoderHelper();
+				LatLng latLng = geocoderHelper.getLatLong(jsonObject);
+				deliverLat = latLng.latitude;
+				deliverLng = latLng.longitude;
+				if (deliverLat == 0 || deliverLng == 0) {
+					Toast.makeText(CreateGoodsActivity.this,
+							"Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
+				}
+			} catch (JSONException ex) {
+				ex.printStackTrace();
+			}
+
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
 	}
 }

@@ -10,9 +10,23 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="vn.edu.fpt.fts.ownerapp.DealDetailActivity" >
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:paddingLeft="13dp"
+        android:paddingTop="5dp"
+        android:text="Thông tin"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp" >
 
         <TableRow
             android:layout_width="match_parent"
@@ -113,7 +127,7 @@
                 android:layout_weight="1"
                 android:minHeight="40dp" />
         </TableRow>
-        
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
@@ -186,7 +200,7 @@
                 android:layout_weight="0.7"
                 android:minHeight="40dp"
                 android:text="Trạng thái:"
-                android:textStyle="bold" 
+                android:textStyle="bold"
                 android:visibility="gone" />
 
             <TextView
@@ -199,28 +213,15 @@
         </TableRow>
     </TableLayout>
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/tvText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/button_accept"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:text="Chấp nhận" />
-
-        <Button
-            android:id="@+id/button_decline"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:text="Từ chối" />
-    </RelativeLayout>
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="13dp"
+        android:paddingTop="5dp"
+        android:text="Đề nghị"
+        android:textSize="18sp" />
 
     <View
         android:id="@+id/view_line"
@@ -250,18 +251,9 @@
         android:layout_width="150dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
+        android:background="@color/button_color"
         android:paddingBottom="4dp"
         android:paddingTop="4dp"
         android:text="Trả giá đề nghị" />
-
-    <Button
-        android:id="@+id/button_cancel"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp"
-        android:text="Hủy đề nghị"
-        android:visibility="gone" />
 
 </LinearLayout>

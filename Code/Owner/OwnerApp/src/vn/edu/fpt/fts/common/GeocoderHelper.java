@@ -184,4 +184,43 @@ public class GeocoderHelper {
 
 		return result;
 	}
+	
+	public String makeURL2(LatLng org, LatLng p1, LatLng p2, LatLng des) {
+		StringBuilder urlString = new StringBuilder();
+		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+		urlString.append("?origin=");
+		urlString.append(Double.toString(org.latitude));
+		urlString.append(",");
+		urlString.append(Double.toString(org.longitude));
+		urlString.append("&destination=");
+		urlString.append(Double.toString(des.latitude));
+		urlString.append(",");
+		urlString.append(Double.toString(des.longitude));
+		if (p1 != null || p2 != null) {
+			urlString.append("&waypoints=");
+			String waypoints = "";
+			if (p1 != null) {
+				waypoints += Double.toString(p1.latitude);
+				waypoints += ",";
+				waypoints += Double.toString(p1.longitude);
+			}
+			if (p2 != null) {
+				waypoints += "|";
+				waypoints += Double.toString(p2.latitude);
+				waypoints += ",";
+				waypoints += Double.toString(p2.longitude);
+			}
+			try {
+				waypoints = URLEncoder.encode(waypoints, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			urlString.append(waypoints);
+		}
+		urlString.append("&mode=driving&region=vi");
+		return urlString.toString();
+	}
+
+	
 }

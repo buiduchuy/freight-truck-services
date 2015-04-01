@@ -107,6 +107,7 @@ public class GoodsDetailActivity extends FragmentActivity implements
 			return true;
 		} else if (id == R.id.suggest_driver) {
 			Intent intent = new Intent(this, SuggestActivity.class);
+			intent.putExtra("cate", goodsCategoryID);
 			intent.putExtra("goodsID", goodsID);
 			startActivity(intent);
 		}

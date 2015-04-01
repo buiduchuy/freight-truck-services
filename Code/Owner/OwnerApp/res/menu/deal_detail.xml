@@ -2,15 +2,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="vn.edu.fpt.fts.ownerapp.DealDetailActivity" >
 
+    
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/accept_deal"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_accept"
+        android:title="@string/action_accept_deal"/>
     <item
-        android:id="@+id/action_history"
+        android:id="@+id/decline_deal"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_history"/>
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_cancel"
+        android:title="@string/action_decline_deal"/>
+    <item
+        android:id="@+id/cancel_deal"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_discard"
+        android:title="@string/action_cancel_deal"
+        android:visible="false"/>
 
 </menu>

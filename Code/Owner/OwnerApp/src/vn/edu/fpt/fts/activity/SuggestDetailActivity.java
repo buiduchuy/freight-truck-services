@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -17,6 +18,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -27,15 +29,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.common.GeocoderHelper;
 import vn.edu.fpt.fts.fragment.R;
+import vn.edu.fpt.fts.fragment.RouteMapActivity;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,10 +58,12 @@ import android.widget.Toast;
 
 public class SuggestDetailActivity extends Activity {
 	private int routeid;
-	private TextView startAddr, destAddr, startTime, finishTime, category, weight;
+	private TextView startAddr, destAddr, startTime, finishTime, category,
+			weight, tvMap;
 	private EditText etPrice, etNote;
 	private Button btnSend;
-	private String goodsID, ownerID, price, notes;
+	private String goodsID, ownerID, price, notes, categoryID;
+	private LatLng startAdd, mark1, mark2, endAdd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +131,28 @@ public class SuggestDetailActivity extends Activity {
 			}
 		});
 
+		tvMap = (TextView) findViewById(R.id.tvMap);
+		tvMap.setPaintFlags(tvMap.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+		tvMap.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(SuggestDetailActivity.this,
+						RouteMapActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("start", startAdd);
+				if (mark1 != null) {
+					bundle.putParcelable("m1", mark1);
+				}
+				if (mark2 != null) {
+					bundle.putParcelable("m2", mark2);
+				}
+				bundle.putParcelable("end", endAdd);
+				intent.putExtra("bundle", bundle);
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -149,6 +181,25 @@ public class SuggestDetailActivity extends Activity {
 					MainActivity.class);
 			startActivity(intent);
 		}
+		if (id == R.id.send_deal) {
+			Calendar calendar = Calendar.getInstance();
+			WebServiceTask2 wst2 = new WebServiceTask2(
+					WebServiceTask2.POST_TASK, SuggestDetailActivity.this,
+					"Đang xử lý...");
+			wst2.addNameValuePair("dealID", "0");
+			wst2.addNameValuePair("price", etPrice.getText().toString());
+			wst2.addNameValuePair("notes", etNote.getText().toString());
+			wst2.addNameValuePair("createTime", Common.formatDate(calendar));
+			wst2.addNameValuePair("createBy", "owner");
+			wst2.addNameValuePair("routeID", routeid + "");
+			wst2.addNameValuePair("goodsID", goodsID + "");
+			wst2.addNameValuePair("refDealID", "0");
+			wst2.addNameValuePair("active", "1");
+			String url = Common.IP_URL + Common.Service_Deal_Create;
+			// wst2.execute(new String[] { url });
+			wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -159,6 +210,7 @@ public class SuggestDetailActivity extends Activity {
 			Intent intent = new Intent(SuggestDetailActivity.this,
 					SuggestActivity.class);
 			intent.putExtra("goodsID", goodsID);
+			intent.putExtra("cate", categoryID);
 			startActivity(intent);
 			return true;
 		}
@@ -295,11 +347,66 @@ public class SuggestDetailActivity extends Activity {
 					} else {
 						category = "Không có";
 					}
+					if (response.contains("routeMarkers")) {
+						JSONArray array = jsonObject
+								.getJSONArray("routeMarkers");
+						for (int i = 0; i < array.length(); i++) {
+							JSONObject jsonObject2 = array.getJSONObject(i);
+							if (jsonObject2.getString("numbering").equals("1")) {
+								String marker1 = jsonObject2
+										.getString("routeMarkerLocation");
+								try {
+									mark1 = new GetLatLng().execute(marker1)
+											.get();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (ExecutionException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							} else if (jsonObject2.getString("numbering")
+									.equals("2")) {
+								String marker2 = jsonObject2
+										.getString("routeMarkerLocation");
+								try {
+									mark2 = new GetLatLng().execute(marker2)
+											.get();
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (ExecutionException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						}
+					}
 					String rWeight = jsonObject.getString("weight");
-					route.setStartingAddress(jsonObject
-							.getString("startingAddress"));
-					route.setDestinationAddress(jsonObject
-							.getString("destinationAddress"));
+					String startAddress = jsonObject
+							.getString("startingAddress");
+					try {
+						startAdd = new GetLatLng().execute(startAddress).get();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					route.setStartingAddress(startAddress);
+					String endAddress = jsonObject
+							.getString("destinationAddress");
+					try {
+						endAdd = new GetLatLng().execute(endAddress).get();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					route.setDestinationAddress(endAddress);
 					route.setStartTime(startTime);
 					route.setFinishTime(finishTime);
 					route.setCategory(category);
@@ -479,7 +586,7 @@ public class SuggestDetailActivity extends Activity {
 						"Gửi đề nghị thành công", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(SuggestDetailActivity.this,
 						SuggestActivity.class);
-				intent.putExtra("goodsID", goodsID);
+				intent.putExtra("goodsID", goodsID); 
 				startActivity(intent);
 			} else {
 				Toast.makeText(SuggestDetailActivity.this,
@@ -641,6 +748,7 @@ public class SuggestDetailActivity extends Activity {
 			// handleResponse(response);
 			try {
 				JSONObject jsonObject = new JSONObject(response);
+				categoryID = jsonObject.getString("goodsCategoryID");
 				String price = jsonObject.getString("price");
 				String notes = jsonObject.getString("notes");
 				etPrice.setText(price.replace(".0", ""));
@@ -717,5 +825,36 @@ public class SuggestDetailActivity extends Activity {
 			return total.toString();
 		}
 
+	}
+
+	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
+		private final AndroidHttpClient androidHttpClient = AndroidHttpClient
+				.newInstance(GetLatLng.class.getName());
+
+		@Override
+		protected LatLng doInBackground(String... address) {
+			// TODO Auto-generated method stub
+			String url = "http://maps.google.com/maps/api/geocode/json?address="
+					+ address[0].replace(" ", "%20") + "&sensor=false";
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						androidHttpClient.execute(
+								new HttpGet(url.replace(" ", "%20")),
+								new BasicResponseHandler()));
+				GeocoderHelper geocoderHelper = new GeocoderHelper();
+				LatLng result = geocoderHelper.getLatLong(googleMapResponse);
+				return result;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(LatLng result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			androidHttpClient.close();
+		};
 	}
 }

@@ -6,6 +6,7 @@
         android:id="@+id/suggest_driver"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_location_searching"
         android:title="@string/action_suggest_driver"/>
     <item
         android:id="@+id/action_history"

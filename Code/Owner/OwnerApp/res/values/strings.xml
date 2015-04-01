@@ -10,6 +10,10 @@
     <string name="title_activity_goods_detail">Chi tiết hàng</string>
     <string name="action_create_goods">Đăng hàng</string>
     <string name="action_suggest_driver">Gợi ý tài xế</string>
+    <string name="action_send_deal">Gửi đề nghị</string>
+    <string name="action_accept_deal">Chấp nhận</string>
+    <string name="action_decline_deal">Từ chối</string>
+    <string name="action_cancel_deal">Hủy đề nghị</string>
     <string name="title_activity_create_good_fragment">Tạo hàng</string>
     <string name="title_activity_create_goods">Tạo hàng</string>
     <string name="title_activity_information_fragment">InformationFragment</string>
@@ -27,5 +31,6 @@
     <string name="title_activity_history">Lịch sử giao dịch</string>
     <string name="action_call">Gọi tài xế</string>
     <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_route_map">RouteMapActivity</string>
 
 </resources>

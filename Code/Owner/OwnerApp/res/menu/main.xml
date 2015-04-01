@@ -16,6 +16,7 @@
         android:id="@+id/create_goods"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_new"
         android:title="@string/action_create_goods"/>
     <item
         android:id="@+id/action_history"

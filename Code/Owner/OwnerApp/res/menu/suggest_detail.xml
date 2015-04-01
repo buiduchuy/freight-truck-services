@@ -12,5 +12,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_history"/>
-
+<item
+        android:id="@+id/send_deal"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_send_now"
+        android:title="@string/action_send_deal"/>
 </menu>

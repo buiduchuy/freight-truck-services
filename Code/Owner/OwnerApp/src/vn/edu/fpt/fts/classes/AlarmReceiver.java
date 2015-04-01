@@ -271,7 +271,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	public void displayNotification() {
 		String contentText = list.get(0).getMessage();
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				con).setSmallIcon(R.drawable.ic_action_alarms)
+				con).setSmallIcon(R.drawable.ic_action_noti)
 				.setContentTitle("Đề nghị").setContentText(contentText)
 				.setAutoCancel(true).setTicker(contentText);
 		Intent resultIntent = new Intent();

@@ -252,7 +252,7 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 					+ " kg - " + item.getPrice().replace(".0", "")
 					+ " nghìn đồng";
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-					con).setSmallIcon(R.drawable.ic_action_alarms)
+					con).setSmallIcon(R.drawable.ic_action_noti)
 					.setContentTitle("Xác nhận giao hàng")
 					.setContentText(contentText)
 					.setAutoCancel(true)
