@@ -267,10 +267,9 @@ public class DealServlet extends HttpServlet {
 					} else {
 						session.setAttribute("messageError",
 								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("DealServlet?btnAction=viewDetailDeal&dealID="
-										+ idDealFa);
-						rd.forward(request, response);
+						request.getRequestDispatcher(
+								"DealServlet?btnAction=viewDetailDeal&dealID="
+										+ idDealFa).forward(request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("confirmDeal")) {
@@ -279,16 +278,17 @@ public class DealServlet extends HttpServlet {
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					session.setAttribute("messageError",
 							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-					rd.forward(request, response);
+					request.getRequestDispatcher(
+							"OrderServlet?btnAction=manageOrder").forward(
+							request, response);
 				} else {
 					if (dealProcess.acceptDeal1(dealDao.getDealByID(idDeal)) != 0) {
 						session.setAttribute("messageSuccess",
 								"Hoàn thành hoá đơn!");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-						rd.forward(request, response);
+
+						request.getRequestDispatcher(
+								"OrderServlet?btnAction=manageOrder").forward(
+								request, response);
 					} else {
 						session.setAttribute("messageError",
 								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
@@ -301,18 +301,20 @@ public class DealServlet extends HttpServlet {
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					session.setAttribute("messageError",
 							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-					rd.forward(request, response);
+
+					request.getRequestDispatcher(
+							"OrderServlet?btnAction=manageOrder").forward(
+							request, response);
 				} else {
 					Deal declineDeal = dealDao.getDealByID(idDeal);
 					declineDeal.setDealStatusID(3);
 					if (dealProcess.declineDeal1(declineDeal) != 0) {
-						RequestDispatcher rd = request
-								.getRequestDispatcher("DealServlet?btnAction=viewDetailDeal&dealID="
+
+						request.getRequestDispatcher(
+								"DealServlet?btnAction=viewDetailDeal&dealID="
 										+ dealDao.getDealByID(idDeal)
-												.getRefDealID());
-						rd.forward(request, response);
+												.getRefDealID()).forward(
+								request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("cancelDeal")) {
@@ -321,21 +323,24 @@ public class DealServlet extends HttpServlet {
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					session.setAttribute("messageError",
 							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-					rd.forward(request, response);
+					request.getRequestDispatcher(
+							"OrderServlet?btnAction=manageOrder").forward(
+							request, response);
 				} else {
 					session.removeAttribute("listDeal");
 					Deal cancelDeal = dealDao.getDealByID(idDeal);
 					if (dealProcess.cancelDeal1(cancelDeal) != 0) {
 						cancelDeal.setDealStatusID(4);
-						RequestDispatcher rd = request
-								.getRequestDispatcher("DealServlet?btnAction=viewDetailDeal&dealID="
+
+						request.getRequestDispatcher(
+								"DealServlet?btnAction=viewDetailDeal&dealID="
 										+ dealDao.getDealByID(idDeal)
-												.getRefDealID());
-						rd.forward(request, response);
+												.getRefDealID()).forward(
+								request, response);
 					}
 				}
+			} else if (action.equalsIgnoreCase("manageDeal")) {
+				
 			}
 		}
 	}

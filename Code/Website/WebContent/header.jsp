@@ -78,7 +78,7 @@
 									</ul>
 								</c:when>
 								<c:otherwise>
-									<jsp:forward page="dang-nhap.jsp" />
+									<jsp:forward page="ProcessServlet?btnAction=loginPage" />
 								</c:otherwise>
 							</c:choose>
 						</div>

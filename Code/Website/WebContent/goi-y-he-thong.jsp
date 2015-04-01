@@ -10,25 +10,7 @@
 	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<a class="button alert expand left">Trình đơn</a> 
-			
-			<a href="ProcessServlet?btnAction=createGoods"
-				class="button info expand left">Tạo hàng</a> 
-			<a	href="ProcessServlet?btnAction=manageGoods"
-				class="button info expand left">Quản lý hàng</a>
-				<a	href="ProcessServlet?btnAction=manageDeal"
-				class="button info expand left">Quản lý đề nghị</a>
-			<!--<ul class="">
-
-				<li><a
-					href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID }"
-					class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
-				<li><a
-					href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
-					class="button expand secondary">Danh sách các đề nghị</a></li>-->
-			</ul>
-			<a href="ProcessServlet?btnAction=manageOrder"
-				class="button info expand left">Quản lý hoá đơn</a>
+			<jsp:include page="vertical-menu-manage-suggestion.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>
@@ -38,8 +20,7 @@
 
 
 			<div class="form-content">
-				<form action="DealServlet" method="get"
-					accept-charset="utf-8">
+				<form action="DealServlet" method="get" accept-charset="utf-8">
 					<div class="row">
 						<div class="row">
 							<div class="large-12 columns">
@@ -58,7 +39,7 @@
 									<%
 										request.getSession().removeAttribute("messageSuccess");
 									%>
-									
+
 								</c:if>
 								<c:if test="${not empty messageError}">
 									<div class="row">
@@ -80,7 +61,7 @@
 											<th><font color="orange">MÃ</font></th>
 											<th><font color="orange">ĐIỂM BẮT ĐẦU</font></th>
 											<th><font color="orange">ĐIỂM KẾT THÚC</font></th>
-											<th><font color="orange">ĐIỂM UY TÍN</font></th>
+											<!--  <th><font color="orange">ĐIỂM UY TÍN</font></th>-->
 											<th></th>
 										</tr>
 									</thead>
@@ -95,17 +76,16 @@
 													<td>${fn:substringBefore(fn:replace(rows.createTime, '-', ''),' ')}${rows.routeID}</td>
 													<td>${rows.startingAddress}</td>
 													<td>${rows.destinationAddress}</td>
-													<c:if test="${not empty dri }">
+													<!--<c:if test="${not empty dri }">
 														<c:forEach var="driver" items="${dri}">
 															<c:if test="${driver.driverID==rows.driverID}">
 																<td>${driver.point }</td>
 															</c:if>
 														</c:forEach>
-													</c:if>
+													</c:if>-->
 													<td><a class="button"
 														href="DealServlet?btnAction=routeDetail&routeID=${rows.routeID}"">
-															<i class="icon-ok"></i> Xem chi tiết
-													</a></td>
+															Xem chi tiết</a></td>
 												</tr>
 											</c:forEach>
 										</c:if>

@@ -13,25 +13,24 @@
 		<div class="small-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-				<a class="button alert expand left">Trình đơn</a>
-				<a
-					href="ProcessServlet?btnAction=createGoods"
-					class="button info expand left">Tạo hàng</a>
-				<a	href="ProcessServlet?btnAction=manageGoods"
-					class="button info expand left">Quản lý hàng</a> 
-				<a	href="ProcessServlet?btnAction=manageDeal"
-					class="button info expand left">Quản lý đề nghị</a>
-				<!-- <ul class="">
+				<a class="button menu-button menu-primary-button expand center">Trình
+					đơn</a> <a href="ProcessServlet?btnAction=createGoods"
+					class="button menu-button expand left"
+					style="text-align: left; padding-left: 10px"><i
+					class="icon-shopping-cart"></i> Tạo hàng</a> <a
+					href="ProcessServlet?btnAction=manageGoods"
+					class="button menu-button expand left"
+					style="text-align: left; padding-left: 10px"><i
+					class="icon-list"></i> Quản lý hàng</a> <a
+					href="ProcessServlet?btnAction=manageDeal"
+					class="button menu-button expand left"
+					style="text-align: left; padding-left: 10px"><i
+					class="icon-exchange"></i> Quản lý đề nghị</a> <a
+					href="ProcessServlet?btnAction=manageOrder"
+					class="button menu-button expand left"
+					style="text-align: left; padding-left: 10px"><i
+					class="icon-list-alt"></i> Quản lý hoá đơn</a>
 
-					<li><a
-						href="GoodsServlet?btnAction=suggestFromSystem&txtIdGood=${detailGood1.goodsID}"
-						class="button expand secondary">Gợi ý lộ trình phù hợp</a></li>
-					<li><a
-						href="DealServlet?btnAction=viewSuggest&txtIdGood=${detailGood1.goodsID }"
-						class="button expand secondary">Danh sách các đề nghị</a></li>-->
-				</ul>
-				<a href="ProcessServlet?btnAction=manageOrder"
-					class="button info expand left">Quản lý hoá đơn</a>
 				<div class="row"></div>
 			</div>
 		</div>
@@ -87,17 +86,16 @@
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="row">
-											<div class="small-3 columns">
+											<div class="small-2 columns">
 												<label for="right-label" class="right inline"><small
 													class="validate">*</small> Loại hàng: </label>
 											</div>
 											<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
-											<div class="small-6 columns">
+											<div class="small-4 columns">
 												<select required
 													data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 													name="ddlgoodsCategoryID">
 													<c:forEach var="row" items="${typeGoods }">
-
 														<c:choose>
 															<c:when
 																test="${row.goodsCategoryId==detailGood1.goodsCategoryID}">
@@ -111,33 +109,29 @@
 													</c:forEach>
 												</select>
 											</div>
-											<div class="small-3 columns"></div>
-										</div>
-										<div class="row">
-											<div class="small-3 columns">
+											<div class="small-2 columns">
 												<label for="right-label" class="right inline"><small
 													class="validate">*</small> Khối lượng: </label>
 											</div>
-											<div class="small-6 columns">
+											<div class="small-2 columns">
 												<input type="text" id="right-label" name="txtWeight"
 													onkeypress="return keyPhone(event);"
 													placeholder="Nhập khối lượng hàng" required=""
 													data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
 													maxlength="5" value="${detailGood1.weight}" />
 											</div>
-											<div class="small-3 columns">
-												<label for="right-label" class="left inline">Kg</label>
+											<div class="small-2 columns">
+												<label for="right-label" class="left inline" style="text-align:left">kg</label>
 											</div>
 										</div>
 										<div class="row">
-											<div class="small-3 columns">
+											<div class="small-2 columns">
 												<label for="right-label" class="right inline">Ghi
 													chú : </label>
 											</div>
-											<div class="small-6 columns">
+											<div class="small-8 columns left inline">
 												<textarea maxlength="250" name="txtNotes">${detailGood1.notes }</textarea>
 											</div>
-											<div class="small-3 columns"></div>
 										</div>
 
 									</div>
@@ -229,7 +223,7 @@
 												data-errormessage-value-missing="Vui lòng điền đầy đủ chi phí!" />
 										</div>
 										<div class="small-4 columns left">
-											<label class="left inline">(Ngàn đồng) </label>
+											<label class="left inline">nghìn đồng</label>
 										</div>
 									</div>
 									<c:set var="priceCreateGood"
@@ -243,7 +237,7 @@
 												value="${priceCreateGood}" readonly="readonly" />
 										</div>
 										<div class="small-4 columns left">
-											<label class="left inline">(Ngàn đồng) </label>
+											<label class="left inline">nghìn đồng</label>
 										</div>
 									</div>
 									<c:set var="priceTotal" value="${sessionScope.priceTotal }" />
@@ -256,7 +250,7 @@
 												readonly="readonly" />
 										</div>
 										<div class="small-4 columns left">
-											<label class="left inline">(Ngàn đồng) </label>
+											<label class="left inline">nghìn đồng</label>
 										</div>
 									</div>
 								</div>

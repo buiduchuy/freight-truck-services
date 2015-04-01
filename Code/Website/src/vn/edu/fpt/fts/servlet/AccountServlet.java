@@ -68,14 +68,14 @@ public class AccountServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			
+
 			if (action.equalsIgnoreCase("login")) {
 				String email = request.getParameter("txtEmail");
 				String password = request.getParameter("txtPassword");
-				
+
 				session.removeAttribute("errorLogin");
 				session.removeAttribute("account");
-				
+
 				if (accountDao.checkLoginAccount(email, password) != null) {
 					Owner owner = ownerDao.getOwnerByEmail(accountDao
 							.checkLoginAccount(email, password).getEmail());
@@ -85,20 +85,20 @@ public class AccountServlet extends HttpServlet {
 					session.setAttribute("typeGoods", l_goodsCategory);
 					session.setAttribute("owner", owner);
 					session.setAttribute("account", owner.getLastName());
-					
+
 					List<Goods> listGoodsByOwner = goodsDao
 							.getListGoodsByOwnerID(owner.getOwnerID());
 					List<Goods> listGoods = new ArrayList<Goods>();
 					for (int i = 0; i < listGoodsByOwner.size(); i++) {
 						if (listGoodsByOwner.get(i).getActive() == 1) {
 							listGoodsByOwner.get(i).setPickupTime(
-									Common.changeFormatDate(listGoodsByOwner.get(i)
-											.getPickupTime(),
+									Common.changeFormatDate(listGoodsByOwner
+											.get(i).getPickupTime(),
 											"yyyy-MM-dd hh:mm:ss.s",
 											"dd-MM-yyyy"));
 							listGoodsByOwner.get(i).setDeliveryTime(
-									Common.changeFormatDate(listGoodsByOwner.get(i)
-											.getDeliveryTime(),
+									Common.changeFormatDate(listGoodsByOwner
+											.get(i).getDeliveryTime(),
 											"yyyy-MM-dd hh:mm:ss.s",
 											"dd-MM-yyyy"));
 							listGoods.add(listGoodsByOwner.get(i));
@@ -112,25 +112,20 @@ public class AccountServlet extends HttpServlet {
 								.getRequestDispatcher(prePage);
 						rd.forward(request, response);
 					} else {
-						RequestDispatcher rd = request
-								.getRequestDispatcher("index.jsp");
-						rd.forward(request, response);
+						request.getRequestDispatcher("index.jsp").forward(request, response);
 					}
 				} else {
 					session.setAttribute("errorLogin",
 							"Email hoặc mật khẩu không đúng. Xin đăng nhập lại !");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("dang-nhap.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("dang-nhap.jsp").forward(request, response);
 				}
-			}
-			if (action.equalsIgnoreCase("logout")) {
-				session.removeAttribute("account");
-				session.removeAttribute("router");
-				session.removeAttribute("good");
-				session.removeAttribute("price");
-				session.removeAttribute("typeGoods");
-				response.sendRedirect("index.jsp");
+			} else if (action.equalsIgnoreCase("logout")) {
+				session.invalidate();
+				request.getRequestDispatcher("index.jsp").forward(request, response);
+			} else if (action.equalsIgnoreCase("loginPage")) {
+				request.getRequestDispatcher("dang-nhap.jsp").forward(request, response);
+			} else if (action.equalsIgnoreCase("registerPage")) {
+				request.getRequestDispatcher("dang-ky.jsp").forward(request, response);
 			}
 		}
 	}

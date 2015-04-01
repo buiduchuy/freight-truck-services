@@ -77,6 +77,12 @@ public class ProcessServlet extends HttpServlet {
 		} else if (action.equalsIgnoreCase("viewDetailDeal")) {
 			request.getRequestDispatcher(dealServlet)
 					.forward(request, response);
+		} else if (action.equalsIgnoreCase("loginPage")) {
+			request.getRequestDispatcher(accountServlet).forward(request,
+					response);
+		}else if (action.equalsIgnoreCase("registerPage")) {
+			request.getRequestDispatcher(accountServlet).forward(request,
+					response);
 		}
 
 	}

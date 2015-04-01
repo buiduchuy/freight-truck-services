@@ -70,7 +70,7 @@ public final class Common {
 	public static final int order_lost = 5;
 
 	// Max allow distance for matching goods and routes
-	public static final int maxAllowDistance = 30;
+	public static final int maxAllowDistance = 50;
 
 	// Period day for delivery
 	public static final int periodDay = 3;

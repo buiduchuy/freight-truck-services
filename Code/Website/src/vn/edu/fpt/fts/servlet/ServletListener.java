@@ -24,21 +24,21 @@ public class ServletListener implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent arg0) {
 
-		ScheduledExecutorService exec = Executors
-				.newSingleThreadScheduledExecutor();
-		exec.scheduleAtFixedRate(new Runnable() {
-			@Override
-			public void run() {
-				// do stuff
-				DateFormat dateFormat = new SimpleDateFormat(
-						"yyyy/MM/dd HH:mm:ss");
-				Date date = new Date();
-				System.out.println("-------" + dateFormat.format(date)
-						+ "-------");
-
-				orderProcess.checkDelivery();
-			}
-		}, 0, 15, TimeUnit.SECONDS);
+//		ScheduledExecutorService exec = Executors
+//				.newSingleThreadScheduledExecutor();
+//		exec.scheduleAtFixedRate(new Runnable() {
+//			@Override
+//			public void run() {
+//				// do stuff
+//				DateFormat dateFormat = new SimpleDateFormat(
+//						"yyyy/MM/dd HH:mm:ss");
+//				Date date = new Date();
+//				System.out.println("-------" + dateFormat.format(date)
+//						+ "-------");
+//
+//				orderProcess.checkDelivery();
+//			}
+//		}, 0, 15, TimeUnit.SECONDS);
 	}
 
 	public void contextDestroyed(ServletContextEvent arg0) {

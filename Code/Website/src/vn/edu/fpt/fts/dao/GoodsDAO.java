@@ -659,7 +659,7 @@ public class GoodsDAO {
 		try {
 			con = DBAccess.makeConnection();
 			String sql = "SELECT * FROM Goods WHERE Active = 1 AND GoodsCategoryID NOT IN (SELECT GoodsCategoryID FROM RouteGoodsCategory WHERE RouteID = '"
-					+ routeID + "') ORDER BY CreateTime DESC";
+					+ routeID + "') GoodsID IN (SELECT GoodsID FROM Deal WHERE RouteID ='" + routeID + "' AND DealStatusID = 3 OR DealStatusID=4)";
 			stm = con.prepareStatement(sql);
 
 			rs = stm.executeQuery();

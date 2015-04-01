@@ -30,8 +30,8 @@
                             </c:when>
                             <c:otherwise>
                             <ul id="nav" class="nav navbar-nav navbar-right">
-                                <li class="menu-dang-nhap"><a title="Đăng nhập" target="_blank" href="dang-nhap.jsp"><font color="gray" size="+1">ĐĂNG NHẬP</font></a></li>
-                                <li class="menu-dang-ky-dich-vu"><a target="_blank" href="dang-ky.jsp"><font color="gray" size="+1">ĐĂNG KÝ</font></a></li>
+                                <li class="menu-dang-nhap"><a title="Đăng nhập" target="_blank" href="ProcessServlet?btnAction=loginPage"><font color="gray" size="+1">ĐĂNG NHẬP</font></a></li>
+                                <li class="menu-dang-ky-dich-vu"><a target="_blank" href="ProcessServlet?btnAction=registerPage"><font color="gray" size="+1">ĐĂNG KÝ</font></a></li>
                             </ul> 
                         </c:otherwise>
                     </c:choose>
