@@ -1,9 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<title>Chi Tiết Hàng</title>
+<title>Chi tiết hàng</title>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
 <jsp:include page="header.jsp" />
 <script src="js/foundation-datepicker.js"></script>
 <link rel="stylesheet" href="css/foundation-datepicker.css">
@@ -43,7 +42,6 @@
 							<div class="large-12 columns">
 								<h2 class="page-title">
 									<font color="orange">Chi tiết hàng</font>
-
 								</h2>
 								<input type="hidden" name="txtIdGood"
 									value="${detailGood1.goodsID }" />
@@ -65,24 +63,18 @@
 										<div data-alert class="alert-box alert radius inline">
 											${messageError} <a href="#" class="close">&times;</a>
 										</div>
-
 									</div>
 									<%
 										request.getSession().removeAttribute("messageError");
 									%>
 								</c:if>
 							</div>
-
-
 							<div class="large-12 columns">
 								<div class="extra-title">
 									<h3>
 										<font color="blue">Thông tin hàng hoá</font>
 									</h3>
-
 								</div>
-
-
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="row">
@@ -121,7 +113,8 @@
 													maxlength="5" value="${detailGood1.weight}" />
 											</div>
 											<div class="small-2 columns">
-												<label for="right-label" class="left inline" style="text-align:left">kg</label>
+												<label for="right-label" class="left inline"
+													style="text-align: left">kg</label>
 											</div>
 										</div>
 										<div class="row">
@@ -272,9 +265,7 @@
 												onclick="return confirm('Bạn có muốn xoá hàng không?')"
 												name="btnAction" value="deleteGood">
 												<i class="icon-remove"> Xoá hàng</i>
-
 											</button>
-
 										</div>
 										</br>
 									</div>
@@ -285,9 +276,7 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
-
 </c:if>
 
 <!-- autocomplete place google API -->

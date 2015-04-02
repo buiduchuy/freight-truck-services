@@ -59,10 +59,30 @@ public class NotificationAPI {
 	}
 
 	@POST
+	@Path("getNewestNotificationByEmail")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Notification> getNewestNotificationByEmail(
+			MultivaluedMap<String, String> params) {
+		List<Notification> listDealNoti = new ArrayList<Notification>();
+		try {
+			String email = params.getFirst("email");
+			int lastedID = Integer.valueOf(params.getFirst("lastedID"));
+			listDealNoti = notificationDao.getNewestNotificationByEmail(email,
+					lastedID);
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return listDealNoti;
+	}
+
+	@POST
 	@Path("deactivateNotification")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
-	public int deactivateNotification(MultivaluedMap<String, String> params) {
+	public String deactivateNotification(MultivaluedMap<String, String> params) {
 		int ret = 0;
 		try {
 			ret = notificationDao.updateNotificationStatus(
@@ -73,7 +93,7 @@ public class NotificationAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return ret;
+		return String.valueOf(ret);
 	}
 
 }

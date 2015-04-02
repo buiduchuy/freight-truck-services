@@ -40,49 +40,55 @@ public class ProcessServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html;charset=UTF-8");
 		request.setCharacterEncoding("UTF-8");
+
 		String action = request.getParameter("btnAction");
-		if (action.equalsIgnoreCase("Login")) {
-			request.getRequestDispatcher(accountServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("createGoods")) {
-			request.getRequestDispatcher("tao-hang-1.jsp").forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("manageGoods")) {
-			request.getRequestDispatcher(goodsServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("manageDeal")) {
-			request.getRequestDispatcher(dealServlet)
+		if (action != null) {
+			if (action.equalsIgnoreCase("Login")) {
+				request.getRequestDispatcher(accountServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("createGoods")) {
+				request.getRequestDispatcher("tao-hang-1.jsp").forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("manageGoods")) {
+				request.getRequestDispatcher(goodsServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("manageDeal")) {
+				request.getRequestDispatcher(dealServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("manageOrder")) {
+				request.getRequestDispatcher(orderServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("Logout")) {
+				request.getRequestDispatcher(accountServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("Register")) {
+				request.getRequestDispatcher(accountServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("routeDetail")) {
+				request.getRequestDispatcher(dealServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("sendDeal")) {
+				request.getRequestDispatcher(dealServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("getNotification")) {
+				request.getRequestDispatcher(notificationServlet).forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
+				request.getRequestDispatcher(orderServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
+				request.getRequestDispatcher(dealServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("loginPage")) {
+				request.getRequestDispatcher(accountServlet).forward(request,
+						response);
+			} else if (action.equalsIgnoreCase("registerPage")) {
+				request.getRequestDispatcher(accountServlet).forward(request,
+						response);
+			}
+		} else {
+			request.getRequestDispatcher("index.jsp")
 					.forward(request, response);
-		} else if (action.equalsIgnoreCase("manageOrder")) {
-			request.getRequestDispatcher(orderServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("Logout")) {
-			request.getRequestDispatcher(accountServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("Register")) {
-			request.getRequestDispatcher(accountServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("routeDetail")) {
-			request.getRequestDispatcher(dealServlet)
-					.forward(request, response);
-		} else if (action.equalsIgnoreCase("sendDeal")) {
-			request.getRequestDispatcher(dealServlet)
-					.forward(request, response);
-		} else if (action.equalsIgnoreCase("getNotification")) {
-			request.getRequestDispatcher(notificationServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("viewDetailOrder")) {
-			request.getRequestDispatcher(orderServlet).forward(request,
-					response);
-		} else if (action.equalsIgnoreCase("viewDetailDeal")) {
-			request.getRequestDispatcher(dealServlet)
-					.forward(request, response);
-		} else if (action.equalsIgnoreCase("loginPage")) {
-			request.getRequestDispatcher(accountServlet).forward(request,
-					response);
-		}else if (action.equalsIgnoreCase("registerPage")) {
-			request.getRequestDispatcher(accountServlet).forward(request,
-					response);
 		}
 
 	}

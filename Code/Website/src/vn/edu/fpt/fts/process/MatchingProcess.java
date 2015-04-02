@@ -40,7 +40,7 @@ public class MatchingProcess {
 		LatLng goodsStartLocation = new LatLng();
 		LatLng goodsFinishLocation = new LatLng();
 		List<Route> l_routes = new ArrayList<Route>();
-		List<Route> l_routesFilter1 = new ArrayList<Route>();
+		List<Route> l_routeFilter1 = new ArrayList<Route>();
 		List<Route> l_routeOrigin1 = new ArrayList<Route>();
 		Goods goods = goodsDao.getActiveGoodsByID(goodsID);
 
@@ -88,36 +88,41 @@ public class MatchingProcess {
 							.getFinishTime());
 					if (checkTimeOverlaps(pickupDate, deliveryDate,
 							routeStartDate, routeFinishDate)) {
-						l_routesFilter1.add(l_routeOrigin1.get(i));
+						l_routeFilter1.add(l_routeOrigin1.get(i));
 						System.out.println(routeStartDate.getTime() + " <= "
 								+ pickupDate.getTime() + " <= "
 								+ deliveryDate.getTime() + " <= "
 								+ routeFinishDate.getTime());
 					}
-
-					// if (routeStartDate.compareTo(pickupDate) <= 0
-					// && routeStartDate.compareTo(deliveryDate) <= 0
-					// && !(routeFinishDate.compareTo(deliveryDate) < 0)) {
-					// l_routesFilter1.add(l_routeOrigin1.get(i));
-					// System.out.println(routeStartDate.getTime() + " <= "
-					// + pickupDate.getTime() + " <= "
-					// + deliveryDate.getTime() + " <= "
-					// + routeFinishDate.getTime());
-					// }
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			// Condition route
-			if (l_routesFilter1.size() != 0) {
-				for (int i = 0; i < l_routesFilter1.size(); i++) {
+			// Remove list route in deal with status pending or accept
+			List<Route> listRouteInDeal = routeDao
+					.getListRouteByDealPendingOrAcceptAndGoodsID(goodsID);
+			List<Route> l_routeFilter2 = new ArrayList<Route>();
+			for (Route route : l_routeFilter1) {
+				boolean isRouteInDeal = false;
+				for (Route routeInDeal : listRouteInDeal) {
+					if (route.getRouteID() == routeInDeal.getRouteID()) {
+						isRouteInDeal = true;
+					}
+				}
+				if (!isRouteInDeal) {
+					l_routeFilter2.add(route);
+				}
+			}
 
-					if (mapProcess.checkDistance(l_routesFilter1.get(i)
+			// Condition route
+			if (l_routeFilter2.size() != 0) {
+				for (int i = 0; i < l_routeFilter2.size(); i++) {
+					if (mapProcess.checkDistance(l_routeFilter2.get(i)
 							.getRouteID(), goodsStartLocation,
 							goodsFinishLocation, Common.maxAllowDistance)) {
-						l_routes.add(l_routesFilter1.get(i));
+						l_routes.add(l_routeFilter2.get(i));
 					}
 				}
 			}
@@ -168,40 +173,46 @@ public class MatchingProcess {
 								+ goodsDelivery.getTime() + " <= "
 								+ finishDate.getTime());
 					}
-
-					// if (startingDate.compareTo(goodsPickup) <= 0
-					// && startingDate.compareTo(goodsDelivery) <= 0
-					// && !(finishDate.compareTo(goodsDelivery) < 0)) {
-					// l_goodsFilter1.add(l_goodsBefore1.get(i));
-					// System.out.println(startingDate.getTime() + " <= "
-					// + goodsPickup.getTime() + " <= "
-					// + goodsDelivery.getTime() + " <= "
-					// + finishDate.getTime());
-					// }
 				}
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
+			// Remove list goods in deal with status pending or accept
+			List<Goods> l_goodsFilter2 = new ArrayList<Goods>();
+			List<Goods> listGoodsInDeal = goodsDao
+					.getListGoodsByDealPendingOrAcceptAndRouteID(routeID);
+			for (Goods goods : l_goodsFilter1) {
+				boolean isGoodsInDeal = false;
+				for (Goods goodsInDeal : listGoodsInDeal) {
+					if (goods.getGoodsID() == goodsInDeal.getGoodsID()) {
+						isGoodsInDeal = true;
+					}
+				}
+				if (!isGoodsInDeal) {
+					l_goodsFilter2.add(goods);
+				}
+			}
+
 			// Condition route
-			if (l_goodsFilter1.size() != 0) {
-				for (int i = 0; i < l_goodsFilter1.size(); i++) {
+			if (l_goodsFilter2.size() != 0) {
+				for (int i = 0; i < l_goodsFilter2.size(); i++) {
 					LatLng goodsStartLocation = new LatLng();
-					goodsStartLocation.setLatitude(l_goodsFilter1.get(i)
+					goodsStartLocation.setLatitude(l_goodsFilter2.get(i)
 							.getPickupMarkerLatidute());
-					goodsStartLocation.setLongitude((l_goodsFilter1.get(i)
+					goodsStartLocation.setLongitude((l_goodsFilter2.get(i)
 							.getPickupMarkerLongtitude()));
 
 					LatLng goodsFinishLocation = new LatLng();
-					goodsFinishLocation.setLatitude((l_goodsFilter1.get(i)
+					goodsFinishLocation.setLatitude((l_goodsFilter2.get(i)
 							.getDeliveryMarkerLatidute()));
-					goodsFinishLocation.setLongitude((l_goodsFilter1.get(i)
+					goodsFinishLocation.setLongitude((l_goodsFilter2.get(i)
 							.getDeliveryMarkerLongtitude()));
 
 					if (mapProcess.checkDistance(routeID, goodsStartLocation,
 							goodsFinishLocation, Common.maxAllowDistance)) {
-						l_goods.add(l_goodsFilter1.get(i));
+						l_goods.add(l_goodsFilter2.get(i));
 					}
 				}
 			}

@@ -9,7 +9,7 @@
                 <nav id="footer-nav" class="text-right">
                     <ul id="bot-nav" class="inline-list">
                         <li>
-                            <a href="index.jsp" target="_blank">Trang chủ</a>
+                            <a href="ProcessServlet" target="_blank">Trang chủ</a>
                         </li>
                         <li>
                             <a href="#" target="_blank">Giới thiệu</a>

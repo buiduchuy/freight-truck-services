@@ -340,7 +340,9 @@ public class DealServlet extends HttpServlet {
 					}
 				}
 			} else if (action.equalsIgnoreCase("manageDeal")) {
-				
+				request.getRequestDispatcher(
+						"manage-deal.jsp").forward(
+						request, response);
 			}
 		}
 	}

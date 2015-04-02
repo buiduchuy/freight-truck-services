@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.DBAccess;
 import vn.edu.fpt.fts.pojo.Notification;
 
@@ -36,6 +37,64 @@ public class NotificationDAO {
 			stm = con.prepareStatement(sql);
 
 			stm.setString(1, email);
+
+			rs = stm.executeQuery();
+			Notification notification;
+			while (rs.next()) {
+				notification = new Notification();
+
+				notification.setNotificationID(rs.getInt("NotificationID"));
+				notification.setMessage(rs.getString("Message"));
+				notification.setActive(rs.getInt("Active"));
+				notification.setCreateTime(rs.getString("CreateTime"));
+				notification.setType(rs.getString("Type"));
+				notification.setEmail(rs.getString("Email"));
+				notification.setIdOfType(rs.getInt("IdOfType"));
+				notification.setStatusOfType(rs.getInt("StatusOfType"));
+
+				l_notification.add(notification);
+			}
+			return l_notification;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Notification table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return l_notification;
+	}
+
+	public List<Notification> getNewestNotificationByEmail(String email,
+			int lastedID) {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		List<Notification> l_notification = new ArrayList<Notification>();
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Notification WHERE Active ='"
+					+ Common.activate
+					+ "' AND Email=? AND NotificationID > ? ORDER BY NotificationID DESC";
+			stm = con.prepareStatement(sql);
+
+			stm.setString(1, email);
+			stm.setInt(2, lastedID);
 
 			rs = stm.executeQuery();
 			Notification notification;
