@@ -13,8 +13,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import vn.edu.fpt.fts.activity.MainActivity;
 import vn.edu.fpt.fts.common.GeocoderHelper;
@@ -31,7 +33,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 public class RouteMapActivity extends Activity implements OnMapReadyCallback{
-	private LatLng start, end, marker1, marker2;
+	private LatLng start, end, marker1, marker2, pickup, deliver;
 	private GoogleMap map;
 	private ProgressDialog pDlg;
 	GeocoderHelper helper = new GeocoderHelper();
@@ -42,7 +44,7 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		
-		Bundle bundle = getIntent().getBundleExtra("bundle");
+		Bundle bundle = getIntent().getBundleExtra("bundle");		
 		start = bundle.getParcelable("start");
 		end = bundle.getParcelable("end");
 		if (bundle.containsKey("m1")) {
@@ -51,7 +53,9 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 		if (bundle.containsKey("m2")) {
 			marker2 = bundle.getParcelable("m2");			
 		}
-		
+		Bundle extra = getIntent().getBundleExtra("extra");
+		pickup = extra.getParcelable("pickup");
+		deliver = extra.getParcelable("deliver");
 		
 		MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.routeMap);
 		mapFragment.getMapAsync(this);
@@ -88,6 +92,14 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 	public void onMapReady(GoogleMap arg0) {
 		// TODO Auto-generated method stub
 		String params = helper.makeURL2(start, marker1, marker2, end);
+		MarkerOptions markerOptions = new MarkerOptions();		
+		MarkerOptions markerOptions2 = new MarkerOptions();
+		MarkerOptions markerOptions3 = new MarkerOptions();
+		MarkerOptions markerOptions4 = new MarkerOptions();
+		markerOptions.position(start).icon(BitmapDescriptorFactory.fromResource(R.drawable.driver_marker_icon_small));
+		markerOptions2.position(end).icon(BitmapDescriptorFactory.fromResource(R.drawable.driver_marker_icon_small));
+		markerOptions3.position(pickup).icon(BitmapDescriptorFactory.fromResource(R.drawable.owner_marker_icon));
+		markerOptions4.position(deliver).icon(BitmapDescriptorFactory.fromResource(R.drawable.owner_marker_icon));
 		try {
 			new connectAsyncTask().execute(params);	
 		} catch (Exception e) {
@@ -95,7 +107,10 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 		}
 		LatLng point = new LatLng(14.058324, 108.277199);
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 6));
-		
+		map.addMarker(markerOptions);
+		map.addMarker(markerOptions2);
+		map.addMarker(markerOptions3);
+		map.addMarker(markerOptions4);
 	}
 	
 	

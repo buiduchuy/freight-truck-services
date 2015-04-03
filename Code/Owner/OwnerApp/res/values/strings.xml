@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Goods Owner</string>
+    <string name="app_name">FTS Owner</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Cài đặt</string>
     <string name="title_activity_goods_fragment">GoodsFragment</string>
@@ -14,6 +14,8 @@
     <string name="action_accept_deal">Chấp nhận</string>
     <string name="action_decline_deal">Từ chối</string>
     <string name="action_cancel_deal">Hủy đề nghị</string>
+    <string name="action_confirm_order">Xác nhận giao hàng</string>
+    <string name="action_lost_order">Báo mất hàng</string>
     <string name="title_activity_create_good_fragment">Tạo hàng</string>
     <string name="title_activity_create_goods">Tạo hàng</string>
     <string name="title_activity_information_fragment">InformationFragment</string>

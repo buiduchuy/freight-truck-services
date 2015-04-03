@@ -62,8 +62,9 @@ public class SuggestDetailActivity extends Activity {
 			weight, tvMap;
 	private EditText etPrice, etNote;
 	private Button btnSend;
-	private String goodsID, ownerID, price, notes, categoryID;
-	private LatLng startAdd, mark1, mark2, endAdd;
+	private String goodsID, ownerID, categoryID;
+	private LatLng startAdd, mark1, mark2, endAdd, pickup, deliver;
+	private Bundle extra = new Bundle();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +74,9 @@ public class SuggestDetailActivity extends Activity {
 		actionBar.setHomeButtonEnabled(true);
 
 		routeid = getIntent().getIntExtra("route", 0);
-		goodsID = getIntent().getStringExtra("goodsID");
-		price = getIntent().getStringExtra("price");
-		notes = getIntent().getStringExtra("notes");
+		goodsID = getIntent().getStringExtra("goodsID");		
+		extra = getIntent().getBundleExtra("extra");
+		
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestDetailActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Route_GetByID;
@@ -150,6 +151,7 @@ public class SuggestDetailActivity extends Activity {
 				}
 				bundle.putParcelable("end", endAdd);
 				intent.putExtra("bundle", bundle);
+				intent.putExtra("extra", extra);
 				startActivity(intent);
 			}
 		});
@@ -348,10 +350,45 @@ public class SuggestDetailActivity extends Activity {
 						category = "Không có";
 					}
 					if (response.contains("routeMarkers")) {
-						JSONArray array = jsonObject
-								.getJSONArray("routeMarkers");
-						for (int i = 0; i < array.length(); i++) {
-							JSONObject jsonObject2 = array.getJSONObject(i);
+						Object object = jsonObject.get("routeMarkers");
+						if (object instanceof JSONArray) {
+							JSONArray array = jsonObject
+									.getJSONArray("routeMarkers");
+							for (int i = 0; i < array.length(); i++) {
+								JSONObject jsonObject2 = array.getJSONObject(i);
+								if (jsonObject2.getString("numbering").equals(
+										"1")) {
+									String marker1 = jsonObject2
+											.getString("routeMarkerLocation");
+									try {
+										mark1 = new GetLatLng()
+												.execute(marker1).get();
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (ExecutionException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								} else if (jsonObject2.getString("numbering")
+										.equals("2")) {
+									String marker2 = jsonObject2
+											.getString("routeMarkerLocation");
+									try {
+										mark2 = new GetLatLng()
+												.execute(marker2).get();
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (ExecutionException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							}
+						} else if (object instanceof JSONObject) {
+							JSONObject jsonObject2 = jsonObject
+									.getJSONObject("routeMarkers");
 							if (jsonObject2.getString("numbering").equals("1")) {
 								String marker1 = jsonObject2
 										.getString("routeMarkerLocation");
@@ -381,6 +418,7 @@ public class SuggestDetailActivity extends Activity {
 								}
 							}
 						}
+
 					}
 					String rWeight = jsonObject.getString("weight");
 					String startAddress = jsonObject
@@ -586,7 +624,7 @@ public class SuggestDetailActivity extends Activity {
 						"Gửi đề nghị thành công", Toast.LENGTH_LONG).show();
 				Intent intent = new Intent(SuggestDetailActivity.this,
 						SuggestActivity.class);
-				intent.putExtra("goodsID", goodsID); 
+				intent.putExtra("goodsID", goodsID);
 				startActivity(intent);
 			} else {
 				Toast.makeText(SuggestDetailActivity.this,

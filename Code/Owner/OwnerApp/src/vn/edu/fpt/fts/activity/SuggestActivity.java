@@ -23,6 +23,9 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.android.gms.maps.model.LatLng;
+
 import vn.edu.fpt.fts.adapter.SuggestModelAdapter;
 import vn.edu.fpt.fts.classes.Route;
 import vn.edu.fpt.fts.classes.SuggestModel;
@@ -50,8 +53,10 @@ public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
 	private SuggestModelAdapter adapter;
-	private String goodsID, price, notes, cate;
+	private String goodsID, cate;
 	private TextView tvGone, tvInfo, tvInfo2;
+	private Bundle extra = new Bundle();
+	private double pickupLat, pickupLng, deliverLat, deliverLng;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,7 @@ public class SuggestActivity extends Activity {
 		tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
 		goodsID = getIntent().getStringExtra("goodsID");
 		cate = getIntent().getStringExtra("cate");
+		extra = getIntent().getBundleExtra("extra");
 		Bundle bundle = getIntent().getBundleExtra("bundle");
 		if (bundle != null) {
 			String[] tmp = bundle.getString("pickup").split(",");
@@ -74,7 +80,7 @@ public class SuggestActivity extends Activity {
 
 			tvInfo.setText(text);
 			tvInfo2.setText(text2);
-		} else {
+		} else if (bundle == null || extra == null){
 			WebServiceTask3 wst3 = new WebServiceTask3(
 					WebServiceTask3.POST_TASK, SuggestActivity.this,
 					"Đang xử lý...");
@@ -108,8 +114,10 @@ public class SuggestActivity extends Activity {
 						SuggestDetailActivity.class);
 				intent.putExtra("route", routeId);
 				intent.putExtra("goodsID", goodsID);
-				intent.putExtra("price", price);
-				intent.putExtra("notes", notes);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("pickup", new LatLng(pickupLat, pickupLng));
+				bundle.putParcelable("deliver", new LatLng(deliverLat, deliverLng));
+				intent.putExtra("extra", bundle);
 				startActivity(intent);
 			}
 		});
@@ -512,6 +520,14 @@ public class SuggestActivity extends Activity {
 				String text = "Hàng: " + weight + " - " + price;
 				String text2 = "Nhận: " + tmp[tmp.length - 1] + " - "
 						+ "Giao: " + tmp2[tmp2.length - 1];
+				String test = jsonObject.getString("pickupMarkerLatidute");
+				String test2 = jsonObject.getString("pickupMarkerLongtitude");
+				pickupLat = Double.parseDouble(jsonObject.getString("pickupMarkerLatidute"));
+				pickupLng = Double.parseDouble(jsonObject.getString("pickupMarkerLongtitude"));
+				deliverLat = Double.parseDouble(jsonObject.getString("deliveryMarkerLatidute"));
+				deliverLng = Double.parseDouble(jsonObject.getString("deliveryMarkerLongtitude"));
+				LatLng c = new LatLng(pickupLat, pickupLng); 
+				
 				tvInfo.setText(text);
 				tvInfo2.setText(text2);
 			} catch (JSONException e) {

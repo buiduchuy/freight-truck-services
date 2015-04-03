@@ -44,8 +44,8 @@ import android.widget.Toast;
 public class OrderDetailActivity extends Activity {
 	private TextView tvStartAdd, tvDestAdd, tvStartTime, tvFinishTime, tvCate,
 			tvPrice, tvNote, tvPhone, tvStatus, tvWeight;
-	private Button btnConfirm, btnLost;
 	private String orderID;
+	private MenuItem confirm, lost;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +65,6 @@ public class OrderDetailActivity extends Activity {
 		tvPhone = (TextView) findViewById(R.id.textview_phone);
 		tvStatus = (TextView) findViewById(R.id.textview_status);
 		tvWeight = (TextView) findViewById(R.id.textview_weight);
-		btnConfirm = (Button) findViewById(R.id.button_confirm);
-		btnLost = (Button) findViewById(R.id.button_lost);
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				OrderDetailActivity.this, "Đang xử lý...");
@@ -76,41 +74,6 @@ public class OrderDetailActivity extends Activity {
 		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
 				new String[] { url });
 
-		btnConfirm.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				WebServiceTask2 wst2 = new WebServiceTask2(
-						WebServiceTask2.POST_TASK, OrderDetailActivity.this,
-						"Đang xử lý...");
-				wst2.addNameValuePair("orderID", orderID);
-				// wst2.addNameValuePair("ownerConfirmDelivery", "true");
-				String url = Common.IP_URL
-						+ Common.Service_Order_ConfirmDelivery;
-				// wst2.execute(new String[] { url });
-				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						new String[] { url });
-			}
-		});
-
-		btnLost.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				WebServiceTask3 wst3 = new WebServiceTask3(
-						WebServiceTask3.POST_TASK, OrderDetailActivity.this,
-						"Đang xử lý...");
-				wst3.addNameValuePair("orderID", orderID);
-				// wst2.addNameValuePair("ownerConfirmDelivery", "true");
-				String url = Common.IP_URL
-						+ Common.Service_Order_ownerNoticeLostGoods;
-				// wst2.execute(new String[] { url });
-				wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						new String[] { url });
-			}
-		});
 	}
 
 	@Override
@@ -126,14 +89,14 @@ public class OrderDetailActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		if (id == R.id.action_history) {
-			Intent intent = new Intent(OrderDetailActivity.this,
-					HistoryActivity.class);
-			startActivity(intent);
-		}
+		// if (id == R.id.action_settings) {
+		// return true;
+		// }
+		// if (id == R.id.action_history) {
+		// Intent intent = new Intent(OrderDetailActivity.this,
+		// HistoryActivity.class);
+		// startActivity(intent);
+		// }
 		if (id == android.R.id.home) {
 			Intent intent = new Intent(OrderDetailActivity.this,
 					MainActivity.class);
@@ -144,8 +107,40 @@ public class OrderDetailActivity extends Activity {
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
 		}
+		if (id == R.id.confirm_order) {
+			WebServiceTask2 wst2 = new WebServiceTask2(
+					WebServiceTask2.POST_TASK, OrderDetailActivity.this,
+					"Đang xử lý...");
+			wst2.addNameValuePair("orderID", orderID);
+			// wst2.addNameValuePair("ownerConfirmDelivery", "true");
+			String url = Common.IP_URL + Common.Service_Order_ConfirmDelivery;
+			// wst2.execute(new String[] { url });
+			wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
+		if (id == R.id.lost_order) {
+			WebServiceTask3 wst3 = new WebServiceTask3(
+					WebServiceTask3.POST_TASK, OrderDetailActivity.this,
+					"Đang xử lý...");
+			wst3.addNameValuePair("orderID", orderID);
+			// wst2.addNameValuePair("ownerConfirmDelivery", "true");
+			String url = Common.IP_URL
+					+ Common.Service_Order_ownerNoticeLostGoods;
+			// wst2.execute(new String[] { url });
+			wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		confirm = menu.findItem(R.id.confirm_order);
+		lost = menu.findItem(R.id.lost_order);
+		return true;
+	};
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -264,21 +259,21 @@ public class OrderDetailActivity extends Activity {
 				String count = jsonObject.getString("orderStatusID");
 				if (count.equals("3") || count.equals("4")) {
 					tvStatus.setText("Đã nhận hàng");
-					btnConfirm.setVisibility(View.GONE);
-					btnLost.setVisibility(View.GONE);
+					confirm.setVisible(false);
+					lost.setVisible(false);
 				} else if (count.equals("1") || count.equals("2")) {
 					tvStatus.setText("Hàng chưa giao");
-					btnLost.setVisibility(View.GONE);
+
+					lost.setVisible(false);
 				} else if (count.equals("5")) {
 					tvStatus.setText("Hàng bị mất");
-					btnConfirm.setVisibility(View.GONE);
-					btnLost.setVisibility(View.GONE);
+					lost.setVisible(false);
 				}
 				if (Common.expireDate(tmp1[0])
 						&& (count.equals("1") || count.equals("2"))) {
-					btnLost.setVisibility(View.VISIBLE);
+					lost.setVisible(true);
 				} else {
-					btnLost.setVisibility(View.GONE);
+					lost.setVisible(false);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

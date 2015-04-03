@@ -49,9 +49,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -60,6 +63,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class InformationFragment extends Fragment {
@@ -217,31 +221,61 @@ public class InformationFragment extends Fragment {
 		// pickup address and map button
 		actPickupAddr = (AutoCompleteTextView) rootView
 				.findViewById(R.id.edittext_pickup_address);
-		actPickupAddr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+		actPickupAddr.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			
 			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				// TODO Auto-generated method stub
-				if (!hasFocus) {
-					if (!(actPickupAddr.getText().toString().trim().length() == 0)) {
-						WebServiceTask4 wst4 = new WebServiceTask4(WebServiceTask3.POST_TASK,
-								getActivity(), "Đang xử lý...");
-						String url = "http://maps.google.com/maps/api/geocode/json?address="
-								+ actPickupAddr.getText().toString().replaceAll(" ", "%20") + "&sensor=false";
-						try {
-							String test = wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
-							test = "abc";
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (ExecutionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+						      Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(actPickupAddr.getWindowToken(), 0);
+
+				}
+				if (!(actPickupAddr.getText().toString().trim().length() == 0)) {
+					WebServiceTask4 wst4 = new WebServiceTask4(WebServiceTask3.POST_TASK,
+							getActivity(), "Đang xử lý...");
+					String url = "http://maps.google.com/maps/api/geocode/json?address="
+							+ actPickupAddr.getText().toString().replaceAll(" ", "%20") + "&sensor=false";
+					try {
+						String test = wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
+						test = "abc";
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
+				return true;
 			}
 		});
+//		actPickupAddr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//			
+//			@Override
+//			public void onFocusChange(View v, boolean hasFocus) {
+//				// TODO Auto-generated method stub
+//				if (!hasFocus) {
+//					if (!(actPickupAddr.getText().toString().trim().length() == 0)) {
+//						WebServiceTask4 wst4 = new WebServiceTask4(WebServiceTask3.POST_TASK,
+//								getActivity(), "Đang xử lý...");
+//						String url = "http://maps.google.com/maps/api/geocode/json?address="
+//								+ actPickupAddr.getText().toString().replaceAll(" ", "%20") + "&sensor=false";
+//						try {
+//							String test = wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url).get();
+//							test = "abc";
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						} catch (ExecutionException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			}
+//		});
 		ibPickupMap = (ImageButton) rootView
 				.findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
@@ -260,30 +294,59 @@ public class InformationFragment extends Fragment {
 		// deliver address and map button
 		actDeliverAddr = (AutoCompleteTextView) rootView
 				.findViewById(R.id.edittext_deliver_address);
-		actDeliverAddr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+		actDeliverAddr.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			
 			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				// TODO Auto-generated method stub
-				if (!hasFocus) {
-					if (!(actDeliverAddr.getText().toString().trim().length() == 0)) {
-						WebServiceTask5 wst5 = new WebServiceTask5(WebServiceTask3.POST_TASK,
-								getActivity(), "Đang xử lý...");
-						String url2 = "http://maps.google.com/maps/api/geocode/json?address="
-								+ actDeliverAddr.getText().toString().replaceAll(" ", "%20") + "&sensor=false";
-						try {
-							wst5.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url2).get();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (ExecutionException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+				if (actionId == EditorInfo.IME_ACTION_DONE) {
+					InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(
+						      Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(actDeliverAddr.getWindowToken(), 0);
+
+				}
+				if (!(actDeliverAddr.getText().toString().trim().length() == 0)) {
+					WebServiceTask5 wst5 = new WebServiceTask5(WebServiceTask3.POST_TASK,
+							getActivity(), "Đang xử lý...");
+					String url2 = "http://maps.google.com/maps/api/geocode/json?address="
+							+ actDeliverAddr.getText().toString().replaceAll(" ", "%20") + "&sensor=false";
+					try {
+						wst5.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url2).get();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
+				return true;
 			}
 		});
+//		actDeliverAddr.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//			
+//			@Override
+//			public void onFocusChange(View v, boolean hasFocus) {
+//				// TODO Auto-generated method stub
+//				if (!hasFocus) {
+//					if (!(actDeliverAddr.getText().toString().trim().length() == 0)) {
+//						WebServiceTask5 wst5 = new WebServiceTask5(WebServiceTask3.POST_TASK,
+//								getActivity(), "Đang xử lý...");
+//						String url2 = "http://maps.google.com/maps/api/geocode/json?address="
+//								+ actDeliverAddr.getText().toString().replaceAll(" ", "%20") + "&sensor=false";
+//						try {
+//							wst5.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url2).get();
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						} catch (ExecutionException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			}
+//		});
 		ibDeliverMap = (ImageButton) rootView
 				.findViewById(R.id.imagebtn_deliver_address);
 		ibDeliverMap.setOnClickListener(new View.OnClickListener() {
@@ -645,14 +708,16 @@ public class InformationFragment extends Fragment {
 						SuggestActivity.class);
 				intent.putExtra("goodsID", goodsID);
 				intent.putExtra("cate", cateId + "");
+				Bundle extra = new Bundle();
+				extra.putParcelable("pickup", new LatLng(pickupLat, pickupLng));
+				extra.putParcelable("deliver", new LatLng(deliverLat, deliverLng));
+				intent.putExtra("extra", extra);
 				Bundle bundle = new Bundle();
 				bundle.putString("price", etPrice.getText().toString() + " nghìn đồng");
 				bundle.putString("weight", etWeight.getText().toString() + " kg");
 				bundle.putString("pickup", Common.formatLocation(actPickupAddr.getText().toString()));
 				bundle.putString("deliver", Common.formatLocation(actDeliverAddr.getText().toString()));
 				intent.putExtra("bundle", bundle);
-				intent.putExtra("price", etPrice.getText().toString());
-				intent.putExtra("notes", etNotes.getText().toString());
 				startActivity(intent);
 			}
 			pDlg.dismiss();
