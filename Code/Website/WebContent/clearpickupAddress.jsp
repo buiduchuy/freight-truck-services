@@ -1,6 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<title>Tạo hàng</title>
+<title>Địa chỉ giao hàng</title>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -102,34 +102,28 @@ google.maps.event.addDomListener(window, 'load', initialize);
 			<jsp:include page="vertical-menu-create-good.jsp" />
 			<div class="row"></div>
 		</div>
-		<div class="form-content "
-			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-		</div>
 	</div>
 	<div class="small-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="GoodsServlet" method="post"
-					accept-charset="utf-8">
+				<form action="GoodsServlet" method="post" accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
-								<font color="orange">Tạo hàng</font>
+								<font color="orange">Địa chỉ giao hàng</font>
 							</h2>
 						</div>
-						<label>Địa chỉ giao : ${router.pickupAddress }</label>
+						<label style="text-align: center; font-weight: 500;">Vị trí:
+							${router.pickupAddress }</label>
+
 						<div id="mapCanvas"></div>
 						<div id="infoPanel">
 							<div id="markerStatus" style="display: none;"></div>
-							<input type="hidden" name="latpickAddress" id="textlat" readonly="readonly"> <input
-								type="hidden" name="lngpickAddress" id="textlng" readonly="readonly">
+							<input type="hidden" name="latpickAddress" id="textlat"
+								readonly="readonly"> <input type="hidden"
+								name="lngpickAddress" id="textlng" readonly="readonly">
 						</div>
-
-
-
-
-
 
 						<div class="large-12 columns">
 							<div class="submit-area right">
@@ -144,12 +138,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
 						<div class="row"></div>
 						<div class="row"></div>
 				</form>
-
-
 			</div>
 		</div>
 	</div>
-
 </div>
 
 

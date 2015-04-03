@@ -85,9 +85,8 @@ public class GoodsServlet extends HttpServlet {
 				Goods r = new Goods(pickupTime, pickupAddress, deliveryTime,
 						deliveryAddress);
 				session.setAttribute("router", r);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-2.jsp");
-				rd.forward(request, response);
+				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
+						response);
 			}
 			if ("next2".equals(action)) {
 				int goodsCategoryID = Integer.parseInt(request
@@ -116,9 +115,8 @@ public class GoodsServlet extends HttpServlet {
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-3.jsp");
-				rd.forward(request, response);
+				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
+						response);
 			}
 			if ("next3".equals(action)) {
 				double priceSuggest = (Double) session
@@ -184,9 +182,9 @@ public class GoodsServlet extends HttpServlet {
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-3.jsp");
-				rd.forward(request, response);
+
+				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
+						response);
 			}
 			if ("save1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
@@ -198,10 +196,8 @@ public class GoodsServlet extends HttpServlet {
 				Goods r = new Goods(pickupTime, pickupAddress, deliveryTime,
 						deliveryAddress);
 				session.setAttribute("router", r);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-1.jsp");
-				rd.forward(request, response);
-
+				request.getRequestDispatcher("tao-hang-1.jsp").forward(request,
+						response);
 			}
 
 			if ("save2".equals(action)) {
@@ -232,9 +228,8 @@ public class GoodsServlet extends HttpServlet {
 												.lngGeoCoding(r
 														.getDeliveryAddress()),
 										"K"))));
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-2.jsp");
-				rd.forward(request, response);
+				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
+						response);
 			}
 
 			if ("save3".equals(action)) {
@@ -252,9 +247,8 @@ public class GoodsServlet extends HttpServlet {
 					price = priceSuggest;
 				}
 				session.setAttribute("price", price);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("tao-hang-3.jsp");
-				rd.forward(request, response);
+				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
+						response);
 			}
 
 			if ("createGood".equals(action)) {
@@ -396,7 +390,7 @@ public class GoodsServlet extends HttpServlet {
 						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);
 			}
-			
+
 			DriverDAO driverDao = new DriverDAO();
 			MatchingProcess matchingProcess = new MatchingProcess();
 			if ("suggestFromSystem".equals(action)) {
@@ -416,74 +410,74 @@ public class GoodsServlet extends HttpServlet {
 							goodDao.getGoodsByID(IdGood));
 					session.setAttribute("listRouter", listRou);
 					session.setAttribute("listDriver", listDri);
-					RequestDispatcher rd = request
-							.getRequestDispatcher("goi-y-he-thong.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("goi-y-he-thong.jsp").forward(
+							request, response);
 				} else {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("goi-y-he-thong.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("goi-y-he-thong.jsp").forward(
+							request, response);
 				}
-			}
-			if ("manageGoods".equals(action)) {
+			} else if (action.equalsIgnoreCase("manageGoods")) {
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
-						.getOwnerID());
-				List<Goods> manageGood1 = new ArrayList<Goods>();
-				for (int i = 0; i < manageGood.size(); i++) {
-					if (manageGood.get(i).getActive() == 1) {
-						manageGood.get(i).setPickupTime(
-								Common.changeFormatDate(manageGood.get(i)
-										.getPickupTime(),
-										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-						manageGood.get(i).setDeliveryTime(
-								Common.changeFormatDate(manageGood.get(i)
-										.getDeliveryTime(),
-										"yyyy-MM-dd hh:mm:ss.s", "dd-MM-yyyy"));
-						manageGood1.add(manageGood.get(i));
+				if (owner != null) {
+					List<Goods> manageGood = goodDao
+							.getListGoodsByOwnerID(owner.getOwnerID());
+					List<Goods> manageGood1 = new ArrayList<Goods>();
+					for (int i = 0; i < manageGood.size(); i++) {
+						if (manageGood.get(i).getActive() == 1) {
+							manageGood.get(i).setPickupTime(
+									Common.changeFormatDate(manageGood.get(i)
+											.getPickupTime(),
+											"yyyy-MM-dd hh:mm:ss.s",
+											"dd-MM-yyyy"));
+							manageGood.get(i).setDeliveryTime(
+									Common.changeFormatDate(manageGood.get(i)
+											.getDeliveryTime(),
+											"yyyy-MM-dd hh:mm:ss.s",
+											"dd-MM-yyyy"));
+							manageGood1.add(manageGood.get(i));
+						}
 					}
+					session.setAttribute("listGoods", manageGood1);
+
+					request.getRequestDispatcher("quan-ly-hang.jsp").forward(
+							request, response);
+				} else {
+					request.getRequestDispatcher("dang-nhap.jsp").forward(
+							request, response);
 				}
-				Goods[] list1 = new Goods[manageGood1.size()];
-				manageGood1.toArray(list1);
-				session.setAttribute("listGoods", list1);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("quan-ly-hang.jsp");
-				rd.forward(request, response);
-			}
-			if ("viewDetailGood1".equals(action)) {
+
+			} else if (action.equalsIgnoreCase("viewDetailGood1")) {
 				try {
-					int idGood = Integer.parseInt(request
+					int goodsID = Integer.parseInt(request
 							.getParameter("idGood"));
-					Goods good = goodDao.getGoodsByID(idGood);
-					good.setPickupTime(Common.changeFormatDate(
-							good.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
+					Goods goods = goodDao.getGoodsByID(goodsID);
+					goods.setPickupTime(Common.changeFormatDate(
+							goods.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
 							"dd-MM-yyyy"));
-					good.setDeliveryTime(Common.changeFormatDate(
-							good.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
+					goods.setDeliveryTime(Common.changeFormatDate(
+							goods.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
 							"dd-MM-yyyy"));
-					session.setAttribute("detailGood1", good);
+					session.setAttribute("detailGood1", goods);
 					session.setAttribute("priceCreateGood",
 							Common.priceCreateGood);
-					session.setAttribute("priceTotal", good.getPrice()
+					session.setAttribute("priceTotal", goods.getPrice()
 							+ Common.priceCreateGood);
-					RequestDispatcher rd = request
-							.getRequestDispatcher("chi-tiet-hang.jsp");
-					rd.forward(request, response);
-				} catch (Exception ex) {
-
+					request.getRequestDispatcher("chi-tiet-hang.jsp").forward(
+							request, response);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
 				}
-			}
-			if ("viewDetailGood2".equals(action)) {
+			} else if ("viewDetailGood2".equals(action)) {
 				try {
-					int idGood = Integer.parseInt(request
+					int goodsID = Integer.parseInt(request
 							.getParameter("idGood"));
-					Goods good = goodDao.getGoodsByID(idGood);
-					session.setAttribute("detailGood2", good);
+					Goods goods = goodDao.getGoodsByID(goodsID);
+					session.setAttribute("detailGood2", goods);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-order.jsp");
 					rd.forward(request, response);
-				} catch (Exception ex) {
-
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
 				}
 			}
 			if ("updateGood".equals(action)) {
@@ -556,7 +550,6 @@ public class GoodsServlet extends HttpServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 				if (goodDao.updateGoods(good) == 1) {
 					session.setAttribute("messageSuccess",
 							"Cập nhật thành công");
@@ -572,13 +565,12 @@ public class GoodsServlet extends HttpServlet {
 									+ go.getGoodsID());
 					rd.forward(request, response);
 				}
-			}
-			if ("deleteGood".equals(action)) {
-				int idGoodDelete = Integer.parseInt(request
+			} else if ("deleteGood".equals(action)) {
+				int goodsID = Integer.parseInt(request
 						.getParameter("txtIdGood"));
-				Goods goodDelete = goodDao.getGoodsByID(idGoodDelete);
-				goodDelete.setActive(10);
-				if (goodDao.updateGoods(goodDelete) == 1) {
+				Goods goodsDelete = goodDao.getGoodsByID(goodsID);
+				goodsDelete.setActive(10);
+				if (goodDao.updateGoods(goodsDelete) == 1) {
 					session.setAttribute("messageSuccess",
 							"Xoá hàng thành công!");
 					RequestDispatcher rd = request
@@ -589,24 +581,21 @@ public class GoodsServlet extends HttpServlet {
 							"Xoá hàng thất bại. Xin vui lòng thử lại sau!");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ idGoodDelete);
+									+ goodsID);
 					rd.forward(request, response);
 				}
-			}
-			if ("viewDetailGood1".equals(action)) {
+			} else if ("viewDetailGood1".equals(action)) {
 				try {
 					int idGood = Integer.parseInt(request
 							.getParameter("idGood"));
 					Goods good = goodDao.getGoodsByID(idGood);
 					session.setAttribute("detailGood1", good);
-					RequestDispatcher rd = request
-							.getRequestDispatcher("chi-tiet-hang.jsp");
-					rd.forward(request, response);
-				} catch (Exception ex) {
-
+					request.getRequestDispatcher("chi-tiet-hang.jsp").forward(
+							request, response);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
 				}
-			}
-			if ("filter".equals(action)) {
+			} else if ("filter".equals(action)) {
 				// try {
 				// String startDate = request.getParameter("txtstartdate");
 				// } catch (Exception ex) {
@@ -634,12 +623,9 @@ public class GoodsServlet extends HttpServlet {
 						manageGood1.add(manageGood.get(i));
 					}
 				}
-				Goods[] list1 = new Goods[manageGood1.size()];
-				manageGood1.toArray(list1);
-				session.setAttribute("listGoods", list1);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("quan-ly-hang.jsp");
-				rd.forward(request, response);
+				session.setAttribute("listGoods", manageGood1);
+				request.getRequestDispatcher("quan-ly-hang.jsp").forward(
+						request, response);
 			}
 		}
 	}

@@ -52,17 +52,22 @@ public class OrderServlet extends HttpServlet {
 
 			if (action.equalsIgnoreCase("manageOrder")) {
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Order> listOrder = orderDao.getOrderByOwnerID(owner
-						.getOwnerID());
-				
-				session.removeAttribute("orderStatus");
-				session.setAttribute("listOrder", listOrder);
-				request.getRequestDispatcher("quan-ly-order.jsp").forward(
-						request, response);
-			}
-			if ("lostGood".equals(action)) {
-				int idGood = Integer.parseInt(request.getParameter("idGood"));
-				Order order = orderDao.getOrderByGoodsID(idGood);
+				if (owner != null) {
+					List<Order> listOrder = orderDao.getOrderByOwnerID(owner
+							.getOwnerID());
+
+					session.removeAttribute("orderStatus");
+					session.setAttribute("listOrder", listOrder);
+					request.getRequestDispatcher("quan-ly-order.jsp").forward(
+							request, response);
+				} else {
+					request.getRequestDispatcher("dang-nhap.jsp").forward(
+							request, response);
+				}
+
+			} else if (action.equalsIgnoreCase("lostGood")) {
+				int goodsID = Integer.parseInt(request.getParameter("idGood"));
+				Order order = orderDao.getOrderByGoodsID(goodsID);
 				try {
 					order.setOrderStatusID(5);
 					if (orderDao.updateOrder(order) == 1) {
@@ -80,11 +85,9 @@ public class OrderServlet extends HttpServlet {
 							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
 					rd.forward(request, response);
 				}
-			}
-			if ("confirmOrder".equals(action)) {
+			} else if (action.equalsIgnoreCase("confirmOrder")) {
 
-			}
-			if (action.equalsIgnoreCase("viewDetailOrder")) {
+			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
 				int orderID = Integer.parseInt(request.getParameter("orderID"));
 				Order order = orderDao.getOrderByID(orderID);
 

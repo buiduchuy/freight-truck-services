@@ -17,46 +17,48 @@
 														type : "POST",
 														crossDomain : true,
 														data : {
-															email : "owner"
+															email : "jay"
 														},
 														dataType : "json",
 														cache : false,
 														success : function(
 																result) {
+															if (result != null) {
+																var json = JSON
+																		.stringify(result);
 
-															var json = JSON
-																	.stringify(result);
-															alert(json);
-															json = JSON
-																	.parse(json); // after receiving make a object from it
-															var size = json.notification.length;
+																json = JSON
+																		.parse(json); // after receiving make a object from it
+																var size = json.notification.length;
 
-															for (i = 0; i < size; i++) {
-																var noti = json.notification[i];
-																var mess = noti.message;
-																var notiID = noti.notificationID;
-																var createTime = noti.createTime;
-																var type = noti.type;
-																var content;
+																for (i = 0; i < size; i++) {
+																	var noti = json.notification[i];
+																	var mess = noti.message;
+																	var notiID = noti.notificationID;
+																	var createTime = noti.createTime;
+																	var type = noti.type;
+																	var content;
 
-																if (type == "deal") {
-																	content += '<br/><font size="3" color="red"> <a href="/FTS/GoodsServlet?btnAction=viewDetailGood1&idGood=110">'
-																			+ mess
-																			+ '</a> loại thông báo '
-																			+ type
-																			+ '</font>';
-																} else if (type == "order") {
-																	content += '<br/><font size="3" color="blue"> <a href="/FTS/GoodsServlet?btnAction=viewDetailGood1&idGood=110">'
-																			+ mess
-																			+ '</a> loại thông báo '
-																			+ type
-																			+ '</font>';
+																	if (type == "deal") {
+																		content += '<br/><font size="3" color="red"> <a href="/FTS/GoodsServlet?btnAction=viewDetailGood1&idGood=110">'
+																				+ mess
+																				+ '</a> loại thông báo '
+																				+ type
+																				+ '</font>';
+																	} else if (type == "order") {
+																		content += '<br/><font size="3" color="blue"> <a href="/FTS/GoodsServlet?btnAction=viewDetailGood1&idGood=110">'
+																				+ mess
+																				+ '</a> loại thông báo '
+																				+ type
+																				+ '</font>';
+																	}
+
 																}
 
+																document
+																		.getElementById("stage").innerHTML = content;
 															}
 
-															document
-																	.getElementById("stage").innerHTML = content;
 														},
 														error : function(xhr,
 																status, error) {

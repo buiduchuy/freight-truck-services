@@ -29,9 +29,7 @@
 <script src="js/alertify.min.js"></script>
 <script src="js/notify.js"></script>
 
-
-
-
+<link href="css/notification.css" rel="stylesheet" type="text/css" />
 <link href="css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery.dataTables.js"></script>
 <script type="text/javascript" class="init">
@@ -48,93 +46,104 @@
 		$('#example1').dataTable();
 	});
 </script>
-<script	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+<script
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 
 </head>
-<body onload="auto()">
-		<div class="top-bar">
-			<div class="row">
-				<div class="large-12 columns">
-					<div class="row">
-						<div class="small-5 large-6 columns"></div>
-						<div class="small-7 large-6 columns">
-							<c:set var="account" value="${sessionScope.account}" />
-							<c:choose>
-								<c:when test="${not empty account}">
+<body onload="getLastID();auto();">
+	<div class="top-bar">
+		<div class="row">
+			<div class="large-12 columns">
+				<div class="row">
+					<div class="small-5 large-6 columns"></div>
+					<div class="small-7 large-6 columns">
+						<c:set var="account" value="${sessionScope.account}" />
+						<c:choose>
+							<c:when test="${not empty account}">
 								<input type="hidden" id="email" value="${owner.email}" />
-									<ul class="inline-list top-links right">
-										<li><a href="#"><i class="icon-user"></i> Xin chào,
-												${account}!</a>
-											<ul class="sub-topbar">
-												<li><a
-													href="ProcessServlet?btnAction=manageGoods"><i
-														class="icon-desktop"></i>Quản lý hàng</a></li>
-												<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
-														hình tài khoản</a></li>
+								<ul class="inline-list top-links right">
+									<li><a href="#"><i class="icon-user"></i> Xin chào,
+											${account}!</a>
+										<ul class="sub-topbar">
+											<li><a href="ProcessServlet?btnAction=manageGoods"><i
+													class="icon-desktop"></i>Quản lý hàng</a></li>
+											<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
+													hình tài khoản</a></li>
 
-												<li><a href="ProcessServlet?btnAction=logout"><i
-														class="icon-off"></i>Đăng xuất</a></li>
-											</ul></li>
-									</ul>
-								</c:when>
-								<c:otherwise>
-									<jsp:forward page="ProcessServlet?btnAction=loginPage" />
-								</c:otherwise>
-							</c:choose>
-						</div>
+											<li><a href="ProcessServlet?btnAction=logout"><i
+													class="icon-off"></i>Đăng xuất</a></li>
+										</ul></li>
+										<li id="notification_li"><!--  <div id="notification_count">1</div>-->
+										<a href="#" id="notificationLink"><i class="icon-notification"></i>Thông báo</a>
+										<div id="notificationContainer">
+											<div id="notificationTitle">Notifications</div>
+											<div id="notificationsBody" class="notifications"></div>
+											<div id="notificationFooter">
+												<a href="#">See All</a>
+											</div>
+										</div>
+										</li>
+								</ul>
+							</c:when>
+							<c:otherwise>
+								<jsp:forward page="ProcessServlet?btnAction=loginPage" />
+							</c:otherwise>
+						</c:choose>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="main-nav">
-			<div class="row">
-				<div class="large-2 columns top-logo">
-					<h1>
-						<a href="index.jsp">FTS</a>
-					</h1>
-				</div>
-				<div class="large-7 columns top-bar-section">
-					<nav class="">
-						<ul class="inline-list">
-							<c:choose>
-								<c:when
-									test="${namePage=='tao-hang-1.jsp' or namePage=='tao-hang-2.jsp' or namePage=='tao-hang-3.jsp' or namePage=='tao-hang-4.jsp'}">
-									<li class="active"><a href="ProcessServlet?btnAction=createGoods"><i
-											class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a></li>
-								</c:when>
-								<c:otherwise>
-									<li><a href="ProcessServlet?btnAction=createGoods"><i class="icon-truck"></i>
-											Tạo hàng&nbsp;&nbsp;</a></li>
-								</c:otherwise>
-							</c:choose>
-							<c:choose>
-								<c:when
-									test="${namePage=='quan-ly-hang.jsp' or namePage=='chi-tiet-hang.jsp'or namePage=='goi-y-he-thong.jsp' or namePage=='chi-tiet-route.jsp' or namePage=='chi-tiet-de-nghi.jsp'or namePage=='danh-sach-de-nghi.jsp'or namePage=='cleardeliveryAddress.jsp' or namePage=='clearpickupAddress.jsp'}">
-									<li class="active"><a
-										href="ProcessServlet?btnAction=manageGoods"><i
-											class="icon-truck"></i> Quản lý hàng</a></li>
-								</c:when>
-								<c:otherwise>
-									<li><a href="ProcessServlet?btnAction=manageGoods"><i
-											class="icon-truck"></i> Quản lý hàng</a></li>
+	</div>
+	<div class="main-nav">
+		<div class="row">
+			<div class="large-2 columns top-logo">
+				<h1>
+					<a href="ProcessServlet">FTS</a>
+				</h1>
+			</div>
+			<div class="large-7 columns top-bar-section">
+				<nav class="">
+					<ul class="inline-list">
+						<c:choose>
+							<c:when
+								test="${namePage=='tao-hang-1.jsp' or namePage=='tao-hang-2.jsp' or namePage=='tao-hang-3.jsp' or namePage=='tao-hang-4.jsp'}">
+								<li class="active"><a
+									href="ProcessServlet?btnAction=createGoods"><i
+										class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a></li>
+							</c:when>
+							<c:otherwise>
+								<li><a href="ProcessServlet?btnAction=createGoods"><i
+										class="icon-truck"></i> Tạo hàng&nbsp;&nbsp;</a></li>
+							</c:otherwise>
+						</c:choose>
+						<c:choose>
+							<c:when
+								test="${namePage=='quan-ly-hang.jsp' or namePage=='chi-tiet-hang.jsp'or namePage=='goi-y-he-thong.jsp' or namePage=='chi-tiet-route.jsp' or namePage=='chi-tiet-de-nghi.jsp'or namePage=='danh-sach-de-nghi.jsp'or namePage=='cleardeliveryAddress.jsp' or namePage=='clearpickupAddress.jsp'}">
+								<li class="active"><a
+									href="ProcessServlet?btnAction=manageGoods"><i
+										class="icon-truck"></i> Quản lý hàng</a></li>
+							</c:when>
+							<c:otherwise>
+								<li><a href="ProcessServlet?btnAction=manageGoods"><i
+										class="icon-truck"></i> Quản lý hàng</a></li>
 
-								</c:otherwise>
-							</c:choose>
+							</c:otherwise>
+						</c:choose>
 
-							<c:choose>
-								<c:when
-									test="${namePage=='quan-ly-order.jsp' or namePage=='chi-tiet-order.jsp'}">
-									<li class="active"><a
-										href="OrderServlet?btnAction=manageOrder"><i
-											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
-								</c:when>
-								<c:otherwise>
-									<li><a href="OrderServlet?btnAction=manageOrder"><i
-											class="icon-desktop"></i> Quản lý hoá đơn</a></li>
-								</c:otherwise>
-							</c:choose>
-						</ul>
-					</nav>
+						<c:choose>
+							<c:when
+								test="${namePage=='quan-ly-order.jsp' or namePage=='chi-tiet-order.jsp'}">
+								<li class="active"><a
+									href="OrderServlet?btnAction=manageOrder"><i
+										class="icon-desktop"></i> Quản lý hoá đơn</a></li>
+							</c:when>
+							<c:otherwise>
+								<li><a href="OrderServlet?btnAction=manageOrder"><i
+										class="icon-desktop"></i> Quản lý hoá đơn</a></li>
+							</c:otherwise>
+						</c:choose>
+					</ul>
+				</nav>
 			</div>
 		</div>
 	</div>

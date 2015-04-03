@@ -34,17 +34,17 @@ public final class Common {
 
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
-	public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
-	public static final String usernamedb = "sa";
-	public static final String passworddb = "123456";
+//	public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+//	public static final String usernamedb = "sa";
+//	public static final String passworddb = "123456";
 
 //	 public static final String CONNECTION = "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
 //	 public static final String usernamedb = "duchuy";
 //	 public static final String passworddb = "huy2108.";
 
-//	 public static final String CONNECTION = "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
-//	 public static final String usernamedb = "duchuy";
-//	 public static final String passworddb = "huy2108.";
+	 public static final String CONNECTION = "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
+	 public static final String usernamedb = "duchuy";
+	 public static final String passworddb = "huy2108.";
 
 	// Role of Account
 	public static final int role_owner = 1;
