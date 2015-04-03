@@ -17,8 +17,11 @@
 	media="screen" />
 <link type="text/css" rel="stylesheet"
 	href="css/font-awesome/font-awesome.css" media="screen" />
+	
 <link type="text/css" rel="stylesheet" href="css/style.css"
 	media="screen" />
+	
+
 <script src="js/jquerytab.js" type="text/javascript"></script>
 <script src="js/custom.modernizr.js" type="text/javascript"></script>
 
@@ -73,8 +76,10 @@
 											<li><a href="ProcessServlet?btnAction=logout"><i
 													class="icon-off"></i>Đăng xuất</a></li>
 										</ul></li>
-										<li id="notification_li"><!--  <div id="notification_count">1</div>-->
-										<a href="#" id="notificationLink"><i class="icon-notification"></i>Thông báo</a>
+									<li id="notification_li">
+										<!--  <div id="notification_count">1</div>--> <a href="#"
+										id="notificationLink"><i class="icon-notification"></i>Thông
+											báo</a>
 										<div id="notificationContainer">
 											<div id="notificationTitle">Notifications</div>
 											<div id="notificationsBody" class="notifications"></div>
@@ -82,7 +87,7 @@
 												<a href="#">See All</a>
 											</div>
 										</div>
-										</li>
+									</li>
 								</ul>
 							</c:when>
 							<c:otherwise>

@@ -102,7 +102,7 @@ public class MatchingProcess {
 
 			// Remove list route in deal with status pending or accept
 			List<Route> listRouteInDeal = routeDao
-					.getListRouteByDealPendingOrAcceptAndGoodsID(goodsID);
+					.getListRouteInDealPendingOrAcceptByGoodsID(goodsID);
 			List<Route> l_routeFilter2 = new ArrayList<Route>();
 			for (Route route : l_routeFilter1) {
 				boolean isRouteInDeal = false;
@@ -182,7 +182,7 @@ public class MatchingProcess {
 			// Remove list goods in deal with status pending or accept
 			List<Goods> l_goodsFilter2 = new ArrayList<Goods>();
 			List<Goods> listGoodsInDeal = goodsDao
-					.getListGoodsByDealPendingOrAcceptAndRouteID(routeID);
+					.getListGoodsInDealPendingOrAcceptByRouteID(routeID);
 			for (Goods goods : l_goodsFilter1) {
 				boolean isGoodsInDeal = false;
 				for (Goods goodsInDeal : listGoodsInDeal) {

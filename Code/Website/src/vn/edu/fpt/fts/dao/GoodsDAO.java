@@ -291,7 +291,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public List<Goods> getListGoodsByOwnerID(int ownerId) {
+	public List<Goods> getListGoodsByOwnerID(int ownerID) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -299,11 +299,12 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM [Goods] WHERE OwnerID=? ORDER BY CreateTime DESC";
+			String sql = "SELECT * FROM [Goods] WHERE Active=? AND OwnerID=? ORDER BY CreateTime DESC";
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
-			stm.setInt(i++, ownerId);
+			stm.setInt(i++, Common.activate);
+			stm.setInt(i++, ownerID);
 
 			rs = stm.executeQuery();
 			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
@@ -367,7 +368,7 @@ public class GoodsDAO {
 		return null;
 	}
 
-	public List<Goods> getListGoodsByCreateTime(int ownerid, String createTime) {
+	public List<Goods> getListGoodsByCreateTime(int ownerID, String createTime) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -375,11 +376,12 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods WHERE OwnerID=? AND createTime=?";
+			String sql = "SELECT * FROM Goods WHERE Active=? AND OwnerID=? AND createTime=?";
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
-			stm.setInt(i++, ownerid);
+			stm.setInt(i++, Common.activate);
+			stm.setInt(i++, ownerID);
 			stm.setString(i++, createTime);
 
 			rs = stm.executeQuery();
@@ -451,10 +453,11 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods WHERE GoodsID=?";
+			String sql = "SELECT * FROM Goods WHERE Active=? AND GoodsID=?";
 
 			stmt = con.prepareStatement(sql);
 			int i = 1;
+			stmt.setInt(i++, Common.activate);
 			stmt.setInt(i++, goodsID);
 
 			rs = stmt.executeQuery();
@@ -811,7 +814,7 @@ public class GoodsDAO {
 		return ret;
 	}
 
-	public List<Goods> getListGoodsByDealPendingOrAcceptAndRouteID(int routeID) {
+	public List<Goods> getListGoodsInDealPendingOrAcceptByRouteID(int routeID) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -819,16 +822,91 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods WHERE Active = ? AND GoodsID IN "
+			String sql = "SELECT * FROM Goods WHERE GoodsID IN "
 					+ "(SELECT GoodsID FROM Deal WHERE RouteID=? "
-					+ "AND DealStatusID=? OR DealStatusID=?)";
+					+ "AND (DealStatusID=? OR DealStatusID=?))";
 			stm = con.prepareStatement(sql);
 
 			int i = 1;
-			stm.setInt(i++, Common.activate);
 			stm.setInt(i++, routeID);
 			stm.setInt(i++, Common.deal_pending);
 			stm.setInt(i++, Common.deal_accept);
+
+			rs = stm.executeQuery();
+			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();
+			OwnerDAO ownerDao = new OwnerDAO();
+			List<Goods> list = new ArrayList<Goods>();
+			Goods goods;
+			while (rs.next()) {
+				goods = new Goods();
+
+				goods.setGoodsID(rs.getInt("GoodsID"));
+				goods.setWeight(rs.getInt("Weight"));
+				goods.setPrice(rs.getDouble("Price"));
+				goods.setPickupTime(rs.getTimestamp("PickupTime").toString());
+				goods.setPickupAddress(rs.getString("PickupAddress"));
+				goods.setDeliveryTime(rs.getTimestamp("DeliveryTime")
+						.toString());
+				goods.setDeliveryAddress(rs.getString("DeliveryAddress"));
+				goods.setPickupMarkerLongtitude(rs
+						.getFloat("PickupMarkerLongtitude"));
+				goods.setPickupMarkerLatidute(rs
+						.getFloat("PickupMarkerLatidute"));
+				goods.setDeliveryMarkerLongtitude(rs
+						.getFloat("DeliveryMarkerLongtitude"));
+				goods.setDeliveryMarkerLatidute(rs
+						.getFloat("DeliveryMarkerLatidute"));
+				goods.setNotes(rs.getString("Notes"));
+				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
+				goods.setActive(rs.getInt("Active"));
+
+				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
+
+				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
+				goods.setGoodsCategory(goodsCategoryDao.getGoodsCategoryByID(rs
+						.getInt("GoodsCategoryID")));
+
+				list.add(goods);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Goods table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public List<Goods> getListGoodsInDealByRouteID(int routeID) {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM Goods WHERE GoodsID IN "
+					+ "(SELECT GoodsID FROM Deal WHERE RouteID=?)";
+			stm = con.prepareStatement(sql);
+
+			int i = 1;
+			stm.setInt(i++, routeID);
 
 			rs = stm.executeQuery();
 			GoodsCategoryDAO goodsCategoryDao = new GoodsCategoryDAO();

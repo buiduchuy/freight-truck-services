@@ -62,7 +62,6 @@
 												<th><font color="orange">Mã tuyến đường</font></th>
 												<th><font color="orange">Địa điểm bắt đầu</font></th>
 												<th><font color="orange">Địa điểm kết thúc</font></th>
-
 												<th><font color="orange">Điểm uy tín</font></th>
 												<th><font color="orange"></font></th>
 											</tr>
