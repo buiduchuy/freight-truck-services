@@ -522,15 +522,18 @@ public class RouteDAO {
 
 	public List<Route> getListRouteByDriverID(int driverID) {
 		Connection con = null;
-		PreparedStatement stm = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM [Route] WHERE DriverID ='" + driverID
-					+ "' ORDER BY CreateTime DESC";
-			stm = con.prepareStatement(sql);
-			rs = stm.executeQuery();
+			String sql = "SELECT * FROM [Route] WHERE Active=? AND DriverID=? ORDER BY CreateTime DESC";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, Common.activate);
+			stmt.setInt(i++, driverID);
+			rs = stmt.executeQuery();
+
 			List<Route> list = new ArrayList<Route>();
 			RouteMarkerDAO routeMarkderDAO = new RouteMarkerDAO();
 			VehicleDAO vehicleDAO = new VehicleDAO();
@@ -568,6 +571,89 @@ public class RouteDAO {
 				if (rs != null) {
 					rs.close();
 				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public List<Route> getListRouteInDealPendingOrAcceptByGoodsID(int goodsID) {
+
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "SELECT * FROM [Route] WHERE RouteID IN "
+					+ "(SELECT RouteID FROM Deal WHERE GoodsID=? "
+					+ "AND (DealStatusID=? OR DealStatusID=?))";
+			stm = con.prepareStatement(sql);
+			int i = 1;
+			stm.setInt(i++, goodsID);
+			stm.setInt(i++, Common.deal_pending);
+			stm.setInt(i++, Common.deal_accept);
+
+			rs = stm.executeQuery();
+
+			List<GoodsCategory> listGoodsCategory = new ArrayList<GoodsCategory>();
+			List<RouteGoodsCategory> listRouteGoodsCategory = new ArrayList<RouteGoodsCategory>();
+			List<Route> list = new ArrayList<Route>();
+			GoodsCategory goodsCategory = new GoodsCategory();
+			Route route;
+			while (rs.next()) {
+				route = new Route();
+
+				route.setRouteID(rs.getInt("RouteID"));
+				route.setStartingAddress(rs.getString("StartingAddress"));
+				route.setDestinationAddress(rs.getString("DestinationAddress"));
+				route.setStartTime(rs.getString("StartTime"));
+				route.setFinishTime(rs.getString("FinishTime"));
+				route.setNotes(rs.getString("Notes"));
+				route.setWeight(rs.getInt("Weight"));
+				route.setCreateTime(rs.getString("CreateTime"));
+				route.setActive(rs.getInt("Active"));
+				route.setDriverID(rs.getInt("DriverID"));
+
+				route.setRouteMarkers(routeMarkerDao
+						.getAllRouteMarkerByRouteID(route.getRouteID()));
+
+				route.setVehicles(vehicleDAO.getAllVehicleByRouteID(route
+						.getRouteID()));
+
+				listRouteGoodsCategory = routeGoodsCategoryDao
+						.getListRouteGoodsCategoryByRouteID(rs
+								.getInt("RouteID"));
+
+				for (int j = 0; j < listRouteGoodsCategory.size(); j++) {
+					goodsCategory = goodsCategoryDao
+							.getGoodsCategoryByID(listRouteGoodsCategory.get(j)
+									.getGoodsCategoryID());
+					listGoodsCategory.add(goodsCategory);
+				}
+
+				route.setGoodsCategory(listGoodsCategory);
+
+				list.add(route);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Route table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
 				if (stm != null) {
 					stm.close();
 				}
@@ -582,7 +668,7 @@ public class RouteDAO {
 		return null;
 	}
 
-	public List<Route> getListRouteByDealPendingOrAcceptAndGoodsID(int goodsID) {
+	public List<Route> getListRouteInDealByGoodsID(int goodsID) {
 
 		Connection con = null;
 		PreparedStatement stm = null;
@@ -590,15 +676,11 @@ public class RouteDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM [Route] WHERE Active = ? AND RouteID IN "
-					+ "(SELECT RouteID FROM Deal WHERE GoodsID=? "
-					+ "AND DealStatusID=? OR DealStatusID=?)";
+			String sql = "SELECT * FROM [Route] WHERE RouteID IN "
+					+ "(SELECT RouteID FROM Deal WHERE GoodsID=?)";
 			stm = con.prepareStatement(sql);
 			int i = 1;
-			stm.setInt(i++, Common.activate);
 			stm.setInt(i++, goodsID);
-			stm.setInt(i++, Common.deal_pending);
-			stm.setInt(i++, Common.deal_accept);
 
 			rs = stm.executeQuery();
 

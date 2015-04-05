@@ -17,6 +17,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
+import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.dao.RouteGoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.RouteMarkerDAO;
@@ -29,9 +30,11 @@ import vn.edu.fpt.fts.process.RouteProcess;
 @Path("Route")
 public class RouteAPI {
 	private final static String TAG = "RouteAPI";
+	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
 	DealDAO dealDao = new DealDAO();
 	RouteProcess routeProcess = new RouteProcess();
+	MatchingProcess matchingProcess = new MatchingProcess();
 
 	@GET
 	@Path("get")
@@ -138,47 +141,52 @@ public class RouteAPI {
 		try {
 			// Truyền thêm routeID về
 			int routeID = Integer.valueOf(params.getFirst("routeID"));
-			route.setRouteID(routeID);
-			route.setStartingAddress(params.getFirst("startingAddress"));
-			route.setDestinationAddress(params.getFirst("destinationAddress"));
-			route.setStartTime(params.getFirst("startTime"));
-			route.setFinishTime(params.getFirst("finishTime"));
-			route.setNotes(params.getFirst("notes"));
-			route.setWeight(Integer.valueOf(params.getFirst("weight")));
-			route.setCreateTime(params.getFirst("createTime"));
-			route.setActive(Integer.valueOf(params.getFirst("active")));
-			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
 
-			// RouteMarker
-			RouteMarker routeMarker1 = new RouteMarker();
-			RouteMarker routeMarker2 = new RouteMarker();
+			if (goodsDao.getListGoodsInDealByRouteID(routeID).size() > 0) {
+				ret = 2;
+			} else {
+				route.setRouteID(routeID);
+				route.setStartingAddress(params.getFirst("startingAddress"));
+				route.setDestinationAddress(params
+						.getFirst("destinationAddress"));
+				route.setStartTime(params.getFirst("startTime"));
+				route.setFinishTime(params.getFirst("finishTime"));
+				route.setNotes(params.getFirst("notes"));
+				route.setWeight(Integer.valueOf(params.getFirst("weight")));
+				route.setCreateTime(params.getFirst("createTime"));
+				route.setActive(Integer.valueOf(params.getFirst("active")));
+				route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
 
-			routeMarker1.setRouteID(routeID);
-			routeMarker1.setNumbering(1);
-			routeMarker1.setRouteMarkerLocation(params
-					.getFirst("routeMarkerLocation1"));
-			listRouteMarker.add(routeMarker1);
+				// RouteMarker
+				RouteMarker routeMarker1 = new RouteMarker();
+				RouteMarker routeMarker2 = new RouteMarker();
 
-			routeMarker2.setRouteID(routeID);
-			routeMarker2.setNumbering(2);
-			routeMarker2.setRouteMarkerLocation(params
-					.getFirst("routeMarkerLocation2"));
-			listRouteMarker.add(routeMarker2);
+				routeMarker1.setRouteID(routeID);
+				routeMarker1.setNumbering(1);
+				routeMarker1.setRouteMarkerLocation(params
+						.getFirst("routeMarkerLocation1"));
+				listRouteMarker.add(routeMarker1);
 
-			// RouteGoodsCategory
+				routeMarker2.setRouteID(routeID);
+				routeMarker2.setNumbering(2);
+				routeMarker2.setRouteMarkerLocation(params
+						.getFirst("routeMarkerLocation2"));
+				listRouteMarker.add(routeMarker2);
 
-			routeGoodsCategoryMap.put("Food",
-					Boolean.parseBoolean(params.getFirst("Food")));
-			routeGoodsCategoryMap.put("Freeze",
-					Boolean.parseBoolean(params.getFirst("Freeze")));
-			routeGoodsCategoryMap.put("Broken",
-					Boolean.parseBoolean(params.getFirst("Broken")));
-			routeGoodsCategoryMap.put("Flame",
-					Boolean.parseBoolean(params.getFirst("Flame")));
+				// RouteGoodsCategory
+				routeGoodsCategoryMap.put("Food",
+						Boolean.parseBoolean(params.getFirst("Food")));
+				routeGoodsCategoryMap.put("Freeze",
+						Boolean.parseBoolean(params.getFirst("Freeze")));
+				routeGoodsCategoryMap.put("Broken",
+						Boolean.parseBoolean(params.getFirst("Broken")));
+				routeGoodsCategoryMap.put("Flame",
+						Boolean.parseBoolean(params.getFirst("Flame")));
 
-			// Update
-			ret = routeProcess.updateRoute(route, routeGoodsCategoryMap,
-					listRouteMarker);
+				// Update
+				ret = routeProcess.updateRoute(route, routeGoodsCategoryMap,
+						listRouteMarker);
+			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -247,7 +255,6 @@ public class RouteAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Route> getSuggestionRoute(MultivaluedMap<String, String> params) {
-		MatchingProcess matchingProcess = new MatchingProcess();
 		List<Route> list = new ArrayList<Route>();
 		try {
 			list = matchingProcess.getSuggestionRoute(Integer.valueOf(params
@@ -258,5 +265,28 @@ public class RouteAPI {
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		return list;
+	}
+
+	@POST
+	@Path("Delete")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String removeRoute(MultivaluedMap<String, String> params) {
+		int ret = 0;
+		try {
+			int routeID = Integer.valueOf(params.getFirst("routeID"));
+			if (goodsDao.getListGoodsInDealPendingOrAcceptByRouteID(routeID)
+					.size() > 0) {
+				ret = 2;
+			} else {
+				ret = routeDao.updateRouteStatus(routeID, Common.deactivate);
+			}
+
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return String.valueOf(ret);
 	}
 }

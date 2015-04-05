@@ -586,10 +586,11 @@ public class GoodsServlet extends HttpServlet {
 				}
 			} else if ("viewDetailGood1".equals(action)) {
 				try {
-					int idGood = Integer.parseInt(request
+					int goodsID = Integer.parseInt(request
 							.getParameter("idGood"));
-					Goods good = goodDao.getGoodsByID(idGood);
-					session.setAttribute("detailGood1", good);
+					Goods goods = goodDao.getGoodsByID(goodsID);
+					session.setAttribute("detailGood1", goods);
+					
 					request.getRequestDispatcher("chi-tiet-hang.jsp").forward(
 							request, response);
 				} catch (NumberFormatException e) {

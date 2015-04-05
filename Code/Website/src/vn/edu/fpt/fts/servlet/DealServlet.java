@@ -21,6 +21,7 @@ import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Goods;
+import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.process.DealProcess;
 
@@ -340,6 +341,10 @@ public class DealServlet extends HttpServlet {
 					}
 				}
 			} else if (action.equalsIgnoreCase("manageDeal")) {
+				Owner owner = (Owner) session.getAttribute("owner");
+				List<Deal> listDeal = dealDao.getDealByOwnerID(owner.getOwnerID());
+				
+				request.setAttribute("listDeal", listDeal);
 				request.getRequestDispatcher(
 						"manage-deal.jsp").forward(
 						request, response);

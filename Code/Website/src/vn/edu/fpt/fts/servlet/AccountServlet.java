@@ -112,20 +112,28 @@ public class AccountServlet extends HttpServlet {
 								.getRequestDispatcher(prePage);
 						rd.forward(request, response);
 					} else {
-						request.getRequestDispatcher("index.jsp").forward(request, response);
+						request.getRequestDispatcher("index.jsp").forward(
+								request, response);
 					}
 				} else {
 					session.setAttribute("errorLogin",
 							"Email hoặc mật khẩu không đúng. Xin đăng nhập lại !");
-					request.getRequestDispatcher("dang-nhap.jsp").forward(request, response);
+					request.getRequestDispatcher("dang-nhap.jsp").forward(
+							request, response);
 				}
 			} else if (action.equalsIgnoreCase("logout")) {
-				session.invalidate();
-				request.getRequestDispatcher("index.jsp").forward(request, response);
+				if (session != null) {
+					session.invalidate();
+				}
+				session = request.getSession(true);
+				request.getRequestDispatcher("index.jsp").forward(request,
+						response);
 			} else if (action.equalsIgnoreCase("loginPage")) {
-				request.getRequestDispatcher("dang-nhap.jsp").forward(request, response);
+				request.getRequestDispatcher("dang-nhap.jsp").forward(request,
+						response);
 			} else if (action.equalsIgnoreCase("registerPage")) {
-				request.getRequestDispatcher("dang-ky.jsp").forward(request, response);
+				request.getRequestDispatcher("dang-ky.jsp").forward(request,
+						response);
 			}
 		}
 	}
