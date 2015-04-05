@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="reqUrl" value="${pageContext.request.requestURI}" />
+<c:set var="reqUrl" value="${pageContext.request.requestURI}"
+	scope="session" />
 <c:set var="namePage" value="${fn:substringAfter(reqUrl, 'FTS/')}"
 	scope="session" />
 <!DOCTYPE html>
@@ -17,10 +18,10 @@
 	media="screen" />
 <link type="text/css" rel="stylesheet"
 	href="css/font-awesome/font-awesome.css" media="screen" />
-	
+
 <link type="text/css" rel="stylesheet" href="css/style.css"
 	media="screen" />
-	
+
 
 <script src="js/jquerytab.js" type="text/javascript"></script>
 <script src="js/custom.modernizr.js" type="text/javascript"></script>

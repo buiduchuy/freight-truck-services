@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
@@ -74,7 +75,8 @@ public class GoodsServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			GoodsDAO goodDao = new GoodsDAO();
+			GoodsDAO goodsDao = new GoodsDAO();
+			RouteDAO routeDao = new RouteDAO();
 			if ("next1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
@@ -314,21 +316,21 @@ public class GoodsServlet extends HttpServlet {
 						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
 						notes, createTime, Common.activate, owner.getOwnerID(),
 						GoodsCategoryID);
-				int idnewGood = goodDao.insertGoods(goo);
+				int idnewGood = goodsDao.insertGoods(goo);
 				if (idnewGood != -1) {
 					session.removeAttribute("router");
 					session.removeAttribute("good");
 					session.removeAttribute("price");
 					session.setAttribute("detailGood1",
-							goodDao.getGoodsByID(idnewGood));
-					session.setAttribute("messageSuccess",
+							goodsDao.getGoodsByID(idnewGood));
+					request.setAttribute("messageSuccess",
 							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
 					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
+							.getRequestDispatcher("GoodsServlet?btnAction=getSuggestionRoute&goodsID="
 									+ idnewGood);
 					rd.forward(request, response);
 				} else {
-					session.setAttribute("messageError",
+					request.setAttribute("messageError",
 							"Có lỗi khi tạo hàng. Vui lòng thử lại");
 					RequestDispatcher rd = request
 							.getRequestDispatcher("tao-hang-4.jsp");
@@ -393,13 +395,13 @@ public class GoodsServlet extends HttpServlet {
 
 			DriverDAO driverDao = new DriverDAO();
 			MatchingProcess matchingProcess = new MatchingProcess();
-			if ("suggestFromSystem".equals(action)) {
+			if (action.equalsIgnoreCase("getSuggestionRoute")) {
 				session.removeAttribute("listRouter");
-				Goods goods = (Goods) session.getAttribute("detailGood1");
-				int IdGood = goods.getGoodsID();
+				int goodsID = Integer.valueOf(request
+						.getParameter("txtGoodsID"));
 				// int IdGood = Integer
 				// .parseInt(request.getParameter("txtIdGood"));
-				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
+				List<Route> list = matchingProcess.getSuggestionRoute(goodsID);
 				if (list.size() != 0) {
 					Route[] listRou = new Route[list.size()];
 					list.toArray(listRou);
@@ -407,7 +409,7 @@ public class GoodsServlet extends HttpServlet {
 					Driver[] listDri = new Driver[listDriver.size()];
 					listDriver.toArray(listDri);
 					session.setAttribute("detailGood",
-							goodDao.getGoodsByID(IdGood));
+							goodsDao.getGoodsByID(goodsID));
 					session.setAttribute("listRouter", listRou);
 					session.setAttribute("listDriver", listDri);
 					request.getRequestDispatcher("goi-y-he-thong.jsp").forward(
@@ -419,7 +421,7 @@ public class GoodsServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("manageGoods")) {
 				Owner owner = (Owner) session.getAttribute("owner");
 				if (owner != null) {
-					List<Goods> manageGood = goodDao
+					List<Goods> manageGood = goodsDao
 							.getListGoodsByOwnerID(owner.getOwnerID());
 					List<Goods> manageGood1 = new ArrayList<Goods>();
 					for (int i = 0; i < manageGood.size(); i++) {
@@ -450,7 +452,7 @@ public class GoodsServlet extends HttpServlet {
 				try {
 					int goodsID = Integer.parseInt(request
 							.getParameter("idGood"));
-					Goods goods = goodDao.getGoodsByID(goodsID);
+					Goods goods = goodsDao.getGoodsByID(goodsID);
 					goods.setPickupTime(Common.changeFormatDate(
 							goods.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
 							"dd-MM-yyyy"));
@@ -471,7 +473,7 @@ public class GoodsServlet extends HttpServlet {
 				try {
 					int goodsID = Integer.parseInt(request
 							.getParameter("idGood"));
-					Goods goods = goodDao.getGoodsByID(goodsID);
+					Goods goods = goodsDao.getGoodsByID(goodsID);
 					session.setAttribute("detailGood2", goods);
 					RequestDispatcher rd = request
 							.getRequestDispatcher("chi-tiet-order.jsp");
@@ -479,17 +481,21 @@ public class GoodsServlet extends HttpServlet {
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
 				}
-			}
-			if ("updateGood".equals(action)) {
-				Goods go = (Goods) session.getAttribute("detailGood1");
+			} else if (action.equalsIgnoreCase("updateGoods")) {
+
+				int goodsID = Integer.valueOf(request
+						.getParameter("txtGoodsID"));
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
 				String deliveryAddress = request
 						.getParameter("txtdeliveryAddress");
 				String deliveryTime = request.getParameter("txtdeliveryTime");
-				int weight = Integer
-						.parseInt(request.getParameter("txtWeight"));
-				int goodsCategoryID = Integer.parseInt(request
+
+				String createTime = request.getParameter("txtCreateTime");
+				int ownerID = Integer.valueOf(request
+						.getParameter("txtOwnerID"));
+				int weight = Integer.valueOf(request.getParameter("txtWeight"));
+				int goodsCategoryID = Integer.valueOf(request
 						.getParameter("ddlgoodsCategoryID"));
 				String notes = "";
 				try {
@@ -527,9 +533,9 @@ public class GoodsServlet extends HttpServlet {
 						e.printStackTrace();
 					}
 				}
-				Goods good = new Goods();
+				Goods goods = new Goods();
 				try {
-					good = new Goods(go.getGoodsID(), weight, price,
+					goods = new Goods(goodsID, weight, price,
 							Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
 									"MM-dd-yyyy"), pickupAddress,
 							Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
@@ -537,9 +543,10 @@ public class GoodsServlet extends HttpServlet {
 							Common.lngGeoCoding(pickupAddress),
 							Common.latGeoCoding(pickupAddress),
 							Common.lngGeoCoding(deliveryAddress),
-							Common.latGeoCoding(deliveryAddress), notes, go
-									.getCreateTime().toString(),
-							Common.activate, go.getOwnerID(), goodsCategoryID);
+							Common.latGeoCoding(deliveryAddress), notes, Common
+									.changeFormatDate(createTime, "dd-MM-yyyy",
+											"MM-dd-yyyy").toString(),
+							Common.activate, ownerID, goodsCategoryID);
 				} catch (XPathExpressionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -550,47 +557,59 @@ public class GoodsServlet extends HttpServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if (goodDao.updateGoods(good) == 1) {
-					session.setAttribute("messageSuccess",
-							"Cập nhật thành công");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ go.getGoodsID());
-					rd.forward(request, response);
+
+				if (routeDao.getListRouteInDealByGoodsID(goodsID).size() > 0) {
+					request.setAttribute(
+							"messageError",
+							"Không thể cập nhật. Món hàng này đã đã được đồng ý hoặc đang trong quá trình thương lượng.");
 				} else {
-					session.setAttribute("messageError",
-							"Cập nhật thất bại. Xin vui lòng thử lại sau!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ go.getGoodsID());
-					rd.forward(request, response);
+					int ret = goodsDao.updateGoods(goods);
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Cập nhật thành công!");
+					} else {
+						request.setAttribute("messageError",
+								"Cập nhật thất bại. Xin vui lòng thử lại sau!");
+					}
 				}
-			} else if ("deleteGood".equals(action)) {
-				int goodsID = Integer.parseInt(request
-						.getParameter("txtIdGood"));
-				Goods goodsDelete = goodDao.getGoodsByID(goodsID);
-				goodsDelete.setActive(10);
-				if (goodDao.updateGoods(goodsDelete) == 1) {
-					session.setAttribute("messageSuccess",
-							"Xoá hàng thành công!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ProcessServlet?btnAction=manageGoods");
-					rd.forward(request, response);
+
+				request.getRequestDispatcher(
+						"ProcessServlet?btnAction=viewDetailGoods&goodsID="
+								+ goodsID).forward(request, response);
+			} else if (action.equalsIgnoreCase("deleteGoods")) {
+				int goodsID = Integer.valueOf(request
+						.getParameter("txtGoodsID"));
+
+				if (routeDao
+						.getListRouteInDealPendingOrAcceptByGoodsID(goodsID)
+						.size() > 0) {
+					request.setAttribute("messageError",
+							"Không thể xóa. Món hàng này đang trong quá trình thực hiện thương lượng!");
 				} else {
-					session.setAttribute("messageError",
-							"Xoá hàng thất bại. Xin vui lòng thử lại sau!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ goodsID);
-					rd.forward(request, response);
+					int ret = goodsDao.updateGoodsStatus(goodsID,
+							Common.deactivate);
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Xoá hàng thành công!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=manageGoods")
+								.forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Xoá hàng thất bại. Xin vui lòng thử lại sau!");
+					}
 				}
-			} else if ("viewDetailGood1".equals(action)) {
+
+				request.getRequestDispatcher(
+						"ProcessServlet?btnAction=viewDetailGoods&goodsID="
+								+ goodsID).forward(request, response);
+			} else if ("viewDetailGoods".equals(action)) {
 				try {
-					int goodsID = Integer.parseInt(request
-							.getParameter("idGood"));
-					Goods goods = goodDao.getGoodsByID(goodsID);
-					session.setAttribute("detailGood1", goods);
-					
+					int goodsID = Integer.valueOf(request
+							.getParameter("goodsID"));
+					Goods goods = goodsDao.getGoodsByID(goodsID);
+					request.setAttribute("goodsDetail", goods);
+
 					request.getRequestDispatcher("chi-tiet-hang.jsp").forward(
 							request, response);
 				} catch (NumberFormatException e) {
@@ -608,7 +627,7 @@ public class GoodsServlet extends HttpServlet {
 				//
 				// }
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
+				List<Goods> manageGood = goodsDao.getListGoodsByOwnerID(owner
 						.getOwnerID());
 				List<Goods> manageGood1 = new ArrayList<Goods>();
 				for (int i = 0; i < manageGood.size(); i++) {

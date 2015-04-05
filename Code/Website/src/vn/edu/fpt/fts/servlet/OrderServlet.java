@@ -86,6 +86,9 @@ public class OrderServlet extends HttpServlet {
 					rd.forward(request, response);
 				}
 			} else if (action.equalsIgnoreCase("confirmOrder")) {
+				
+				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+						request, response);
 
 			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
 				int orderID = Integer.parseInt(request.getParameter("orderID"));

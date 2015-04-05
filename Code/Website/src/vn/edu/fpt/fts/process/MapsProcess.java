@@ -57,34 +57,35 @@ public class MapsProcess {
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
 		urlString.append(des);
-		int s = listMarker.size();
-		String c_vertical = "|";
-		try {
-			c_vertical = URLEncoder.encode(c_vertical, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		}
-		if (listMarker.size() != 0) {
-			// %7C is |
-			String waypoints = "";
-			waypoints += "&waypoints=";
-			for (int i = 0; i < s; i++) {
-				String marker = listMarker.get(i);
-				try {
-					marker = URLEncoder.encode(marker, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-				}
-				waypoints += "via:" + marker;
-				if (s > 1) {
-					waypoints += c_vertical;
-				}
+		if (listMarker != null) {
+			String c_vertical = "|";
+			try {
+				c_vertical = URLEncoder.encode(c_vertical, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 			}
-			urlString.append(waypoints);
+			if (listMarker.size() != 0) {
+				// %7C is |
+				String waypoints = "";
+				waypoints += "&waypoints=";
+				for (int i = 0; i < listMarker.size(); i++) {
+					String marker = listMarker.get(i);
+					try {
+						marker = URLEncoder.encode(marker, "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+					}
+					waypoints += "via:" + marker;
+					if (listMarker.size() > 1) {
+						waypoints += c_vertical;
+					}
+				}
+				urlString.append(waypoints);
+			}
 		}
 		urlString.append("&mode=driving&region=vi");
 		return urlString.toString();

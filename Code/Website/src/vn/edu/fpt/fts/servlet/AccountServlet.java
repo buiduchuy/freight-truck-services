@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -105,12 +104,11 @@ public class AccountServlet extends HttpServlet {
 						}
 					}
 					session.setAttribute("listGoods", listGoods);
-					if (session.getAttribute("namePage") != null) {
-						String prePage = (String) session
-								.getAttribute("namePage");
-						RequestDispatcher rd = request
-								.getRequestDispatcher(prePage);
-						rd.forward(request, response);
+				
+					String returnUrl = request.getParameter("ReturnUrl");
+
+					if (returnUrl != null) {
+						response.sendRedirect(returnUrl);
 					} else {
 						request.getRequestDispatcher("index.jsp").forward(
 								request, response);
@@ -122,10 +120,8 @@ public class AccountServlet extends HttpServlet {
 							request, response);
 				}
 			} else if (action.equalsIgnoreCase("logout")) {
-				if (session != null) {
-					session.invalidate();
-				}
-				session = request.getSession(true);
+				session.invalidate();
+				request.getSession(true);
 				request.getRequestDispatcher("index.jsp").forward(request,
 						response);
 			} else if (action.equalsIgnoreCase("loginPage")) {

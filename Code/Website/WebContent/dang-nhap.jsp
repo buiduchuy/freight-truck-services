@@ -78,6 +78,7 @@
 					<%
 						request.getSession().removeAttribute("errorLogin");
 					%>
+					<input type="hidden" name="ReturnUrl" value='${requestScope["javax.servlet.forward.request_uri"]}?${requestScope["javax.servlet.forward.query_string"]}' />
 				</form>
 			</div>
 		</center>
