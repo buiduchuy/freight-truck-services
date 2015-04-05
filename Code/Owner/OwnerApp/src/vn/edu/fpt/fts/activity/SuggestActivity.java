@@ -53,7 +53,7 @@ public class SuggestActivity extends Activity {
 	private List<Route> list = new ArrayList<Route>();
 	private ListView listView;
 	private SuggestModelAdapter adapter;
-	private String goodsID, cate;
+	private String goodsID, cate, categoryName;
 	private TextView tvGone, tvInfo, tvInfo2;
 	private Bundle extra = new Bundle();
 	private double pickupLat, pickupLng, deliverLat, deliverLng;
@@ -69,18 +69,42 @@ public class SuggestActivity extends Activity {
 		goodsID = getIntent().getStringExtra("goodsID");
 		cate = getIntent().getStringExtra("cate");
 		extra = getIntent().getBundleExtra("extra");
+
+		switch (Integer.parseInt(cate)) {
+		case 1:
+			categoryName = "Hàng thực phẩm";
+			break;
+		case 2:
+			categoryName = "Hàng đông lạnh";
+			break;
+		case 4:
+			categoryName = "Hàng dễ vỡ";
+			break;
+		case 5:
+			categoryName = "Hàng dễ cháy nổ";
+			break;
+		}
+
+		if (extra != null) {
+			LatLng pickup = extra.getParcelable("pickup");
+			LatLng deliver = extra.getParcelable("deliver");
+			pickupLat = pickup.latitude;
+			pickupLng = pickup.longitude;
+			deliverLat = deliver.latitude;
+			deliverLng = deliver.longitude;
+		}
 		Bundle bundle = getIntent().getBundleExtra("bundle");
 		if (bundle != null) {
 			String[] tmp = bundle.getString("pickup").split(",");
 			String[] tmp2 = bundle.getString("deliver").split(",");
-			String text = "Hàng: " + bundle.getString("weight") + " - "
-					+ bundle.getString("price");
+			String text = categoryName + ": " + bundle.getString("weight")
+					+ " - " + bundle.getString("price");
 			String text2 = "Nhận: " + tmp[tmp.length - 1] + " - " + "Giao: "
 					+ tmp2[tmp2.length - 1];
 
 			tvInfo.setText(text);
 			tvInfo2.setText(text2);
-		} else if (bundle == null || extra == null){
+		} else if (bundle == null || extra == null) {
 			WebServiceTask3 wst3 = new WebServiceTask3(
 					WebServiceTask3.POST_TASK, SuggestActivity.this,
 					"Đang xử lý...");
@@ -116,7 +140,8 @@ public class SuggestActivity extends Activity {
 				intent.putExtra("goodsID", goodsID);
 				Bundle bundle = new Bundle();
 				bundle.putParcelable("pickup", new LatLng(pickupLat, pickupLng));
-				bundle.putParcelable("deliver", new LatLng(deliverLat, deliverLng));
+				bundle.putParcelable("deliver", new LatLng(deliverLat,
+						deliverLng));
 				intent.putExtra("extra", bundle);
 				startActivity(intent);
 			}
@@ -517,17 +542,21 @@ public class SuggestActivity extends Activity {
 						.getString("deliveryAddress"));
 				String tmp[] = pickup.split(",");
 				String tmp2[] = deliver.split(",");
-				String text = "Hàng: " + weight + " - " + price;
+				String text = categoryName + ": " + weight + " - " + price;
 				String text2 = "Nhận: " + tmp[tmp.length - 1] + " - "
 						+ "Giao: " + tmp2[tmp2.length - 1];
 				String test = jsonObject.getString("pickupMarkerLatidute");
 				String test2 = jsonObject.getString("pickupMarkerLongtitude");
-				pickupLat = Double.parseDouble(jsonObject.getString("pickupMarkerLatidute"));
-				pickupLng = Double.parseDouble(jsonObject.getString("pickupMarkerLongtitude"));
-				deliverLat = Double.parseDouble(jsonObject.getString("deliveryMarkerLatidute"));
-				deliverLng = Double.parseDouble(jsonObject.getString("deliveryMarkerLongtitude"));
-				LatLng c = new LatLng(pickupLat, pickupLng); 
-				
+				pickupLat = Double.parseDouble(jsonObject
+						.getString("pickupMarkerLatidute"));
+				pickupLng = Double.parseDouble(jsonObject
+						.getString("pickupMarkerLongtitude"));
+				deliverLat = Double.parseDouble(jsonObject
+						.getString("deliveryMarkerLatidute"));
+				deliverLng = Double.parseDouble(jsonObject
+						.getString("deliveryMarkerLongtitude"));
+				LatLng c = new LatLng(pickupLat, pickupLng);
+
 				tvInfo.setText(text);
 				tvInfo2.setText(text2);
 			} catch (JSONException e) {

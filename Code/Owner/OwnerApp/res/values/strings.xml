@@ -33,6 +33,7 @@
     <string name="title_activity_history">Lịch sử giao dịch</string>
     <string name="action_call">Gọi tài xế</string>
     <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_route_map">RouteMapActivity</string>
+    <string name="title_activity_route_map">Lộ trình</string>
+    <string name="title_activity_edit_goods_map">Bản đồ</string>
 
 </resources>

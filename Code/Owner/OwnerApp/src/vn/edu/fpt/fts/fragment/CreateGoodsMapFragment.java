@@ -107,7 +107,7 @@ public class CreateGoodsMapFragment extends Activity {
 			}
 		} else {
 			MarkerOptions mMarker = new MarkerOptions();
-			mMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+			mMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.owner_marker_icon_small));
 			point = new LatLng(mlat, mlong);
 			mMarker.position(point);
 			mMarker.draggable(true);
@@ -269,7 +269,7 @@ public class CreateGoodsMapFragment extends Activity {
 					Toast.makeText(CreateGoodsMapFragment.this, "Địa chỉ không có thật", Toast.LENGTH_LONG).show();
 				} else {
 					MarkerOptions mMarker = new MarkerOptions();
-					mMarker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+					mMarker.icon(BitmapDescriptorFactory.fromResource(R.drawable.owner_marker_icon_small));
 					point = new LatLng(mlat, mlong);
 					mMarker.position(point);
 					mMarker.draggable(true);

@@ -206,7 +206,7 @@ public class DealFragment extends Fragment {
 									.getString("dealStatusID"));
 							int check2 = Integer.parseInt(jsonObject2
 									.getString("active"));
-							if (check != 3 && check != 4 && check2 != 0
+							if (check != 2 && check != 3 && check != 4 && check2 != 0
 									&& check2 != 2) {
 								deal.setActive(Integer.parseInt(jsonObject2
 										.getString("active")));
@@ -258,7 +258,7 @@ public class DealFragment extends Fragment {
 								.getString("dealStatusID"));
 						int check2 = Integer.parseInt(jsonObject2
 								.getString("active"));
-						if (check != 3 && check != 4 && check2 != 0 && check2 != 2) {
+						if (check != 2 && check != 3 && check != 4 && check2 != 0 && check2 != 2) {
 							deal.setActive(Integer.parseInt(jsonObject2
 									.getString("active")));
 							deal.setCreateBy(jsonObject2.getString("createBy"));

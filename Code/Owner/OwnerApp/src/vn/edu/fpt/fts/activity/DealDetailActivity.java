@@ -61,7 +61,7 @@ public class DealDetailActivity extends Activity {
 	private Button btn_counter;
 	private EditText etPrice, etNote;
 	private View viewLine;
-	private MenuItem accept, decline, cancel;	
+	private MenuItem accept, decline, cancel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -1274,7 +1274,15 @@ public class DealDetailActivity extends Activity {
 						decline.setVisible(false);
 						cancel.setVisible(true);
 
-					} else if (dealStatus.equals("2")) {
+					} else if(dealStatus.equals("1") && createBy.equals("owner"))
+					{
+						btn_counter.setVisibility(View.VISIBLE);
+						etPrice.setVisibility(View.VISIBLE);
+						etNote.setVisibility(View.VISIBLE);
+						viewLine.setVisibility(View.VISIBLE);
+						tvText.setVisibility(View.VISIBLE);
+					}
+					else if (dealStatus.equals("2")) {
 						btn_counter.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);

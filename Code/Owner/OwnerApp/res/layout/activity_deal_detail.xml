@@ -221,13 +221,15 @@
         android:paddingLeft="13dp"
         android:paddingTop="5dp"
         android:text="Đề nghị"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/view_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/darker_gray"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/edittext_price"
@@ -236,7 +238,8 @@
         android:hint="Giá tiền đề nghị"
         android:inputType="number"
         android:paddingBottom="4dp"
-        android:paddingTop="4dp" />
+        android:paddingTop="4dp"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/edittext_note"
@@ -244,7 +247,8 @@
         android:layout_height="40dp"
         android:hint="Ghi chú"
         android:paddingBottom="4dp"
-        android:paddingTop="4dp" />
+        android:paddingTop="4dp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/button_counter"
@@ -254,6 +258,7 @@
         android:background="@color/button_color"
         android:paddingBottom="4dp"
         android:paddingTop="4dp"
-        android:text="Trả giá đề nghị" />
+        android:text="Trả giá đề nghị"
+        android:visibility="gone" />
 
 </LinearLayout>

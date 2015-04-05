@@ -1,5 +1,8 @@
 package vn.edu.fpt.fts.fragment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.methods.HttpGet;
@@ -17,6 +20,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import vn.edu.fpt.fts.activity.MainActivity;
 import vn.edu.fpt.fts.common.GeocoderHelper;
@@ -25,6 +29,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,37 +37,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class RouteMapActivity extends Activity implements OnMapReadyCallback{
+public class RouteMapActivity extends Activity implements OnMapReadyCallback {
 	private LatLng start, end, marker1, marker2, pickup, deliver;
 	private GoogleMap map;
 	private ProgressDialog pDlg;
 	GeocoderHelper helper = new GeocoderHelper();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_route_map);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
-		
-		Bundle bundle = getIntent().getBundleExtra("bundle");		
+
+		Bundle bundle = getIntent().getBundleExtra("bundle");
 		start = bundle.getParcelable("start");
 		end = bundle.getParcelable("end");
 		if (bundle.containsKey("m1")) {
-			marker1 = bundle.getParcelable("m1");			
+			marker1 = bundle.getParcelable("m1");
 		}
 		if (bundle.containsKey("m2")) {
-			marker2 = bundle.getParcelable("m2");			
+			marker2 = bundle.getParcelable("m2");
 		}
 		Bundle extra = getIntent().getBundleExtra("extra");
 		pickup = extra.getParcelable("pickup");
 		deliver = extra.getParcelable("deliver");
-		
-		MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.routeMap);
+
+		MapFragment mapFragment = (MapFragment) getFragmentManager()
+				.findFragmentById(R.id.routeMap);
 		mapFragment.getMapAsync(this);
 		map = mapFragment.getMap();
-		
-		
-		
+
 	}
 
 	@Override
@@ -82,7 +87,8 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 			return true;
 		}
 		if (id == android.R.id.home) {
-			Intent intent = new Intent(RouteMapActivity.this, MainActivity.class);
+			Intent intent = new Intent(RouteMapActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
@@ -92,16 +98,24 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 	public void onMapReady(GoogleMap arg0) {
 		// TODO Auto-generated method stub
 		String params = helper.makeURL2(start, marker1, marker2, end);
-		MarkerOptions markerOptions = new MarkerOptions();		
+		MarkerOptions markerOptions = new MarkerOptions();
 		MarkerOptions markerOptions2 = new MarkerOptions();
 		MarkerOptions markerOptions3 = new MarkerOptions();
 		MarkerOptions markerOptions4 = new MarkerOptions();
-		markerOptions.position(start).icon(BitmapDescriptorFactory.fromResource(R.drawable.driver_marker_icon_small));
-		markerOptions2.position(end).icon(BitmapDescriptorFactory.fromResource(R.drawable.driver_marker_icon_small));
-		markerOptions3.position(pickup).icon(BitmapDescriptorFactory.fromResource(R.drawable.owner_marker_icon));
-		markerOptions4.position(deliver).icon(BitmapDescriptorFactory.fromResource(R.drawable.owner_marker_icon));
+		markerOptions.position(start).icon(
+				BitmapDescriptorFactory
+						.fromResource(R.drawable.driver_marker_icon_small));
+		markerOptions2.position(end).icon(
+				BitmapDescriptorFactory
+						.fromResource(R.drawable.driver_marker_icon_small));
+		markerOptions3.position(pickup).icon(
+				BitmapDescriptorFactory
+						.fromResource(R.drawable.owner_marker_icon_small));
+		markerOptions4.position(deliver).icon(
+				BitmapDescriptorFactory
+						.fromResource(R.drawable.owner_marker_icon_small));
 		try {
-			new connectAsyncTask().execute(params);	
+			new connectAsyncTask().execute(params);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,8 +126,7 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 		map.addMarker(markerOptions3);
 		map.addMarker(markerOptions4);
 	}
-	
-	
+
 	private class connectAsyncTask extends AsyncTask<String, Void, String> {
 		long startTime;
 
@@ -143,12 +156,41 @@ public class RouteMapActivity extends Activity implements OnMapReadyCallback{
 			JSONObject obj;
 			try {
 				obj = new JSONObject(result);
-				if(obj.getString("status").equals("ZERO_RESULTS")) {
-					Toast.makeText(RouteMapActivity.this, "Không có lộ trình qua các điểm này", Toast.LENGTH_SHORT).show();
+				if (obj.getString("status").equals("ZERO_RESULTS")) {
+					Toast.makeText(RouteMapActivity.this,
+							"Không có lộ trình qua các điểm này",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					ArrayList<LatLng> points = null;
+					PolylineOptions polyLineOptions = null;
+					List<List<HashMap<String, String>>> routes = null;
+
+					routes = helper.parse(obj);
+
+					// traversing through routes
+					for (int i = 0; i < routes.size(); i++) {
+						points = new ArrayList<LatLng>();
+						polyLineOptions = new PolylineOptions();
+						List<HashMap<String, String>> path = routes.get(i);
+
+						for (int j = 0; j < path.size(); j++) {
+							HashMap<String, String> point = path.get(j);
+
+							double lat = Double.parseDouble(point.get("lat"));
+							double lng = Double.parseDouble(point.get("lng"));
+							LatLng position = new LatLng(lat, lng);
+
+							points.add(position);
+						}
+
+						polyLineOptions.addAll(points);
+						polyLineOptions.width(5);
+						polyLineOptions.color(Color.BLUE);
+					}
+
+					map.addPolyline(polyLineOptions);
 				}
-				else {
-					helper.drawPath(result, map);
-				}
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

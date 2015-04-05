@@ -53,6 +53,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -128,6 +130,8 @@ public class CreateGoodsActivity extends FragmentActivity {
 					cateId = 4;
 				} else if (selected.equals("Hàng dễ cháy nổ")) {
 					cateId = 5;
+				} else if (selected.equals("Hàng khác")) {
+					cateId = 6;
 				}
 			}
 
@@ -245,80 +249,104 @@ public class CreateGoodsActivity extends FragmentActivity {
 
 		// pickup address and map button
 		actPickupAddr = (AutoCompleteTextView) findViewById(R.id.edittext_pickup_address);
-		actPickupAddr
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		actPickupAddr.addTextChangedListener(new TextWatcher() {
 
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						// TODO Auto-generated method stub
-						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							InputMethodManager imm = (InputMethodManager)getSystemService(
-								      Context.INPUT_METHOD_SERVICE);
-								imm.hideSoftInputFromWindow(actPickupAddr.getWindowToken(), 0);
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
 
-						}
-						if (!(actPickupAddr.getText().toString().trim()
-								.length() == 0)) {
-							WebServiceTask3 wst3 = new WebServiceTask3(
-									WebServiceTask3.POST_TASK,
-									CreateGoodsActivity.this, "Đang xử lý...");
-							String url = "http://maps.google.com/maps/api/geocode/json?address="
-									+ actPickupAddr.getText().toString()
-											.replaceAll(" ", "%20")
-									+ "&sensor=false";
-							try {
-								String test = wst3.executeOnExecutor(
-										AsyncTask.THREAD_POOL_EXECUTOR, url)
-										.get();
-								test = "abc";
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (ExecutionException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+			}
 
-						}
-						return true;
-					}
-				});
-		// actPickupAddr
-		// .setOnFocusChangeListener(new View.OnFocusChangeListener() {
-		//
-		// @Override
-		// public void onFocusChange(View v, boolean hasFocus) {
-		// // TODO Auto-generated method stub
-		// if (!hasFocus) {
-		// if (!(actPickupAddr.getText().toString().trim()
-		// .length() == 0)) {
-		// WebServiceTask3 wst3 = new WebServiceTask3(
-		// WebServiceTask3.POST_TASK,
-		// CreateGoodsActivity.this,
-		// "Đang xử lý...");
-		// String url = "http://maps.google.com/maps/api/geocode/json?address="
-		// + actPickupAddr.getText().toString()
-		// .replaceAll(" ", "%20")
-		// + "&sensor=false";
-		// try {
-		// String test = wst3
-		// .executeOnExecutor(
-		// AsyncTask.THREAD_POOL_EXECUTOR,
-		// url).get();
-		// test = "abc";
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (ExecutionException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// }
-		// }
-		// }
-		// });
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				WebServiceTask3 wst3 = new WebServiceTask3(
+						WebServiceTask3.POST_TASK, CreateGoodsActivity.this,
+						"Đang xử lý...");
+				String url = "http://maps.google.com/maps/api/geocode/json?address="
+						+ actPickupAddr.getText().toString()
+								.replaceAll(" ", "%20") + "&sensor=false";
+				try {
+					String test = wst3.executeOnExecutor(
+							AsyncTask.THREAD_POOL_EXECUTOR, url).get();
+					test = "abc";
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+//		actPickupAddr
+//				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//
+//					@Override
+//					public boolean onEditorAction(TextView v, int actionId,
+//							KeyEvent event) {
+//						// TODO Auto-generated method stub
+//						if (actionId == EditorInfo.IME_ACTION_DONE
+//								|| actionId == KeyEvent.KEYCODE_BACK) {
+//							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//							imm.hideSoftInputFromWindow(
+//									actPickupAddr.getWindowToken(), 0);
+//							if (pickupLat == 0 || pickupLng == 0) {
+//								WebServiceTask3 wst3 = new WebServiceTask3(
+//										WebServiceTask3.POST_TASK,
+//										CreateGoodsActivity.this,
+//										"Đang xử lý...");
+//								String url = "http://maps.google.com/maps/api/geocode/json?address="
+//										+ actPickupAddr.getText().toString()
+//												.replaceAll(" ", "%20")
+//										+ "&sensor=false";
+//								try {
+//									wst3.executeOnExecutor(
+//											AsyncTask.THREAD_POOL_EXECUTOR, url)
+//											.get();
+//								} catch (InterruptedException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								} catch (ExecutionException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//							}
+//						}
+//						if (!(actPickupAddr.getText().toString().trim()
+//								.length() == 0)) {
+//							WebServiceTask3 wst3 = new WebServiceTask3(
+//									WebServiceTask3.POST_TASK,
+//									CreateGoodsActivity.this, "Đang xử lý...");
+//							String url = "http://maps.google.com/maps/api/geocode/json?address="
+//									+ actPickupAddr.getText().toString()
+//											.replaceAll(" ", "%20")
+//									+ "&sensor=false";
+//							try {
+//								String test = wst3.executeOnExecutor(
+//										AsyncTask.THREAD_POOL_EXECUTOR, url)
+//										.get();
+//								test = "abc";
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							} catch (ExecutionException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
+//						return true;
+//					}
+//				});
+		
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
 
@@ -337,75 +365,101 @@ public class CreateGoodsActivity extends FragmentActivity {
 
 		// deliver address and map button
 		actDeliverAddr = (AutoCompleteTextView) findViewById(R.id.edittext_deliver_address);
-		actDeliverAddr
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+		actDeliverAddr.addTextChangedListener(new TextWatcher() {
 
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						// TODO Auto-generated method stub
-						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							InputMethodManager imm = (InputMethodManager)getSystemService(
-								      Context.INPUT_METHOD_SERVICE);
-								imm.hideSoftInputFromWindow(actDeliverAddr.getWindowToken(), 0);
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
 
-						}
-						if (!(actDeliverAddr.getText().toString().trim()
-								.length() == 0)) {
-							WebServiceTask4 wst4 = new WebServiceTask4(
-									WebServiceTask3.POST_TASK,
-									CreateGoodsActivity.this, "Đang xử lý...");
-							String url2 = "http://maps.google.com/maps/api/geocode/json?address="
-									+ actDeliverAddr.getText().toString()
-											.replaceAll(" ", "%20")
-									+ "&sensor=false";
-							try {
-								wst4.executeOnExecutor(
-										AsyncTask.THREAD_POOL_EXECUTOR, url2)
-										.get();
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (ExecutionException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						return true;
-					}
-				});
-		// actDeliverAddr
-		// .setOnFocusChangeListener(new View.OnFocusChangeListener() {
-		//
-		// @Override
-		// public void onFocusChange(View v, boolean hasFocus) {
-		// // TODO Auto-generated method stub
-		// if (!hasFocus) {
-		// if (!(actDeliverAddr.getText().toString().trim()
-		// .length() == 0)) {
-		// WebServiceTask4 wst4 = new WebServiceTask4(
-		// WebServiceTask3.POST_TASK,
-		// CreateGoodsActivity.this,
-		// "Đang xử lý...");
-		// String url2 = "http://maps.google.com/maps/api/geocode/json?address="
-		// + actDeliverAddr.getText().toString()
-		// .replaceAll(" ", "%20")
-		// + "&sensor=false";
-		// try {
-		// wst4.executeOnExecutor(
-		// AsyncTask.THREAD_POOL_EXECUTOR,
-		// url2).get();
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (ExecutionException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-		// }
-		// });
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				WebServiceTask4 wst4 = new WebServiceTask4(
+						WebServiceTask3.POST_TASK, CreateGoodsActivity.this,
+						"Đang xử lý...");
+				String url2 = "http://maps.google.com/maps/api/geocode/json?address="
+						+ actDeliverAddr.getText().toString()
+								.replaceAll(" ", "%20") + "&sensor=false";
+				try {
+					wst4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url2)
+							.get();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+//		actDeliverAddr
+//				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//
+//					@Override
+//					public boolean onEditorAction(TextView v, int actionId,
+//							KeyEvent event) {
+//						// TODO Auto-generated method stub
+//						if (actionId == EditorInfo.IME_ACTION_DONE) {
+//							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//							imm.hideSoftInputFromWindow(
+//									actDeliverAddr.getWindowToken(), 0);
+//							if (deliverLat == 0 || deliverLng == 0) {
+//								WebServiceTask4 wst4 = new WebServiceTask4(
+//										WebServiceTask3.POST_TASK,
+//										CreateGoodsActivity.this,
+//										"Đang xử lý...");
+//								String url2 = "http://maps.google.com/maps/api/geocode/json?address="
+//										+ actDeliverAddr.getText().toString()
+//												.replaceAll(" ", "%20")
+//										+ "&sensor=false";
+//								try {
+//									wst4.executeOnExecutor(
+//											AsyncTask.THREAD_POOL_EXECUTOR,
+//											url2).get();
+//								} catch (InterruptedException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								} catch (ExecutionException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//							}
+//						}
+//						if (!(actDeliverAddr.getText().toString().trim()
+//								.length() == 0)) {
+//							WebServiceTask4 wst4 = new WebServiceTask4(
+//									WebServiceTask3.POST_TASK,
+//									CreateGoodsActivity.this, "Đang xử lý...");
+//							String url2 = "http://maps.google.com/maps/api/geocode/json?address="
+//									+ actDeliverAddr.getText().toString()
+//											.replaceAll(" ", "%20")
+//									+ "&sensor=false";
+//							try {
+//								wst4.executeOnExecutor(
+//										AsyncTask.THREAD_POOL_EXECUTOR, url2)
+//										.get();
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							} catch (ExecutionException e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
+//						return true;
+//					}
+//				});
+		
 		ibDeliverMap = (ImageButton) findViewById(R.id.imagebtn_deliver_address);
 		ibDeliverMap.setOnClickListener(new View.OnClickListener() {
 
@@ -689,6 +743,15 @@ public class CreateGoodsActivity extends FragmentActivity {
 			check = false;
 			errorMsg = "Địa chỉ nhận hàng không được để trống";
 		}
+		if (pickupLat == 0 || pickupLng == 0) {
+			check = false;
+			errorMsg = "Địa chỉ nhận hàng không phù hợp";
+		}
+		if (deliverLat == 0 || deliverLng == 0) {
+			check = false;
+			errorMsg = "Địa chỉ giao hàng không phù hợp";
+		}
+
 		String a = Common.formatDate(calendar1);
 		String b = Common.formatDate(calendar2);
 		if (calendar1.compareTo(calendar2) >= 0) {
@@ -929,7 +992,8 @@ public class CreateGoodsActivity extends FragmentActivity {
 				intent.putExtra("cate", cateId + "");
 				Bundle extra = new Bundle();
 				extra.putParcelable("pickup", new LatLng(pickupLat, pickupLng));
-				extra.putParcelable("deliver", new LatLng(deliverLat, deliverLng));
+				extra.putParcelable("deliver", new LatLng(deliverLat,
+						deliverLng));
 				intent.putExtra("extra", extra);
 				Bundle bundle = new Bundle();
 				bundle.putString("price", etPrice.getText().toString()
@@ -940,7 +1004,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 						.getText().toString()));
 				bundle.putString("deliver", Common
 						.formatLocation(actDeliverAddr.getText().toString()));
-				intent.putExtra("bundle", bundle);				
+				intent.putExtra("bundle", bundle);
 				startActivity(intent);
 			}
 			pDlg.dismiss();
@@ -1261,12 +1325,12 @@ public class CreateGoodsActivity extends FragmentActivity {
 				JSONObject jsonObject = new JSONObject(response);
 				GeocoderHelper geocoderHelper = new GeocoderHelper();
 				LatLng latLng = geocoderHelper.getLatLong(jsonObject);
-				pickupLat = latLng.latitude;
-				pickupLng = latLng.longitude;
-				if (pickupLat == 0 || pickupLng == 0) {
-					Toast.makeText(CreateGoodsActivity.this,
-							"Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
+				if (latLng != null) {
+					pickupLat = latLng.latitude;
+					pickupLng = latLng.longitude;
 				}
+
+				
 			} catch (JSONException ex) {
 				ex.printStackTrace();
 			}
@@ -1419,12 +1483,12 @@ public class CreateGoodsActivity extends FragmentActivity {
 				JSONObject jsonObject = new JSONObject(response);
 				GeocoderHelper geocoderHelper = new GeocoderHelper();
 				LatLng latLng = geocoderHelper.getLatLong(jsonObject);
-				deliverLat = latLng.latitude;
-				deliverLng = latLng.longitude;
-				if (deliverLat == 0 || deliverLng == 0) {
-					Toast.makeText(CreateGoodsActivity.this,
-							"Địa chỉ không phù hợp", Toast.LENGTH_LONG).show();
+				if (latLng != null) {
+					deliverLat = latLng.latitude;
+					deliverLng = latLng.longitude;
 				}
+
+				
 			} catch (JSONException ex) {
 				ex.printStackTrace();
 			}

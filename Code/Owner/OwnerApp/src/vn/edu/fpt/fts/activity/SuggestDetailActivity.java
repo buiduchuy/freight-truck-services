@@ -625,6 +625,7 @@ public class SuggestDetailActivity extends Activity {
 				Intent intent = new Intent(SuggestDetailActivity.this,
 						SuggestActivity.class);
 				intent.putExtra("goodsID", goodsID);
+				intent.putExtra("cate", categoryID);
 				startActivity(intent);
 			} else {
 				Toast.makeText(SuggestDetailActivity.this,

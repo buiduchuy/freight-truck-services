@@ -278,9 +278,13 @@ public class GoodsFragment extends Fragment {
 							lv.add(object);
 							String name = jsonObject3.getString("name");
 							String price = jsonObject2.getString("price")
-									.replace(".0", "") + " nghìn đồng";
-							String weight = jsonObject2.getString("weight");
-							String date = temp1[0] + " - " + temp[0];
+									.replace(".0", "") + " nghìn";
+							String weight = jsonObject2.getString("weight")
+									+ " kg";
+							String date = Common
+									.formatDateFromString(temp1[0])
+									+ " - "
+									+ Common.formatDateFromString(temp[0]);
 							GoodsModel goodsModel = new GoodsModel(name,
 									weight, date, price);
 							goodsModels.add(goodsModel);
