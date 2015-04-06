@@ -16,6 +16,7 @@ import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
+import vn.edu.fpt.fts.pojo.Account;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Owner;
@@ -72,12 +73,10 @@ public class AccountServlet extends HttpServlet {
 				String email = request.getParameter("txtEmail");
 				String password = request.getParameter("txtPassword");
 
-				session.removeAttribute("errorLogin");
-				session.removeAttribute("account");
+				Account account = accountDao.checkLoginAccount(email, password);
 
-				if (accountDao.checkLoginAccount(email, password) != null) {
-					Owner owner = ownerDao.getOwnerByEmail(accountDao
-							.checkLoginAccount(email, password).getEmail());
+				if (account != null) {
+					Owner owner = ownerDao.getOwnerByEmail(account.getEmail());
 					List<GoodsCategory> l_goodsCategory = goodsCategory
 							.getAllGoodsCategory();
 
@@ -104,7 +103,7 @@ public class AccountServlet extends HttpServlet {
 						}
 					}
 					session.setAttribute("listGoods", listGoods);
-				
+
 					String returnUrl = request.getParameter("ReturnUrl");
 
 					if (returnUrl != null) {
@@ -121,7 +120,6 @@ public class AccountServlet extends HttpServlet {
 				}
 			} else if (action.equalsIgnoreCase("logout")) {
 				session.invalidate();
-				request.getSession(true);
 				request.getRequestDispatcher("index.jsp").forward(request,
 						response);
 			} else if (action.equalsIgnoreCase("loginPage")) {

@@ -91,7 +91,7 @@ public class OrderServlet extends HttpServlet {
 						request, response);
 
 			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
-				int orderID = Integer.parseInt(request.getParameter("orderID"));
+				int orderID = Integer.valueOf(request.getParameter("orderID"));
 				Order order = orderDao.getOrderByID(orderID);
 
 				Goods goods = order.getDeal().getGoods();
@@ -107,12 +107,12 @@ public class OrderServlet extends HttpServlet {
 				goods.setDeliveryTime(Common.changeFormatDate(order.getDeal()
 						.getGoods().getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"dd-MM-yyyy"));
-				session.setAttribute("detailOrder", goods);
-				session.setAttribute("orderStatus", trackingStatus);
-				session.setAttribute("routeOrder", route);
-				session.setAttribute("priceForDriver", deal.getPrice());
-				session.setAttribute("priceCreate", Common.priceCreateGood);
-				session.setAttribute("priceTotal", deal.getPrice()
+				request.setAttribute("detailOrder", goods);
+				request.setAttribute("orderStatus", trackingStatus);
+				request.setAttribute("routeOrder", route);
+				request.setAttribute("priceForDriver", deal.getPrice());
+				request.setAttribute("priceCreate", Common.priceCreateGood);
+				request.setAttribute("priceTotal", deal.getPrice()
 						+ Common.priceCreateGood);
 
 				request.getRequestDispatcher("chi-tiet-order.jsp").forward(

@@ -15,8 +15,8 @@
 	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<c:set var="detailGood1" value="${sessionScope.detailOrder }" />
-			<c:if test="${not empty detailGood1 }">
+			<c:set var="detailOrder" value="${requestScope.detailOrder }" />
+			<c:if test="${not empty detailOrder }">
 				<div class="form-content">
 					<form action="Controller" method="post" accept-charset="utf-8">
 						<div class="row">
@@ -26,73 +26,55 @@
 								</h2>
 
 							</div>
-							<c:set var="message" value="${sessionScope.messageUpdateGood }" />
-							<c:if test="${not empty message}">
-								<font color="green">${message}</font>
-							</c:if>
-							<%
-								request.getSession().removeAttribute("messageUpdateGood");
-							%>
 							<div class="large-12 columns">
 								<div class="extra-title">
 									<h3>
 										<font color="blue">Thông tin hàng hoá</font>
 									</h3>
 								</div>
-
-
 								<div class="row">
 									<div class="large-12 columns">
 										<div class="row">
-											<div class="small-3 columns">
+											<div class="small-2 columns">
 												<label for="right-label" class="right inline"><small
 													class="validate">*</small> Loại hàng: </label>
 											</div>
 											<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
-											<div class="small-6 columns">
-
+											<div class="small-4 columns">
 												<c:forEach var="row" items="${typeGoods }">
-
 													<c:if
-														test="${row.goodsCategoryId==detailGood1.goodsCategoryID}">
+														test="${row.goodsCategoryId==detailOrder.goodsCategoryID}">
 														<input type="text" value="${row.name }"
 															readonly="readonly" />
 													</c:if>
-
 												</c:forEach>
-
 											</div>
-											<div class="small-3 columns"></div>
-										</div>
-										<div class="row">
-											<div class="small-3 columns">
+											<div class="small-2 columns">
 												<label for="right-label" class="right inline"><small
 													class="validate">*</small> Khối lượng: </label>
 											</div>
-											<div class="small-6 columns">
+											<div class="small-2 columns">
 												<input type="text" id="right-label" name="txtWeight"
 													onkeypress="return keyPhone(event);"
 													placeholder="Nhập khối lượng hàng" required=""
 													data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
-													maxlength="5" value="${detailGood1.weight}"
+													maxlength="5" value="${detailOrder.weight}"
 													readonly="readonly" />
 											</div>
-											<div class="small-3 columns">
-												<label for="right-label" class="left inline">Kg</label>
+											<div class="small-2 columns">
+												<label for="right-label" class="left inline">kg</label>
 											</div>
 										</div>
 										<div class="row">
-											<div class="small-3 columns">
+											<div class="small-2 columns">
 												<label for="right-label" class="right inline">Ghi
 													chú : </label>
 											</div>
-											<div class="small-6 columns">
+											<div class="small-8 columns left inline">
 												<textarea maxlength="250" name="txtNotes"
-													readonly="readonly">${detailGood1.notes }</textarea>
+													readonly="readonly">${detailOrder.notes }</textarea>
 											</div>
-											<div class="small-3 columns"></div>
 										</div>
-
 									</div>
 								</div>
 								<div class="row">
@@ -109,7 +91,7 @@
 											</div>
 											<div class="small-9 columns">
 												<input class="left inline"
-													value="${detailGood1.pickupAddress}" readonly="readonly"
+													value="${detailOrder.pickupAddress}" readonly="readonly"
 													name="txtpickupAddress" type="text" onFocus="geolocate()"
 													id="place_start" pattern=".{1,100}"
 													placeholder="Nhập địa điểm giao hàng" required=""
@@ -124,7 +106,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtpickupTime"
-													value="${detailGood1.pickupTime}" id="pick-up-date"
+													value="${detailOrder.pickupTime}" id="pick-up-date"
 													data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>
@@ -143,7 +125,7 @@
 											</div>
 											<div class="small-9 columns">
 												<input type="text" readonly="readonly" onFocus="geolocate()"
-													value="${detailGood1.deliveryAddress}"
+													value="${detailOrder.deliveryAddress}"
 													name="txtdeliveryAddress" id="place_end" pattern=".{1,100}"
 													placeholder="Nhập địa điểm nhận hàng" required=""
 													data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
@@ -157,7 +139,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtdeliveryTime"
-													value="${detailGood1.deliveryTime}" id="dilivery-date"
+													value="${detailOrder.deliveryTime}" id="dilivery-date"
 													data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>
@@ -176,9 +158,9 @@
 										</div>
 										<div class="small-4 columns left">
 											<c:set var="priceDriver"
-												value="${sessionScope.priceForDriver }" />
-											<input type="text" id="right-label"
-												value="${priceDriver}" readonly="readonly" />
+												value="${requestScope.priceForDriver }" />
+											<input type="text" id="right-label" value="${priceDriver}"
+												readonly="readonly" />
 										</div>
 									</div>
 									<div class="row">
@@ -186,10 +168,9 @@
 											<label class="right inline">Chi phí tạo hàng: </label>
 										</div>
 										<div class="small-4 columns left">
-											<c:set var="priceCreate"
-												value="${sessionScope.priceCreate }" />
-											<input type="text" id="right-label" 
-												value="${priceCreate}" readonly="readonly" />
+											<c:set var="priceCreate" value="${requestScope.priceCreate }" />
+											<input type="text" id="right-label" value="${priceCreate}"
+												readonly="readonly" />
 										</div>
 									</div>
 									<div class="row">
@@ -197,10 +178,9 @@
 											<label class="right inline">Chi phí tổng cộng: </label>
 										</div>
 										<div class="small-4 columns left">
-											<c:set var="priceTotal"
-												value="${sessionScope.priceTotal }" />
-											<input type="text" id="right-label" 
-												value="${priceTotal}" readonly="readonly" />
+											<c:set var="priceTotal" value="${requestScope.priceTotal }" />
+											<input type="text" id="right-label" value="${priceTotal}"
+												readonly="readonly" />
 										</div>
 									</div>
 								</div>
@@ -211,7 +191,7 @@
 											<font color="blue">Thông tin tuyến đường</font>
 										</h3>
 									</div>
-									<c:set var="detailRoute" value="${sessionScope.routeOrder }" />
+									<c:set var="detailRoute" value="${requestScope.routeOrder }" />
 									<div class="row">
 										<div class="small-4 columns ">
 											<label class="right inline">Địa điểm bắt đầu:</label>
@@ -280,7 +260,7 @@
 											<label class="right inline">Trạng thái </label>
 										</div>
 										<div class="small-4 columns left">
-											<c:set var="orderStatus" value="${sessionScope.orderStatus }" />
+											<c:set var="orderStatus" value="${requestScope.orderStatus }" />
 											<c:if test="${not empty orderStatus }">
 												<input type="text" id="right-label"
 													value="${orderStatus.orderStatusName}" readonly="readonly" />
@@ -294,7 +274,7 @@
 									<div class="large-12 columns">
 										<div class="submit-area">
 
-											<fmt:parseDate value="${detailGood1.deliveryTime }"
+											<fmt:parseDate value="${detailOrder.deliveryTime }"
 												var="deliveryTime" pattern="dd-MM-yyyy" />
 											<fmt:formatDate pattern="yyyy-MM-dd" value="${deliveryTime}"
 												var="checkDay" />
@@ -305,7 +285,7 @@
 												<c:if
 													test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
 													<a class="button alert"
-														href="OrderServlet?btnAction=lostGood&idGood=${detailGood1.goodsID }"
+														href="OrderServlet?btnAction=lostGood&idGood=${detailOrder.goodsID }"
 														onclick="return confirm('Bạn có muốn báo mất hàng không?')">
 														<i class="icon-ok"></i> Báo mất hàng
 													</a>
@@ -314,7 +294,7 @@
 
 											<c:if test="${orderStatus.orderStatusID==3}">
 												<a class="button success"
-													href="OrderServlet?btnAction=confirmOrder&idGood=${detailGood1.goodsID }"
+													href="OrderServlet?btnAction=confirmOrder&idGood=${detailOrder.goodsID }"
 													onclick="return confirm('Bạn có muốn xác nhận hoá đơn không?')">
 													<i class="icon-ok"></i> Xác nhận hoá đơn
 												</a>

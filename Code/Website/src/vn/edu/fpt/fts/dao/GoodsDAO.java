@@ -453,11 +453,10 @@ public class GoodsDAO {
 
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "SELECT * FROM Goods WHERE Active=? AND GoodsID=?";
+			String sql = "SELECT * FROM Goods WHERE GoodsID=?";
 
 			stmt = con.prepareStatement(sql);
 			int i = 1;
-			stmt.setInt(i++, Common.activate);
 			stmt.setInt(i++, goodsID);
 
 			rs = stmt.executeQuery();

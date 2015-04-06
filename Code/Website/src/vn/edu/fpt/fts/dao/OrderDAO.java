@@ -176,6 +176,7 @@ public class OrderDAO {
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
 				order.setActive(rs.getInt("Active"));
+
 				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
 						.getInt("OrderID"));
 				order.setDeal(dealDao.getDealByID(dealOrder.getDealID()));
@@ -284,7 +285,7 @@ public class OrderDAO {
 	public List<Order> getOrderByOwnerID(int ownerID) {
 		OrderDAO orderDao = new OrderDAO();
 		List<Order> list = new ArrayList<Order>();
-		
+
 		List<Order> listOrder = new ArrayList<Order>();
 
 		list = orderDao.getAllOrder();
@@ -293,6 +294,26 @@ public class OrderDAO {
 			if (list.get(i).getDeal() != null) {
 				if (list.get(i).getDeal().getGoods() != null) {
 					if (list.get(i).getDeal().getGoods().getOwnerID() == ownerID) {
+						listOrder.add(list.get(i));
+					}
+				}
+			}
+		}
+		return listOrder;
+	}
+
+	public List<Order> getOrderByDriverID(int driverID) {
+		OrderDAO orderDao = new OrderDAO();
+		List<Order> list = new ArrayList<Order>();
+
+		List<Order> listOrder = new ArrayList<Order>();
+
+		list = orderDao.getAllOrder();
+
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getDeal() != null) {
+				if (list.get(i).getDeal().getRoute() != null) {
+					if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
 						listOrder.add(list.get(i));
 					}
 				}

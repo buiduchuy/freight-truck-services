@@ -5,7 +5,7 @@ package vn.edu.fpt.fts.dao;
 
 import java.util.List;
 
-import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.pojo.Order;
 
 /**
  * @author Huy
@@ -14,11 +14,12 @@ import vn.edu.fpt.fts.pojo.Route;
 public class MAIN_DAO {
 
 	public static void main(String[] args) {
-		RouteDAO routeDAO = new RouteDAO();
+		OrderDAO orderDao = new OrderDAO();
+		List<Order> list = orderDao.getAllOrder();
 		
-		List<Route> list = routeDAO.getListRouteInDealPendingOrAcceptByGoodsID(1170);
-		for (Route goods : list) {
-			System.out.println(goods.getRouteID());
+		System.out.println(orderDao.getOrderByID(1041).getPrice());
+		for (Order order : list) {
+			System.out.println(order.getOrderID());
 		}
 	}
 }
