@@ -184,19 +184,16 @@ public class DealServlet extends HttpServlet {
 					}
 					if (listDealFa.size() != 0) {
 						session.removeAttribute("listDeal");
-						Deal[] listFa = new Deal[listDealFa.size()];
-						listDealFa.toArray(listFa);
 						session.setAttribute("listRoute",
 								routeDao.getAllRoute());
-						session.setAttribute("listDeal", listFa);
-						RequestDispatcher rd = request
-								.getRequestDispatcher("danh-sach-de-nghi.jsp");
-						rd.forward(request, response);
+						session.setAttribute("listDeal", listDealFa);
+						request.getRequestDispatcher("danh-sach-de-nghi.jsp")
+								.forward(request, response);
 					} else {
 						session.setAttribute("messageError",
 								"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
 						RequestDispatcher rd = request
-								.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
+								.getRequestDispatcher("ProcessServlet?btnAction=getSuggestionRoute&txtGoodsID="
 										+ idGood);
 						rd.forward(request, response);
 					}
@@ -236,9 +233,9 @@ public class DealServlet extends HttpServlet {
 				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
 					session.setAttribute("messageError",
 							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-					rd.forward(request, response);
+					request.getRequestDispatcher(
+							"ProcessServlet?btnAction=manageOrder").forward(
+							request, response);
 				} else {
 					int price = Integer.parseInt(request
 							.getParameter("txtPrice"));
@@ -261,15 +258,14 @@ public class DealServlet extends HttpServlet {
 					if (dealDao.insertDeal(dealFa) != -1) {
 						session.setAttribute("messageSuccess",
 								"Gửi đề nghị thành công");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("DealServlet?btnAction=viewDetailDeal&dealID="
-										+ idDealFa);
-						rd.forward(request, response);
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ idDealFa).forward(request, response);
 					} else {
 						session.setAttribute("messageError",
 								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
 						request.getRequestDispatcher(
-								"DealServlet?btnAction=viewDetailDeal&dealID="
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ idDealFa).forward(request, response);
 					}
 				}
@@ -342,11 +338,11 @@ public class DealServlet extends HttpServlet {
 				}
 			} else if (action.equalsIgnoreCase("manageDeal")) {
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Deal> listDeal = dealDao.getDealByOwnerID(owner.getOwnerID());
-				
+				List<Deal> listDeal = dealDao.getDealByOwnerID(owner
+						.getOwnerID());
+
 				request.setAttribute("listDeal", listDeal);
-				request.getRequestDispatcher(
-						"manage-deal.jsp").forward(
+				request.getRequestDispatcher("manage-deal.jsp").forward(
 						request, response);
 			}
 		}

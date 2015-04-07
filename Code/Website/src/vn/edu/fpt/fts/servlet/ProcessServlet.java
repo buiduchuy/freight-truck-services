@@ -43,8 +43,8 @@ public class ProcessServlet extends HttpServlet {
 					request.getRequestDispatcher(accountServlet).forward(
 							request, response);
 				} else if (action.equalsIgnoreCase("createGoods")) {
-					request.getRequestDispatcher("tao-hang-1.jsp").forward(
-							request, response);
+					request.getRequestDispatcher(goodsServlet).forward(request,
+							response);
 				} else if (action.equalsIgnoreCase("manageGoods")) {
 					request.getRequestDispatcher(goodsServlet).forward(request,
 							response);
@@ -91,6 +91,9 @@ public class ProcessServlet extends HttpServlet {
 					request.getRequestDispatcher(goodsServlet).forward(request,
 							response);
 				} else if (action.equalsIgnoreCase("deleteGoods")) {
+					request.getRequestDispatcher(goodsServlet).forward(request,
+							response);
+				} else if (action.equalsIgnoreCase("next1")) {
 					request.getRequestDispatcher(goodsServlet).forward(request,
 							response);
 				}

@@ -47,10 +47,10 @@ public class GoodsDAO {
 			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
 			stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
 			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
-			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
-			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
-			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
-			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
+			stmt.setDouble(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
+			stmt.setDouble(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
+			stmt.setDouble(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
+			stmt.setDouble(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
 			stmt.setString(i++, bean.getNotes()); // Notes
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getActive()); // Active
@@ -187,10 +187,10 @@ public class GoodsDAO {
 			stmt.setString(i++, bean.getPickupAddress()); // PickupAddress
 			stmt.setString(i++, bean.getDeliveryTime()); // DeliveryTime
 			stmt.setString(i++, bean.getDeliveryAddress()); // DeliveryAddress
-			stmt.setFloat(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
-			stmt.setFloat(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
-			stmt.setFloat(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
-			stmt.setFloat(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
+			stmt.setDouble(i++, bean.getPickupMarkerLongtitude()); // PickupMarkerLongtitude
+			stmt.setDouble(i++, bean.getPickupMarkerLatidute()); // PickupMarkerLatidute
+			stmt.setDouble(i++, bean.getDeliveryMarkerLongtitude()); // DeliveryMarkerLongtitude
+			stmt.setDouble(i++, bean.getDeliveryMarkerLatidute()); // DeliveryMarkerLatidute
 			stmt.setString(i++, bean.getNotes()); // Notes
 			stmt.setString(i++, bean.getCreateTime()); // CreateTime
 			stmt.setInt(i++, bean.getActive()); // Active

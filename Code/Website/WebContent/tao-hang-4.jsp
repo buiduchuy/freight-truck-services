@@ -17,7 +17,7 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="GoodsServlet" method="post" accept-charset="utf-8">
+				<form action="ProcessServlet" method="post" accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
@@ -89,7 +89,7 @@
 										</div>
 										<div class="small-3 large-3 columns">
 											<a href="GoodsServlet?btnAction=detailroutepickupAddress"
-												class="button secondary"> Điều chỉnh vị trí</a>
+												class="button secondary"> Vị trí</a>
 										</div>
 									</div>
 									<div class="small-4 large-4 columns">
@@ -121,13 +121,13 @@
 										</div>
 										<div class="small-3 large-3 columns">
 											<a href="GoodsServlet?btnAction=detailroutedeliveryAddress"
-												class="button secondary"> Điều chỉnh vị trí</a>
+												class="button secondary"> Vị trí</a>
 										</div>
 									</div>
 									<div class="small-4 large-4 columns">
 										<div class="small-5 large-6 columns">
-											<label for="right-label" class="right inline"><small
-												class="validate">*</small> Ngày: </label>
+											<label for="right-label" class="right inline"> Ngày:
+											</label>
 										</div>
 										<div class="small-7 large-6 columns">
 											<input type="text" id="right-label"
@@ -181,6 +181,8 @@
 									</div>
 								</div>
 							</div>
+							<input type="hidden" name="isCreateGoods" value="true"
+											readonly="readonly" />
 							<div class="large-12 columns">
 								<div class="submit-area right">
 									<a href="GoodsServlet?btnAction=viewCreate_3"
@@ -188,7 +190,7 @@
 										Trở về</a>
 									<button class="success"
 										onclick="return confirm('Bạn có muốn tạo hàng không?')"
-										name="btnAction" value="createGood">
+										name="btnAction" value="createGoods">
 										<i class="icon-ok"></i> Tạo hàng
 									</button>
 								</div>

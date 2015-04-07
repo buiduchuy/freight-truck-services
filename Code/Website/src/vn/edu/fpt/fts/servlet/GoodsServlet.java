@@ -3,7 +3,6 @@ package vn.edu.fpt.fts.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,10 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.xml.sax.SAXException;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DriverDAO;
@@ -28,13 +23,19 @@ import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.process.LatLng;
+import vn.edu.fpt.fts.process.MapsUtils;
 import vn.edu.fpt.fts.process.MatchingProcess;
 
 /**
  * Servlet implementation class GoodsServlet
  */
 public class GoodsServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2830056779242459724L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -61,14 +62,9 @@ public class GoodsServlet extends HttpServlet {
 	 *             if a servlet-specific error occurs
 	 * @throws IOException
 	 *             if an I/O error occurs
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 * @throws XPathExpressionException
 	 */
 	protected void processRequest(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			XPathExpressionException, ParserConfigurationException,
-			SAXException {
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
 			/* TODO output your page here. You may use following sample code. */
@@ -77,6 +73,7 @@ public class GoodsServlet extends HttpServlet {
 			HttpSession session = request.getSession(true);
 			GoodsDAO goodsDao = new GoodsDAO();
 			RouteDAO routeDao = new RouteDAO();
+			MapsUtils mapUtils = new MapsUtils();
 			if ("next1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
@@ -103,20 +100,7 @@ public class GoodsServlet extends HttpServlet {
 				}
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
-				Goods r = (Goods) session.getAttribute("router");
-				DecimalFormat formatPrice = new DecimalFormat("#");
-				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(Common.perKilometer
-								* Common.perKilogram
-								* weight
-								* Common.distance(Common.latGeoCoding(r
-										.getPickupAddress()), Common
-										.lngGeoCoding(r.getPickupAddress()),
-										Common.latGeoCoding(r
-												.getDeliveryAddress()), Common
-												.lngGeoCoding(r
-														.getDeliveryAddress()),
-										"K"))));
+				session.setAttribute("priceSuggest", 0.0);
 				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
 						response);
 			}
@@ -135,7 +119,7 @@ public class GoodsServlet extends HttpServlet {
 					price = priceSuggest;
 				}
 				double total = price + Common.priceCreateGood;
-				session.setAttribute("priceCreate", Common.priceCreateGood);
+				session.setAttribute("priceCreate", 0.0);
 				session.setAttribute("total", total);
 				session.setAttribute("price", price);
 				if (session.getAttribute("router") == null) {
@@ -169,21 +153,7 @@ public class GoodsServlet extends HttpServlet {
 				rd.forward(request, response);
 			}
 			if ("viewCreate_3".equals(action)) {
-				DecimalFormat formatPrice = new DecimalFormat("#");
-				Goods g = (Goods) session.getAttribute("good");
-				Goods r = (Goods) session.getAttribute("router");
-				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(Common.perKilometer
-								* Common.perKilogram
-								* g.getWeight()
-								* Common.distance(Common.latGeoCoding(r
-										.getPickupAddress()), Common
-										.lngGeoCoding(r.getPickupAddress()),
-										Common.latGeoCoding(r
-												.getDeliveryAddress()), Common
-												.lngGeoCoding(r
-														.getDeliveryAddress()),
-										"K"))));
+				session.setAttribute("priceSuggest", 0.0);
 
 				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
 						response);
@@ -214,22 +184,9 @@ public class GoodsServlet extends HttpServlet {
 
 				}
 
-				DecimalFormat formatPrice = new DecimalFormat("#");
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
-				Goods r = (Goods) session.getAttribute("router");
-				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(Common.perKilometer
-								* Common.perKilogram
-								* weight
-								* Common.distance(Common.latGeoCoding(r
-										.getPickupAddress()), Common
-										.lngGeoCoding(r.getPickupAddress()),
-										Common.latGeoCoding(r
-												.getDeliveryAddress()), Common
-												.lngGeoCoding(r
-														.getDeliveryAddress()),
-										"K"))));
+				session.setAttribute("priceSuggest", 0.0);
 				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
 						response);
 			}
@@ -253,99 +210,119 @@ public class GoodsServlet extends HttpServlet {
 						response);
 			}
 
-			if ("createGood".equals(action)) {
-				if (session.getAttribute("router") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-1.jsp");
-					rd.forward(request, response);
-				}
-				if (session.getAttribute("good") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-2.jsp");
-					rd.forward(request, response);
-				}
-				if (session.getAttribute("price") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-3.jsp");
-					rd.forward(request, response);
-				}
-
-				DateFormat dateFormat = new SimpleDateFormat(
-						"yyyy/MM/dd HH:mm:ss");
-				Date date = new Date();
-				String createTime = dateFormat.format(date);
-				String pickupAdress = ((Goods) session.getAttribute("router"))
-						.getPickupAddress();
-				String deliveryAddress = ((Goods) session
-						.getAttribute("router")).getDeliveryAddress();
-				String pickupTime = ((Goods) session.getAttribute("router"))
-						.getPickupTime();
-				String deliveryTime = ((Goods) session.getAttribute("router"))
-						.getDeliveryTime();
-				int weight = ((Goods) session.getAttribute("good")).getWeight();
-				int GoodsCategoryID = ((Goods) session.getAttribute("good"))
-						.getGoodsCategoryID();
-				String notes = ((Goods) session.getAttribute("good"))
-						.getNotes();
-				Double price = (Double) session.getAttribute("price");
-				float lngpickAddress = Common.lngGeoCoding(pickupAdress);
-				if (session.getAttribute("lngpickupAddress") != null) {
-					lngpickAddress = (float) session
-							.getAttribute("lngpickupAddress");
-				}
-				float latpickAddress = Common.latGeoCoding(pickupAdress);
-				if (session.getAttribute("latpickupAddress") != null) {
-					latpickAddress = (float) session
-							.getAttribute("latpickupAddress");
-				}
-				float lngdeliveryAddress = Common.lngGeoCoding(deliveryAddress);
-				if (session.getAttribute("lngdeliveryAddress") != null) {
-					lngpickAddress = (float) session
-							.getAttribute("lngdeliveryAddress");
-				}
-				float latdeliveryAddress = Common.latGeoCoding(deliveryAddress);
-				if (session.getAttribute("latdeliveryAddress") != null) {
-					latpickAddress = (float) session
-							.getAttribute("latdeliveryAddress");
-				}
-				Owner owner = (Owner) session.getAttribute("owner");
-				Goods goo = new Goods(weight, price, Common.changeFormatDate(
-						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"), pickupAdress,
-						Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-								"MM-dd-yyyy"), deliveryAddress, lngpickAddress,
-						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
-						notes, createTime, Common.activate, owner.getOwnerID(),
-						GoodsCategoryID);
-				int idnewGood = goodsDao.insertGoods(goo);
-				if (idnewGood != -1) {
-					session.removeAttribute("router");
-					session.removeAttribute("good");
-					session.removeAttribute("price");
-					session.setAttribute("detailGood1",
-							goodsDao.getGoodsByID(idnewGood));
-					request.setAttribute("messageSuccess",
-							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=getSuggestionRoute&goodsID="
-									+ idnewGood);
-					rd.forward(request, response);
+			if (action.equalsIgnoreCase("createGoods")) {
+				boolean isCreateGoods = request.getParameterMap().containsKey(
+						"isCreateGoods");
+				if (!isCreateGoods) {
+					request.getRequestDispatcher("tao-hang-1.jsp").forward(
+							request, response);
 				} else {
-					request.setAttribute("messageError",
-							"Có lỗi khi tạo hàng. Vui lòng thử lại");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-4.jsp");
-					rd.forward(request, response);
+					DateFormat dateFormat = new SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss");
+					Date date = new Date();
+					String createTime = dateFormat.format(date);
+					String pickupAdress = ((Goods) session
+							.getAttribute("router")).getPickupAddress();
+					String deliveryAddress = ((Goods) session
+							.getAttribute("router")).getDeliveryAddress();
+					String pickupTime = ((Goods) session.getAttribute("router"))
+							.getPickupTime();
+					String deliveryTime = ((Goods) session
+							.getAttribute("router")).getDeliveryTime();
+					int weight = ((Goods) session.getAttribute("good"))
+							.getWeight();
+					int GoodsCategoryID = ((Goods) session.getAttribute("good"))
+							.getGoodsCategoryID();
+					String notes = ((Goods) session.getAttribute("good"))
+							.getNotes();
+					Double price = (Double) session.getAttribute("price");
+
+					LatLng latLngPickupAddress = mapUtils.parseJson(mapUtils
+							.getJSONFromUrl(mapUtils.makeURL(pickupAdress)));
+
+					double lngpickAddress = latLngPickupAddress.getLongitude();
+					if (session.getAttribute("lngpickupAddress") != null) {
+						lngpickAddress = (double) session
+								.getAttribute("lngpickupAddress");
+					}
+					double latpickAddress = latLngPickupAddress.getLatitude();
+					if (session.getAttribute("latpickupAddress") != null) {
+						latpickAddress = (double) session
+								.getAttribute("latpickupAddress");
+					}
+
+					LatLng latLngDeliveryAddress = mapUtils.parseJson(mapUtils
+							.getJSONFromUrl(mapUtils.makeURL(deliveryAddress)));
+
+					double lngdeliveryAddress = latLngDeliveryAddress
+							.getLongitude();
+					if (session.getAttribute("lngdeliveryAddress") != null) {
+						lngpickAddress = (double) session
+								.getAttribute("lngdeliveryAddress");
+					}
+					double latdeliveryAddress = latLngDeliveryAddress
+							.getLatitude();
+					if (session.getAttribute("latdeliveryAddress") != null) {
+						latpickAddress = (double) session
+								.getAttribute("latdeliveryAddress");
+					}
+					Owner owner = (Owner) session.getAttribute("owner");
+					Goods goo = new Goods(weight, price,
+							Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
+									"MM-dd-yyyy"), pickupAdress,
+							Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+									"MM-dd-yyyy"), deliveryAddress,
+							lngpickAddress, latpickAddress, lngdeliveryAddress,
+							latdeliveryAddress, notes, createTime,
+							Common.activate, owner.getOwnerID(),
+							GoodsCategoryID);
+					int idnewGood = goodsDao.insertGoods(goo);
+					if (idnewGood != -1) {
+						session.removeAttribute("router");
+						session.removeAttribute("good");
+						session.removeAttribute("price");
+						session.setAttribute("detailGood1",
+								goodsDao.getGoodsByID(idnewGood));
+						request.setAttribute("messageSuccess",
+								"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=getSuggestionRoute&txtGoodsID="
+										+ idnewGood).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Có lỗi khi tạo hàng. Vui lòng thử lại");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("tao-hang-4.jsp");
+						rd.forward(request, response);
+					}
 				}
+				// if (session.getAttribute("router") == null) {
+				// // response.sendRedirect("tao-hang-1.jsp");
+				// request.getRequestDispatcher("tao-hang-1.jsp").forward(
+				// request, response);
+				// }
+				// if (session.getAttribute("good") == null) {
+				// // response.sendRedirect("tao-hang-2.jsp");
+				// request.getRequestDispatcher("tao-hang-2.jsp").forward(
+				// request, response);
+				// }
+				// if (session.getAttribute("price") == null) {
+				// // response.sendRedirect("tao-hang-3.jsp");
+				// request.getRequestDispatcher("tao-hang-3.jsp").forward(
+				// request, response);
+				// }
 			}
 
 			if ("detailroutepickupAddress".equals(action)) {
-
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getPickupAddress();
+				LatLng latLngPickupAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils.makeURL(address)));
+
 				session.setAttribute("latpickupAddress",
-						Common.latGeoCoding(address));
+						latLngPickupAddress.getLatitude());
 				session.setAttribute("lngpickupAddress",
-						Common.lngGeoCoding(address));
+						latLngPickupAddress.getLongitude());
 				RequestDispatcher rd = request
 						.getRequestDispatcher("clearpickupAddress.jsp");
 				rd.forward(request, response);
@@ -369,10 +346,13 @@ public class GoodsServlet extends HttpServlet {
 
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getDeliveryAddress();
+				LatLng latLngDeliveryAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils.makeURL(address)));
+
 				session.setAttribute("latdeliveryAddress",
-						Common.latGeoCoding(address));
+						latLngDeliveryAddress.getLatitude());
 				session.setAttribute("lngdeliveryAddress",
-						Common.lngGeoCoding(address));
+						latLngDeliveryAddress.getLongitude());
 				RequestDispatcher rd = request
 						.getRequestDispatcher("cleardeliveryAddress.jsp");
 				rd.forward(request, response);
@@ -397,6 +377,8 @@ public class GoodsServlet extends HttpServlet {
 			MatchingProcess matchingProcess = new MatchingProcess();
 			if (action.equalsIgnoreCase("getSuggestionRoute")) {
 				session.removeAttribute("listRouter");
+				String goodsIDString = request.getParameter("txtGoodsID");
+				System.out.println("asdasd" + goodsIDString);
 				int goodsID = Integer.valueOf(request
 						.getParameter("txtGoodsID"));
 				// int IdGood = Integer
@@ -408,10 +390,10 @@ public class GoodsServlet extends HttpServlet {
 					List<Driver> listDriver = driverDao.getAllDriver();
 					Driver[] listDri = new Driver[listDriver.size()];
 					listDriver.toArray(listDri);
-					session.setAttribute("detailGood",
+					request.setAttribute("detailGoods",
 							goodsDao.getGoodsByID(goodsID));
-					session.setAttribute("listRouter", listRou);
-					session.setAttribute("listDriver", listDri);
+					request.setAttribute("listRouter", listRou);
+					request.setAttribute("listDriver", listDri);
 					request.getRequestDispatcher("goi-y-he-thong.jsp").forward(
 							request, response);
 				} else {
@@ -506,57 +488,24 @@ public class GoodsServlet extends HttpServlet {
 
 				double price = Double.parseDouble(request
 						.getParameter("txtPrice"));
-				if (price == 0) {
-					DecimalFormat formatPrice = new DecimalFormat("#");
-					try {
-						price = Double
-								.valueOf(formatPrice.format(Common.perKilometer
-										* Common.perKilogram
-										* weight
-										* Common.distance(
-												Common.latGeoCoding(pickupAddress),
-												Common.lngGeoCoding(pickupAddress),
-												Common.latGeoCoding(deliveryAddress),
-												Common.lngGeoCoding(deliveryAddress),
-												"K")));
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (XPathExpressionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ParserConfigurationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SAXException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+
 				Goods goods = new Goods();
-				try {
-					goods = new Goods(goodsID, weight, price,
-							Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
-									"MM-dd-yyyy"), pickupAddress,
-							Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-									"MM-dd-yyyy"), deliveryAddress,
-							Common.lngGeoCoding(pickupAddress),
-							Common.latGeoCoding(pickupAddress),
-							Common.lngGeoCoding(deliveryAddress),
-							Common.latGeoCoding(deliveryAddress), notes, Common
-									.changeFormatDate(createTime, "dd-MM-yyyy",
-											"MM-dd-yyyy").toString(),
-							Common.activate, ownerID, goodsCategoryID);
-				} catch (XPathExpressionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				LatLng latLngPickupAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils.makeURL(pickupAddress)));
+				LatLng latLngDeliveryAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils.makeURL(deliveryAddress)));
+				goods = new Goods(goodsID, weight, price,
+						Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
+								"MM-dd-yyyy"), pickupAddress,
+						Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+								"MM-dd-yyyy"), deliveryAddress,
+						latLngPickupAddress.getLongitude(),
+						latLngPickupAddress.getLatitude(),
+						latLngDeliveryAddress.getLongitude(),
+						latLngDeliveryAddress.getLatitude(), notes, Common
+								.changeFormatDate(createTime, "dd-MM-yyyy",
+										"MM-dd-yyyy").toString(),
+						Common.activate, ownerID, goodsCategoryID);
 
 				if (routeDao.getListRouteInDealByGoodsID(goodsID).size() > 0) {
 					request.setAttribute(
@@ -647,6 +596,8 @@ public class GoodsServlet extends HttpServlet {
 				request.getRequestDispatcher("quan-ly-hang.jsp").forward(
 						request, response);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -667,13 +618,7 @@ public class GoodsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		try {
-			processRequest(request, response);
-		} catch (XPathExpressionException | ParserConfigurationException
-				| SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		processRequest(request, response);
 	}
 
 	/**
@@ -691,13 +636,7 @@ public class GoodsServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		try {
-			processRequest(request, response);
-		} catch (XPathExpressionException | ParserConfigurationException
-				| SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		processRequest(request, response);
 	}
 
 	/**

@@ -13,10 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
+import vn.edu.fpt.fts.dao.EmployeeDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.Employee;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Owner;
@@ -34,6 +36,7 @@ public class AccountServlet extends HttpServlet {
 	AccountDAO accountDao = new AccountDAO();
 	GoodsDAO goodsDao = new GoodsDAO();
 	OwnerDAO ownerDao = new OwnerDAO();
+	EmployeeDAO employeeDao = new EmployeeDAO();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -76,42 +79,56 @@ public class AccountServlet extends HttpServlet {
 				Account account = accountDao.checkLoginAccount(email, password);
 
 				if (account != null) {
-					Owner owner = ownerDao.getOwnerByEmail(account.getEmail());
-					List<GoodsCategory> l_goodsCategory = goodsCategory
-							.getAllGoodsCategory();
+					if (account.getRoleID() == Common.role_owner) {
+						Owner owner = ownerDao.getOwnerByEmail(account
+								.getEmail());
+						List<GoodsCategory> l_goodsCategory = goodsCategory
+								.getAllGoodsCategory();
 
-					session.setAttribute("typeGoods", l_goodsCategory);
-					session.setAttribute("owner", owner);
-					session.setAttribute("account", owner.getLastName());
+						session.setAttribute("typeGoods", l_goodsCategory);
+						session.setAttribute("owner", owner);
+						session.setAttribute("account", owner.getLastName());
 
-					List<Goods> listGoodsByOwner = goodsDao
-							.getListGoodsByOwnerID(owner.getOwnerID());
-					List<Goods> listGoods = new ArrayList<Goods>();
-					for (int i = 0; i < listGoodsByOwner.size(); i++) {
-						if (listGoodsByOwner.get(i).getActive() == 1) {
-							listGoodsByOwner.get(i).setPickupTime(
-									Common.changeFormatDate(listGoodsByOwner
-											.get(i).getPickupTime(),
-											"yyyy-MM-dd hh:mm:ss.s",
-											"dd-MM-yyyy"));
-							listGoodsByOwner.get(i).setDeliveryTime(
-									Common.changeFormatDate(listGoodsByOwner
-											.get(i).getDeliveryTime(),
-											"yyyy-MM-dd hh:mm:ss.s",
-											"dd-MM-yyyy"));
-							listGoods.add(listGoodsByOwner.get(i));
+						List<Goods> listGoodsByOwner = goodsDao
+								.getListGoodsByOwnerID(owner.getOwnerID());
+						List<Goods> listGoods = new ArrayList<Goods>();
+						for (int i = 0; i < listGoodsByOwner.size(); i++) {
+							if (listGoodsByOwner.get(i).getActive() == 1) {
+								listGoodsByOwner.get(i).setPickupTime(
+										Common.changeFormatDate(
+												listGoodsByOwner.get(i)
+														.getPickupTime(),
+												"yyyy-MM-dd hh:mm:ss.s",
+												"dd-MM-yyyy"));
+								listGoodsByOwner.get(i).setDeliveryTime(
+										Common.changeFormatDate(
+												listGoodsByOwner.get(i)
+														.getDeliveryTime(),
+												"yyyy-MM-dd hh:mm:ss.s",
+												"dd-MM-yyyy"));
+								listGoods.add(listGoodsByOwner.get(i));
+							}
 						}
-					}
-					session.setAttribute("listGoods", listGoods);
+						session.setAttribute("listGoods", listGoods);
 
-					String returnUrl = request.getParameter("ReturnUrl");
+						String returnUrl = request.getParameter("ReturnUrl");
 
-					if (returnUrl != null) {
-						response.sendRedirect(returnUrl);
-					} else {
-						request.getRequestDispatcher("index.jsp").forward(
-								request, response);
+						if (returnUrl != null) {
+							response.sendRedirect(returnUrl);
+						} else {
+							request.getRequestDispatcher("index.jsp").forward(
+									request, response);
+						}
+					} else if (account.getRoleID() == Common.role_staff) {
+						Employee employee = employeeDao
+								.getEmployeeByEmail(account.getEmail());
+						session.setAttribute("employee", employee);
+						
+						request.getRequestDispatcher("admin/index.jsp")
+								.forward(request, response);
+
 					}
+
 				} else {
 					session.setAttribute("errorLogin",
 							"Email hoặc mật khẩu không đúng. Xin đăng nhập lại !");

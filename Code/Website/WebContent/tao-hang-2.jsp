@@ -30,7 +30,7 @@
 												<label for="right-label" class="right inline"><small
 													class="validate">*</small> Loại hàng: </label>
 											</div>
-											<div class="small-6 columns">
+											<div class="small-4 columns">
 												<select required
 													data-errormessage-value-missing="Vui lòng chọn loại hàng !"
 													name="ddlgoodsCategoryID">
@@ -61,7 +61,7 @@
 													maxlength="5" value="${good.weight}" />
 											</div>
 											<div class="small-2 columns">
-												<label for="right-label" class="left inline">Kg</label>
+												<label for="right-label" class="left inline">kg</label>
 											</div>
 										</div>
 										<div class="row">

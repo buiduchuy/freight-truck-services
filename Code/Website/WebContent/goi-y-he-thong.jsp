@@ -3,8 +3,8 @@
 <title>Gợi ý hệ thống</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
-<c:set var="dri" value="${sessionScope.listDriver}" />
-<c:set var="detailGood1" value="${sessionScope.detailGood1}" />
+<c:set var="listDriver" value="${requestScope.listDriver}" />
+<c:set var="detailGoods" value="${requestScope.detailGoods}" />
 <jsp:include page="header.jsp" />
 <div class="container">
 	<div class="large-12 columns">
@@ -29,18 +29,14 @@
 										<font color="orange">Danh sách tuyến đường phù hợp</font>
 									</h2>
 									<c:set var="messageSuccess"
-										value="${sessionScope.messageSuccess }" />
-									<c:set var="messageError" value="${sessionScope.messageError }" />
+										value="${requestScope.messageSuccess }" />
+									<c:set var="messageError" value="${requestScope.messageError }" />
 									<c:if test="${not empty messageSuccess}">
 										<div class="row">
 											<div data-alert class="alert-box success radius inline">
 												${messageSuccess} <a href="#" class="close">&times;</a>
 											</div>
 										</div>
-										<%
-											request.getSession().removeAttribute("messageSuccess");
-										%>
-
 									</c:if>
 									<c:if test="${not empty messageError}">
 										<div class="row">
@@ -48,9 +44,6 @@
 												${messageError} <a href="#" class="close">&times;</a>
 											</div>
 										</div>
-										<%
-											request.getSession().removeAttribute("messageError");
-										%>
 									</c:if>
 								</div>
 
@@ -68,18 +61,18 @@
 											</tr>
 										</thead>
 										<tbody>
-											<c:set var="rou" value="${sessionScope.listRouter}" />
+											<c:set var="route" value="${requestScope.listRouter}" />
 											<c:if test="${not empty rou}">
 												<c:set var="count" value="0" />
-												<c:forEach var="rows" items="${rou}">
+												<c:forEach var="rows" items="${route}">
 													<tr>
 														<c:set var="count" value="${count+1 }" />
 														<td>${count}</td>
 														<td>${fn:substringBefore(fn:replace(rows.createTime, '-', ''),' ')}${rows.routeID}</td>
 														<td>${rows.startingAddress}</td>
 														<td>${rows.destinationAddress}</td>
-														<!--<c:if test="${not empty dri }">
-														<c:forEach var="driver" items="${dri}">
+														<!--<c:if test="${not empty listDriver }">
+														<c:forEach var="driver" items="${listDriver}">
 															<c:if test="${driver.driverID==rows.driverID}">
 																<td>${driver.point }</td>
 															</c:if>
