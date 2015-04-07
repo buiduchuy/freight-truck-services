@@ -80,6 +80,7 @@ public class AccountServlet extends HttpServlet {
 
 				if (account != null) {
 					if (account.getRoleID() == Common.role_owner) {
+
 						Owner owner = ownerDao.getOwnerByEmail(account
 								.getEmail());
 						List<GoodsCategory> l_goodsCategory = goodsCategory
@@ -123,7 +124,7 @@ public class AccountServlet extends HttpServlet {
 						Employee employee = employeeDao
 								.getEmployeeByEmail(account.getEmail());
 						session.setAttribute("employee", employee);
-						
+
 						request.getRequestDispatcher("admin/index.jsp")
 								.forward(request, response);
 
@@ -135,6 +136,7 @@ public class AccountServlet extends HttpServlet {
 					request.getRequestDispatcher("dang-nhap.jsp").forward(
 							request, response);
 				}
+
 			} else if (action.equalsIgnoreCase("logout")) {
 				session.invalidate();
 				request.getRequestDispatcher("index.jsp").forward(request,

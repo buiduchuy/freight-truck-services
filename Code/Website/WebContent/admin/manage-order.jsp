@@ -11,7 +11,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Cấu hình thông số</title>
+<title>Quản lý giao dịch</title>
 
 <jsp:include page="header.jsp"></jsp:include>
 </head>
@@ -32,13 +32,13 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<h1 class="page-header">
-							Cấu hình thông số hệ thống 
+							Quản lý giao dịch
 							<!--  <small>Subheading</small>-->
 						</h1>
 						<ol class="breadcrumb">
 							<li><i class="fa fa-dashboard"></i> <a href="ProcessServlet?btnAction=aIndex">Dashboard</a>
 							</li>
-							<li class="active"><i class="fa fa-gears"></i> Cấu hình thông số hệ thống</li>
+							<li class="active"><i class="fa fa-exchange"></i> Quản lý giao dịch</li>
 						</ol>
 					</div>
 				</div>

@@ -11,9 +11,10 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Cấu hình thông số</title>
+<title>Quản lý tài khoản</title>
 
 <jsp:include page="header.jsp"></jsp:include>
+
 </head>
 
 <body>
@@ -32,13 +33,14 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<h1 class="page-header">
-							Cấu hình thông số hệ thống 
-							<!--  <small>Subheading</small>-->
+							Quản lý tài khoản
+							<!-- <small>Subheading</small> -->
 						</h1>
 						<ol class="breadcrumb">
-							<li><i class="fa fa-dashboard"></i> <a href="ProcessServlet?btnAction=aIndex">Dashboard</a>
-							</li>
-							<li class="active"><i class="fa fa-gears"></i> Cấu hình thông số hệ thống</li>
+							<li><i class="fa fa-dashboard"></i> <a
+								href="ProcessServlet?btnAction=aIndex">Dashboard</a></li>
+							<li class="active"><i class="fa fa-users"></i> Quản lý tài
+								khoản</li>
 						</ol>
 					</div>
 				</div>

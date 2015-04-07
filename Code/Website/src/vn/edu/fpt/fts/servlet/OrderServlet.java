@@ -86,7 +86,7 @@ public class OrderServlet extends HttpServlet {
 					rd.forward(request, response);
 				}
 			} else if (action.equalsIgnoreCase("confirmOrder")) {
-				
+
 				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
 						request, response);
 
@@ -116,6 +116,11 @@ public class OrderServlet extends HttpServlet {
 						+ Common.priceCreateGood);
 
 				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("manageOrderEmployee")) {
+				List<Order> listOrder = orderDao.getAllOrder();
+				request.setAttribute("listOrder", listOrder);
+				request.getRequestDispatcher("admin/manage-order.jsp").forward(
 						request, response);
 			}
 		}
