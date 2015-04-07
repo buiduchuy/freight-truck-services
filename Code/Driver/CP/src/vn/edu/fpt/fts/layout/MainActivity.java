@@ -249,12 +249,6 @@ public class MainActivity extends FragmentActivity {
 				fragment = new History();
 				break;
 			case 4:
-				fragment = new Notification();
-				break;
-			case 5:
-				fragment = new SuggestList();
-				break;
-			case 6:
 				SharedPreferences share = getSharedPreferences("driver",
 						Context.MODE_PRIVATE);
 				Editor editor = share.edit();

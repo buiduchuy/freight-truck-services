@@ -32,6 +32,8 @@ import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import vn.edu.fpt.fts.drawer.ListItemAdapter2;
+import vn.edu.fpt.fts.drawer.ListItemAdapter3;
+import vn.edu.fpt.fts.drawer.ListItemAdapter5;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -48,16 +50,18 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SystemSuggest extends Fragment {
 
 	ArrayList<ListItem> list;
-	ListItemAdapter2 adapter;
+	ListItemAdapter5 adapter;
 	@SuppressLint("UseSparseArrays")
 	HashMap<Long, Integer> map = new HashMap<Long, Integer>();
 	ListView list1;
 	View myFragmentView;
+	TextView title;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Goods/getSuggestionGoods";
 
@@ -65,11 +69,14 @@ public class SystemSuggest extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		list = new ArrayList<ListItem>();
-		getActivity().getActionBar().setTitle("Gợi ý hàng hóa");
+		String route = getArguments().getString("route");
+		getActivity().getActionBar().setTitle("Gợi ý");
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		myFragmentView = inflater.inflate(R.layout.activity_system_suggest,
 				container, false);
 		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
+		title = (TextView) myFragmentView.findViewById(R.id.txtTitle);
+		title.setText("Lộ trình: " + route);
 		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -187,33 +194,60 @@ public class SystemSuggest extends Fragment {
 							JSONArray array = obj.getJSONArray("goods");
 							for (int i = 0; i < array.length(); i++) {
 								JSONObject item = array.getJSONObject(i);
-								list.add(new ListItem(
-										"Hàng " + item.getString("weight")
-												+ " kg",
-										"Giá của chủ hàng: "
-												+ formatter.format(Integer
-														.parseInt(item
-																.getString(
-																		"price")
-																.replace(".0",
-																		"")
-																+ "000"))
-												+ " đồng", ""));
+								String title = "";
+								String[] start = item
+										.getString("pickupAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title = start[start.length - 1].trim();
+
+								String[] end = item
+										.getString("deliveryAddress")
+										.replaceAll("(?i), Vietnam", "")
+										.replaceAll("(?i), Viet Nam", "")
+										.replaceAll("(?i), Việt Nam", "")
+										.split(",");
+								title += " - " + end[end.length - 1].trim();
+								list.add(new ListItem(item.getJSONObject(
+										"goodsCategory").getString("name")
+										+ " "
+										+ item.getString("weight")
+										+ " kg", title, "Giá của chủ hàng: "
+										+ formatter.format(Integer
+												.parseInt(item.getString(
+														"price").replace(".0",
+														"")
+														+ "000")) + " đồng"));
 								map.put(Long.valueOf(i), Integer.parseInt(item
 										.getString("goodsID")));
 							}
 						} else if (intervent instanceof JSONObject) {
 							JSONObject item = obj.getJSONObject("goods");
+							String title = "";
+							String[] start = item.getString("pickupAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title = start[start.length - 1].trim();
 
-							list.add(new ListItem(
-									"Hàng " + item.getString("weight") + " kg",
-									"Giá của chủ hàng: "
+							String[] end = item.getString("deliveryAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title += " - " + end[end.length - 1].trim();
+							list.add(new ListItem(item.getJSONObject(
+									"goodsCategory").getString("name")
+									+ " " + item.getString("weight") + " kg",
+									title, "Giá của chủ hàng: "
 											+ formatter.format(Integer
 													.parseInt(item.getString(
 															"price").replace(
 															".0", "")
-															+ "000")) + " đồng",
-									""));
+															+ "000")) + " đồng"));
 							map.put(Long.valueOf(0),
 									Integer.parseInt(item.getString("goodsID")));
 						}
@@ -223,7 +257,7 @@ public class SystemSuggest extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			adapter = new ListItemAdapter2(getActivity(), list);
+			adapter = new ListItemAdapter5(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
 			pDlg.dismiss();

@@ -485,7 +485,7 @@ public class OfferResponse extends Fragment {
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
-				Fragment fragment = new TabDeals();
+				TabDeals fragment = new TabDeals();
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();

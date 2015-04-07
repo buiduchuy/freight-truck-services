@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -103,6 +104,17 @@ public class CurrentRoute extends Fragment {
 				SystemSuggest frag = new SystemSuggest();
 				Bundle bundle = new Bundle();
 				bundle.putString("routeID", String.valueOf(id));
+				String[] start = startPoint.getText().toString()
+						.replaceAll("(?i), Vietnam", "")
+						.replaceAll("(?i), Viet Nam", "")
+						.replaceAll("(?i), Việt Nam", "").split(",");
+				String st = start[start.length - 1];
+				String[] end = endPoint.getText().toString()
+						.replaceAll("(?i), Vietnam", "")
+						.replaceAll("(?i), Viet Nam", "")
+						.replaceAll("(?i), Việt Nam", "").split(",");
+				String ed = end[end.length - 1];
+				bundle.putString("route", st + " - " + ed);
 				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
@@ -700,6 +712,8 @@ public class CurrentRoute extends Fragment {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.action_update:
+			Intent intent = getActivity().getIntent();
+			intent.removeExtra("markerList");
 			FragmentManager mng = getActivity().getSupportFragmentManager();
 			FragmentTransaction trs = mng.beginTransaction();
 			ChangeRoute frag = new ChangeRoute();

@@ -155,7 +155,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 							if (intervent instanceof JSONArray) {
 								JSONArray array = obj
 										.getJSONArray("notification");
-								for (int i = array.length() - 1; i >= 0; i--) {
+								for (int i = 0; i < array.length(); i++) {
 									JSONObject item = array.getJSONObject(i);
 									list.add(new ListItem(item
 											.getString("message"), item
@@ -185,7 +185,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 							if (intervent instanceof JSONArray) {
 								JSONArray array = obj
 										.getJSONArray("notification");
-								for (int i = array.length() - 1; i >= 0; i--) {
+								for (int i = 0; i < array.length(); i++) {
 									JSONObject item = array.getJSONObject(i);
 									list.add(new ListItem(item
 											.getString("message"), item
@@ -288,7 +288,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 			String status, String type) {
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				con).setTicker("Thông báo!")
-				.setSmallIcon(R.drawable.ic_action_alarms_white)
+				.setSmallIcon(R.drawable.ic_stat_untitled_1)
 				.setContentTitle("Thông báo").setContentText(message);
 
 		resultIntent = new Intent(con, MainActivity.class);

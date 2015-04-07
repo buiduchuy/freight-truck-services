@@ -67,11 +67,11 @@ public class Deals extends Fragment {
 	ListView list1;
 	View myFragmentView;
 	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Deal/getDealByDriverID";
+			+ "Deal/getPendingDealCreateByDriverByDriverID";
 	private static final String SERVICE_URL2 = Constant.SERVICE_URL
 			+ "Deal/cancel";
 	Object object;
-	
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().getActionBar().setTitle("Đề nghị");
@@ -105,42 +105,50 @@ public class Deals extends Fragment {
 		registerForContextMenu(list1);
 		return myFragmentView;
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		// TODO Auto-generated method stub
 		super.onCreateContextMenu(menu, v, menuInfo);
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
-		menu.setHeaderTitle("Lựa chọn");    
-        menu.add(0, info.position, 0, "Hủy");
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		menu.setHeaderTitle("Lựa chọn");
+		menu.add(0, info.position, 0, "Hủy");
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
-		if(item.getTitle().equals("Hủy")) {
+		if (item.getTitle().equals("Hủy")) {
 			int id = Integer.parseInt(map.get((int) item.getItemId()));
-			if(object instanceof JSONArray) {
-				JSONArray array = (JSONArray)object;
+			if (object instanceof JSONArray) {
+				JSONArray array = (JSONArray) object;
 				for (int i = 0; i < array.length(); i++) {
 					try {
 						JSONObject obj = array.getJSONObject(i);
-						if(obj.getString("dealID").equals(String.valueOf(id))) {
-							WebService2 ws = new WebService2(WebService2.POST_TASK,
-									getActivity(), "Đang xử lý ...");
-							ws.addNameValuePair("dealID", obj.getString("dealID"));
+						if (obj.getString("dealID").equals(String.valueOf(id))) {
+							WebService2 ws = new WebService2(
+									WebService2.POST_TASK, getActivity(),
+									"Đang xử lý ...");
+							ws.addNameValuePair("dealID",
+									obj.getString("dealID"));
 							ws.addNameValuePair("price", obj.getString("price"));
 							ws.addNameValuePair("notes", obj.getString("notes"));
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm");
-							String createTime = format.format(Calendar.getInstance()
-									.getTime());
+							String createTime = format.format(Calendar
+									.getInstance().getTime());
 							ws.addNameValuePair("createTime", createTime);
 							ws.addNameValuePair("createBy", "driver");
-							ws.addNameValuePair("routeID", obj.getJSONObject("route").getString("routeID"));
-							ws.addNameValuePair("goodsID", obj.getJSONObject("goods").getString("goodsID"));
-							String refID =  obj.getString("refDealID");
+							ws.addNameValuePair(
+									"routeID",
+									obj.getJSONObject("route").getString(
+											"routeID"));
+							ws.addNameValuePair(
+									"goodsID",
+									obj.getJSONObject("goods").getString(
+											"goodsID"));
+							String refID = obj.getString("refDealID");
 							if (refID.equals("0")) {
 								ws.addNameValuePair("refDealID", "");
 							} else {
@@ -154,9 +162,8 @@ public class Deals extends Fragment {
 						e.printStackTrace();
 					}
 				}
-			}
-			else {
-				JSONObject obj = (JSONObject)object;
+			} else {
+				JSONObject obj = (JSONObject) object;
 				WebService2 ws = new WebService2(WebService2.POST_TASK,
 						getActivity(), "Đang xử lý ...");
 				try {
@@ -169,9 +176,11 @@ public class Deals extends Fragment {
 							.getTime());
 					ws.addNameValuePair("createTime", createTime);
 					ws.addNameValuePair("createBy", "driver");
-					ws.addNameValuePair("routeID", obj.getJSONObject("route").getString("routeID"));
-					ws.addNameValuePair("goodsID", obj.getJSONObject("goods").getString("goodsID"));
-					String refID =  obj.getString("refDealID");
+					ws.addNameValuePair("routeID", obj.getJSONObject("route")
+							.getString("routeID"));
+					ws.addNameValuePair("goodsID", obj.getJSONObject("goods")
+							.getString("goodsID"));
+					String refID = obj.getString("refDealID");
 					if (refID.equals("0")) {
 						ws.addNameValuePair("refDealID", "");
 					} else {
@@ -276,89 +285,9 @@ public class Deals extends Fragment {
 					if (intervent instanceof JSONArray) {
 						JSONArray array = obj.getJSONArray("deal");
 						object = array;
-						for (int i = array.length() - 1; i >= 0; i--) {
+						for (int i = 0; i < array.length(); i++) {
 							JSONObject item = array.getJSONObject(i);
-							if (item.getString("createBy").equalsIgnoreCase(
-									"driver")
-									&& item.getString("dealStatusID").equals(
-											"1")) {
-								JSONObject gd = item.getJSONObject("goods");
-								if (gd.getString("active").equals("1")) {
-									String title = "";
-									String[] start = gd
-											.getString("pickupAddress")
-											.replaceAll("(?i), Vietnam", "")
-											.replaceAll("(?i), Viet Nam", "")
-											.replaceAll("(?i), Việt Nam", "")
-											.split(",");
-									title = start[start.length - 1].trim();
 
-									String[] end = gd
-											.getString("deliveryAddress")
-											.replaceAll("(?i), Vietnam", "")
-											.replaceAll("(?i), Viet Nam", "")
-											.replaceAll("(?i), Việt Nam", "")
-											.split(",");
-									title += " - " + end[end.length - 1].trim();
-									SimpleDateFormat format = new SimpleDateFormat(
-											"yyyy-MM-dd hh:mm:ss");
-									Date createDate = format.parse(item
-											.getString("createTime"));
-									Calendar cal = Calendar.getInstance();
-									cal.setTime(createDate);
-									cal.add(Calendar.MONTH, 3);
-									Date timeout = cal.getTime();
-									format.applyPattern("dd/MM/yyyy");
-									String createD = format.format(createDate);
-									JSONObject rt = item.getJSONObject("route");
-									String title2 = "";
-
-									String[] start1 = rt
-											.getString("startingAddress")
-											.replaceAll("(?i), Vietnam", "")
-											.replaceAll("(?i), Viet Nam", "")
-											.replaceAll("(?i), Việt Nam", "")
-											.split(",");
-
-									title2 = start1[start1.length - 1].trim();
-
-									String[] end2 = rt
-											.getString("destinationAddress")
-											.replaceAll("(?i), Vietnam", "")
-											.replaceAll("(?i), Viet Nam", "")
-											.replaceAll("(?i), Việt Nam", "")
-											.split(",");
-									title2 += " - "
-											+ end2[end2.length - 1].trim();
-
-									if (Calendar.getInstance().getTime()
-											.before(timeout)) {
-										JSONObject owner = item.getJSONObject(
-												"goods").getJSONObject("owner");
-										list.add(new ListItem(
-												"Bạn đã gửi đề nghị cho "
-														+ owner.getString("email"),
-												"Lộ trình: " + title,
-												"Hàng hóa: " + title2,
-												"Giá đề nghị: "
-														+ item.getString(
-																"price")
-																.replace(".0",
-																		"")
-														+ " nghìn đồng",
-												createD));
-										count++;
-										map.add(item.getString("dealID"));
-									}
-								}
-							}
-						}
-					} else if (intervent instanceof JSONObject) {
-						JSONObject item = obj.getJSONObject("deal");
-						object = item;
-						if (item.getString("createBy").equalsIgnoreCase(
-								"driver")
-								&& item.getString("dealStatusID").equals("1")) {
 							JSONObject gd = item.getJSONObject("goods");
 							if (gd.getString("active").equals("1")) {
 								String title = "";
@@ -422,8 +351,70 @@ public class Deals extends Fragment {
 								}
 							}
 						}
-					}
+					} else if (intervent instanceof JSONObject) {
+						JSONObject item = obj.getJSONObject("deal");
+						object = item;
 
+						JSONObject gd = item.getJSONObject("goods");
+						if (gd.getString("active").equals("1")) {
+							String title = "";
+							String[] start = gd.getString("pickupAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title = start[start.length - 1].trim();
+
+							String[] end = gd.getString("deliveryAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title += " - " + end[end.length - 1].trim();
+							SimpleDateFormat format = new SimpleDateFormat(
+									"yyyy-MM-dd hh:mm:ss");
+							Date createDate = format.parse(item
+									.getString("createTime"));
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(createDate);
+							cal.add(Calendar.MONTH, 3);
+							Date timeout = cal.getTime();
+							format.applyPattern("dd/MM/yyyy");
+							String createD = format.format(createDate);
+							JSONObject rt = item.getJSONObject("route");
+							String title2 = "";
+
+							String[] start1 = rt.getString("startingAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+
+							title2 = start1[start1.length - 1].trim();
+
+							String[] end2 = rt.getString("destinationAddress")
+									.replaceAll("(?i), Vietnam", "")
+									.replaceAll("(?i), Viet Nam", "")
+									.replaceAll("(?i), Việt Nam", "")
+									.split(",");
+							title2 += " - " + end2[end2.length - 1].trim();
+
+							if (Calendar.getInstance().getTime()
+									.before(timeout)) {
+								JSONObject owner = item.getJSONObject("goods")
+										.getJSONObject("owner");
+								list.add(new ListItem("Bạn đã gửi đề nghị cho "
+										+ owner.getString("email"),
+										"Lộ trình: " + title, "Hàng hóa: "
+												+ title2, "Giá đề nghị: "
+												+ item.getString("price")
+														.replace(".0", "")
+												+ " nghìn đồng", createD));
+								count++;
+								map.add(item.getString("dealID"));
+							}
+						}
+					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -509,7 +500,7 @@ public class Deals extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	public class WebService2 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;

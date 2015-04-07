@@ -227,7 +227,7 @@ public class History extends Fragment {
 					if (invervent instanceof JSONArray) {
 						JSONArray array = obj.getJSONArray("order");
 						int count = 1;
-						for (int i = array.length() - 1; i >= 0; i--) {
+						for (int i = 0; i < array.length(); i++) {
 							JSONObject item = array.getJSONObject(i);
 							JSONObject rt = item.getJSONObject("deal")
 									.getJSONObject("route");
@@ -275,10 +275,22 @@ public class History extends Fragment {
 							String price = item.getString("price");
 							if (driverStatus.equals("1")) {
 								status += "Đang chở hàng";
-							} else if (driverStatus.equals("5")) {
-								status += "Mất hàng";
-							} else {
+								// button.setEnabled(false);
+							}
+							else if (driverStatus.equals("2")) {
 								status += "Đã giao hàng";
+								// button.setEnabled(false);
+							}
+							else if (driverStatus.equals("3")) {
+								status += "Đã xác nhận giao hàng";
+								// button.setEnabled(false);
+							}
+							else if (driverStatus.equals("4")) {
+								status += "Đã xác nhận giao hàng";
+								// button.setEnabled(false);
+							}
+							else if (driverStatus.equals("5")) {
+								status += "Mất hàng";
 							}
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm:ss");
@@ -342,10 +354,22 @@ public class History extends Fragment {
 						String price = item.getString("price");
 						if (driverStatus.equals("1")) {
 							status += "Đang chở hàng";
-						} else if (driverStatus.equals("5")) {
-							status += "Mất hàng";
-						} else {
+							// button.setEnabled(false);
+						}
+						else if (driverStatus.equals("2")) {
 							status += "Đã giao hàng";
+							// button.setEnabled(false);
+						}
+						else if (driverStatus.equals("3")) {
+							status += "Đã xác nhận giao hàng";
+							// button.setEnabled(false);
+						}
+						else if (driverStatus.equals("4")) {
+							status += "Đã xác nhận giao hàng";
+							// button.setEnabled(false);
+						}
+						else if (driverStatus.equals("5")) {
+							status += "Mất hàng";
 						}
 						SimpleDateFormat format = new SimpleDateFormat(
 								"yyyy-MM-dd hh:mm:ss");

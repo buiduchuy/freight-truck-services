@@ -49,9 +49,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -99,7 +102,36 @@ public class RouteList extends Fragment {
 				trs.commit();
 			}
 		}));
+		registerForContextMenu(list1);
 		return myFragmentView;
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.setHeaderTitle("Lựa chọn");
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		menu.add(0, info.position, 0, "Xem lộ trình");
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		if (item.getTitle().equals("Xem lộ trình")) {
+			int id = Integer.parseInt(map.get((int) item.getItemId()));
+			FragmentManager mng = getActivity().getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			Map frag = new Map();
+			Bundle bundle = new Bundle();
+			bundle.putString("routeID", String.valueOf(id));
+			frag.setArguments(bundle);
+			trs.replace(R.id.content_frame, frag);
+			trs.addToBackStack(null);
+			trs.commit();
+		}
+		return true;
 	}
 
 	private class WebService extends AsyncTask<String, Integer, String> {

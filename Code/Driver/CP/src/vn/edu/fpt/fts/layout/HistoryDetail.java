@@ -60,7 +60,8 @@ public class HistoryDetail extends Fragment {
 	TextView startPlace, endPlace, startTime, endTime, price, status, weight,
 			phone;
 	String tel;
-
+	String statusID = "";
+	Menu menu;
 	// Button button;
 	
 	@Override
@@ -121,7 +122,6 @@ public class HistoryDetail extends Fragment {
 		}
 
 		public void addNameValuePair(String name, String value) {
-
 			params.add(new BasicNameValuePair(name, value));
 		}
 
@@ -189,13 +189,26 @@ public class HistoryDetail extends Fragment {
 						+ " nghìn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
+				statusID = obj.getString("orderStatusID");
+				
 				if (obj.getString("orderStatusID").equals("1")) {
 					stat = "Đang chở hàng";
-					// button.setEnabled(false);
-				} else if (obj.getString("orderStatusID").equals("5")) {
-					stat += "Mất hàng";
-				} else {
+				}
+				else if (obj.getString("orderStatusID").equals("2")) {
 					stat = "Đã giao hàng";
+					menu.findItem(R.id.action_accept).setVisible(false);
+				}
+				else if (obj.getString("orderStatusID").equals("3")) {
+					stat = "Đã xác nhận giao hàng";
+					menu.findItem(R.id.action_accept).setVisible(false);
+				}
+				else if (obj.getString("orderStatusID").equals("4")) {
+					stat = "Đã xác nhận giao hàng";
+					menu.findItem(R.id.action_accept).setVisible(false);
+				}
+				else if (obj.getString("orderStatusID").equals("5")) {
+					stat += "Mất hàng";
+					menu.findItem(R.id.action_accept).setVisible(false);
 				}
 				status.setText(stat);
 				phone.setText(good.getJSONObject("owner").getString("phone"));
@@ -459,6 +472,7 @@ public class HistoryDetail extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
+		this.menu = menu;
 		menu.findItem(R.id.action_create).setVisible(false);
 		inflater.inflate(R.menu.history_detail, menu);
 	}
