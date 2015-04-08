@@ -36,7 +36,7 @@ public class DealServlet extends HttpServlet {
 	private static final long serialVersionUID = 8407199342277331481L;
 	DealProcess dealProcess = new DealProcess();
 	RouteDAO routeDao = new RouteDAO();
-	GoodsDAO goodDao = new GoodsDAO();
+	GoodsDAO goodsDao = new GoodsDAO();
 	DealDAO dealDao = new DealDAO();
 
 	/**
@@ -71,6 +71,7 @@ public class DealServlet extends HttpServlet {
 
 			if (action.equalsIgnoreCase("routeDetail")) {
 				int routeID = Integer.parseInt(request.getParameter("routeID"));
+				int goodsID = Integer.parseInt(request.getParameter("goodsID"));
 				Route route = routeDao.getRouteByID(routeID);
 				route.setStartTime(Common.changeFormatDate(
 						route.getStartTime(), "yyyy-MM-dd hh:mm:ss.s",
@@ -78,161 +79,85 @@ public class DealServlet extends HttpServlet {
 				route.setFinishTime(Common.changeFormatDate(
 						route.getFinishTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"dd-MM-yyyy"));
+				request.setAttribute("goodsID", goodsID);
 				session.setAttribute("viewDetailRoute", route);
 				RequestDispatcher rd = request
 						.getRequestDispatcher("chi-tiet-route.jsp");
 				rd.forward(request, response);
-			} else if (action.equalsIgnoreCase("sendDeal")) {
-				session.getAttribute("detailGood1");
+			} else if (action.equalsIgnoreCase("createDeal")) {
+
 				int goodsID = Integer.parseInt(request.getParameter("goodsID"));
-				Goods goods = goodDao.getGoodsByID(goodsID);
-				if (goods.getActive() == Common.deactivate) {
-					session.setAttribute("messageError",
-							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-					rd.forward(request, response);
+				int routeID = Integer.parseInt(request.getParameter("routeID"));
+
+				List<Deal> listCurrentDeal = dealDao
+						.getListDealByGoodsIDAndRouteID(goodsID, routeID,
+								Common.deal_pending);
+
+				if (listCurrentDeal.size() >= Common.maxCounterTime) {
+					request.setAttribute(
+							"messageError",
+							"Bạn không thể thực hiện gửi đề nghị quá "
+									+ Common.maxCounterTime
+									+ " lần! Xin vui lòng chờ trả lời của tài xế.");
+					request.getRequestDispatcher(
+							"ProcessServlet?btnAction=manageDeal").forward(
+							request, response);
+
 				} else {
-					int routeID = Integer.parseInt(request
-							.getParameter("routeID"));
-					if (goods != null) {
-						Route route = routeDao.getRouteByID(routeID);
-						DateFormat dateFormat = new SimpleDateFormat(
-								"yyyy/MM/dd HH:mm:ss");
-						Date date = new Date();
-						String createTime = dateFormat.format(date);
-						List<Deal> listDealByGoodID = dealDao
-								.getDealByGoodsID(goods.getGoodsID());
-						int idDealFa = 0;
-						if (listDealByGoodID.size() != 0) {
-
-							for (int i = 0; i < listDealByGoodID.size(); i++) {
-								if (listDealByGoodID.get(i).getRouteID() == routeID
-										&& listDealByGoodID.get(i)
-												.getRefDealID() == 0) {
-									idDealFa = listDealByGoodID.get(i)
-											.getDealID();
-								}
-							}
-						}
-						if (idDealFa == 0) {
-							Deal newDeal = new Deal(goods.getPrice(),
-									goods.getNotes(), createTime, "owner",
-									route.getRouteID(), goods.getGoodsID(), 0,
-									1, 1);
-
-							if (dealDao.insertDeal(newDeal) != -1) {
-
-								session.setAttribute("messageSuccess",
-										"Gửi đề nghị thành công");
-								RequestDispatcher rd = request
-										.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
-												+ goodsID);
-								rd.forward(request, response);
-							} else {
-								session.setAttribute("messageError",
-										"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
-								RequestDispatcher rd = request
-										.getRequestDispatcher("DealServlet?btnAction=sendDeal&routeID="
-												+ routeID);
-								rd.forward(request, response);
-							}
-						} else {
-							Deal newDeal = new Deal(goods.getPrice(),
-									goods.getNotes(), createTime, "owner",
-									route.getRouteID(), goods.getGoodsID(),
-									idDealFa, 1, 1);
-
-							if (dealDao.insertDeal(newDeal) != -1) {
-
-								session.setAttribute("messageSuccess",
-										"Gửi đề nghị thành công");
-								RequestDispatcher rd = request
-										.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
-												+ goodsID);
-								rd.forward(request, response);
-							} else {
-								session.setAttribute("messageError",
-										"Gửi đề nghị không được gửi thành công. Vui lòng thử lại!");
-								RequestDispatcher rd = request
-										.getRequestDispatcher("DealServlet?btnAction=sendDeal&routeID="
-												+ routeID);
-								rd.forward(request, response);
-							}
-						}
-
-					}
-				}
-			} else if (action.equalsIgnoreCase("viewSuggest")) {
-				int idGood = Integer
-						.parseInt(request.getParameter("txtIdGood"));
-				List<Deal> listDealByGoodId = dealDao.getDealByGoodsID(idGood);
-				List<Deal> listDealFa = new ArrayList<Deal>();
-				if (listDealByGoodId.size() == 0) {
-					session.setAttribute("messageError",
-							"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
-									+ idGood);
-					rd.forward(request, response);
-				} else {
-
-					for (Deal deal : listDealByGoodId) {
-						if (deal.getRefDealID() == 0) {
-							listDealFa.add(deal);
-						}
-					}
-					if (listDealFa.size() != 0) {
-						session.removeAttribute("listDeal");
-						session.setAttribute("listRoute",
-								routeDao.getAllRoute());
-						session.setAttribute("listDeal", listDealFa);
-						request.getRequestDispatcher("danh-sach-de-nghi.jsp")
-								.forward(request, response);
+					Goods goods = goodsDao.getGoodsByID(goodsID);
+					if (goods.getActive() == Common.deactivate) {
+						request.setAttribute("messageError",
+								"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=manageDeal").forward(
+								request, response);
 					} else {
-						session.setAttribute("messageError",
-								"Hàng của bạn chưa có đề nghị. Vui lòng chọn 1 lộ trình phù hợp nhé!");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("ProcessServlet?btnAction=getSuggestionRoute&txtGoodsID="
-										+ idGood);
-						rd.forward(request, response);
-					}
+						if (goods != null) {
+							DateFormat dateFormat = new SimpleDateFormat(
+									"yyyy/MM/dd HH:mm:ss");
+							Date date = new Date();
+							String createTime = dateFormat.format(date);
 
-				}
-			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
-				int idDeal = Integer.parseInt(request.getParameter("dealID"));
-				Deal dealFa = dealDao.getDealByID(idDeal);
-				List<Deal> list = new ArrayList<Deal>();
-				List<Deal> listDealByGoodId = dealDao.getDealByGoodsID(dealFa
-						.getGoodsID());
-				for (int i = 0; i < listDealByGoodId.size(); i++) {
-					if (listDealByGoodId.get(i).getRouteID() == dealFa
-							.getRouteID()) {
-						listDealByGoodId.get(i).setCreateTime(
-								Common.changeFormatDate(listDealByGoodId.get(i)
-										.getCreateTime(),
-										"yyyy-MM-dd hh:mm:ss.s",
-										"hh:mm dd-MM-yyyy"));
-						list.add(listDealByGoodId.get(i));
+							Deal deal = new Deal();
+
+							deal.setPrice(goods.getPrice());
+							deal.setNotes(goods.getNotes());
+							deal.setCreateTime(createTime);
+							deal.setCreateBy("owner");
+							deal.setRouteID(routeID);
+							deal.setGoodsID(goodsID);
+							deal.setDealStatusID(Common.deal_pending);
+							deal.setActive(Common.activate);
+
+							int dealID = dealDao.insertDeal(deal);
+
+							if (dealID != 0) {
+
+								request.setAttribute("messageSuccess",
+										"Gửi đề nghị thành công!");
+								request.getRequestDispatcher(
+										"ProcessServlet?btnAction=viewDetailDeal&dealID="
+												+ dealID).forward(request,
+										response);
+							} else {
+								request.setAttribute("messageError",
+										"Không thể gửi đề nghị. Xin vui lòng thử lại sau!");
+								request.getRequestDispatcher(
+										"ProcessSerlvet?btnAction=manageDeal")
+										.forward(request, response);
+							}
+						}
 					}
 				}
-				Deal[] listDeal = new Deal[list.size()];
-				list.toArray(listDeal);
-				session.setAttribute("listDealDetail", listDeal);
-				session.setAttribute("sizeHistory", listDeal.length);
-				session.setAttribute("dealFa", dealFa);
-				RequestDispatcher rd = request
-						.getRequestDispatcher("chi-tiet-de-nghi.jsp");
-				rd.forward(request, response);
-			} else if (action.equalsIgnoreCase("sendOffer")) {
+			} else if (action.equalsIgnoreCase("sendDeal")) {
 				int idDealFa = ((Deal) session.getAttribute("dealFa"))
 						.getDealID();
 
 				Deal dealFa = dealDao.getDealByID(idDealFa);
 				int idGood = dealFa.getGoodsID();
-				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
-					session.setAttribute("messageError",
-							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
+				if (goodsDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+					request.setAttribute("messageError",
+							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
 							"ProcessServlet?btnAction=manageOrder").forward(
 							request, response);
@@ -256,84 +181,100 @@ public class DealServlet extends HttpServlet {
 					dealFa.setCreateBy("owner");
 					dealFa.setRefDealID(idDealFa);
 					if (dealDao.insertDeal(dealFa) != -1) {
-						session.setAttribute("messageSuccess",
+						request.setAttribute("messageSuccess",
 								"Gửi đề nghị thành công");
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ idDealFa).forward(request, response);
 					} else {
-						session.setAttribute("messageError",
-								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
+						request.setAttribute("messageError",
+								"Không thể gửi đề nghị. Xin vui lòng thử lại sau!");
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ idDealFa).forward(request, response);
 					}
 				}
-			} else if (action.equalsIgnoreCase("confirmDeal")) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
-				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
-					session.setAttribute("messageError",
-							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
+			} else if (action.equalsIgnoreCase("acceptDeal")) {
+				int dealID = Integer.parseInt(request.getParameter("dealID"));
+				int goodsID = dealDao.getDealByID(dealID).getGoodsID();
+				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
+					request.setAttribute("messageError",
+							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
-							"OrderServlet?btnAction=manageOrder").forward(
+							"ProcessServlet?btnAction=manageDeal").forward(
 							request, response);
 				} else {
-					if (dealProcess.acceptDeal1(dealDao.getDealByID(idDeal)) != 0) {
-						session.setAttribute("messageSuccess",
-								"Hoàn thành hoá đơn!");
 
+					Deal acceptDeal = dealDao.getDealByID(dealID);
+					int ret = dealProcess.acceptDeal1(acceptDeal);
+
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Đồng ý đề nghị thành công. Xin vui kiểm tra thông tin hóa đơn!");
 						request.getRequestDispatcher(
-								"OrderServlet?btnAction=manageOrder").forward(
-								request, response);
+								"ProcessSerlvet?btnAction=manageOrder")
+								.forward(request, response);
 					} else {
-						session.setAttribute("messageError",
-								"Không thể gửi đề nghị. Vui lòng thử lại nhé!");
-
+						request.setAttribute("messageError",
+								"Không thể đồng ý đề nghị này. Xin vui lòng thử lại sau!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=manageDeal").forward(
+								request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("declineDeal")) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
-				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
-					session.setAttribute("messageError",
-							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
+				int dealID = Integer.parseInt(request.getParameter("dealID"));
+				int goodsID = dealDao.getDealByID(dealID).getGoodsID();
+				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
+					request.setAttribute("messageError",
+							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
 
 					request.getRequestDispatcher(
-							"OrderServlet?btnAction=manageOrder").forward(
+							"ProcessSerlvet?btnAction=manageOrder").forward(
 							request, response);
 				} else {
-					Deal declineDeal = dealDao.getDealByID(idDeal);
-					declineDeal.setDealStatusID(3);
-					if (dealProcess.declineDeal1(declineDeal) != 0) {
-
+					Deal declineDeal = dealDao.getDealByID(dealID);
+					int ret = dealProcess.declineDeal1(declineDeal);
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Từ chối đề nghị thành công!");
 						request.getRequestDispatcher(
-								"DealServlet?btnAction=viewDetailDeal&dealID="
-										+ dealDao.getDealByID(idDeal)
-												.getRefDealID()).forward(
-								request, response);
+								"ProcessSerlvet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Không thể từ chối đề nghị này. Xin vui lòng thử lại sau!");
+						request.getRequestDispatcher(
+								"ProcessSerlvet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("cancelDeal")) {
-				int idDeal = Integer.parseInt(request.getParameter("idDeal"));
-				int idGood = dealDao.getDealByID(idDeal).getGoodsID();
-				if (goodDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
-					session.setAttribute("messageError",
-							"Hàng đã được chuyển thành hoá đơn không thể thực hiện thao tác!");
+				int dealID = Integer.parseInt(request.getParameter("dealID"));
+				int goodsID = dealDao.getDealByID(dealID).getGoodsID();
+				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
+					request.setAttribute("messageError",
+							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
-							"OrderServlet?btnAction=manageOrder").forward(
+							"ProcessServlet?btnAction=manageDeal").forward(
 							request, response);
 				} else {
-					session.removeAttribute("listDeal");
-					Deal cancelDeal = dealDao.getDealByID(idDeal);
-					if (dealProcess.cancelDeal1(cancelDeal) != 0) {
-						cancelDeal.setDealStatusID(4);
+					Deal cancelDeal = dealDao.getDealByID(dealID);
 
+					int ret = dealProcess.cancelDeal1(cancelDeal);
+
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Hủy đề nghị thành công!");
 						request.getRequestDispatcher(
-								"DealServlet?btnAction=viewDetailDeal&dealID="
-										+ dealDao.getDealByID(idDeal)
-												.getRefDealID()).forward(
-								request, response);
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Không thể hủy đề nghị. Xin vui lòng thử lại sau!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("manageDeal")) {
@@ -343,6 +284,28 @@ public class DealServlet extends HttpServlet {
 
 				request.setAttribute("listDeal", listDeal);
 				request.getRequestDispatcher("manage-deal.jsp").forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
+				int dealID = Integer.parseInt(request.getParameter("dealID"));
+				Deal dealFa = dealDao.getDealByID(dealID);
+				List<Deal> listDeal = new ArrayList<Deal>();
+				List<Deal> listDealByGoodId = dealDao.getDealByGoodsID(dealFa
+						.getGoodsID());
+				for (int i = 0; i < listDealByGoodId.size(); i++) {
+					if (listDealByGoodId.get(i).getRouteID() == dealFa
+							.getRouteID()) {
+						listDealByGoodId.get(i).setCreateTime(
+								Common.changeFormatDate(listDealByGoodId.get(i)
+										.getCreateTime(),
+										"yyyy-MM-dd hh:mm:ss.s",
+										"hh:mm dd-MM-yyyy"));
+						listDeal.add(listDealByGoodId.get(i));
+					}
+				}
+				session.setAttribute("listDealDetail", listDeal);
+				session.setAttribute("sizeHistory", listDeal.size());
+				session.setAttribute("dealFa", dealFa);
+				request.getRequestDispatcher("chi-tiet-de-nghi.jsp").forward(
 						request, response);
 			}
 		}

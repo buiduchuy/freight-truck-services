@@ -114,15 +114,23 @@ public class AccountServlet extends HttpServlet {
 
 						String returnUrl = request.getParameter("ReturnUrl");
 
-						if (returnUrl != null) {
-							response.sendRedirect(returnUrl);
+						if (!returnUrl.isEmpty()) {
+							if (returnUrl.contains("loginPage")) {
+								response.sendRedirect("ProcessServlet");
+							} else {
+								response.sendRedirect(returnUrl);
+							}
 						} else {
-							request.getRequestDispatcher("index.jsp").forward(
-									request, response);
+							request.getRequestDispatcher("ProcessServlet")
+									.forward(request, response);
 						}
 					} else if (account.getRoleID() == Common.role_staff) {
 						Employee employee = employeeDao
 								.getEmployeeByEmail(account.getEmail());
+						List<GoodsCategory> l_goodsCategory = goodsCategory
+								.getAllGoodsCategory();
+
+						session.setAttribute("typeGoods", l_goodsCategory);
 						session.setAttribute("employee", employee);
 
 						request.getRequestDispatcher("admin/index.jsp")

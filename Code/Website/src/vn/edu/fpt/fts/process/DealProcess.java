@@ -286,6 +286,7 @@ public class DealProcess {
 			if (db_deal.getCreateBy().equalsIgnoreCase(deal.getCreateBy())
 					&& db_deal.getDealStatusID() == Common.deal_pending) {
 				// Update current deal
+				deal.setDealStatusID(Common.deal_cancel);
 				ret = dealDao.updateDeal(deal);
 
 				// Insert Notification

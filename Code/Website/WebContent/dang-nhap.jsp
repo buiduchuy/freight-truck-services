@@ -46,6 +46,7 @@
 				<form action="AccountServlet" method="post" accept-charset="utf-8"
 					id="frm-login">
 					<h2>Đăng nhập</h2>
+					<input type="hidden" name="ReturnUrl" value='${requestScope["javax.servlet.forward.request_uri"]}?${requestScope["javax.servlet.forward.query_string"]}' />
 					</br>
 					<c:set var="error" value="${sessionScope.errorLogin}" />
 					<c:if test="${not empty error}">
@@ -75,10 +76,6 @@
 						<button class="large" style="width: 100%;" name="btnAction"
 							value="login">Đăng nhập</button>
 					</div>
-					<%
-						request.getSession().removeAttribute("errorLogin");
-					%>
-					<input type="hidden" name="ReturnUrl" value='${requestScope["javax.servlet.forward.request_uri"]}?${requestScope["javax.servlet.forward.query_string"]}' />
 				</form>
 			</div>
 		</center>

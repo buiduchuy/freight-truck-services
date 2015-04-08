@@ -25,7 +25,7 @@
 				<jsp:include page="process-create-good.jsp" />
 
 
-				<form action="ProcessServlet" method="POST" accept-charset="utf-8">
+				<form action="GoodsServlet" method="POST" accept-charset="utf-8">
 					<div class="row">
 						<c:choose>
 							<c:when test="${not empty router}">

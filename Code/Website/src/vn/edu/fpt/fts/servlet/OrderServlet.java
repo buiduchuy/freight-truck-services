@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +56,7 @@ public class OrderServlet extends HttpServlet {
 							.getOwnerID());
 
 					session.removeAttribute("orderStatus");
-					session.setAttribute("listOrder", listOrder);
+					request.setAttribute("listOrder", listOrder);
 					request.getRequestDispatcher("quan-ly-order.jsp").forward(
 							request, response);
 				} else {
@@ -66,29 +65,43 @@ public class OrderServlet extends HttpServlet {
 				}
 
 			} else if (action.equalsIgnoreCase("lostGood")) {
-				int goodsID = Integer.parseInt(request.getParameter("idGood"));
-				Order order = orderDao.getOrderByGoodsID(goodsID);
+				int orderID = Integer.parseInt(request.getParameter("orderID"));
 				try {
-					order.setOrderStatusID(5);
-					if (orderDao.updateOrder(order) == 1) {
-						session.setAttribute(
-								"messageSuccess",
-								"Xin lỗi vì sự cố mất hàng. Hệ thống sẽ kiểm tra và báo lại cho bạn trong thời gian gần nhất!");
-						RequestDispatcher rd = request
-								.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-						rd.forward(request, response);
+					if (orderDao
+							.updateOrderStatusID(orderID, Common.order_lost) == 1) {
+						request.setAttribute("messageSuccess",
+								"Hệ thống sẽ kiểm tra và điện thoại cho bạn trong thời gian gần nhất!");
+						request.getRequestDispatcher(
+								"OrderServlet?btnAction=manageOrder").forward(
+								request, response);
 					}
 				} catch (Exception ex) {
-					session.setAttribute("messageError",
+					request.setAttribute("messageError",
 							"Có lỗi xảy ra. Xin vui lòng kiểm tra lại hoá đơn trước khi báo mất hàng!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("OrderServlet?btnAction=manageOrder");
-					rd.forward(request, response);
+					request.getRequestDispatcher(
+							"OrderServlet?btnAction=manageOrder").forward(
+							request, response);
 				}
 			} else if (action.equalsIgnoreCase("confirmOrder")) {
+				int orderID = Integer.parseInt(request.getParameter("orderID"));
 
-				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
-						request, response);
+				try {
+					if (orderDao.updateOrderStatusID(orderID,
+							Common.order_owner) == 1) {
+						request.setAttribute("messageSuccess",
+								"Hệ thống đã cập nhật trạng thái của hóa đơn!");
+						request.getRequestDispatcher(
+								"OrderServlet?btnAction=manageOrder").forward(
+								request, response);
+					}
+				} catch (Exception ex) {
+					request.setAttribute(
+							"messageError",
+							"Có lỗi xảy ra. Xin vui lòng kiểm tra lại thông tin hóa đơn và thử lại lần sau!");
+					request.getRequestDispatcher(
+							"OrderServlet?btnAction=manageOrder").forward(
+							request, response);
+				}
 
 			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
 				int orderID = Integer.valueOf(request.getParameter("orderID"));
@@ -107,7 +120,8 @@ public class OrderServlet extends HttpServlet {
 				goods.setDeliveryTime(Common.changeFormatDate(order.getDeal()
 						.getGoods().getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
 						"dd-MM-yyyy"));
-				request.setAttribute("detailOrder", goods);
+				request.setAttribute("goods", goods);
+				request.setAttribute("detailOrder", order);
 				request.setAttribute("orderStatus", trackingStatus);
 				request.setAttribute("routeOrder", route);
 				request.setAttribute("priceForDriver", deal.getPrice());

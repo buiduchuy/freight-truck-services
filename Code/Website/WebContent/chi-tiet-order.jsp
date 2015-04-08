@@ -15,8 +15,8 @@
 	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<c:set var="detailOrder" value="${requestScope.detailOrder }" />
-			<c:if test="${not empty detailOrder }">
+			<c:set var="goods" value="${requestScope.goods }" />
+			<c:if test="${not empty goods }">
 				<div class="form-content">
 					<form action="Controller" method="post" accept-charset="utf-8">
 						<div class="row">
@@ -24,7 +24,6 @@
 								<h2 class="page-title">
 									<font color="orange">Chi tiết hoá đơn</font>
 								</h2>
-
 							</div>
 							<div class="large-12 columns">
 								<div class="extra-title">
@@ -42,8 +41,7 @@
 											<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 											<div class="small-4 columns">
 												<c:forEach var="row" items="${typeGoods }">
-													<c:if
-														test="${row.goodsCategoryId==detailOrder.goodsCategoryID}">
+													<c:if test="${row.goodsCategoryId==goods.goodsCategoryID}">
 														<input type="text" value="${row.name }"
 															readonly="readonly" />
 													</c:if>
@@ -58,8 +56,7 @@
 													onkeypress="return keyPhone(event);"
 													placeholder="Nhập khối lượng hàng" required=""
 													data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
-													maxlength="5" value="${detailOrder.weight}"
-													readonly="readonly" />
+													maxlength="5" value="${goods.weight}" readonly="readonly" />
 											</div>
 											<div class="small-2 columns">
 												<label for="right-label" class="left inline">kg</label>
@@ -72,7 +69,7 @@
 											</div>
 											<div class="small-8 columns left inline">
 												<textarea maxlength="250" name="txtNotes"
-													readonly="readonly">${detailOrder.notes }</textarea>
+													readonly="readonly">${goods.notes }</textarea>
 											</div>
 										</div>
 									</div>
@@ -90,10 +87,9 @@
 													Địa chỉ: </label>
 											</div>
 											<div class="small-9 columns">
-												<input class="left inline"
-													value="${detailOrder.pickupAddress}" readonly="readonly"
-													name="txtpickupAddress" type="text" onFocus="geolocate()"
-													id="place_start" pattern=".{1,100}"
+												<input class="left inline" value="${goods.pickupAddress}"
+													readonly="readonly" name="txtpickupAddress" type="text"
+													onFocus="geolocate()" id="place_start" pattern=".{1,100}"
 													placeholder="Nhập địa điểm giao hàng" required=""
 													data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
 													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
@@ -106,7 +102,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtpickupTime"
-													value="${detailOrder.pickupTime}" id="pick-up-date"
+													value="${goods.pickupTime}" id="pick-up-date"
 													data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>
@@ -125,8 +121,8 @@
 											</div>
 											<div class="small-9 columns">
 												<input type="text" readonly="readonly" onFocus="geolocate()"
-													value="${detailOrder.deliveryAddress}"
-													name="txtdeliveryAddress" id="place_end" pattern=".{1,100}"
+													value="${goods.deliveryAddress}" name="txtdeliveryAddress"
+													id="place_end" pattern=".{1,100}"
 													placeholder="Nhập địa điểm nhận hàng" required=""
 													data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
 													data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
@@ -139,7 +135,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtdeliveryTime"
-													value="${detailOrder.deliveryTime}" id="dilivery-date"
+													value="${goods.deliveryTime}" id="dilivery-date"
 													data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>
@@ -235,7 +231,7 @@
 										</div>
 										<div class="small-6 columns left">
 											<input type="text" class="left inline"
-												value="${detailRoute.weight } Kg" readonly="readonly">
+												value="${detailRoute.weight } kg" readonly="readonly">
 										</div>
 									</div>
 									<div class="row">
@@ -274,7 +270,7 @@
 									<div class="large-12 columns">
 										<div class="submit-area">
 
-											<fmt:parseDate value="${detailOrder.deliveryTime }"
+											<fmt:parseDate value="${goods.deliveryTime }"
 												var="deliveryTime" pattern="dd-MM-yyyy" />
 											<fmt:formatDate pattern="yyyy-MM-dd" value="${deliveryTime}"
 												var="checkDay" />
@@ -283,23 +279,27 @@
 												var="current" />
 											<c:if test="${checkDay lt current}">
 												<c:if
-													test="${orderStatus.orderStatusID!=5 && orderStatus.orderStatusID!=4}">
+													test="${orderStatus.orderStatusID==4 || orderStatus.orderStatusID==1}">
 													<a class="button alert"
-														href="OrderServlet?btnAction=lostGood&idGood=${detailOrder.goodsID }"
+														href="OrderServlet?btnAction=lostGood&orderID=${detailOrder.orderID }"
 														onclick="return confirm('Bạn có muốn báo mất hàng không?')">
-														<i class="icon-ok"></i> Báo mất hàng
-													</a>
+														Báo mất hàng </a>
 												</c:if>
 											</c:if>
 
-											<c:if test="${orderStatus.orderStatusID==3}">
+											<c:if
+												test="${orderStatus.orderStatusID==2 or orderStatus.orderStatusID==1}">
 												<a class="button success"
-													href="OrderServlet?btnAction=confirmOrder&idGood=${detailOrder.goodsID }"
-													onclick="return confirm('Bạn có muốn xác nhận hoá đơn không?')">
-													<i class="icon-ok"></i> Xác nhận hoá đơn
+													href="OrderServlet?btnAction=confirmOrder&orderID=${detailOrder.orderID }"
+													onclick="return confirm('Xác nhận giao hàng thành công. Số tiền bạn đặt cọc sẽ được chuyển cho tài xế')">
+													<i class="icon-ok"></i> Xác nhận giao hàng
 												</a>
 											</c:if>
 
+											<c:if
+												test="${orderStatus.orderStatusID==3 or orderStatus.orderStatusID==4}">
+												<a class="button success" href="#"> In hóa đơn </a>
+											</c:if>
 										</div>
 										</br>
 									</div>
@@ -307,24 +307,9 @@
 								<div class="row"></div>
 							</div>
 					</form>
-
-
 				</div>
 			</c:if>
 		</div>
 	</div>
-
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
 <jsp:include page="footer.jsp" />

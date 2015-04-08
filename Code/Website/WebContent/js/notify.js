@@ -47,10 +47,10 @@ function deactiveNotification(_notificationID) {
 		cache : false,
 		success : function(result) {
 
-		},
-		error : function(xhr, status, error) {
-			alert(status);
 		}
+//		error : function(xhr, status, error) {
+//			alert(status);
+//		}
 	});
 }
 
@@ -141,10 +141,10 @@ function getNewestNotify() {
 							_lastedID = json.notification.notificationID;
 						}
 					}
-				},
-				error : function(xhr, status, error) {
-					alert(status);
 				}
+//				error : function(xhr, status, error) {
+//					alert(status);
+//				}
 			});
 }
 

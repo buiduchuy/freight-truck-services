@@ -29,52 +29,21 @@
 									<font color="orange">Quản lý đề nghị</font>
 								</h2>
 								<c:set var="messageSuccess"
-									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError" value="${sessionScope.messageError }" />
+									value="${requestScope.messageSuccess }" />
+								<c:set var="messageError" value="${requestScope.messageError }" />
 								<c:if test="${not empty messageSuccess}">
 									<div class="row">
 										<div data-alert class="alert-box success radius inline">
 											${messageSuccess} <a href="#" class="close">&times;</a>
 										</div>
 									</div>
-									<%
-										request.getSession().removeAttribute("messageSuccess");
-									%>
 								</c:if>
 								<c:if test="${not empty messageError}">
 									<div class="row">
 										<div data-alert class="alert-box alert radius inline">
 											${messageError} <a href="#" class="close">&times;</a>
 										</div>
-
 									</div>
-									<%
-										request.getSession().removeAttribute("messageError");
-									%>
-								</c:if>
-								<c:set var="messageSuccess"
-									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError" value="${sessionScope.messageError }" />
-								<c:if test="${not empty messageSuccess}">
-									<div class="row">
-										<div data-alert class="alert-box success radius inline">
-											${messageSuccess} <a href="#" class="close">&times;</a>
-										</div>
-									</div>
-									<%
-										request.getSession().removeAttribute("messageSuccess");
-									%>
-								</c:if>
-								<c:if test="${not empty messageError}">
-									<div class="row">
-										<div data-alert class="alert-box alert radius inline">
-											${messageError} <a href="#" class="close">&times;</a>
-										</div>
-
-									</div>
-									<%
-										request.getSession().removeAttribute("messageError");
-									%>
 								</c:if>
 							</div>
 							<div class="large-12 columns">
@@ -132,9 +101,9 @@
 									<thead>
 										<tr>
 											<th><font color="orange">#</font></th>
-											<th><font color="orange">MÃ HÀNG</font></th>
 											<th><font color="orange">LOẠI HÀNG</font></th>
 											<th><font color="orange">THỜI GIAN</font></th>
+											<th><font color="orange">TRẠNG THÁI</font></th>
 											<th><h4>
 													<font color="orange"></font>
 												</h4></th>
@@ -148,16 +117,27 @@
 												<c:set var="count" value="${count+1 }" />
 												<tr>
 													<td>${count}</td>
-													<td>${fn:substringBefore(fn:replace(deal.createTime, '-', ''),' ')}${deal.goodsID }</td>
 													<c:forEach var="row" items="${typeGoods }">
 														<c:if
 															test="${deal.goods.goodsCategoryID==row.goodsCategoryId }">
 															<td>${row.name }</td>
 														</c:if>
 													</c:forEach>
-													<td>Ngày giao: ${deal.goods.pickupTime}</br> </br>Ngày
-														nhận: ${deal.goods.deliveryTime}
+													<td>Ngày giao: ${deal.goods.pickupTime}</br> </br>Ngày nhận:
+														${deal.goods.deliveryTime}
 													</td>
+													<c:if test="${deal.dealStatusID==1 }">
+														<td>Đang chờ</td>
+													</c:if>
+													<c:if test="${deal.dealStatusID==2 }">
+														<td>Đã chấp nhận</td>
+													</c:if>
+													<c:if test="${deal.dealStatusID==3 }">
+														<td>Đã từ chối</td>
+													</c:if>
+													<c:if test="${deal.dealStatusID==4 }">
+														<td>Đã hủy</td>
+													</c:if>
 													<td><a class="button"
 														href="ProcessServlet?btnAction=viewDetailDeal&dealID=${deal.dealID }">Xem
 															chi tiết</a></td>

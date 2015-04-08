@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html lang="en">
-
+<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <head>
 
 <meta charset="utf-8">
@@ -36,10 +36,71 @@
 							<!--  <small>Subheading</small>-->
 						</h1>
 						<ol class="breadcrumb">
-							<li><i class="fa fa-dashboard"></i> <a href="ProcessServlet?btnAction=aIndex">Dashboard</a>
-							</li>
-							<li class="active"><i class="fa fa-exchange"></i> Quản lý giao dịch</li>
+							<li><i class="fa fa-dashboard"></i> <a
+								href="ProcessServlet?btnAction=aIndex">Dashboard</a></li>
+							<li class="active"><i class="fa fa-exchange"></i> Quản lý
+								giao dịch</li>
 						</ol>
+					</div>
+					<div class="col-lg-12">
+						<table class="table table-bordered table-hover table-striped">
+							<thead>
+								<tr>
+									<th><font color="orange">#</font></th>
+									<th><font color="orange">MÃ HĐ</font></th>
+									<th><font color="orange">LOẠI HÀNG</font></th>
+									<th><font color="orange">THỜI GIAN</font></th>
+									<th><font color="orange">GIÁ TIỀN</font></th>
+									<th><font color="orange">KHỐI LƯỢNG</font></th>
+									<th><font color="orange">TRẠNG THÁI</font></th>
+									<!--  <th><h4>
+											<font color="orange"></font>
+										</h4></th>-->
+								</tr>
+							</thead>
+							<tbody>
+								<c:set var="count" value="0" />
+								<c:set var="listOrder" value="${requestScope.listOrder }" />
+								<c:if test="${not empty listOrder }">
+									<c:forEach var="order" items="${listOrder}">
+										<c:set var="count" value="${count+1 }" />
+										<tr>
+											<td>${count }</td>
+											<td><font color="black" style="font-weight: 700;">OD${order.orderID }</font></td>
+											<c:forEach var="row" items="${typeGoods }">
+												<c:if
+													test="${order.deal.goods.goodsCategoryID==row.goodsCategoryId }">
+													<td>${row.name }</td>
+												</c:if>
+											</c:forEach>
+											<td>Ngày giao: ${order.deal.goods.pickupTime}</br> </br>Ngày nhận:
+												${order.deal.goods.deliveryTime}
+											</td>
+											<td>${order.deal.price }</td>
+											<td>${order.deal.goods.weight }</td>
+											<c:if test="${order.orderStatusID==1 }">
+												<td>Đang vận chuyển</td>
+											</c:if>
+											<c:if test="${order.orderStatusID==2 }">
+												<td>Tài xế xác nhận</td>
+											</c:if>
+											<c:if test="${order.orderStatusID==3 }">
+												<td>Chủ hàng xác nhận</td>
+											</c:if>
+											<c:if test="${order.orderStatusID==4 }">
+												<td>Nhân viên xác nhận</td>
+											</c:if>
+											<c:if test="${order.orderStatusID==5 }">
+												<td>Mất hàng</td>
+											</c:if>
+											<!--  <td><a class="button"
+												href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID }">Xem
+													chi tiết</a></td>-->
+										</tr>
+									</c:forEach>
+								</c:if>
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<!-- /.row -->

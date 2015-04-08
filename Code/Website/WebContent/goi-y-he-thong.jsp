@@ -53,24 +53,27 @@
 										<thead>
 											<tr>
 												<th><font color="orange">#</font></th>
-												<th><font color="orange">MÃ</font></th>
-												<th><font color="orange">ĐIỂM BẮT ĐẦU</font></th>
-												<th><font color="orange">ĐIỂM KẾT THÚC</font></th>
-												<!--  <th><font color="orange">ĐIỂM UY TÍN</font></th>-->
+												<th style="width: 200px;"><font color="orange">ĐIỂM
+														BẮT ĐẦU</font></th>
+												<th style="width: 200px;"><font color="orange">ĐIỂM
+														KẾT THÚC</font></th>
+												<th><font color="orange">THỜI GIAN</font></th>
 												<th></th>
 											</tr>
 										</thead>
 										<tbody>
-											<c:set var="route" value="${requestScope.listRouter}" />
-											<c:if test="${not empty rou}">
+											<c:set var="route" value="${requestScope.listRoute}" />
+											<c:if test="${not empty route}">
 												<c:set var="count" value="0" />
 												<c:forEach var="rows" items="${route}">
 													<tr>
 														<c:set var="count" value="${count+1 }" />
 														<td>${count}</td>
-														<td>${fn:substringBefore(fn:replace(rows.createTime, '-', ''),' ')}${rows.routeID}</td>
 														<td>${rows.startingAddress}</td>
 														<td>${rows.destinationAddress}</td>
+														<td>Ngày giao: ${rows.startTime}<br /> <br />Ngày
+															nhận: ${rows.finishTime}
+														</td>
 														<!--<c:if test="${not empty listDriver }">
 														<c:forEach var="driver" items="${listDriver}">
 															<c:if test="${driver.driverID==rows.driverID}">
@@ -79,7 +82,7 @@
 														</c:forEach>
 													</c:if>-->
 														<td><a class="button"
-															href="DealServlet?btnAction=routeDetail&routeID=${rows.routeID}"">
+															href="DealServlet?btnAction=routeDetail&routeID=${rows.routeID}&goodsID=${detailGoods.goodsID}">
 																Xem chi tiết</a></td>
 													</tr>
 												</c:forEach>

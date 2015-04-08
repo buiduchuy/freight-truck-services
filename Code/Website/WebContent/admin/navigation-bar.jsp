@@ -9,7 +9,7 @@
 			<span class="icon-bar"></span> <span class="icon-bar"></span>
 		</button>
 		<div class="navbar-header">
-			<a class="navbar-brand" href="ProcessServlet"><img
+			<a class="navbar-brand" href="ProcessServlet?btnAction=aIndex"><img
 				src="admin/img/logo.png" width="150px" height="30px"></a>
 		</div>
 	</div>

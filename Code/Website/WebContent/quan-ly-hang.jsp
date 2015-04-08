@@ -79,9 +79,10 @@
 								<thead>
 									<tr>
 										<th><font color="orange">#</font></th>
-										<th><font color="orange">MÃ HÀNG</font></th>
 										<th><font color="orange">LOẠI HÀNG</font></th>
 										<th><font color="orange">THỜI GIAN</font></th>
+										<th><font color="orange">KHỐI LƯỢNG (KG)</font></th>
+										<th><font color="orange">GIÁ (NGHÌN VNĐ)</font></th>
 										<th><h4>
 												<font color="orange"></font>
 											</h4></th>
@@ -92,30 +93,32 @@
 
 										<c:set var="count" value="0" />
 										<c:forEach var="goods" items="${list}">
-												<c:set var="count" value="${count+1}" />
-												<form action="ProcessServlet" method="POST" accept-charset="utf-8">
-											<tr>
-												<td>${count }</td>
-												<td>${fn:substringBefore(fn:replace(goods.createTime, '-', ''),' ')}${goods.goodsID}
-													<input type="hidden" name="goodsID"
-													value="${goods.goodsID}" />
-												</td>
-												<td><c:forEach var="row" items="${typeGoods}">
-														<c:if test="${goods.goodsCategoryID==row.goodsCategoryId}">
+											<c:set var="count" value="${count+1}" />
+											<form action="ProcessServlet" method="POST"
+												accept-charset="utf-8">
+												<tr>
+													<td>${count }</td>
+													<td><c:forEach var="row" items="${typeGoods}">
+															<c:if
+																test="${goods.goodsCategoryID==row.goodsCategoryId}">
 														${row.name}
 													</c:if>
-													</c:forEach></td>
-												<td>Ngày giao: ${goods.pickupTime}<br /> <br />Ngày
-													nhận: ${goods.deliveryTime}
-												</td>
-												<td>
-												<a class="button" href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${goods.goodsID}">Xem chi tiết</a>
-													<!--  <button type="submit" class="button" name="btnAction"
+														</c:forEach></td>
+													<td>Ngày giao: ${goods.pickupTime}<br /> <br />Ngày
+														nhận: ${goods.deliveryTime}
+													</td>
+													<td>${goods.weight }<input type="hidden"
+														name="goodsID" value="${goods.goodsID}" />
+													</td>
+													<td>${goods.price }</td>
+													<td><a class="button"
+														href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${goods.goodsID}">Xem
+															chi tiết</a> <!--  <button type="submit" class="button" name="btnAction"
 														value="viewDetailGoods">Xem chi tiết</button>
 													<button type="submit" class="success" name="btnAction"
 														value="getSuggestionRoute">Nhận gợi ý tuyến đường</button>-->
-												</td>
-											</tr>
+													</td>
+												</tr>
 											</form>
 										</c:forEach>
 									</c:if>

@@ -17,7 +17,7 @@
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 			<div class="form-content">
-				<form action="ProcessServlet" method="post" accept-charset="utf-8">
+				<form action="GoodsServlet" method="post" accept-charset="utf-8">
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">

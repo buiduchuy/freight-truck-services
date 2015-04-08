@@ -377,23 +377,16 @@ public class GoodsServlet extends HttpServlet {
 			MatchingProcess matchingProcess = new MatchingProcess();
 			if (action.equalsIgnoreCase("getSuggestionRoute")) {
 				session.removeAttribute("listRouter");
-				String goodsIDString = request.getParameter("txtGoodsID");
-				System.out.println("asdasd" + goodsIDString);
 				int goodsID = Integer.valueOf(request
 						.getParameter("txtGoodsID"));
-				// int IdGood = Integer
-				// .parseInt(request.getParameter("txtIdGood"));
-				List<Route> list = matchingProcess.getSuggestionRoute(goodsID);
-				if (list.size() != 0) {
-					Route[] listRou = new Route[list.size()];
-					list.toArray(listRou);
+				List<Route> listRoute = matchingProcess
+						.getSuggestionRoute(goodsID);
+				if (listRoute.size() != 0) {
 					List<Driver> listDriver = driverDao.getAllDriver();
-					Driver[] listDri = new Driver[listDriver.size()];
-					listDriver.toArray(listDri);
 					request.setAttribute("detailGoods",
 							goodsDao.getGoodsByID(goodsID));
-					request.setAttribute("listRouter", listRou);
-					request.setAttribute("listDriver", listDri);
+					request.setAttribute("listRoute", listRoute);
+					request.setAttribute("listDriver", listDriver);
 					request.getRequestDispatcher("goi-y-he-thong.jsp").forward(
 							request, response);
 				} else {

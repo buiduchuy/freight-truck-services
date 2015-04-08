@@ -11,10 +11,9 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>FTS | Quản lý</title>
+<title>Cấu hình thông số</title>
 
 <jsp:include page="header.jsp"></jsp:include>
-
 </head>
 
 <body>
@@ -29,13 +28,28 @@
 
 			<div class="container-fluid">
 
-				<img src="admin/img/under.gif" />
+				<!-- Page Heading -->
+				<div class="row">
+					<div class="col-lg-12">
+						<h1 class="page-header">
+							Cấu hình thông số hệ thống 
+							<!--  <small>Subheading</small>-->
+						</h1>
+						<ol class="breadcrumb">
+							<li><i class="fa fa-dashboard"></i> <a href="ProcessServlet?btnAction=aIndex">Dashboard</a>
+							</li>
+							<li class="active"><i class="fa fa-gears"></i> Cấu hình thông số hệ thống</li>
+						</ol>
+					</div>
+				</div>
+				<!-- /.row -->
 
 			</div>
 			<!-- /.container-fluid -->
 
 		</div>
 		<!-- /#page-wrapper -->
+
 	</div>
 	<!-- /#wrapper -->
 
