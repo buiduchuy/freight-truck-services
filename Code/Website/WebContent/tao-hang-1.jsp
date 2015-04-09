@@ -177,7 +177,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtdeliveryTime"
-													value="<fmt:formatDate type="date" value='${tomorrow}' pattern='dd-MM-yyyy'/>"
+													value="<fmt:formatDate type="date" value='${today}' pattern='dd-MM-yyyy'/>"
 													id="delivery-date" data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>

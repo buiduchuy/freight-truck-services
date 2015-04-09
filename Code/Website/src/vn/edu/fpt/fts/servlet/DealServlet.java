@@ -281,7 +281,7 @@ public class DealServlet extends HttpServlet {
 				Owner owner = (Owner) session.getAttribute("owner");
 				List<Deal> listDeal = dealDao.getDealByOwnerID(owner
 						.getOwnerID());
-
+				
 				request.setAttribute("listDeal", listDeal);
 				request.getRequestDispatcher("manage-deal.jsp").forward(
 						request, response);

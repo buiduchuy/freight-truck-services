@@ -110,7 +110,8 @@
 													<td>${goods.weight }<input type="hidden"
 														name="goodsID" value="${goods.goodsID}" />
 													</td>
-													<td>${goods.price }</td>
+													<td><fmt:formatNumber type="number"
+															groupingUsed="false" value="${goods.price }" /></td>
 													<td><a class="button"
 														href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${goods.goodsID}">Xem
 															chi tiết</a> <!--  <button type="submit" class="button" name="btnAction"

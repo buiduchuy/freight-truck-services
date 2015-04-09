@@ -2,6 +2,8 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,13 +14,8 @@ import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
-import vn.edu.fpt.fts.dao.OrderStatusDAO;
-import vn.edu.fpt.fts.pojo.Deal;
-import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
-import vn.edu.fpt.fts.pojo.OrderStatus;
 import vn.edu.fpt.fts.pojo.Owner;
-import vn.edu.fpt.fts.pojo.Route;
 
 /**
  * Servlet implementation class OrderServlet
@@ -38,6 +35,7 @@ public class OrderServlet extends HttpServlet {
 		// TODO Auto-generated constructor stub
 	}
 
+	@SuppressWarnings("deprecation")
 	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
@@ -47,7 +45,6 @@ public class OrderServlet extends HttpServlet {
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
 			OrderDAO orderDao = new OrderDAO();
-			OrderStatusDAO orderStatusDao = new OrderStatusDAO();
 
 			if (action.equalsIgnoreCase("manageOrder")) {
 				Owner owner = (Owner) session.getAttribute("owner");
@@ -64,71 +61,55 @@ public class OrderServlet extends HttpServlet {
 							request, response);
 				}
 
-			} else if (action.equalsIgnoreCase("lostGood")) {
+			} else if (action.equalsIgnoreCase("lostGoods")) {
 				int orderID = Integer.parseInt(request.getParameter("orderID"));
+				Order order = orderDao.getOrderByID(orderID);
+				
 				try {
-					if (orderDao
-							.updateOrderStatusID(orderID, Common.order_lost) == 1) {
-						request.setAttribute("messageSuccess",
-								"Hệ thống sẽ kiểm tra và điện thoại cho bạn trong thời gian gần nhất!");
+					Date today = new Date();
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+					Date deliveryDate = sdf.parse(order.getDeal().getGoods().getDeliveryTime());
+					System.out.println("Today" + today.getDate());
+					System.out.println("Ngày giao hàng" + deliveryDate.getDate());
+					System.out.println("Khoảng thời gian giao hàng" + (deliveryDate.getDate() + Common.periodDay));
+					if (order.getOrderStatusID() != 3) {
+						if (today.getDate() > deliveryDate.getDate() && today.getDate() <= (deliveryDate.getDate() + Common.periodDay)) {
+							if (orderDao
+									.updateOrderStatusID(orderID, Common.order_lost) == 1) {
+								request.setAttribute("messageSuccess",
+										"Báo mất hàng thành công. Chúng tôi sẽ kiểm tra và liên hệ trực tiếp trong thời gian sớm nhất!");
+								request.getRequestDispatcher(
+										"OrderServlet?btnAction=viewDetailOrder&orderID=" + orderID).forward(
+										request, response);
+							}
+						} else {
+							request.setAttribute("messageError",
+									"Không thể báo mất hàng vì hàng đang vận chuyển hoặc đã quá thời gian cho phép kể từ thời gian giao hàng là " + Common.periodDay + " ngày.");
+							request.getRequestDispatcher(
+									"OrderServlet?btnAction=viewDetailOrder&orderID=" + orderID).forward(
+									request, response);
+						}
+					} else {
+						request.setAttribute("messageError",
+								"Hệ thống đã nhận được báo mất hàng của bạn. Chúng tôi sẽ kiểm tra và liên hệ trực tiếp trong thời gian sớm nhất!");
 						request.getRequestDispatcher(
-								"OrderServlet?btnAction=manageOrder").forward(
+								"OrderServlet?btnAction=viewDetailOrder&orderID=" + orderID).forward(
 								request, response);
 					}
+					
+					
 				} catch (Exception ex) {
 					request.setAttribute("messageError",
 							"Có lỗi xảy ra. Xin vui lòng kiểm tra lại hoá đơn trước khi báo mất hàng!");
 					request.getRequestDispatcher(
-							"OrderServlet?btnAction=manageOrder").forward(
+							"OrderServlet?btnAction=viewDetailOrder&orderID=" + orderID).forward(
 							request, response);
 				}
-			} else if (action.equalsIgnoreCase("confirmOrder")) {
-				int orderID = Integer.parseInt(request.getParameter("orderID"));
-
-				try {
-					if (orderDao.updateOrderStatusID(orderID,
-							Common.order_owner) == 1) {
-						request.setAttribute("messageSuccess",
-								"Hệ thống đã cập nhật trạng thái của hóa đơn!");
-						request.getRequestDispatcher(
-								"OrderServlet?btnAction=manageOrder").forward(
-								request, response);
-					}
-				} catch (Exception ex) {
-					request.setAttribute(
-							"messageError",
-							"Có lỗi xảy ra. Xin vui lòng kiểm tra lại thông tin hóa đơn và thử lại lần sau!");
-					request.getRequestDispatcher(
-							"OrderServlet?btnAction=manageOrder").forward(
-							request, response);
-				}
-
 			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
 				int orderID = Integer.valueOf(request.getParameter("orderID"));
 				Order order = orderDao.getOrderByID(orderID);
-
-				Goods goods = order.getDeal().getGoods();
-				Route route = order.getDeal().getRoute();
-				Deal deal = order.getDeal();
-
-				OrderStatus trackingStatus = orderStatusDao
-						.getOrderStatusByID(order.getOrderStatusID());
-
-				goods.setPickupTime(Common.changeFormatDate(
-						goods.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
-						"dd-MM-yyyy"));
-				goods.setDeliveryTime(Common.changeFormatDate(order.getDeal()
-						.getGoods().getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
-						"dd-MM-yyyy"));
-				request.setAttribute("goods", goods);
-				request.setAttribute("detailOrder", order);
-				request.setAttribute("orderStatus", trackingStatus);
-				request.setAttribute("routeOrder", route);
-				request.setAttribute("priceForDriver", deal.getPrice());
-				request.setAttribute("priceCreate", Common.priceCreateGood);
-				request.setAttribute("priceTotal", deal.getPrice()
-						+ Common.priceCreateGood);
-
+				
+				request.setAttribute("order", order);
 				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
 						request, response);
 			} else if (action.equalsIgnoreCase("manageOrderEmployee")) {

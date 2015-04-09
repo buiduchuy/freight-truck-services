@@ -1,8 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<c:set var="messageSuccess" value="${sessionScope.messageSuccess }" />
-<c:set var="messageError" value="${sessionScope.messageError }" />
+<c:set var="messageSuccess" value="${requestScope.messageSuccess }" />
+<c:set var="messageError" value="${requestScope.messageError }" />
 <c:if test="${not empty messageSuccess}">
 	<div data-alert class="alert-box success radius inline">
 		${messageSuccess} <a href="#" class="close">&times;</a>

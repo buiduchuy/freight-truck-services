@@ -17,19 +17,19 @@ public final class Common {
 
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
-	 public static final String CONNECTION =
-	 "jdbc:sqlserver://localhost:1433;databaseName=FTS";
-	 public static final String usernamedb = "sa";
-	 public static final String passworddb = "123456";
+	public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+	public static final String usernamedb = "sa";
+	public static final String passworddb = "123456";
 
 	// public static final String CONNECTION =
 	// "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
 	// public static final String usernamedb = "duchuy";
 	// public static final String passworddb = "huy2108.";
 
-//	public static final String CONNECTION = "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
-//	public static final String usernamedb = "duchuy";
-//	public static final String passworddb = "huy2108.";
+	// public static final String CONNECTION =
+	// "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
+	// public static final String usernamedb = "duchuy";
+	// public static final String passworddb = "huy2108.";
 
 	// Role of Account
 	public static final int role_owner = 1;
@@ -49,17 +49,15 @@ public final class Common {
 
 	// Status of Order
 	public static final int order_pending = 1;
-	public static final int order_driver = 2;
-	public static final int order_owner = 3;
-	public static final int order_staff = 4;
-	public static final int order_lost = 5;
+	public static final int order_accept = 2;
+	public static final int order_lost = 3;
 
 	// Max allow distance for matching goods and routes (km)
 	public static final int maxAllowDistance = 50;
 
 	// Period day for delivery (day)
 	public static final int periodDay = 1;
-	
+
 	// Counter when send deal or counter
 	public static final int maxCounterTime = 3;
 
@@ -91,7 +89,9 @@ public final class Common {
 		return formatter.format(number);
 	}
 
-	public static int calculateGoodsPrice(int weight, double distance) {
+	// Weight kg, distance km
+
+	public static double calculateGoodsPrice(int weight, double distance) {
 		int price = 22;
 		if (distance <= 300) {
 			if (weight <= 500) {

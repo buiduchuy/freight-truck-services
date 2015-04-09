@@ -1,7 +1,7 @@
 var _lastedID = 0;
 setInterval(function() {
 	getNewestNotify();
-}, 10000);
+}, 30000);
 
 function getLastID() {
 	var _email = document.getElementById("email").value;
@@ -56,7 +56,7 @@ function deactiveNotification(_notificationID) {
 
 function getNewestNotify() {
 	var _email = document.getElementById("email").value;
-	var timeoutHide = 5000;
+	var timeoutHide = 15000;
 
 	$
 			.ajax({

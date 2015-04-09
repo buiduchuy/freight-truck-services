@@ -37,7 +37,7 @@
 				<div class="form-content"
 					style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 					<div class="form-content">
-						<form action="ProcessServlet" method="POST" accept-charset="utf-8">
+						<form action="GoodsServlet" method="POST" accept-charset="UTF-8">
 							<div class="row">
 								<div class="large-12 columns">
 									<h2 class="page-title">
@@ -45,9 +45,9 @@
 									</h2>
 									<input type="hidden" name="txtGoodsID"
 										value="${goodsDetail.goodsID }" /> <input type="hidden"
-										name="txtCreateTime" value="${goodsDetail.goodsID }" /> <input
+										name="txtCreateTime" value="${goodsDetail.createTime }" /> <input
 										type="hidden" name="txtOwnerID"
-										value="${goodsDetail.goodsID }" />
+										value="${goodsDetail.ownerID }" />
 
 									<c:set var="messageSuccess"
 										value="${requestScope.messageSuccess }" />
@@ -207,39 +207,13 @@
 										<div class="row">
 											<div class="small-4 columns">
 												<label class="right inline"><small class="validate">*</small>Chi
-													phí tài xế: </label>
+													phí: </label>
 											</div>
 											<div class="small-4 columns left">
 												<input type="text" id="right-label" name="txtPrice"
-													value="${goodsDetail.price}" required=""
+													value="<fmt:formatNumber type="number"
+															groupingUsed="false" value="${goodsDetail.price}" />" required=""
 													data-errormessage-value-missing="Vui lòng điền đầy đủ chi phí!" />
-											</div>
-											<div class="small-4 columns left">
-												<label class="left inline">nghìn đồng</label>
-											</div>
-										</div>
-										<c:set var="priceCreateGood"
-											value="${sessionScope.priceCreateGood }" />
-										<div class="row">
-											<div class="small-4 columns">
-												<label class="right inline">Chi phí tạo hàng: </label>
-											</div>
-											<div class="small-4 columns left">
-												<input type="text" id="right-label"
-													value="${priceCreateGood}" readonly="readonly" />
-											</div>
-											<div class="small-4 columns left">
-												<label class="left inline">nghìn đồng</label>
-											</div>
-										</div>
-										<c:set var="priceTotal" value="${sessionScope.priceTotal }" />
-										<div class="row">
-											<div class="small-4 columns">
-												<label class="right inline">Tổng Cộng: </label>
-											</div>
-											<div class="small-4 columns left">
-												<input type="text" id="right-label" value="${priceTotal}"
-													readonly="readonly" />
 											</div>
 											<div class="small-4 columns left">
 												<label class="left inline">nghìn đồng</label>

@@ -4,6 +4,8 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="detailRoute" value="${sessionScope.viewDetailRoute }" />
 <c:set var="goodsID" value="${requestScope.goodsID }" />
+<%@ page import="java.util.Date"%>
+<c:set var="today" value="<%=new Date()%>" />
 <jsp:include page="header.jsp" />
 <div class="large-12 columns">
 	<div class="large-3 columns">
@@ -28,8 +30,8 @@
 										<font color="orange">Chi tiết lộ trình</font>
 									</h2>
 									<c:set var="messageSuccess"
-										value="${sessionScope.messageSuccess }" />
-									<c:set var="messageError" value="${sessionScope.messageError }" />
+										value="${requestScope.messageSuccess }" />
+									<c:set var="messageError" value="${requestScope.messageError }" />
 									<c:if test="${not empty messageSuccess}">
 										<div class="row">
 											<div data-alert class="alert-box success radius inline">
@@ -50,7 +52,6 @@
 									<font color="red">${error}</font>
 								</c:if>
 								<div class="large-12 columns">
-
 									<div class="row">
 										<div class="small-2 columns ">
 											<label class="right inline">Địa điểm bắt đầu:</label>

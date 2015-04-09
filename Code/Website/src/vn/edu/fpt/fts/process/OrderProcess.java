@@ -41,7 +41,6 @@ public class OrderProcess {
 				int orderStatusID = l_order.get(i).getOrderStatusID();
 
 				if (orderStatusID != Common.order_pending
-						&& orderStatusID != Common.order_staff
 						&& orderStatusID != Common.order_lost) {
 					if (l_order.get(i).getDeal() != null) {
 						if (l_order.get(i).getDeal().getGoods() != null) {
@@ -51,7 +50,7 @@ public class OrderProcess {
 									.getDate()) {
 								int orderID = l_order.get(i).getOrderID();
 								orderDao.updateOrderStatusID(orderID,
-										Common.order_staff);
+										Common.order_accept);
 								logger.warning("AUTO ACCEPT ORDER: "
 										+ orderID + " --- Time: " +  new Date().toString());
 							}

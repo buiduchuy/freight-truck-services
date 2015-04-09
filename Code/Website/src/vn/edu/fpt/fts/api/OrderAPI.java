@@ -116,55 +116,6 @@ public class OrderAPI {
 	}
 
 	@POST
-	@Path("driverConfirmDelivery")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String driverConfirmDelivery(MultivaluedMap<String, String> params) {
-		int ret = 0;
-		try {
-			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			Order db_order = orderDao.getOrderByID(orderID);
-			if (db_order != null) {
-				ret = orderDao
-						.updateOrderStatusID(orderID, Common.order_driver);
-
-				// Insert notification
-				notificationProcess
-						.insertDriverConfirmOrderNotification(db_order);
-			}
-		} catch (NumberFormatException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		}
-		return String.valueOf(ret);
-	}
-
-	@POST
-	@Path("ownerConfirmDelivery")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String ownerConfirmDelivery(MultivaluedMap<String, String> params) {
-		int ret = 0;
-		try {
-			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			Order db_order = orderDao.getOrderByID(orderID);
-			if (db_order != null) {
-				ret = orderDao.updateOrderStatusID(orderID, Common.order_owner);
-
-				// Insert notification
-				notificationProcess
-						.insertOwnerConfirmOrderNotification(db_order);
-			}
-		} catch (NumberFormatException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		}
-		return String.valueOf(ret);
-	}
-
-	@POST
 	@Path("ownerNoticeLostGoods")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -175,10 +126,6 @@ public class OrderAPI {
 			Order db_order = orderDao.getOrderByID(orderID);
 			if (db_order != null) {
 				ret = orderDao.updateOrderStatusID(orderID, Common.order_lost);
-
-				// Insert notification
-				// notificationProcess
-				// .insertOwnerConfirmOrderNotification(db_order);
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception

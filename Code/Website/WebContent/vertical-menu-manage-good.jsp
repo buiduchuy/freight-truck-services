@@ -7,7 +7,7 @@
 <a href="ProcessServlet?btnAction=createGoods"
 	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-shopping-cart"></i> Tạo hàng</a>
 <a href="ProcessServlet?btnAction=manageGoods"
-	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-list"></i> Quản lý hàng</a>
+	class="button menu-button expand left active" style="text-align:left;padding-left:10px"><i class="icon-list"></i> Quản lý hàng</a>
 <a href="ProcessServlet?btnAction=manageDeal"
 	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-exchange"></i> Quản lý đề nghị</a>
 <a href="ProcessServlet?btnAction=manageOrder"

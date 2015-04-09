@@ -35,7 +35,10 @@ public class ProcessServlet extends HttpServlet {
 	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		try (PrintWriter out = response.getWriter()) {
+
 			String action = request.getParameter("btnAction");
 
 			if (action != null) {
@@ -112,10 +115,10 @@ public class ProcessServlet extends HttpServlet {
 					request.getRequestDispatcher("admin/manage-account.jsp")
 							.forward(request, response);
 				} else if (action.equalsIgnoreCase("aIndex")) {
-					request.getRequestDispatcher("admin/index.jsp")
-					.forward(request, response);
+					request.getRequestDispatcher("admin/index.jsp").forward(
+							request, response);
 				}
-				
+
 			} else {
 				request.getRequestDispatcher("index.jsp").forward(request,
 						response);

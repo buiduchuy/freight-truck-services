@@ -152,28 +152,7 @@ public class NotificationProcess {
 		return ret;
 	}
 
-	public int insertOwnerConfirmOrderNotification(Order order) {
-		int ret = 0;
-
-		Notification notification = new Notification();
-
-		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
-		notification
-				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
-		notification.setMessage("Chủ hàng "
-				+ order.getDeal().getGoods().getOwner().getEmail()
-				+ " đã xác nhận đơn giao hàng thành công.");
-		notification.setStatusOfType(Common.order_owner);
-		notification.setIdOfType(order.getOrderID());
-		notification.setType("order");
-
-		ret = notificationDao.insertNotification(notification);
-
-		return ret;
-	}
-
-	public int insertDriverConfirmOrderNotification(Order order) {
+	public int insertAcceptOrderNotification(Order order) {
 		int ret = 0;
 
 		Notification notification = new Notification();
@@ -184,7 +163,7 @@ public class NotificationProcess {
 		notification.setMessage("Tài xế "
 				+ order.getDeal().getRoute().getDriver().getEmail()
 				+ " đã xác nhận đơn giao hàng thành công.");
-		notification.setStatusOfType(Common.order_driver);
+		notification.setStatusOfType(Common.order_accept);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
 		
@@ -193,29 +172,4 @@ public class NotificationProcess {
 		return ret;
 	}
 
-	public int insertStaffConfirmOrderNotification(Order order, Account acc) {
-		int ret = 0;
-
-		Notification notification = new Notification();
-
-		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
-
-		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Nhân viên " + acc.getEmail()
-				+ " đã xác nhận đơn giao hàng thành công.");
-		notification.setStatusOfType(Common.order_staff);
-		notification.setIdOfType(order.getOrderID());
-		notification.setType("order");
-		
-		ret = notificationDao.insertNotification(notification);
-
-		notification
-				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
-
-		ret = notificationDao.insertNotification(notification);
-
-		return ret;
-	}
-	
 }
