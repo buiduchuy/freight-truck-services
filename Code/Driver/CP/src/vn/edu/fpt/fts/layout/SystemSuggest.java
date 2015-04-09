@@ -36,6 +36,7 @@ import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import vn.edu.fpt.fts.drawer.ListItemAdapter5;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -69,6 +70,7 @@ public class SystemSuggest extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		list = new ArrayList<ListItem>();
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		String route = getArguments().getString("route");
 		getActivity().getActionBar().setTitle("Gợi ý");
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);

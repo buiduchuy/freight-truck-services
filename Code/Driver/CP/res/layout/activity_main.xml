@@ -7,17 +7,16 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
-        />
+        android:background="@android:color/white" />
 
     <ListView
         android:id="@+id/left_drawer"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#FFFFFF"
         android:choiceMode="singleChoice"
         android:divider="#EEEEEE"
-        android:dividerHeight="1dp"      
-        android:background="#FFFFFF"/>
+        android:dividerHeight="1dp" />
 
 </android.support.v4.widget.DrawerLayout>

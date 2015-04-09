@@ -42,6 +42,7 @@ import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -237,6 +238,7 @@ public class CreateRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Lộ trình mới");
 
@@ -1097,7 +1099,7 @@ public class CreateRoute extends Fragment {
 									getActivity(),
 									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
 									Toast.LENGTH_SHORT).show();
-						} else if (payload.equals("")) {
+						} else if (load.equals("")) {
 							Toast.makeText(getActivity(),
 									"Khối lượng chở không được để trống.",
 									Toast.LENGTH_SHORT).show();
@@ -1269,6 +1271,33 @@ public class CreateRoute extends Fragment {
 									AlertDialog alertDialog = alertDialogBuilder
 											.create();
 									alertDialog.show();
+								} else {
+									WebService ws = new WebService(
+											WebService.POST_TASK,
+											getActivity(), "Đang xử lý ...");
+									ws.addNameValuePair("startingAddress",
+											startPoint);
+									ws.addNameValuePair("destinationAddress",
+											endPoint);
+									ws.addNameValuePair("routeMarkerLocation1",
+											Point1);
+									ws.addNameValuePair("routeMarkerLocation2",
+											Point2);
+									ws.addNameValuePair("startTime", startD);
+									ws.addNameValuePair("finishTime", endD);
+									ws.addNameValuePair("notes", null);
+									ws.addNameValuePair("weight", load);
+									ws.addNameValuePair("createTime", current);
+									ws.addNameValuePair("active", "1");
+									ws.addNameValuePair("driverID",
+											getActivity().getIntent()
+													.getStringExtra("driverID"));
+									ws.addNameValuePair("Food", fd);
+									ws.addNameValuePair("Freeze", frz);
+									ws.addNameValuePair("Broken", brk);
+									ws.addNameValuePair("Flame", flm);
+									ws.execute(new String[] { SERVICE_URL });
+									create = "";
 								}
 							} else {
 								WebService ws = new WebService(
@@ -1295,6 +1324,7 @@ public class CreateRoute extends Fragment {
 								ws.addNameValuePair("Broken", brk);
 								ws.addNameValuePair("Flame", flm);
 								ws.execute(new String[] { SERVICE_URL });
+								create = "";
 							}
 						}
 					} catch (NumberFormatException e) {

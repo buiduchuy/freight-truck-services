@@ -40,6 +40,8 @@ import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import vn.edu.fpt.fts.drawer.ListItemAdapter4;
 import vn.edu.fpt.fts.layout.Deals.WebService2;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -78,6 +80,7 @@ public class Deals2 extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setTitle("Đề nghị");
 		getActivity().getActionBar().setIcon(
 				R.drawable.ic_action_sort_by_size_white);
@@ -96,6 +99,9 @@ public class Deals2 extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				int id = Integer.parseInt(map.get((int) arg3));
+				NotificationManager mNotificationManager = (NotificationManager) getActivity()
+						.getSystemService(Context.NOTIFICATION_SERVICE);
+				mNotificationManager.cancel(id);
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				OfferResponse frag = new OfferResponse();
@@ -478,7 +484,7 @@ public class Deals2 extends Fragment {
 									list.add(new ListItem(owner
 											.getString("email")
 											+ " gửi đề nghị: ", "Lộ trình: "
-											+ title, "Hàng hóa: " + title2,
+											+ title2, "Hàng hóa: " + title,
 											"Giá đề nghị: "
 													+ item.getString("price")
 															.replace(".0", "")
@@ -543,7 +549,7 @@ public class Deals2 extends Fragment {
 										.getJSONObject("owner");
 								list.add(new ListItem(owner.getString("email")
 										+ " gửi đề nghị: ", "Lộ trình: "
-										+ title, "Hàng hóa: " + title2,
+										+ title2, "Hàng hóa: " + title,
 										"Giá đề nghị: "
 												+ item.getString("price")
 														.replace(".0", "")

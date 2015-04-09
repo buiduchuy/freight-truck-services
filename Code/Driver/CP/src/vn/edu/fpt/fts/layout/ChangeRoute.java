@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -219,6 +220,7 @@ public class ChangeRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Cập nhật lộ trình");
 
@@ -650,7 +652,7 @@ public class ChangeRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 1) {
 				Toast.makeText(getActivity(), "Cập nhật thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -673,12 +675,17 @@ public class ChangeRoute extends Fragment {
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
+			} else if (Integer.parseInt(response) == 2) {
+				Toast.makeText(
+						getActivity(),
+						"Lộ trình đang có các đề nghị hoặc hóa đơn liên quan. Không thể cập nhật lộ trình này.",
+						Toast.LENGTH_SHORT).show();
 			} else if (Integer.parseInt(response) == 0) {
 				Toast.makeText(
 						getActivity(),
-						"Lộ trình đang có các đề nghị liên quan. Không thể cập nhật lộ trình này.",
+						"Có lỗi xảy ra. Vui lòng thử lại.",
 						Toast.LENGTH_SHORT).show();
-			}
+			} 
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
@@ -1099,7 +1106,7 @@ public class ChangeRoute extends Fragment {
 									getActivity(),
 									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
 									Toast.LENGTH_SHORT).show();
-						} else if (payload.equals("")) {
+						} else if (load.equals("")) {
 							Toast.makeText(getActivity(),
 									"Khối lượng chở không được để trống.",
 									Toast.LENGTH_SHORT).show();
@@ -1107,7 +1114,7 @@ public class ChangeRoute extends Fragment {
 							Toast.makeText(getActivity(),
 									"Khối lượng chở không vượt quá 20 tấn",
 									Toast.LENGTH_SHORT).show();
-						} else {
+						}  else {
 							WebService ws = new WebService(
 									WebService.POST_TASK, getActivity(),
 									"Đang xử lý ...");

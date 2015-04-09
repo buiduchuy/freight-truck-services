@@ -52,7 +52,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	Intent resultIntent;
 	private static int oldSize, newSize;
 	String email, id;
-	private static ArrayList<ListItem> list = new ArrayList<ListItem>();
+	public static ArrayList<ListItem> list = new ArrayList<ListItem>();
 
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Notification/getNotificationByEmail";

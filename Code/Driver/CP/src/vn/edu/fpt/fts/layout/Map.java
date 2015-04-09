@@ -37,11 +37,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -65,11 +67,12 @@ public class Map extends Fragment implements OnMapReadyCallback {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "Route/getRouteByID";
 	LatLngBounds.Builder b = new LatLngBounds.Builder();
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Xem lộ trình");
 		View v = inflater.inflate(R.layout.map, container, false);
@@ -194,17 +197,29 @@ public class Map extends Fragment implements OnMapReadyCallback {
 				}
 				String end = obj.getString("destinationAddress");
 				LatLng startP = new GetLatLng().execute(start).get();
-				map.addMarker(new MarkerOptions().position(startP));
+				map.addMarker(new MarkerOptions()
+						.position(startP)
+						.icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.driver_marker_icon_small)));
 				LatLng endP = new GetLatLng().execute(end).get();
-				map.addMarker(new MarkerOptions().position(endP));
+				map.addMarker(new MarkerOptions()
+						.position(endP)
+						.icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.driver_marker_icon_small)));
 				LatLng pp1 = null, pp2 = null;
 				if (!p1.equals("")) {
 					pp1 = new GetLatLng().execute(p1).get();
-					map.addMarker(new MarkerOptions().position(pp1));
+					map.addMarker(new MarkerOptions()
+							.position(pp1)
+							.icon(BitmapDescriptorFactory
+									.fromResource(R.drawable.driver_marker_icon_small)));
 				}
 				if (!p2.equals("")) {
 					pp2 = new GetLatLng().execute(p2).get();
-					map.addMarker(new MarkerOptions().position(pp2));
+					map.addMarker(new MarkerOptions()
+							.position(pp2)
+							.icon(BitmapDescriptorFactory
+									.fromResource(R.drawable.driver_marker_icon_small)));
 				}
 				b.include(startP);
 				b.include(endP);
@@ -376,7 +391,8 @@ public class Map extends Fragment implements OnMapReadyCallback {
 					map.setMyLocationEnabled(true);
 					map.getUiSettings().setMyLocationButtonEnabled(true);
 					LatLngBounds bounds = b.build();
-					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 20);
+					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
+							bounds, 20);
 					map.animateCamera(cu);
 				}
 			} catch (JSONException e) {

@@ -40,6 +40,8 @@ import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import vn.edu.fpt.fts.drawer.ListItemAdapter4;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -74,6 +76,7 @@ public class Deals extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setTitle("Đề nghị");
 		getActivity().getActionBar().setIcon(
 				R.drawable.ic_action_sort_by_size_white);
@@ -91,6 +94,10 @@ public class Deals extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				int id = Integer.parseInt(map.get((int) arg3));
+				NotificationManager mNotificationManager = (NotificationManager) getActivity()
+						.getSystemService(Context.NOTIFICATION_SERVICE);
+				mNotificationManager.cancel(id);
+
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				CancelOffer frag = new CancelOffer();
@@ -341,8 +348,8 @@ public class Deals extends Fragment {
 									list.add(new ListItem(
 											"Bạn đã gửi đề nghị cho "
 													+ owner.getString("email"),
-											"Lộ trình: " + title, "Hàng hóa: "
-													+ title2, "Giá đề nghị: "
+											"Lộ trình: " + title2, "Hàng hóa: "
+													+ title, "Giá đề nghị: "
 													+ item.getString("price")
 															.replace(".0", "")
 													+ " nghìn đồng", createD));
@@ -405,8 +412,8 @@ public class Deals extends Fragment {
 										.getJSONObject("owner");
 								list.add(new ListItem("Bạn đã gửi đề nghị cho "
 										+ owner.getString("email"),
-										"Lộ trình: " + title, "Hàng hóa: "
-												+ title2, "Giá đề nghị: "
+										"Lộ trình: " + title2, "Hàng hóa: "
+												+ title, "Giá đề nghị: "
 												+ item.getString("price")
 														.replace(".0", "")
 												+ " nghìn đồng", createD));

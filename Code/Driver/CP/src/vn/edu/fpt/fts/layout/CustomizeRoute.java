@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -75,6 +76,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Tùy chỉnh lộ trình");
 		View v = inflater.inflate(R.layout.map, container,
@@ -87,8 +89,6 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
 		map = mapFragment.getMap();
-
-		MapsInitializer.initialize(this.getActivity());
 
 		map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
@@ -259,9 +259,9 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		@Override
 		protected LatLng doInBackground(String... locations) {
 			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
-					+ locations[0] + ", Vietnam"
+					+ locations[0]
 					+ "&destination="
-					+ locations[0] + ", Vietnam"
+					+ locations[0]
 					+ "&sensor=false";
 
 			try {

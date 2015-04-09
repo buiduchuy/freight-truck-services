@@ -32,6 +32,7 @@ import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -63,6 +64,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
 		getActivity().getActionBar().setTitle("Lịch sử");
 		list = new ArrayList<ListItem>();

@@ -12,6 +12,6 @@
         android:id="@+id/action_decline"
         android:showAsAction="always|withText"
         android:icon="@drawable/ic_action_cancel"
-        android:title="@string/delete"/>
+        android:title="@string/decline"/>
 
 </menu>

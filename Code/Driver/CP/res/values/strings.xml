@@ -77,6 +77,7 @@
     </string-array>
 
     <array name="nav_drawer_icons">
+        <item>@drawable/ic_action_person</item>
         <item>@drawable/ic_action_place</item>
         <item>@drawable/ic_action_sort_by_size</item>
         <item>@drawable/ic_action_event</item>

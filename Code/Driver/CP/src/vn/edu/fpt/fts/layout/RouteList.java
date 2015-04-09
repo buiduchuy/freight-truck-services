@@ -40,6 +40,7 @@ import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import vn.edu.fpt.fts.drawer.ListItemAdapter2;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -76,6 +77,7 @@ public class RouteList extends Fragment {
 			Bundle savedInstanceState) {
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Lộ trình");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),

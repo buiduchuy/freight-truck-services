@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -73,6 +74,7 @@ public class HistoryDetail extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setTitle("Hóa đơn");
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		View myFragmentView = inflater.inflate(
@@ -199,14 +201,6 @@ public class HistoryDetail extends Fragment {
 					menu.findItem(R.id.action_accept).setVisible(false);
 				}
 				else if (obj.getString("orderStatusID").equals("3")) {
-					stat = "Đã xác nhận giao hàng";
-					menu.findItem(R.id.action_accept).setVisible(false);
-				}
-				else if (obj.getString("orderStatusID").equals("4")) {
-					stat = "Đã xác nhận giao hàng";
-					menu.findItem(R.id.action_accept).setVisible(false);
-				}
-				else if (obj.getString("orderStatusID").equals("5")) {
 					stat += "Mất hàng";
 					menu.findItem(R.id.action_accept).setVisible(false);
 				}
