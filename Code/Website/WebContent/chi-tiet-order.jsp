@@ -21,7 +21,7 @@
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
-								<font color="orange">Chi tiết hoá đơn</font>
+								<font color="orange">Chi tiết hoá đơn #OD<c:out value="${order.orderID}" /></font>
 							</h2>
 							<c:set var="messageSuccess"
 									value="${requestScope.messageSuccess }" />
@@ -295,7 +295,7 @@
 												onclick="return confirm('Bạn có muốn báo mất hàng không?')">
 												Báo mất hàng </a>
 										</c:if>
-										<a class="button success" href="#"> In hóa đơn </a>
+										<a class="button success" href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}"> In hóa đơn </a>
 									</div>
 								</div>
 							</div>

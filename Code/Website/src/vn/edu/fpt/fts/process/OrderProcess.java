@@ -22,6 +22,7 @@ public class OrderProcess {
 	private final static String TAG = "OrderProcess";
 
 	OrderDAO orderDao = new OrderDAO();
+	NotificationProcess notificationProcess = new NotificationProcess();
 
 	@SuppressWarnings("deprecation")
 	public void checkDelivery() {
@@ -31,16 +32,17 @@ public class OrderProcess {
 			Date today = new Date();
 
 			Logger logger = Logger.getLogger("CHECK ORDER STATUS AFTER "
-					+ Common.periodDay + " DAY(s)" + " --- TIME: " +  new Date().toString());
+					+ Common.periodDay + " DAY(s)" + " --- TIME: "
+					+ new Date().toString());
 
-			System.out.println("CHECK ORDER STATUS AFTER "
-					+ Common.periodDay + " DAY(s)" + " --- TIME: " +  new Date().toString());
+			System.out.println("CHECK ORDER STATUS AFTER " + Common.periodDay
+					+ " DAY(s)" + " --- TIME: " + new Date().toString());
 			for (int i = 0; i < l_order.size(); i++) {
 				Date deliveryDate = new Date();
 
 				int orderStatusID = l_order.get(i).getOrderStatusID();
 
-				if (orderStatusID != Common.order_pending
+				if (orderStatusID != Common.order_accept
 						&& orderStatusID != Common.order_lost) {
 					if (l_order.get(i).getDeal() != null) {
 						if (l_order.get(i).getDeal().getGoods() != null) {
@@ -49,10 +51,13 @@ public class OrderProcess {
 							if ((today.getDate() - Common.periodDay) == deliveryDate
 									.getDate()) {
 								int orderID = l_order.get(i).getOrderID();
-								orderDao.updateOrderStatusID(orderID,
+								int ret = orderDao.updateOrderStatusID(orderID,
 										Common.order_accept);
-								logger.warning("AUTO ACCEPT ORDER: "
-										+ orderID + " --- Time: " +  new Date().toString());
+								logger.warning("AUTO ACCEPT ORDER: " + orderID
+										+ " --- Time: " + new Date().toString());
+								if (ret == 1) {
+									notificationProcess.insertAcceptOrderNotification(l_order.get(i));
+								}
 							}
 						}
 					}

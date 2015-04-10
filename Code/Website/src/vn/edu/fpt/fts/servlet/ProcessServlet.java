@@ -105,13 +105,13 @@ public class ProcessServlet extends HttpServlet {
 				} else if (action.equalsIgnoreCase("next3")) {
 					request.getRequestDispatcher(goodsServlet).forward(request,
 							response);
-				} else if (action.equalsIgnoreCase("configuration")) {
+				} else if (action.equalsIgnoreCase("employeeConfiguration")) {
 					request.getRequestDispatcher("admin/configuration.jsp")
 							.forward(request, response);
-				} else if (action.equalsIgnoreCase("manageOrderEmployee")) {
+				} else if (action.equalsIgnoreCase("employeeManageOrder")) {
 					request.getRequestDispatcher(orderServlet).forward(request,
 							response);
-				} else if (action.equalsIgnoreCase("manageAccount")) {
+				} else if (action.equalsIgnoreCase("employeManageAccount")) {
 					request.getRequestDispatcher("admin/manage-account.jsp")
 							.forward(request, response);
 				} else if (action.equalsIgnoreCase("aIndex")) {

@@ -29,7 +29,7 @@ import org.codehaus.jettison.json.JSONObject;
 public class MapsUtils {
 
 	public static void main(String[] args) {
-		MapsUtils mapsUtils = new MapsUtils();
+//		MapsUtils mapsUtils = new MapsUtils();
 //		CityDAO cityDao = new CityDAO();
 //		List<City> l_city = cityDao.getAllCity();
 //

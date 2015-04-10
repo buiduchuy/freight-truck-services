@@ -106,7 +106,7 @@
 											<th><font color="orange">THỜI GIAN</font></th>
 											<th><font color="orange">KHỐI LƯỢNG</font></th>
 											<th><font color="orange">GIÁ TIỀN</font></th>
-											
+
 											<th><h4>
 													<font color="orange"></font>
 												</h4></th>
@@ -127,21 +127,26 @@
 															<td>${row.name }</td>
 														</c:if>
 													</c:forEach>
-													<td>
-													<c:set var="stringPickupTime" value="${order.deal.goods.pickupTime}" /> 
-															<fmt:parseDate value="${stringPickupTime}" var="datePickupTime"	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> 
-															<fmt:formatDate	value="${datePickupTime}" pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
-															Ngày giao: <c:out value="${pickUpTimeFormatted}" />
-													</br> </br>
-													<c:set var="stringDeliveryTime" value="${order.deal.goods.deliveryTime}" /> 
-															<fmt:parseDate value="${stringDeliveryTime}" var="dateDeliveryTime"	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> 
-															<fmt:formatDate	value="${dateDeliveryTime}" pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
-															Ngày nhận: <c:out value="${deliveryTimeFormatted}" /></td>
+													<td><c:set var="stringPickupTime"
+															value="${order.deal.goods.pickupTime}" /> <fmt:parseDate
+															value="${stringPickupTime}" var="datePickupTime"
+															pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+															value="${datePickupTime}" pattern="dd-MM-yyyy"
+															var="pickUpTimeFormatted" /> Ngày giao: <c:out
+															value="${pickUpTimeFormatted}" /> </br> </br> <c:set
+															var="stringDeliveryTime"
+															value="${order.deal.goods.deliveryTime}" /> <fmt:parseDate
+															value="${stringDeliveryTime}" var="dateDeliveryTime"
+															pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+															value="${dateDeliveryTime}" pattern="dd-MM-yyyy"
+															var="deliveryTimeFormatted" /> Ngày nhận: <c:out
+															value="${deliveryTimeFormatted}" /></td>
 													<td>${order.deal.goods.weight }</td>
 													<td><fmt:formatNumber type="number"
 															groupingUsed="false" value="${order.deal.price }" /></td>
 													<td><a class="button"
-														href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID}">Chi tiết</a></td>
+														href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID}">Chi
+															tiết</a></td>
 												</tr>
 											</c:forEach>
 										</c:if>

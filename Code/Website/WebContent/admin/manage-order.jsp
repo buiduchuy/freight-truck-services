@@ -1,6 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html lang="en">
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <head>
@@ -50,22 +51,25 @@
 									<th><font color="orange">MÃ HĐ</font></th>
 									<th><font color="orange">LOẠI HÀNG</font></th>
 									<th><font color="orange">THỜI GIAN</font></th>
-									<th><font color="orange">GIÁ TIỀN</font></th>
-									<th><font color="orange">KHỐI LƯỢNG</font></th>
+									<th><font color="orange">GIÁ TIỀN<br/>(NGHÌN VNĐ)</font></th>
+									<th><font color="orange">KHỐI LƯỢNG<br/>(KG)</font></th>
 									<th><font color="orange">TRẠNG THÁI</font></th>
-									<!--  <th><h4>
+									<th><h4>
 											<font color="orange"></font>
-										</h4></th>-->
+										</h4></th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:set var="count" value="0" />
 								<c:set var="listOrder" value="${requestScope.listOrder }" />
+								<c:set var="listOrderStatus" value="${requestScope.listOrderStatus }" />
 								<c:if test="${not empty listOrder }">
 									<c:forEach var="order" items="${listOrder}">
+									<form action="OrderServlet" method="POST" accept-charset="UTF-8">
 										<c:set var="count" value="${count+1 }" />
 										<tr>
-											<td>${count }</td>
+											<td>${count }<input type="hidden" name="txtOrderID"
+										value="${order.orderID }" /> </td>
 											<td><font color="black" style="font-weight: 700;">OD${order.orderID }</font></td>
 											<c:forEach var="row" items="${typeGoods }">
 												<c:if
@@ -73,30 +77,48 @@
 													<td>${row.name }</td>
 												</c:if>
 											</c:forEach>
-											<td>Ngày giao: ${order.deal.goods.pickupTime}</br> </br>Ngày nhận:
-												${order.deal.goods.deliveryTime}
-											</td>
-											<td>${order.deal.price }</td>
+											<td>
+											<c:set var="stringPickupTime" value="${order.deal.goods.pickupTime}" /> 
+															<fmt:parseDate value="${stringPickupTime}" var="datePickupTime"	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> 
+															<fmt:formatDate	value="${datePickupTime}" pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
+															Ngày giao: <c:out value="${pickUpTimeFormatted}" />
+											
+											 </br>
+											<c:set var="stringDeliveryTime" value="${order.deal.goods.deliveryTime}" /> 
+															<fmt:parseDate value="${stringDeliveryTime}" var="dateDeliveryTime"	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> 
+															<fmt:formatDate	value="${dateDeliveryTime}" pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
+															Ngày nhận: <c:out value="${deliveryTimeFormatted}" /></td>
+											<td><fmt:formatNumber type="number"
+															groupingUsed="false" value="${order.price}" /></td>
 											<td>${order.deal.goods.weight }</td>
-											<c:if test="${order.orderStatusID==1 }">
-												<td>Đang vận chuyển</td>
+											<td>
+											<select class="form-control">
+											<c:forEach var="rowOrderStatus" items="${listOrderStatus }">
+											<option value="${rowOrderStatus.orderStatusID }">
+											<c:if test="${rowOrderStatus.orderStatusID==1 }">
+												Đang vận chuyển
 											</c:if>
-											<c:if test="${order.orderStatusID==2 }">
-												<td>Tài xế xác nhận</td>
+											<c:if test="${rowOrderStatus.orderStatusID==2 }">
+												Đã chấp nhận
 											</c:if>
-											<c:if test="${order.orderStatusID==3 }">
-												<td>Chủ hàng xác nhận</td>
+											<c:if test="${rowOrderStatus.orderStatusID==3 }">
+												Mất hàng
 											</c:if>
-											<c:if test="${order.orderStatusID==4 }">
-												<td>Nhân viên xác nhận</td>
-											</c:if>
-											<c:if test="${order.orderStatusID==5 }">
-												<td>Mất hàng</td>
-											</c:if>
+											</option>
+											</c:forEach>
+											</select>
+											
+											</td>
+											
+											<td>
+											<button class="btn btn-sm btn-success" type="submit" value="employeeUpdateOrderStatus" name="btnAction">Cập nhật</button>
+											<button class="btn btn-sm btn-info" type="submit" value="employeeViewDetailOrder" name="btnAction">Chi tiết</button>
+											</td>
 											<!--  <td><a class="button"
 												href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID }">Xem
 													chi tiết</a></td>-->
 										</tr>
+										</form>
 									</c:forEach>
 								</c:if>
 							</tbody>

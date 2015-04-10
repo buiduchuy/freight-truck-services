@@ -6,7 +6,6 @@ package vn.edu.fpt.fts.process;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.NotificationDAO;
-import vn.edu.fpt.fts.pojo.Account;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Notification;
 import vn.edu.fpt.fts.pojo.Order;
@@ -160,9 +159,7 @@ public class NotificationProcess {
 		notification.setActive(Common.activate);
 		notification.setCreateTime(order.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Tài xế "
-				+ order.getDeal().getRoute().getDriver().getEmail()
-				+ " đã xác nhận đơn giao hàng thành công.");
+		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD" + order.getOrderID() +" chấp nhận!");
 		notification.setStatusOfType(Common.order_accept);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");

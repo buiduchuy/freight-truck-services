@@ -143,7 +143,7 @@ public class DealAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Deal> getDealByDriverID(MultivaluedMap<String, String> params) {
-		List<Deal> l_deals = dealDao.getDealByOwnerIDForHistory(Integer
+		List<Deal> l_deals = dealDao.getDealByDriverIDForHistory(Integer
 				.valueOf(params.getFirst("driverID")));
 		return l_deals;
 	}

@@ -179,7 +179,6 @@ public class DealServlet extends HttpServlet {
 					dealFa.setNotes(notes);
 					dealFa.setCreateTime(createTime);
 					dealFa.setCreateBy("owner");
-					dealFa.setRefDealID(idDealFa);
 					if (dealDao.insertDeal(dealFa) != -1) {
 						request.setAttribute("messageSuccess",
 								"Gửi đề nghị thành công");
@@ -281,8 +280,8 @@ public class DealServlet extends HttpServlet {
 				Owner owner = (Owner) session.getAttribute("owner");
 				List<Deal> listDeal = dealDao.getDealByOwnerID(owner
 						.getOwnerID());
-				
 				request.setAttribute("listDeal", listDeal);
+				
 				request.getRequestDispatcher("manage-deal.jsp").forward(
 						request, response);
 			} else if (action.equalsIgnoreCase("viewDetailDeal")) {

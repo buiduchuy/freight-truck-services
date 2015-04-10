@@ -52,15 +52,6 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
-
-			if (bean.getRefDealID() == 0) {
-				// RefDealID when input 0
-				stmt.setNull(i++, java.sql.Types.INTEGER);
-			} else {
-				// RefDealID when input # 0
-				stmt.setInt(i++, bean.getRefDealID());
-			}
-
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			stmt.executeUpdate();
@@ -122,7 +113,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -186,7 +176,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -243,7 +232,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -300,7 +288,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -368,7 +355,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -403,7 +389,7 @@ public class DealDAO {
 		return null;
 	}
 
-	public List<Deal> getDealByOwnerIDForHistory(int driverID) {
+	public List<Deal> getDealByDriverIDForHistory(int driverID) {
 		Connection con = null;
 		PreparedStatement stm = null;
 		ResultSet rs = null;
@@ -432,7 +418,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -496,7 +481,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -552,15 +536,6 @@ public class DealDAO {
 			stmt.setInt(i++, bean.getRouteID()); // RouteID
 			stmt.setInt(i++, bean.getGoodsID()); // GoodsID
 			stmt.setInt(i++, bean.getDealStatusID()); // DealStatusID
-
-			if (bean.getRefDealID() == 0) {
-				// RefDealID when input 0
-				stmt.setNull(i++, java.sql.Types.INTEGER);
-			} else {
-				// RefDealID when input # 0
-				stmt.setInt(i++, bean.getRefDealID());
-			}
-
 			stmt.setInt(i++, bean.getActive()); // Active
 
 			ret = stmt.executeUpdate();
@@ -727,7 +702,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 
@@ -792,7 +766,6 @@ public class DealDAO {
 				deal.setCreateBy(rs.getString("CreateBy"));
 				deal.setRouteID(rs.getInt("RouteID"));
 				deal.setGoodsID(rs.getInt("GoodsID"));
-				deal.setRefDealID(rs.getInt("RefDealID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
 

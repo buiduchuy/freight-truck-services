@@ -26,10 +26,10 @@ public final class Common {
 	// public static final String usernamedb = "duchuy";
 	// public static final String passworddb = "huy2108.";
 
-	// public static final String CONNECTION =
-	// "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
-	// public static final String usernamedb = "duchuy";
-	// public static final String passworddb = "huy2108.";
+//	 public static final String CONNECTION =
+//	 "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
+//	 public static final String usernamedb = "duchuy";
+//	 public static final String passworddb = "huy2108.";
 
 	// Role of Account
 	public static final int role_owner = 1;
@@ -90,14 +90,13 @@ public final class Common {
 	}
 
 	// Weight kg, distance km
-
-	public static double calculateGoodsPrice(int weight, double distance) {
+	public static int calculateGoodsPrice(int weight, double distance) {
 		int price = 22;
 		if (distance <= 300) {
 			if (weight <= 500) {
 				price += (weight - 2) * 3.5;
 			}
-			if (weight <= 1000) {
+			if (weight <= 1000 && weight > 500) {
 				price += 448 * 3.5 + (weight - 500) * 3.3;
 			}
 			if (weight > 1000) {
@@ -109,7 +108,7 @@ public final class Common {
 			if (weight <= 500) {
 				price += (weight - 2) * 4.2;
 			}
-			if (weight <= 1000) {
+			if (weight <= 1000 && weight > 500) {
 				price += 448 * 4.2 + (weight - 500) * 3.8;
 			}
 			if (weight > 1000) {

@@ -121,11 +121,11 @@
 		<ul class="nav navbar-nav side-nav">
 			<li class="active"><a href="ProcessServlet?btnAction=aIndex"><i
 					class="fa fa-fw fa-dashboard"></i> Tổng quan</a></li>
-			<li><a href="ProcessServlet?btnAction=manageAccount"><i
+			<li><a href="ProcessServlet?btnAction=employeManageAccount"><i
 					class="fa fa-fw fa-users"></i> Quản lý tài khoản</a></li>
-			<li><a href="ProcessServlet?btnAction=manageOrderEmployee"><i
+			<li><a href="ProcessServlet?btnAction=employeeManageOrder"><i
 					class="fa fa-fw fa-exchange"></i> Quản lý giao dịch</a></li>
-			<li><a href="ProcessServlet?btnAction=configuration"><i
+			<li><a href="ProcessServlet?btnAction=employeeConfiguration"><i
 					class="fa fa-fw fa-gears"></i> Cấu hình thông số</a></li>
 		</ul>
 	</div>

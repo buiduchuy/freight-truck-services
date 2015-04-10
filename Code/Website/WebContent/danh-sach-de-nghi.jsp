@@ -84,7 +84,7 @@
 															</c:if>
 															<td><a class="button"
 																href="DealServlet?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
-																	class="icon-remove"></i>Xem chi tiết</a></td>
+																	class="icon-remove"></i>Chi tiết</a></td>
 														</tr>
 
 													</c:if>

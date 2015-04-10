@@ -1,7 +1,8 @@
 var _lastedID = 0;
 setInterval(function() {
 	getNewestNotify();
-}, 30000);
+	getListNotification();
+}, 20000);
 
 function getLastID() {
 	var _email = document.getElementById("email").value;
@@ -47,6 +48,61 @@ function deactiveNotification(_notificationID) {
 		cache : false,
 		success : function(result) {
 
+		}
+//		error : function(xhr, status, error) {
+//			alert(status);
+//		}
+	});
+}
+
+function getListNotification() {
+	var _email = document.getElementById("email").value;
+	$.ajax({
+		url : "/FTS/api/Notification/getNotificationByEmail",
+		type : "POST",
+		crossDomain : true,
+		data : {
+			email : _email
+		},
+		dataType : "json",
+		cache : false,
+		success : function(result) {
+			if (result != null) {
+
+				var json = JSON.stringify(result);
+				json = JSON.parse(json);
+				var size = json.notification.length;
+				var notificationList = new Array();
+				$
+				.each(
+						json.notification,
+						function(i, e) {
+							// var el = $('<div
+							// class="notify-item"><a
+							// href="ProcessServlet?action'+e.url+'"'+e.message+'</a></div>');
+							var el;
+							if (e.type == "deal") {
+								el = $('<li><a onclick="deactiveNotification('
+										+ e.notificationID
+										+ ')" style="color:#3C763D" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+										+ e.idOfType
+										+ '">'
+										+ e.message
+										+ '</a></li>');
+							}
+							if (e.type == "order") {
+								el = $('<li><a onclick="deactiveNotification('
+										+ e.notificationID
+										+ ')" style="color:#31708F" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+										+ e.idOfType
+										+ '">'
+										+ e.message
+										+ '</a></li>');
+							}
+							notificationList.push(el);
+						});
+				$('#notificationList').html(notificationList);
+			}
 		}
 //		error : function(xhr, status, error) {
 //			alert(status);

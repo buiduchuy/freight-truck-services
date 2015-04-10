@@ -81,8 +81,8 @@
 										<th><font color="orange">#</font></th>
 										<th><font color="orange">LOẠI HÀNG</font></th>
 										<th><font color="orange">THỜI GIAN</font></th>
-										<th><font color="orange">KHỐI LƯỢNG (KG)</font></th>
-										<th><font color="orange">GIÁ (NGHÌN VNĐ)</font></th>
+										<th><font color="orange">KHỐI LƯỢNG</font></th>
+										<th><font color="orange">GIÁ</font></th>
 										<th><h4>
 												<font color="orange"></font>
 											</h4></th>
@@ -104,8 +104,20 @@
 														${row.name}
 													</c:if>
 														</c:forEach></td>
-													<td>Ngày giao: ${goods.pickupTime}<br /> <br />Ngày
-														nhận: ${goods.deliveryTime}
+													<td><c:set var="stringPickupTime"
+																	value="${goods.pickupTime}" /> <fmt:parseDate
+																	value="${stringPickupTime}" var="datePickupTime"
+																	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+																	value="${datePickupTime}" pattern="dd-MM-yyyy"
+																	var="pickUpTimeFormatted" /> Ngày giao: <c:out
+																	value="${pickUpTimeFormatted}" /> </br> </br> <c:set
+																	var="stringDeliveryTime"
+																	value="${goods.deliveryTime}" /> <fmt:parseDate
+																	value="${stringDeliveryTime}" var="dateDeliveryTime"
+																	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+																	value="${dateDeliveryTime}" pattern="dd-MM-yyyy"
+																	var="deliveryTimeFormatted" /> Ngày nhận: <c:out
+																	value="${deliveryTimeFormatted}" />
 													</td>
 													<td>${goods.weight }<input type="hidden"
 														name="goodsID" value="${goods.goodsID}" />
@@ -113,8 +125,7 @@
 													<td><fmt:formatNumber type="number"
 															groupingUsed="false" value="${goods.price }" /></td>
 													<td><a class="button"
-														href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${goods.goodsID}">Xem
-															chi tiết</a> <!--  <button type="submit" class="button" name="btnAction"
+														href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${goods.goodsID}">Chi tiết</a> <!--  <button type="submit" class="button" name="btnAction"
 														value="viewDetailGoods">Xem chi tiết</button>
 													<button type="submit" class="success" name="btnAction"
 														value="getSuggestionRoute">Nhận gợi ý tuyến đường</button>-->

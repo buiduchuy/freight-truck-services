@@ -3,7 +3,6 @@ package vn.edu.fpt.fts.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -87,47 +86,75 @@ public class GoodsServlet extends HttpServlet {
 						.getParameter("txtdeliveryAddress");
 				String deliveryTime = request.getParameter("txtdeliveryTime");
 
-				Goods routeInfoOfGoods = new Goods(pickupTime, pickupAddress,
-						deliveryTime, deliveryAddress);
-				session.setAttribute("router", routeInfoOfGoods);
-				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
-						response);
+				double distance = mapUtils.parseJsonToGetDistance(mapUtils
+						.getJSONFromUrl(mapUtils.makeDirectionURL(
+								pickupAddress, deliveryAddress)));
+				if (distance >= 10000) {
+					Goods routeInfoOfGoods = new Goods(pickupTime,
+							pickupAddress, deliveryTime, deliveryAddress);
+					session.setAttribute("router", routeInfoOfGoods);
+
+					request.getRequestDispatcher("tao-hang-2.jsp").forward(
+							request, response);
+				} else {
+					request.setAttribute("messageError",
+							"Không thể tạo hàng với khoảng cách dưới 10 km.");
+					request.getRequestDispatcher("tao-hang-1.jsp").forward(
+							request, response);
+				}
 			}
 			if ("next2".equals(action)) {
 				int goodsCategoryID = Integer.parseInt(request
 						.getParameter("ddlgoodsCategoryID"));
-				int weight = Integer
-						.parseInt(request.getParameter("txtWeight"));
-				String notes = "";
-				try {
-					notes = notes + request.getParameter("txtNotes");
-				} catch (Exception ex) {
+				String weightString = request.getParameter("txtWeight");
+				String note = request.getParameter("txtNotes");
+				if (!weightString.isEmpty()) {
+					int weight = Integer.valueOf(weightString);
+					if (weight > 500) {
+						String notes = "";
+						if (!note.isEmpty()) {
+							notes = notes + request.getParameter("txtNotes");
+						}
 
+						Goods g = new Goods(weight, notes, goodsCategoryID);
+						session.setAttribute("good", g);
+
+						// Calculate the price suggest
+						Goods goods = (Goods) session.getAttribute("router");
+
+						double distance = mapUtils
+								.parseJsonToGetDistance(mapUtils.getJSONFromUrl(mapUtils
+										.makeDirectionURL(
+												goods.getPickupAddress(),
+												goods.getDeliveryAddress())));
+						System.out.println("Tải trọng: " + weight
+								+ " Khoảng cách: " + distance);
+
+						session.setAttribute("priceSuggest", Common
+								.calculateGoodsPrice(weight, (distance / 1000)));
+
+						request.getRequestDispatcher("tao-hang-3.jsp").forward(
+								request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Không thể tạo hàng với trọng lượng dưới 500kg.");
+						request.getRequestDispatcher("tao-hang-2.jsp").forward(
+								request, response);
+					}
+				} else {
+					request.setAttribute("messageError",
+							"Xin vui lòng nhập trọng lượng của hàng.");
+					request.getRequestDispatcher("tao-hang-2.jsp").forward(
+							request, response);
 				}
-				Goods g = new Goods(weight, notes, goodsCategoryID);
-				session.setAttribute("good", g);
 
-				// Calculate the price suggest
-				Goods goods = (Goods) session.getAttribute("router");
-
-				double distance = mapUtils.parseJsonToGetDistance(mapUtils
-						.getJSONFromUrl(mapUtils.makeDirectionURL(
-								goods.getPickupAddress(),
-								goods.getDeliveryAddress())));
-
-				session.setAttribute("priceSuggest",
-						Common.calculateGoodsPrice(weight, distance / 1000));
-
-				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
-						response);
 			}
 			if ("next3".equals(action)) {
-				double priceSuggest = (Double) session
+				int priceSuggest = (Integer) session
 						.getAttribute("priceSuggest");
-				double price = 0;
+				int price = 0;
 				try {
-					price = Double
-							.parseDouble(request.getParameter("txtPrice"));
+					price = Integer.valueOf(request.getParameter("txtPrice"));
 
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -206,9 +233,10 @@ public class GoodsServlet extends HttpServlet {
 						.getJSONFromUrl(mapUtils.makeDirectionURL(
 								goods.getPickupAddress(),
 								goods.getDeliveryAddress())));
-
+				System.out.println("Tải trọng: " + weight + " Khoảng cách: "
+						+ distance);
 				session.setAttribute("priceSuggest",
-						Common.calculateGoodsPrice(weight, distance / 1000));
+						Common.calculateGoodsPrice(weight, (distance / 1000)));
 
 				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
 						response);
@@ -223,7 +251,7 @@ public class GoodsServlet extends HttpServlet {
 							.parseDouble(request.getParameter("txtPrice"));
 
 				} catch (Exception ex) {
-
+					ex.printStackTrace();
 				}
 				if (price == 0) {
 					price = priceSuggest;
@@ -258,7 +286,7 @@ public class GoodsServlet extends HttpServlet {
 							.getGoodsCategoryID();
 					String notes = ((Goods) session.getAttribute("good"))
 							.getNotes();
-					Double price = (Double) session.getAttribute("price");
+					int price = (Integer) session.getAttribute("price");
 
 					LatLng latLngPickupAddress = mapUtils.parseJson(mapUtils
 							.getJSONFromUrl(mapUtils
@@ -416,7 +444,6 @@ public class GoodsServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("manageGoods")) {
 				Owner owner = (Owner) session.getAttribute("owner");
 				if (owner != null) {
-					DecimalFormat df = new DecimalFormat("###.#");
 					List<Goods> listGoods = goodsDao
 							.getListGoodsByOwnerID(owner.getOwnerID());
 					session.setAttribute("listGoods", listGoods);

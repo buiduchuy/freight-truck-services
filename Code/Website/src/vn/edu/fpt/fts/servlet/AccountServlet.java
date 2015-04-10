@@ -71,7 +71,7 @@ public class AccountServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-
+			
 			if (action.equalsIgnoreCase("login")) {
 				String email = request.getParameter("txtEmail");
 				String password = request.getParameter("txtPassword");
