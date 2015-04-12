@@ -28,7 +28,7 @@ public class ConfigurationServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			String action = request.getParameter("btnAction");
+//			String action = request.getParameter("btnAction");
 			
 		}
 	}

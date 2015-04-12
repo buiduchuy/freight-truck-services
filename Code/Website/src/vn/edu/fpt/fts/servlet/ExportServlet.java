@@ -1,10 +1,7 @@
 package vn.edu.fpt.fts.servlet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 
@@ -17,7 +14,6 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
@@ -39,12 +35,12 @@ public class ExportServlet extends HttpServlet {
 	private static final long serialVersionUID = 1121474671166226018L;
 	OrderDAO orderDao = new OrderDAO();
 
-	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
-			Font.BOLD);
-	private static Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-			Font.NORMAL);
-	private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
-			Font.BOLD);
+//	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
+//			Font.BOLD);
+//	private static Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
+//			Font.NORMAL);
+//	private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
+//			Font.BOLD);
 	private static Font smallBold;
 	private static Font font;
 
@@ -74,7 +70,7 @@ public class ExportServlet extends HttpServlet {
 						// orderIDStr +
 						// ".pdf";
 
-						String pdfFileName = "Invoice.pdf";
+						// String pdfFileName = "Invoice.pdf";
 						String FILE = path + "resources/Invoice.pdf";
 						int orderID = Integer.valueOf(orderIDStr);
 						Order order = orderDao.getOrderByID(orderID);
