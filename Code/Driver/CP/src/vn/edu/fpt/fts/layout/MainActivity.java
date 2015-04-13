@@ -113,7 +113,7 @@ public class MainActivity extends FragmentActivity {
 		array.add(new NavDrawerItem("Xin chào, " + getIntent().getStringExtra("email"),
 				mNavigationImage.getResourceId(0, -1)));
 		
-		for (int i = 1; i < mNavigationDrawerItemTitles.length; i++) {
+		for (int i = 0; i < mNavigationDrawerItemTitles.length; i++) {
 			array.add(new NavDrawerItem(mNavigationDrawerItemTitles[i],
 					mNavigationImage.getResourceId(i, -1)));
 		}
