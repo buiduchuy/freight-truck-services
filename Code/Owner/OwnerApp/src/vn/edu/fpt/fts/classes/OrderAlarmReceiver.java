@@ -147,7 +147,7 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 							String[] tmp = deliveryTime.split(" ");
 							String status = jsonObject2
 									.getString("orderStatusID");
-							if (Common.expireDate(tmp[0]) && (status.equals("1") || status.equals("2"))) {
+							if (Common.equalDate(tmp[0]) && status.equals("2")) {
 								orderList.add(new Order(jsonObject2
 										.getString("orderID"), jsonObject5
 										.getString("name"), jsonObject4
@@ -166,7 +166,7 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 								.getString("deliveryTime");
 						String[] tmp = deliveryTime.split(" ");
 						String status = jsonObject.getString("orderStatusID");
-						if (Common.expireDate(tmp[0]) && (status.equals("1") || status.equals("2"))) {
+						if (Common.expireDate(tmp[0]) && status.equals("2")) {
 							orderList.add(new Order(jsonObject
 									.getString("orderID"), jsonObject5
 									.getString("name"), jsonObject4
@@ -253,7 +253,7 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 					+ " nghìn đồng";
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					con).setSmallIcon(R.drawable.ic_action_noti)
-					.setContentTitle("Xác nhận giao hàng")
+					.setContentTitle("Xác nhận đã nhận hàng")
 					.setContentText(contentText)
 					.setAutoCancel(true)
 					.setTicker(contentText);

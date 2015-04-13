@@ -1274,7 +1274,7 @@ public class DealDetailActivity extends Activity {
 						decline.setVisible(false);
 						cancel.setVisible(true);
 
-					} else if(dealStatus.equals("1") && createBy.equals("owner"))
+					} else if(dealStatus.equals("1") && createBy.equals("driver"))
 					{
 						btn_counter.setVisibility(View.VISIBLE);
 						etPrice.setVisibility(View.VISIBLE);

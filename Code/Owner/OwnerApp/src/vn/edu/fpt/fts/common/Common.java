@@ -1,20 +1,53 @@
 package vn.edu.fpt.fts.common;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
+import vn.edu.fpt.fts.fragment.R;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public final class Common {
-//	public static final String IP_URL = "http://192.168.0.102:8080/FTS/api/";
+//	 public static final String IP_URL = "http://192.168.1.200:8080/FTS/api/";
 	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
 	public static final String Service_Goods_Create = "Goods/Create";
 	public static final String Service_Login = "Account/OwnerLogin";
@@ -41,7 +74,7 @@ public final class Common {
 	public static final String Service_Order_getOrderByOwnerID = "Order/getOrderByOwnerID";
 	public static final String Service_Order_ownerNoticeLostGoods = "Order/ownerNoticeLostGoods";
 	public static final String Service_Account_CreateOwnerAccount = "Account/CreateOwnerAccount";
-	
+
 	public static boolean expireDate(String date) {
 		Date todayDate = null;
 		Date inputDate = null;
@@ -59,10 +92,38 @@ public final class Common {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		}		
-		
+		}
+
 	}
 	
+	public static boolean equalDate(String date) {
+		Date todayDate = null;
+		Date inputDate = null;
+		Date thirdDate = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String today = sdf.format(new Date());		
+		Calendar cal = Calendar.getInstance();
+//		cal.add(Calendar.DATE, -1);		
+//		String today = sdf.format(cal.getTime());
+		try {
+			todayDate = sdf.parse(today);
+			inputDate = sdf.parse(date);
+			cal.setTime(inputDate);
+			cal.add(Calendar.DATE, 3);
+			thirdDate = cal.getTime();
+			if (todayDate.compareTo(inputDate) >= 0 && todayDate.compareTo(thirdDate) < 0) {
+				return true;
+			} else {
+				return false;
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+
 	public static void updateLabel(EditText et, Calendar calendar) {
 		String format = "dd/MM/yyyy";
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
@@ -74,7 +135,7 @@ public final class Common {
 		SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
 		return sdf.format(calendar.getTime());
 	}
-	
+
 	public static String formatNumber(int number) {
 		DecimalFormat formatter = new DecimalFormat();
 		DecimalFormatSymbols symbol = new DecimalFormatSymbols();
@@ -82,39 +143,69 @@ public final class Common {
 		formatter.setDecimalFormatSymbols(symbol);
 		return formatter.format(number);
 	}
-	
+
 	public static String formatDateFromString(String input) {
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		try {
 			date = sdf.parse(input);
-		} catch (ParseException e) {			
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		sdf = new SimpleDateFormat("dd/MM/yyyy");
 		String result = sdf.format(date);
 		return result;
 	}
-	
+
 	public static String formatLocation(String input) {
-		String keywords[] = {"Việt Nam", "vietnam", "Viet Nam", "Province", "City", "Vietnam", "District"};				
-		for(int i = 0; i < keywords.length ; i++) {
+		String keywords[] = { "Việt Nam", "vietnam", "Viet Nam", "Province",
+				"City", "Vietnam", "District" };
+		for (int i = 0; i < keywords.length; i++) {
 			if (input.contains(keywords[i])) {
 				input = input.replaceAll(", " + keywords[i], "");
 				input = input.replaceAll(keywords[i], "");
-				
+
 			}
-		}		
+		}
 		return input;
 	}
-	
+
 	public static void logout(Context context) {
 		SharedPreferences preferences = context.getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.clear();
 		editor.commit();
-		NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager manager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
 		manager.cancelAll();
+	}
+
+	public static int calculateGoodsPrice(int weight, double distance) {
+		int price = 22;
+		if (distance <= 300) {
+			if (weight <= 500) {
+				price += (weight - 2) * 3.5;
+			}
+			if (weight <= 1000) {
+				price += 448 * 3.5 + (weight - 500) * 3.3;
+			}
+			if (weight > 1000) {
+				price += 448 * 3.5 + 500 * 3.3 + (weight - 1000) * 3;
+			}
+
+		} else {
+
+			if (weight <= 500) {
+				price += (weight - 2) * 4.2;
+			}
+			if (weight <= 1000) {
+				price += 448 * 4.2 + (weight - 500) * 3.8;
+			}
+			if (weight > 1000) {
+				price += 448 * 4.2 + 500 * 3.8 + (weight - 1000) * 3.5;
+			}
+		}
+		return price;
 	}
 }

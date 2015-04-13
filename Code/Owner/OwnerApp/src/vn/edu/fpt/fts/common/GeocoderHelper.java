@@ -49,7 +49,7 @@ public class GeocoderHelper {
 		urlString.append(",");
 		urlString.append(Double.toString(des.longitude));
 		urlString
-				.append("&mode=driving&region=vi&key=AIzaSyBdrGC2J34yLe3dBHxVuFb0kMh9jkNpzwE");
+				.append("&mode=driving&region=vi");
 		return urlString.toString();
 	}
 

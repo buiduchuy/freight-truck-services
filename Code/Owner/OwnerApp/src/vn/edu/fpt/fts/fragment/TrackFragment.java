@@ -219,11 +219,11 @@ public class TrackFragment extends Fragment {
 							String count = jsonObject2
 									.getString("orderStatusID");
 							String status = "";
-							if (count.equals("1") || count.equals("2")) {
+							if (count.equals("1")) {
 								status = "Trạng thái: Hàng chưa giao";
-							} else if (count.equals("3") || count.equals("4")) {
+							} else if (count.equals("2")) {
 								status = "Trạng thái: Hàng đã nhận";
-							} else if (count.equals("5")) {
+							} else if (count.equals("3")) {
 								status = "Trạng thái: Hàng bị mất";
 							}
 							OrderModel orderModel = new OrderModel(
@@ -262,11 +262,11 @@ public class TrackFragment extends Fragment {
 								+ " - " + Common.formatDateFromString(tmp2[0]);
 						String count = jsonObject2.getString("orderStatusID");
 						String status = "";
-						if (count.equals("1") || count.equals("2")) {
+						if (count.equals("1")) {
 							status = "Trạng thái: Hàng chưa giao";
-						} else if (count.equals("3") || count.equals("4")) {
+						} else if (count.equals("2")) {
 							status = "Trạng thái: Hàng đã nhận";
-						} else if (count.equals("5")) {
+						} else if (count.equals("3")) {
 							status = "Trạng thái: Hàng bị mất";
 						}
 						OrderModel orderModel = new OrderModel(categoryName,

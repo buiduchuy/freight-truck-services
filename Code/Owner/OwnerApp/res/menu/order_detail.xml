@@ -8,12 +8,6 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_call"/>
     <item
-        android:id="@+id/confirm_order"
-        android:icon="@drawable/ic_action_good"
-        android:orderInCategory="100"
-        android:showAsAction="ifRoom"
-        android:title="@string/action_confirm_order"/>
-    <item
         android:id="@+id/lost_order"
         android:icon="@drawable/ic_action_bad"
         android:orderInCategory="100"

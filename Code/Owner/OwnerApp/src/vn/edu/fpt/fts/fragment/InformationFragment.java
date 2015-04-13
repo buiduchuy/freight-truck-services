@@ -37,6 +37,7 @@ import vn.edu.fpt.fts.activity.SuggestActivity;
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.GeocoderHelper;
+import vn.edu.fpt.fts.common.JSONParser;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -372,18 +373,27 @@ public class InformationFragment extends Fragment {
 			}
 		});
 
-		// lay longitude va latitude
-		// Bundle bundle = getIntent().getBundleExtra("info");
-		// if (bundle != null) {
-		// String flag = bundle.getString("flag");
-		// if (flag.equals("pickup")) {
-		// pickupLat = bundle.getDouble("lat");
-		// pickupLng = bundle.getDouble("lng");
-		// } else if (flag.equals("delivery")) {
-		// deliverLat = bundle.getDouble("lat");
-		// deliverLng = bundle.getDouble("lng");
-		// }
-		// }
+		etWeight.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				calculate();
+			}
+		});
 
 		// set owner id
 
@@ -574,33 +584,22 @@ public class InformationFragment extends Fragment {
 
 	}
 
-	// public void handleResponse(String response) {
-	// Ham xu li du lieu khi web server response
-	// EditText edFirstName = (EditText) findViewById(R.id.first_name);
-	// EditText edLastName = (EditText) findViewById(R.id.last_name);
-	// EditText edEmail = (EditText) findViewById(R.id.email);
-	//
-	// edFirstName.setText("");
-	// edLastName.setText("");
-	// edEmail.setText("");
-	//
-	// try {
-	//
-	// JSONObject jso = new JSONObject(response);
-	//
-	// String firstName = jso.getString("firstName");
-	// String lastName = jso.getString("lastName");
-	// String email = jso.getString("email");
-	//
-	// edFirstName.setText(firstName);
-	// edLastName.setText(lastName);
-	// edEmail.setText(email);
-	//
-	// } catch (Exception e) {
-	// Log.e(TAG, e.getLocalizedMessage(), e);
-	// }
-	//
-	// }
+	private void calculate() {
+		if (!(etWeight.getText().toString().trim().equals(""))) {
+			if (pickupLat != 0 && pickupLng != 0 && deliverLat != 0
+					&& deliverLng != 0) {
+				String url = new GeocoderHelper().makeURL(new LatLng(pickupLat,
+						pickupLng), new LatLng(deliverLat, deliverLng));
+				try {
+					new CalculateMoney().execute(url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}
+	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -1257,7 +1256,8 @@ public class InformationFragment extends Fragment {
 				if (latLng != null) {
 					pickupLat = latLng.latitude;
 					pickupLng = latLng.longitude;
-				}				
+				}			
+				calculate();
 			} catch (JSONException ex) {
 				ex.printStackTrace();
 			}
@@ -1413,7 +1413,8 @@ public class InformationFragment extends Fragment {
 				if (latLng != null) {
 					deliverLat = latLng.latitude;
 					deliverLng = latLng.longitude;	
-				}							
+				}			
+				calculate();
 			} catch (JSONException ex) {
 				ex.printStackTrace();
 			}
@@ -1653,5 +1654,47 @@ public class InformationFragment extends Fragment {
 			return total.toString();
 		}
 
+	}
+	
+	private class CalculateMoney extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			JSONParser jParser = new JSONParser();
+			String json = jParser.getJSONFromUrl(params[0]);
+			return json;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			JSONObject obj;
+			try {
+				obj = new JSONObject(result);
+				if (obj.getString("status").equals("ZERO_RESULTS")) {
+					// Toast.makeText(CreateGoodsActivity.this,
+					// "Không tìm thấy lộ trình", Toast.LENGTH_SHORT)
+					// .show();
+				} else {
+					JSONArray array = obj.getJSONArray("routes");
+					JSONArray array2 = ((JSONObject) array.getJSONObject(0))
+							.getJSONArray("legs");
+
+					String[] tmp = array2.getJSONObject(0)
+							.getJSONObject("distance").getString("text")
+							.replace(",", "").split(" ");
+					double distance = Double.parseDouble(tmp[0]);
+					int weight = Integer
+							.parseInt(etWeight.getText().toString());
+					int price = Common.calculateGoodsPrice(weight, distance);
+					etPrice.setText(price + "");
+				}
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 	}
 }

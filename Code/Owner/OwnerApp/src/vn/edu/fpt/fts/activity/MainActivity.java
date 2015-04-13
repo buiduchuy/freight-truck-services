@@ -13,6 +13,7 @@ import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -38,9 +39,14 @@ public class MainActivity extends FragmentActivity implements TabListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		String email = preferences.getString("email", "");
+        
         
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
+        actionBar.setTitle("FTS Owner - " + email);
 //        colorDrawable.setColor(R.color.app_color);
 //        actionBar.setBackgroundDrawable(getResources().getDrawable(R.color.app_color));
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());

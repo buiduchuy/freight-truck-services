@@ -43,9 +43,9 @@ import android.widget.Toast;
 
 public class OrderDetailActivity extends Activity {
 	private TextView tvStartAdd, tvDestAdd, tvStartTime, tvFinishTime, tvCate,
-			tvPrice, tvNote, tvPhone, tvStatus, tvWeight;
+			tvPrice, tvNote, tvPhone, tvStatus, tvWeight, tvOrderid;
 	private String orderID;
-	private MenuItem confirm, lost;
+	private MenuItem lost;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class OrderDetailActivity extends Activity {
 		tvPhone = (TextView) findViewById(R.id.textview_phone);
 		tvStatus = (TextView) findViewById(R.id.textview_status);
 		tvWeight = (TextView) findViewById(R.id.textview_weight);
+		tvOrderid = (TextView) findViewById(R.id.tvOrderid);
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				OrderDetailActivity.this, "Đang xử lý...");
@@ -107,17 +108,17 @@ public class OrderDetailActivity extends Activity {
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
 		}
-		if (id == R.id.confirm_order) {
-			WebServiceTask2 wst2 = new WebServiceTask2(
-					WebServiceTask2.POST_TASK, OrderDetailActivity.this,
-					"Đang xử lý...");
-			wst2.addNameValuePair("orderID", orderID);
-			// wst2.addNameValuePair("ownerConfirmDelivery", "true");
-			String url = Common.IP_URL + Common.Service_Order_ConfirmDelivery;
-			// wst2.execute(new String[] { url });
-			wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					new String[] { url });
-		}
+		// if (id == R.id.confirm_order) {
+		// WebServiceTask2 wst2 = new WebServiceTask2(
+		// WebServiceTask2.POST_TASK, OrderDetailActivity.this,
+		// "Đang xử lý...");
+		// wst2.addNameValuePair("orderID", orderID);
+		// // wst2.addNameValuePair("ownerConfirmDelivery", "true");
+		// String url = Common.IP_URL + Common.Service_Order_ConfirmDelivery;
+		// // wst2.execute(new String[] { url });
+		// wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+		// new String[] { url });
+		// }
 		if (id == R.id.lost_order) {
 			WebServiceTask3 wst3 = new WebServiceTask3(
 					WebServiceTask3.POST_TASK, OrderDetailActivity.this,
@@ -137,7 +138,6 @@ public class OrderDetailActivity extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		super.onPrepareOptionsMenu(menu);
-		confirm = menu.findItem(R.id.confirm_order);
 		lost = menu.findItem(R.id.lost_order);
 		return true;
 	};
@@ -256,21 +256,23 @@ public class OrderDetailActivity extends Activity {
 				}
 				tvNote.setText(sNote);
 				tvPhone.setText(jsonObject6.getString("phone"));
+				tvOrderid.setText("#OD" + orderID);
 				String count = jsonObject.getString("orderStatusID");
-				if (count.equals("3") || count.equals("4")) {
+				if (count.equals("2")) {
 					tvStatus.setText("Đã nhận hàng");
-					confirm.setVisible(false);
+
 					lost.setVisible(false);
-				} else if (count.equals("1") || count.equals("2")) {
+				} else if (count.equals("1")) {
 					tvStatus.setText("Hàng chưa giao");
 
 					lost.setVisible(false);
-				} else if (count.equals("5")) {
+				} else if (count.equals("3")) {
 					tvStatus.setText("Hàng bị mất");
 					lost.setVisible(false);
+
 				}
-				if (Common.expireDate(tmp1[0])
-						&& (count.equals("1") || count.equals("2"))) {
+				if (Common.equalDate(tmp1[0])
+						&& count.equals("2")) {
 					lost.setVisible(true);
 				} else {
 					lost.setVisible(false);

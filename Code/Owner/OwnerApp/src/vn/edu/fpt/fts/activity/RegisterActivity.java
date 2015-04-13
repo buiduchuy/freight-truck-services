@@ -283,17 +283,14 @@ public class RegisterActivity extends Activity {
 				Toast.makeText(RegisterActivity.this,
 						"Tài khoản mới đã không được tạo", Toast.LENGTH_LONG)
 						.show();
+				
+			} else {
 				Toast.makeText(RegisterActivity.this,
 						"Tài khoản mới đã tạo thành công", Toast.LENGTH_LONG)
 						.show();
 				Intent intent = new Intent(RegisterActivity.this,
 						LoginActivity.class);
 				startActivity(intent);
-			} else {
-				Toast.makeText(RegisterActivity.this,
-						"Tài khoản mới đã tạo thành công", Toast.LENGTH_LONG)
-						.show();
-
 			}
 			pDlg.dismiss();
 

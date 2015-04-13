@@ -23,6 +23,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:minHeight="40dp"
+                android:text="Mã đơn hàng:"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOrderid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minHeight="40dp" />
+        </TableRow>
+        
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:minHeight="40dp"
                 android:text="Địa chỉ nhận hàng:"
                 android:textStyle="bold" />
 

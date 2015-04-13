@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -30,12 +31,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import vn.edu.fpt.fts.adapter.PlacesAutoCompleteAdapter;
 import vn.edu.fpt.fts.classes.ConfirmCreateDialog;
 import vn.edu.fpt.fts.classes.Goods;
+import vn.edu.fpt.fts.classes.GoodsCategory;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.common.GeocoderHelper;
+import vn.edu.fpt.fts.common.JSONParser;
 import vn.edu.fpt.fts.fragment.CreateGoodsMapFragment;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
@@ -46,6 +50,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -88,6 +93,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
 			deliverLng = 0.0;
 	private String ownerid, errorMsg = "", selected;
+	private GoodsCategory category = new GoodsCategory();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -285,68 +291,11 @@ public class CreateGoodsActivity extends FragmentActivity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 			}
 		});
-//		actPickupAddr
-//				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//
-//					@Override
-//					public boolean onEditorAction(TextView v, int actionId,
-//							KeyEvent event) {
-//						// TODO Auto-generated method stub
-//						if (actionId == EditorInfo.IME_ACTION_DONE
-//								|| actionId == KeyEvent.KEYCODE_BACK) {
-//							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//							imm.hideSoftInputFromWindow(
-//									actPickupAddr.getWindowToken(), 0);
-//							if (pickupLat == 0 || pickupLng == 0) {
-//								WebServiceTask3 wst3 = new WebServiceTask3(
-//										WebServiceTask3.POST_TASK,
-//										CreateGoodsActivity.this,
-//										"Đang xử lý...");
-//								String url = "http://maps.google.com/maps/api/geocode/json?address="
-//										+ actPickupAddr.getText().toString()
-//												.replaceAll(" ", "%20")
-//										+ "&sensor=false";
-//								try {
-//									wst3.executeOnExecutor(
-//											AsyncTask.THREAD_POOL_EXECUTOR, url)
-//											.get();
-//								} catch (InterruptedException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								} catch (ExecutionException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								}
-//							}
-//						}
-//						if (!(actPickupAddr.getText().toString().trim()
-//								.length() == 0)) {
-//							WebServiceTask3 wst3 = new WebServiceTask3(
-//									WebServiceTask3.POST_TASK,
-//									CreateGoodsActivity.this, "Đang xử lý...");
-//							String url = "http://maps.google.com/maps/api/geocode/json?address="
-//									+ actPickupAddr.getText().toString()
-//											.replaceAll(" ", "%20")
-//									+ "&sensor=false";
-//							try {
-//								String test = wst3.executeOnExecutor(
-//										AsyncTask.THREAD_POOL_EXECUTOR, url)
-//										.get();
-//								test = "abc";
-//							} catch (InterruptedException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							} catch (ExecutionException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-//						}
-//						return true;
-//					}
-//				});
 		
+
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
 
@@ -402,64 +351,8 @@ public class CreateGoodsActivity extends FragmentActivity {
 				}
 			}
 		});
-//		actDeliverAddr
-//				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//
-//					@Override
-//					public boolean onEditorAction(TextView v, int actionId,
-//							KeyEvent event) {
-//						// TODO Auto-generated method stub
-//						if (actionId == EditorInfo.IME_ACTION_DONE) {
-//							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//							imm.hideSoftInputFromWindow(
-//									actDeliverAddr.getWindowToken(), 0);
-//							if (deliverLat == 0 || deliverLng == 0) {
-//								WebServiceTask4 wst4 = new WebServiceTask4(
-//										WebServiceTask3.POST_TASK,
-//										CreateGoodsActivity.this,
-//										"Đang xử lý...");
-//								String url2 = "http://maps.google.com/maps/api/geocode/json?address="
-//										+ actDeliverAddr.getText().toString()
-//												.replaceAll(" ", "%20")
-//										+ "&sensor=false";
-//								try {
-//									wst4.executeOnExecutor(
-//											AsyncTask.THREAD_POOL_EXECUTOR,
-//											url2).get();
-//								} catch (InterruptedException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								} catch (ExecutionException e) {
-//									// TODO Auto-generated catch block
-//									e.printStackTrace();
-//								}
-//							}
-//						}
-//						if (!(actDeliverAddr.getText().toString().trim()
-//								.length() == 0)) {
-//							WebServiceTask4 wst4 = new WebServiceTask4(
-//									WebServiceTask3.POST_TASK,
-//									CreateGoodsActivity.this, "Đang xử lý...");
-//							String url2 = "http://maps.google.com/maps/api/geocode/json?address="
-//									+ actDeliverAddr.getText().toString()
-//											.replaceAll(" ", "%20")
-//									+ "&sensor=false";
-//							try {
-//								wst4.executeOnExecutor(
-//										AsyncTask.THREAD_POOL_EXECUTOR, url2)
-//										.get();
-//							} catch (InterruptedException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							} catch (ExecutionException e) {
-//								// TODO Auto-generated catch block
-//								e.printStackTrace();
-//							}
-//						}
-//						return true;
-//					}
-//				});
 		
+
 		ibDeliverMap = (ImageButton) findViewById(R.id.imagebtn_deliver_address);
 		ibDeliverMap.setOnClickListener(new View.OnClickListener() {
 
@@ -532,16 +425,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 				Context.MODE_PRIVATE);
 		ownerid = preferences.getString("ownerID", "");
 
-		// if (savedInstanceState != null) {
-		// spinner.setSelection(savedInstanceState.getInt("spinner"));
-		// etDeliverDate.setText(savedInstanceState.getString("deliverDate"));
-		// etNotes.setText(savedInstanceState.getString("note"));
-		// etPickupDate.setText(savedInstanceState.getString("pickupDate"));
-		// etPrice.setText(savedInstanceState.getString("price"));
-		// etWeight.setText(savedInstanceState.getString("weight"));
-		// actPickupAddr.setText(savedInstanceState.getString("pickup"));
-		// actDeliverAddr.setText(savedInstanceState.getString("deliver"));
-		// }
+		
 	}
 
 	@Override
@@ -759,80 +643,14 @@ public class CreateGoodsActivity extends FragmentActivity {
 			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
 		}
 
-		// Geocoder geocoder = new Geocoder(getBaseContext());
-		// try {
-		// List<Address> list = geocoder.getFromLocationName(actPickupAddr
-		// .getText().toString(), 1);
-		// List<Address> list2 = geocoder.getFromLocationName(actDeliverAddr
-		// .getText().toString(), 1);
-		// if (list.size() > 0 && list2.size() > 0) {
-		// pickupLng = list.get(0).getLongitude();
-		// pickupLat = list.get(0).getLatitude();
-		//
-		// deliverLng = list2.get(0).getLongitude();
-		// deliverLat = list2.get(0).getLatitude();
-		// } else {
-		// errorMsg = "Địa chỉ không có thật";
-		// check = false;
-		// }
-		// } catch (IOException ex) {
-		// ex.printStackTrace();
-		// check = false;
-		// errorMsg = "Địa chỉ không có thật";
-		// }
-
-		// new GetLocation().execute(actPickupAddr.getText()
-		// .toString());
-		// JSONObject addr1 = helper.getLocationInfo(actPickupAddr.getText()
-		// .toString());
-		// JSONObject addr2 = helper.getLocationInfo(actDeliverAddr.getText()
-		// .toString());
-		// if (addr1 != null && addr2 != null) {
-		// LatLng latLng1 = helper.getLatLong(addr1);
-		// LatLng latLng2 = helper.getLatLong(addr2);
-		// if (latLng1 != null & latLng2 != null) {
-		// pickupLng = helper.getLatLong(addr1).longitude;
-		// pickupLat = helper.getLatLong(addr1).latitude;
-		// deliverLng = helper.getLatLong(addr2).longitude;
-		// deliverLat = helper.getLatLong(addr2).latitude;
-		// } else {
-		// errorMsg = "Địa chỉ không có thật";
-		// check = false;
-		// }
-		//
-		// }
-
-		// LatLng pickup = new LatLng(pickupLat, pickupLng);
-		// LatLng deliver = new LatLng(deliverLat, deliverLng);
-		// String url = helper.makeURL(pickup, deliver);
-		// if (!helper.checkPath(url)) {
-		// check = false;
-		// errorMsg = "Không thể tìm đường đi thích hợp cho địa chỉ đã nhập";
-		// }
+		
 
 		return check;
 	}
 
 	// ------------------------------------------------------------------------------
 
-	public void postData() {
-
-		// Code sample lay cac gia tri tu edittext tren man hinh, lam tuong tu
-
-		// EditText edFirstName = (EditText) findViewById(R.id.first_name);
-		// EditText edLastName = (EditText) findViewById(R.id.last_name);
-		// EditText edEmail = (EditText) findViewById(R.id.email);
-		//
-		// String firstName = edFirstName.getText().toString();
-		// String lastName = edLastName.getText().toString();
-		// String email = edEmail.getText().toString();
-		//
-		// if (firstName.equals("") || lastName.equals("") || email.equals(""))
-		// {
-		// Toast.makeText(this, "Please enter in all required fields.",
-		// Toast.LENGTH_LONG).show();
-		// return;
-		// }
+	public void postData() {		
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
@@ -866,6 +684,23 @@ public class CreateGoodsActivity extends FragmentActivity {
 		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
 				new String[] { url });
 
+	}
+
+	private void calculate() {
+		if (!(etWeight.getText().toString().trim().equals(""))) {
+			if (pickupLat != 0 && pickupLng != 0 && deliverLat != 0
+					&& deliverLng != 0) {
+				String url = new GeocoderHelper().makeURL(new LatLng(pickupLat,
+						pickupLng), new LatLng(deliverLat, deliverLng));
+				try {
+					new CalculateMoney().execute(url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+
+		}
 	}
 
 	// public void handleResponse(String response) {
@@ -1167,7 +1002,10 @@ public class CreateGoodsActivity extends FragmentActivity {
 				JSONArray array = jsonObject.getJSONArray("goodsCategory");
 				for (int i = 0; i < array.length(); i++) {
 					JSONObject jsonObject2 = array.getJSONObject(i);
-					cateList.add(jsonObject2.getString("name"));
+					String id = jsonObject2.getString("goodsCategoryId");
+					String name = jsonObject2.getString("name");
+					cateList.add(name);
+					category = new GoodsCategory(i + "", id, name);
 				}
 				dataAdapter.notifyDataSetChanged();
 			} catch (JSONException e) {
@@ -1329,8 +1167,8 @@ public class CreateGoodsActivity extends FragmentActivity {
 					pickupLat = latLng.latitude;
 					pickupLng = latLng.longitude;
 				}
+				calculate();
 
-				
 			} catch (JSONException ex) {
 				ex.printStackTrace();
 			}
@@ -1487,8 +1325,8 @@ public class CreateGoodsActivity extends FragmentActivity {
 					deliverLat = latLng.latitude;
 					deliverLng = latLng.longitude;
 				}
+				calculate();
 
-				
 			} catch (JSONException ex) {
 				ex.printStackTrace();
 			}
@@ -1559,5 +1397,47 @@ public class CreateGoodsActivity extends FragmentActivity {
 			return total.toString();
 		}
 
+	}
+
+	private class CalculateMoney extends AsyncTask<String, Void, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			JSONParser jParser = new JSONParser();
+			String json = jParser.getJSONFromUrl(params[0]);
+			return json;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			JSONObject obj;
+			try {
+				obj = new JSONObject(result);
+				if (obj.getString("status").equals("ZERO_RESULTS")) {
+					// Toast.makeText(CreateGoodsActivity.this,
+					// "Không tìm thấy lộ trình", Toast.LENGTH_SHORT)
+					// .show();
+				} else {
+					JSONArray array = obj.getJSONArray("routes");
+					JSONArray array2 = ((JSONObject) array.getJSONObject(0))
+							.getJSONArray("legs");
+
+					String[] tmp = array2.getJSONObject(0)
+							.getJSONObject("distance").getString("text")
+							.replace(",", "").split(" ");
+					double distance = Double.parseDouble(tmp[0]);
+					int weight = Integer
+							.parseInt(etWeight.getText().toString());
+					int price = Common.calculateGoodsPrice(weight, distance);
+					etPrice.setText(price + "");
+				}
+
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 	}
 }

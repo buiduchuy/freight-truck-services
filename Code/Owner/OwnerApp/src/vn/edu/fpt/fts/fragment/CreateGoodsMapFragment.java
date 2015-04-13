@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -25,11 +26,13 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.activity.CreateGoodsActivity;
 import vn.edu.fpt.fts.activity.MainActivity;
 import vn.edu.fpt.fts.common.GeocoderHelper;
+import vn.edu.fpt.fts.common.JSONParser;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -50,6 +53,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class CreateGoodsMapFragment extends Activity {	
 	private double mlong, mlat;
