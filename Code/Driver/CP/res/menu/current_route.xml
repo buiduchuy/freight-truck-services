@@ -1,6 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="test.example.cp.CurrentRoute" >
+	
+	<item
+        android:id="@+id/action_suggest"
+        android:showAsAction="always|withText"
+        android:icon="@drawable/ic_action_share"
+        android:title="@string/suggest"/>
+	
 	<item
         android:id="@+id/action_update"
         android:showAsAction="always|withText"

@@ -52,13 +52,13 @@
     <string name="note">Ghi chú:</string>
     <string name="note2">Ghi chú</string>
     <string name="suggestPrice">Giá đề nghị (ngàn đồng):</string>
-    <string name="suggest">Xem gợi ý</string>
+    <string name="suggest">XEM GỢI Ý</string>
     <string name="send">GỬI</string>
     <string name="save">LƯU</string>
     <string name="noGood">Không có hàng nào</string>
     <string name="noNoti">Không có thông báo nào</string>
     <string name="status">Trạng thái:</string>
-    <string name="counter">Gửi đề nghị</string>
+    <string name="counter">GỬI ĐỀ NGHỊ MỚI</string>
     <string name="sent">Đã chuyển hàng</string>
     <string name="accept">Chấp nhận</string>
     <string name="decline">Từ chối</string>

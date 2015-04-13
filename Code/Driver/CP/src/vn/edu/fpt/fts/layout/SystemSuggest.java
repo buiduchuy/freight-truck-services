@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -300,6 +301,15 @@ public class SystemSuggest extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			}  catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override

@@ -115,7 +115,7 @@ public class MainActivity extends FragmentActivity {
 		
 		for (int i = 0; i < mNavigationDrawerItemTitles.length; i++) {
 			array.add(new NavDrawerItem(mNavigationDrawerItemTitles[i],
-					mNavigationImage.getResourceId(i, -1)));
+					mNavigationImage.getResourceId(i+1, -1)));
 		}
 
 		mNavigationImage.recycle();

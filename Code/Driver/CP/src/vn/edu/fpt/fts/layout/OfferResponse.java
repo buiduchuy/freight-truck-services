@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -105,26 +106,7 @@ public class OfferResponse extends Fragment {
 		endDate = (TextView) v.findViewById(R.id.textView28);
 		payload = (TextView) v.findViewById(R.id.textView30);
 		cantLoad = (TextView) v.findViewById(R.id.textView32);
-
-		sendNewOffer = (Button) v.findViewById(R.id.button3);
-		sendNewOffer.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Bundle bundle = new Bundle();
-				bundle.putString("dealID", id);
-				bundle.putString("refID", id);
-				bundle.putString("routeID", routeID);
-				bundle.putString("goodID", goodID);
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				SendOffer frag = new SendOffer();
-				frag.setArguments(bundle);
-				trs.replace(R.id.content_frame, frag);
-				trs.addToBackStack(null);
-				trs.commit();
-			}
-		});
+		
 		return v;
 	}
 
@@ -362,6 +344,15 @@ public class OfferResponse extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -482,7 +473,7 @@ public class OfferResponse extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 1) {
 				Toast.makeText(getActivity(), "Đề nghị đã được chấp nhận.",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -491,9 +482,13 @@ public class OfferResponse extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
-			} else {
+			}  else if (Integer.parseInt(response) == 0){
 				Toast.makeText(getActivity(),
 						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
+			} else {
+				Toast.makeText(getActivity(),
+						"Đề nghị đã bị hủy. Không thể chấp nhận đề nghị.", Toast.LENGTH_SHORT)
 						.show();
 			}
 		}
@@ -533,6 +528,15 @@ public class OfferResponse extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -653,7 +657,7 @@ public class OfferResponse extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 1) {
 				Toast.makeText(getActivity(), "Đề nghị đã được từ chối.",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -662,9 +666,13 @@ public class OfferResponse extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
-			} else {
+			} else if (Integer.parseInt(response) == 0){
 				Toast.makeText(getActivity(),
 						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
+			} else {
+				Toast.makeText(getActivity(),
+						"Đề nghị đã bị hủy. Không thể từ chối đề nghị.", Toast.LENGTH_SHORT)
 						.show();
 			}
 		}
@@ -704,6 +712,15 @@ public class OfferResponse extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -755,6 +772,20 @@ public class OfferResponse extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
+		case R.id.action_counter:
+			Bundle bundle = new Bundle();
+			bundle.putString("dealID", id);
+			bundle.putString("refID", id);
+			bundle.putString("routeID", routeID);
+			bundle.putString("goodID", goodID);
+			FragmentManager mng = getActivity().getSupportFragmentManager();
+			FragmentTransaction trs = mng.beginTransaction();
+			SendOffer frag = new SendOffer();
+			frag.setArguments(bundle);
+			trs.replace(R.id.content_frame, frag);
+			trs.addToBackStack(null);
+			trs.commit();
+			return true;
 		case R.id.action_accept:
 			WebService2 ws = new WebService2(WebService.POST_TASK,
 					getActivity(), "Đang xử lý ...");

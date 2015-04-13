@@ -178,9 +178,7 @@ public class SendOffer extends Fragment {
 				} catch (IOException e) {
 					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
-
 			}
-
 			return result;
 		}
 

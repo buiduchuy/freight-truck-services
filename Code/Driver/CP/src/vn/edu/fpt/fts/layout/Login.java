@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -183,22 +184,28 @@ public class Login extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
-				SharedPreferences share = getSharedPreferences("driver",
-						Context.MODE_PRIVATE);
-				Editor editor = share.edit();
-				if (remember.isChecked()) {
-					editor.putString("driverID", response);
+			if (!response.equals("")) {
+				if (Integer.parseInt(response) > 0) {
+					SharedPreferences share = getSharedPreferences("driver",
+							Context.MODE_PRIVATE);
+					Editor editor = share.edit();
+					if (remember.isChecked()) {
+						editor.putString("driverID", response);
+						editor.commit();
+					}
+					editor.putString("email", params.get(0).getValue());
 					editor.commit();
+					Toast.makeText(Login.this, "Đăng nhập thành công",
+							Toast.LENGTH_SHORT).show();
+					Intent intent = new Intent(Login.this, MainActivity.class);
+					intent.putExtra("driverID", response);
+					intent.putExtra("email", params.get(0).getValue());
+					startActivity(intent);
+				} else {
+					Toast.makeText(Login.this,
+							"Đăng nhập thất bại. Vui lòng thử lại.",
+							Toast.LENGTH_SHORT).show();
 				}
-				editor.putString("email", params.get(0).getValue());
-				editor.commit();
-				Toast.makeText(Login.this, "Đăng nhập thành công",
-						Toast.LENGTH_SHORT).show();
-				Intent intent = new Intent(Login.this, MainActivity.class);
-				intent.putExtra("driverID", response);
-				intent.putExtra("email", params.get(0).getValue());
-				startActivity(intent);
 			} else {
 				Toast.makeText(Login.this,
 						"Đăng nhập thất bại. Vui lòng thử lại.",
@@ -240,11 +247,20 @@ public class Login extends Activity {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getApplication(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						Toast.makeText(Login.this,
+						Toast.makeText(getApplication(),
 								"Không thể kết nối tới máy chủ",
 								Toast.LENGTH_SHORT).show();
 					}

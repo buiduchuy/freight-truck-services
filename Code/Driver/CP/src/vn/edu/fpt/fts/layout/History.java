@@ -257,12 +257,6 @@ public class History extends Fragment {
 								status += "Đã giao hàng";
 								// button.setEnabled(false);
 							} else if (driverStatus.equals("3")) {
-								status += "Đã xác nhận giao hàng";
-								// button.setEnabled(false);
-							} else if (driverStatus.equals("4")) {
-								status += "Đã xác nhận giao hàng";
-								// button.setEnabled(false);
-							} else if (driverStatus.equals("5")) {
 								status += "Mất hàng";
 							}
 							SimpleDateFormat format = new SimpleDateFormat(
