@@ -4,6 +4,7 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:setLocale value="vi_VN"/>
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <div class="container">
@@ -141,9 +142,11 @@
 															value="${dateDeliveryTime}" pattern="dd-MM-yyyy"
 															var="deliveryTimeFormatted" /> Ngày nhận: <c:out
 															value="${deliveryTimeFormatted}" /></td>
-													<td>${order.deal.goods.weight }</td>
-													<td><fmt:formatNumber type="number"
-															groupingUsed="false" value="${order.deal.price }" /></td>
+													<td><fmt:formatNumber type="number" pattern="###,###,###,###,###"
+															value="${order.deal.goods.weight }"/>
+													</td>
+													<td><fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															 value="${order.deal.price }" /></td>
 													<td><a class="button"
 														href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID}">Chi
 															tiết</a></td>

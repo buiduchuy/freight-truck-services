@@ -20,10 +20,10 @@ public class ServletListener implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent arg0) {
 		
-		System.out.println("Servlet Context is started....");
-		TimerTask ftsTimer = new FTSTimerTask();
-		Timer timer = new Timer();
-		timer.schedule(ftsTimer, 1000, (15 * 1000));
+//		System.out.println("Servlet Context is started....");
+//		TimerTask ftsTimer = new FTSTimerTask();
+//		Timer timer = new Timer();
+//		timer.schedule(ftsTimer, 1000, (15 * 1000));
 
 		// ScheduledExecutorService exec = Executors
 		// .newSingleThreadScheduledExecutor();

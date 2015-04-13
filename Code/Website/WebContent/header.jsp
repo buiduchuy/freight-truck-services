@@ -102,7 +102,7 @@
 					<a href="ProcessServlet">FTS</a>
 				</h1>
 			</div>
-			<div class="large-7 columns top-bar-section">
+			<!-- <div class="large-7 columns top-bar-section">
 				<nav class="">
 					<ul class="inline-list">
 						<c:choose>
@@ -145,6 +145,6 @@
 						</c:choose>
 					</ul>
 				</nav>
-			</div>
+			</div> -->
 		</div>
 	</div>
