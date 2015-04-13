@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -71,7 +72,7 @@ public class GeocoderHelper {
 	public String makeURL(LatLng org, LatLng p1, LatLng p2, LatLng des) {
 		StringBuilder urlString = new StringBuilder();
 		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
-		urlString.append("?origin=");
+		urlString.append("?mode=driving&origin=");
 		urlString.append(Double.toString(org.latitude));
 		urlString.append(",");
 		urlString.append(Double.toString(org.longitude));
@@ -107,23 +108,33 @@ public class GeocoderHelper {
 
 	public void drawPath(String result, GoogleMap map) {
 		try {
-			final JSONObject json = new JSONObject(result);
-			JSONArray routeArray = json.getJSONArray("routes");
-			JSONObject routes = routeArray.getJSONObject(0);
-			JSONObject overviewPolylines = routes
-					.getJSONObject("overview_polyline");
-			String encodedString = overviewPolylines.getString("points");
-			List<LatLng> list = decodePoly(encodedString);
+			ArrayList<LatLng> points = null;
+			PolylineOptions polyLineOptions = null;
+			List<List<HashMap<String, String>>> routes = null;
+			JSONObject obj = new JSONObject(result);
+			routes = parse(obj);
 
-			for (int z = 0; z < list.size() - 1; z++) {
-				LatLng src = list.get(z);
-				LatLng dest = list.get(z + 1);
-				polylines.add(map.addPolyline(new PolylineOptions()
-						.add(new LatLng(src.latitude, src.longitude),
-								new LatLng(dest.latitude, dest.longitude))
-						.width(2).color(Color.BLUE).geodesic(true)));
+			// traversing through routes
+			for (int i = 0; i < routes.size(); i++) {
+				points = new ArrayList<LatLng>();
+				polyLineOptions = new PolylineOptions();
+				List<HashMap<String, String>> path = routes.get(i);
+
+				for (int j = 0; j < path.size(); j++) {
+					HashMap<String, String> point = path.get(j);
+
+					double lat = Double.parseDouble(point.get("lat"));
+					double lng = Double.parseDouble(point.get("lng"));
+					LatLng position = new LatLng(lat, lng);
+
+					points.add(position);
+				}
+				polyLineOptions.addAll(points);
+				polyLineOptions.width(2);
+				polyLineOptions.color(Color.BLUE);
 			}
-
+			Polyline line = map.addPolyline(polyLineOptions);
+			polylines.add(line);
 		} catch (JSONException e) {
 
 		}
@@ -144,6 +155,51 @@ public class GeocoderHelper {
 		}
 		return null;
 	}
+	
+	public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
+		List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
+		JSONArray jRoutes = null;
+		JSONArray jLegs = null;
+		JSONArray jSteps = null;
+		try {
+			jRoutes = jObject.getJSONArray("routes");
+			/** Traversing all routes */
+			for (int i = 0; i < jRoutes.length(); i++) {
+				jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+				List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
+
+				/** Traversing all legs */
+				for (int j = 0; j < jLegs.length(); j++) {
+					jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+
+					/** Traversing all steps */
+					for (int k = 0; k < jSteps.length(); k++) {
+						String polyline = "";
+						polyline = (String) ((JSONObject) ((JSONObject) jSteps
+								.get(k)).get("polyline")).get("points");
+						List<LatLng> list = decodePoly(polyline);
+
+						/** Traversing all points */
+						for (int l = 0; l < list.size(); l++) {
+							HashMap<String, String> hm = new HashMap<String, String>();
+							hm.put("lat",
+									Double.toString(((LatLng) list.get(l)).latitude));
+							hm.put("lng",
+									Double.toString(((LatLng) list.get(l)).longitude));
+							path.add(hm);
+						}
+					}
+					routes.add(path);
+				}
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+		}
+		return routes;
+	}
+
 
 	private List<LatLng> decodePoly(String encoded) {
 

@@ -5,8 +5,8 @@
 <jsp:include page="header.jsp" />
 <script src="js/foundation-datepicker.js"></script>
 <link rel="stylesheet" href="css/foundation-datepicker.css">
-<c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
-<c:if test="${not empty detailGood1 }">
+<c:set var="goodsDetail" value="${requestScope.goodsDetail }" />
+<c:if test="${not empty goodsDetail }">
 	<div class="container">
 		<div class="large-12 columns">
 			<div class="small-3 columns">
@@ -37,26 +37,27 @@
 				<div class="form-content"
 					style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 					<div class="form-content">
-						<form action="GoodsServlet" method="post" accept-charset="utf-8">
+						<form action="GoodsServlet" method="POST" accept-charset="UTF-8">
 							<div class="row">
 								<div class="large-12 columns">
 									<h2 class="page-title">
 										<font color="orange">Chi tiết hàng</font>
 									</h2>
-									<input type="hidden" name="txtIdGood"
-										value="${detailGood1.goodsID }" />
+									<input type="hidden" name="txtGoodsID"
+										value="${goodsDetail.goodsID }" /> <input type="hidden"
+										name="txtCreateTime" value="${goodsDetail.createTime }" /> <input
+										type="hidden" name="txtOwnerID"
+										value="${goodsDetail.ownerID }" />
+
 									<c:set var="messageSuccess"
-										value="${sessionScope.messageSuccess }" />
-									<c:set var="messageError" value="${sessionScope.messageError }" />
+										value="${requestScope.messageSuccess }" />
+									<c:set var="messageError" value="${requestScope.messageError }" />
 									<c:if test="${not empty messageSuccess}">
 										<div class="row">
 											<div data-alert class="alert-box success radius inline">
 												${messageSuccess} <a href="#" class="close">&times;</a>
 											</div>
 										</div>
-										<%
-											request.getSession().removeAttribute("messageSuccess");
-										%>
 									</c:if>
 									<c:if test="${not empty messageError}">
 										<div class="row">
@@ -64,9 +65,6 @@
 												${messageError} <a href="#" class="close">&times;</a>
 											</div>
 										</div>
-										<%
-											request.getSession().removeAttribute("messageError");
-										%>
 									</c:if>
 								</div>
 								<div class="large-12 columns">
@@ -90,7 +88,7 @@
 														<c:forEach var="row" items="${typeGoods }">
 															<c:choose>
 																<c:when
-																	test="${row.goodsCategoryId==detailGood1.goodsCategoryID}">
+																	test="${row.goodsCategoryId==goodsDetail.goodsCategoryID}">
 																	<option value="${row.goodsCategoryId }"
 																		selected="selected">${row.name }</option>
 																</c:when>
@@ -110,7 +108,7 @@
 														onkeypress="return keyPhone(event);"
 														placeholder="Nhập khối lượng hàng" required=""
 														data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
-														maxlength="5" value="${detailGood1.weight}" />
+														maxlength="5" value="${goodsDetail.weight}" />
 												</div>
 												<div class="small-2 columns">
 													<label for="right-label" class="left inline"
@@ -123,7 +121,7 @@
 														chú : </label>
 												</div>
 												<div class="small-8 columns left inline">
-													<textarea maxlength="250" name="txtNotes">${detailGood1.notes }</textarea>
+													<textarea maxlength="250" name="txtNotes">${goodsDetail.notes }</textarea>
 												</div>
 											</div>
 
@@ -144,7 +142,7 @@
 												</div>
 												<div class="small-9 columns">
 													<input class="left inline"
-														value="${detailGood1.pickupAddress}"
+														value="${goodsDetail.pickupAddress}"
 														name="txtpickupAddress" type="text" onFocus="geolocate()"
 														id="place_start" pattern=".{1,100}"
 														placeholder="Nhập địa điểm giao hàng" required=""
@@ -159,7 +157,7 @@
 												</div>
 												<div class="small-7 columns">
 													<input type="text" name="txtpickupTime"
-														value="${detailGood1.pickupTime}" id="pick-up-date"
+														value="${goodsDetail.pickupTime}" id="pick-up-date"
 														data-date-format="dd-mm-yyyy" readonly>
 												</div>
 											</div>
@@ -178,7 +176,7 @@
 												</div>
 												<div class="small-9 columns">
 													<input type="text" onFocus="geolocate()"
-														value="${detailGood1.deliveryAddress}"
+														value="${goodsDetail.deliveryAddress}"
 														name="txtdeliveryAddress" id="place_end"
 														pattern=".{1,100}" placeholder="Nhập địa điểm nhận hàng"
 														required=""
@@ -193,7 +191,7 @@
 												</div>
 												<div class="small-7 columns">
 													<input type="text" name="txtdeliveryTime"
-														value="${detailGood1.deliveryTime}" id="dilivery-date"
+														value="${goodsDetail.deliveryTime}" id="dilivery-date"
 														data-date-format="dd-mm-yyyy" readonly>
 												</div>
 											</div>
@@ -209,39 +207,13 @@
 										<div class="row">
 											<div class="small-4 columns">
 												<label class="right inline"><small class="validate">*</small>Chi
-													phí tài xế: </label>
+													phí: </label>
 											</div>
 											<div class="small-4 columns left">
 												<input type="text" id="right-label" name="txtPrice"
-													value="${detailGood1.price}" required=""
+													value="<fmt:formatNumber type="number"
+															groupingUsed="false" value="${goodsDetail.price}" />" required=""
 													data-errormessage-value-missing="Vui lòng điền đầy đủ chi phí!" />
-											</div>
-											<div class="small-4 columns left">
-												<label class="left inline">nghìn đồng</label>
-											</div>
-										</div>
-										<c:set var="priceCreateGood"
-											value="${sessionScope.priceCreateGood }" />
-										<div class="row">
-											<div class="small-4 columns">
-												<label class="right inline">Chi phí tạo hàng: </label>
-											</div>
-											<div class="small-4 columns left">
-												<input type="text" id="right-label"
-													value="${priceCreateGood}" readonly="readonly" />
-											</div>
-											<div class="small-4 columns left">
-												<label class="left inline">nghìn đồng</label>
-											</div>
-										</div>
-										<c:set var="priceTotal" value="${sessionScope.priceTotal }" />
-										<div class="row">
-											<div class="small-4 columns">
-												<label class="right inline">Tổng Cộng: </label>
-											</div>
-											<div class="small-4 columns left">
-												<input type="text" id="right-label" value="${priceTotal}"
-													readonly="readonly" />
 											</div>
 											<div class="small-4 columns left">
 												<label class="left inline">nghìn đồng</label>
@@ -252,19 +224,19 @@
 										<div class="large-12 columns">
 											<div class="submit-area right">
 												<button class="success" name="btnAction"
-													value="suggestFromSystem">
+													value="getSuggestionRoute">
 													<i class="icon-mail-forward"></i> Nhận gợi ý tuyến đường
 												</button>
 
-												<button class="button "
+												<button class="button"
 													onclick="return confirm('Bạn có muốn cập nhật hàng không?')"
-													name="btnAction" value="updateGood">
+													name="btnAction" value="updateGoods">
 													<i class="icon-wrench"></i> Cập nhật hàng
 												</button>
 
 												<button class="alert"
 													onclick="return confirm('Bạn có muốn xoá hàng không?')"
-													name="btnAction" value="deleteGood">
+													name="btnAction" value="deleteGoods">
 													<i class="icon-remove"> Xoá hàng</i>
 												</button>
 											</div>

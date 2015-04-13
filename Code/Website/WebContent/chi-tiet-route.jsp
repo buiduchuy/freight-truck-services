@@ -3,7 +3,9 @@
 <title>Chi tiết lộ trình</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="detailRoute" value="${sessionScope.viewDetailRoute }" />
-<c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
+<c:set var="goodsID" value="${requestScope.goodsID }" />
+<%@ page import="java.util.Date"%>
+<c:set var="today" value="<%=new Date()%>" />
 <jsp:include page="header.jsp" />
 <div class="large-12 columns">
 	<div class="large-3 columns">
@@ -28,28 +30,21 @@
 										<font color="orange">Chi tiết lộ trình</font>
 									</h2>
 									<c:set var="messageSuccess"
-										value="${sessionScope.messageSuccess }" />
-									<c:set var="messageError" value="${sessionScope.messageError }" />
+										value="${requestScope.messageSuccess }" />
+									<c:set var="messageError" value="${requestScope.messageError }" />
 									<c:if test="${not empty messageSuccess}">
 										<div class="row">
 											<div data-alert class="alert-box success radius inline">
 												${messageSuccess} <a href="#" class="close">&times;</a>
 											</div>
 										</div>
-										<%
-											request.getSession().removeAttribute("messageSuccess");
-										%>
 									</c:if>
 									<c:if test="${not empty messageError}">
 										<div class="row">
 											<div data-alert class="alert-box alert radius inline">
 												${messageError} <a href="#" class="close">&times;</a>
 											</div>
-
 										</div>
-										<%
-											request.getSession().removeAttribute("messageError");
-										%>
 									</c:if>
 								</div>
 								<c:set var="error" value="${sessionScope.errorSendDeal}" />
@@ -57,7 +52,6 @@
 									<font color="red">${error}</font>
 								</c:if>
 								<div class="large-12 columns">
-
 									<div class="row">
 										<div class="small-2 columns ">
 											<label class="right inline">Địa điểm bắt đầu:</label>
@@ -113,7 +107,7 @@
 									<div class="row">
 										<div class="submit-area right">
 											<a class="button success"
-												href="DealServlet?btnAction=sendDeal&routeID=${detailRoute.routeID }&goodsID=${detailGood1.goodsID}"
+												href="DealServlet?btnAction=createDeal&routeID=${detailRoute.routeID }&goodsID=${goodsID}"
 												onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
 												<i class="icon-envelope"></i> Gửi để nghị
 											</a>

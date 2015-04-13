@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
+import android.app.ActionBar;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -49,6 +50,7 @@ import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -109,7 +111,9 @@ public class ChangeRoute extends Fragment {
 
 	private static final String SERVICE_URL2 = Constant.SERVICE_URL
 			+ "Route/getRouteByID";
-
+	DatePickerDialog dialog1 = null, dialog2 = null;
+	TimePickerDialog dialog3 = null;
+	
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
@@ -129,7 +133,10 @@ public class ChangeRoute extends Fragment {
 		Intent intent = getActivity().getIntent();
 		locations = (ArrayList<LatLng>) intent
 				.getSerializableExtra("markerList2");
-		if (locations != null && locations.size() > 0) {
+		if (locations == null || locations.size() == 0) {
+			getActivity().getSupportFragmentManager()
+					.findFragmentByTag("changeRoute").getRetainInstance();
+		} else {
 			for (LatLng p : locations) {
 				try {
 					String address = new GetAddress().execute(p.latitude,
@@ -143,16 +150,24 @@ public class ChangeRoute extends Fragment {
 					e.printStackTrace();
 				}
 			}
-			start.setText(pos.get(0));
-			end.setText(pos.get(pos.size() - 1));
 			if (pos.size() == 3) {
-				p1.setText(pos.get(1));
+				if (intent.getBooleanExtra("change", false) == true) {
+					p1.setText(pos.get(1));
+				}
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
 			} else if (pos.size() == 4) {
-				p1.setText(pos.get(1));
-				p2.setText(pos.get(2));
+				if (intent.getBooleanExtra("change", false) == true) {
+					p1.setText(pos.get(1));
+					p2.setText(pos.get(2));
+				}
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
 			}
 		}
-		intent.removeExtra("markerList");
+		intent.removeExtra("markerList2");
 		pos.clear();
 	}
 
@@ -162,19 +177,52 @@ public class ChangeRoute extends Fragment {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 	}
+	
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
+		locationManager = (LocationManager) getActivity().getSystemService(
+				Context.LOCATION_SERVICE);
+		LocationListener locationListener = new LocationListener() {
+			public void onLocationChanged(Location location) {
+				String current;
+				try {
+					current = new GetAddress().execute(location.getLatitude(),
+							location.getLongitude()).get();
+					if (start.getText().toString().equals("")) {
+						start.setText(current);
+					}
+					locationManager.removeUpdates(this);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+			}
+
+			public void onProviderEnabled(String provider) {
+			}
+
+			public void onProviderDisabled(String provider) {
+			}
+		};
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				0, locationListener);
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Cập nhật lộ trình");
-
-		Fragment custom = getFragmentManager().findFragmentByTag(
-				"customizeRoute");
-		if (custom != null) {
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			ft.remove(custom).commit();
-		}
 
 		v = inflater.inflate(R.layout.activity_create_route, container, false);
 		show = (TextView) v.findViewById(R.id.textView2);
@@ -224,41 +272,52 @@ public class ChangeRoute extends Fragment {
 		startDate.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				DatePickerDialog dialog = new DatePickerDialog(getActivity(),
-						startListener, cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONTH), cal.get(Calendar.DATE));
-				DatePicker picker = dialog.getDatePicker();
-				Calendar calendar = Calendar.getInstance();
-				picker.setMinDate(calendar.getTimeInMillis() - 1000);
-				calendar.add(Calendar.MONTH, 1);
-				picker.setMaxDate(calendar.getTimeInMillis());
-				dialog.show();
+				if (dialog1 == null) {
+					dialog1 = new DatePickerDialog(getActivity(),
+							startListener, cal.get(Calendar.YEAR), cal
+									.get(Calendar.MONTH), cal
+									.get(Calendar.DATE));
+					dialog1.setTitle("Ngày bắt đầu");
+					DatePicker picker = dialog1.getDatePicker();
+					Calendar calendar = Calendar.getInstance();
+					picker.setMinDate(calendar.getTimeInMillis() - 1000);
+					calendar.add(Calendar.MONTH, 1);
+					picker.setMaxDate(calendar.getTimeInMillis());
+				}
+				dialog1.show();
 			}
 		});
 
 		startHour.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.HOUR_OF_DAY, 6);
-				TimePickerDialog dialog = new TimePickerDialog(getActivity(),
-						startHourListener, cal.get(Calendar.HOUR_OF_DAY), cal
-								.get(Calendar.MINUTE), true);
-				dialog.show();
+				if (dialog3 == null) {
+					dialog3 = new TimePickerDialog(getActivity(),
+							startHourListener, cal.get(Calendar.HOUR_OF_DAY),
+							cal.get(Calendar.MINUTE), true);
+					dialog3.setTitle("Giờ bắt đầu");
+				}
+				dialog3.show();
 			}
 		});
 
 		endDate.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				DatePickerDialog dialog = new DatePickerDialog(getActivity(),
-						endListener, cal.get(Calendar.YEAR), cal
-								.get(Calendar.MONTH), cal.get(Calendar.DATE));
-				DatePicker picker = dialog.getDatePicker();
-				Calendar calendar = Calendar.getInstance();
-				picker.setMinDate(calendar.getTimeInMillis() - 1000);
-				calendar.add(Calendar.MONTH, 1);
-				picker.setMaxDate(calendar.getTimeInMillis());
-				dialog.show();
+				if (dialog2 == null) {
+					dialog2 = new DatePickerDialog(getActivity(), endListener,
+							cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+							cal.get(Calendar.DATE));
+					dialog2.setTitle("Ngày kết thúc");
+					DatePicker picker = dialog2.getDatePicker();
+					Calendar calendar = Calendar.getInstance();
+					picker.setMinDate(calendar.getTimeInMillis() - 1000);
+					calendar.add(Calendar.MONTH, 1);
+					picker.setMaxDate(calendar.getTimeInMillis());
+				}
+				dialog2.show();
 			}
 		});
 		link.setOnClickListener(new View.OnClickListener() {
@@ -297,10 +356,15 @@ public class ChangeRoute extends Fragment {
 				}
 			}
 		});
-		WebService2 ws2 = new WebService2(WebService2.POST_TASK, getActivity(),
-				"");
-		ws2.addNameValuePair("routeID", getArguments().getString("id"));
-		ws2.execute(SERVICE_URL2);
+		Intent intent = getActivity().getIntent();
+		locations = (ArrayList<LatLng>) intent
+				.getSerializableExtra("markerList2");
+		if (locations == null) {
+			WebService2 ws2 = new WebService2(WebService2.POST_TASK,
+					getActivity(), "");
+			ws2.addNameValuePair("routeID", getArguments().getString("id"));
+			ws2.execute(SERVICE_URL2);
+		}
 		return v;
 	}
 
@@ -311,6 +375,12 @@ public class ChangeRoute extends Fragment {
 				int dayOfMonth) {
 			startDate
 					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+			if (dialog2 != null) {
+				dialog2.updateDate(dialog1.getDatePicker().getYear(), dialog1
+						.getDatePicker().getMonth(), dialog1.getDatePicker()
+						.getDayOfMonth());
+			}
 		}
 	};
 
@@ -318,8 +388,6 @@ public class ChangeRoute extends Fragment {
 
 		@Override
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			Calendar c = Calendar.getInstance();
-			c.add(Calendar.HOUR_OF_DAY, 6);
 			String hr = String.valueOf(hourOfDay);
 			String min = String.valueOf(minute);
 			if (hr.length() == 1) {
@@ -337,13 +405,7 @@ public class ChangeRoute extends Fragment {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(sdd.compareTo(c.getTime()) >= 0)
-			{
-				startHour.setText(hr + ":" + min);
-			}
-			else {
-				Toast.makeText(getActivity(), "Thời gian bắt đầu phải lớn hơn thời gian hiện hành ít nhất 6 tiếng", Toast.LENGTH_SHORT).show();
-			}
+			startHour.setText(hr + ":" + min);
 		}
 	};
 
@@ -590,21 +652,40 @@ public class ChangeRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 1) {
 				Toast.makeText(getActivity(), "Cập nhật thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
-				RouteList frag = new RouteList();
+				SystemSuggest frag = new SystemSuggest();
+				Bundle bundle = new Bundle();
+				bundle.putString("routeID", getArguments().getString("id"));
+				String[] str = start.getText().toString()
+						.replaceAll("(?i), Vietnam", "")
+						.replaceAll("(?i), Viet Nam", "")
+						.replaceAll("(?i), Việt Nam", "").split(",");
+				String st = str[str.length - 1];
+				String[] endS = end.getText().toString()
+						.replaceAll("(?i), Vietnam", "")
+						.replaceAll("(?i), Viet Nam", "")
+						.replaceAll("(?i), Việt Nam", "").split(",");
+				String ed = endS[endS.length - 1];
+				bundle.putString("route", st + " - " + ed);
+				frag.setArguments(bundle);
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
+			} else if (Integer.parseInt(response) == 2) {
+				Toast.makeText(
+						getActivity(),
+						"Lộ trình đang có các đề nghị hoặc hóa đơn liên quan. Không thể cập nhật lộ trình này.",
+						Toast.LENGTH_SHORT).show();
 			} else if (Integer.parseInt(response) == 0) {
 				Toast.makeText(
 						getActivity(),
-						"Lộ trình đang có các đề nghị liên quan. Không thể cập nhật lộ trình này.",
+						"Có lỗi xảy ra. Vui lòng thử lại.",
 						Toast.LENGTH_SHORT).show();
-			}
+			} 
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
@@ -1025,7 +1106,7 @@ public class ChangeRoute extends Fragment {
 									getActivity(),
 									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
 									Toast.LENGTH_SHORT).show();
-						} else if (payload.equals("")) {
+						} else if (load.equals("")) {
 							Toast.makeText(getActivity(),
 									"Khối lượng chở không được để trống.",
 									Toast.LENGTH_SHORT).show();
@@ -1033,7 +1114,7 @@ public class ChangeRoute extends Fragment {
 							Toast.makeText(getActivity(),
 									"Khối lượng chở không vượt quá 20 tấn",
 									Toast.LENGTH_SHORT).show();
-						} else {
+						}  else {
 							WebService ws = new WebService(
 									WebService.POST_TASK, getActivity(),
 									"Đang xử lý ...");

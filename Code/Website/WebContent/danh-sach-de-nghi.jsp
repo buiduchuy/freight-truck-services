@@ -27,17 +27,14 @@
 									<font color="orange">Danh sách các đề nghị</font>
 								</h2>
 								<c:set var="messageSuccess"
-									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError" value="${sessionScope.messageError }" />
+									value="${requestScope.messageSuccess }" />
+								<c:set var="messageError" value="${requestScope.messageError }" />
 								<c:if test="${not empty messageSuccess}">
 									<div class="row">
 										<div data-alert class="alert-box success radius inline">
 											${messageSuccess} <a href="#" class="close">&times;</a>
 										</div>
 									</div>
-									<%
-										request.getSession().removeAttribute("messageSuccess");
-									%>
 								</c:if>
 								<c:if test="${not empty messageError}">
 									<div class="row">
@@ -46,9 +43,6 @@
 										</div>
 
 									</div>
-									<%
-										request.getSession().removeAttribute("messageError");
-									%>
 								</c:if>
 							</div>
 							<div class="large-12 columns">
@@ -88,35 +82,23 @@
 																	</c:if>
 																</c:forEach>
 															</c:if>
-															<td><a class="button "
+															<td><a class="button"
 																href="DealServlet?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
-																	class="icon-remove"></i>Xem chi tiết</a></td>
-
+																	class="icon-remove"></i>Chi tiết</a></td>
 														</tr>
 
 													</c:if>
 												</c:forEach>
 											</c:forEach>
-
-
 										</tbody>
 									</table>
 								</div>
-
-
-
-
 							</div>
-
-
 						</div>
 				</form>
-
-
 			</div>
 		</div>
 	</div>
-
 </div>
 
 

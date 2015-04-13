@@ -2,9 +2,9 @@
 <title>Quản lý hoá đơn</title>
 <jsp:include page="header.jsp" />
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:setLocale value="vi_VN"/>
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <div class="container">
@@ -12,7 +12,7 @@
 		<div class="large-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-				<jsp:include page="vertical-menu-manage-good.jsp" />
+				<jsp:include page="vertical-menu-manage-order.jsp" />
 				<div class="row"></div>
 			</div>
 		</div>
@@ -29,17 +29,14 @@
 									<font color="orange">Quản lý hoá đơn</font>
 								</h2>
 								<c:set var="messageSuccess"
-									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError" value="${sessionScope.messageError }" />
+									value="${requestScope.messageSuccess }" />
+								<c:set var="messageError" value="${requestScope.messageError }" />
 								<c:if test="${not empty messageSuccess}">
 									<div class="row">
 										<div data-alert class="alert-box success radius inline">
 											${messageSuccess} <a href="#" class="close">&times;</a>
 										</div>
 									</div>
-									<%
-										request.getSession().removeAttribute("messageSuccess");
-									%>
 								</c:if>
 								<c:if test="${not empty messageError}">
 									<div class="row">
@@ -48,33 +45,6 @@
 										</div>
 
 									</div>
-									<%
-										request.getSession().removeAttribute("messageError");
-									%>
-								</c:if>
-								<c:set var="messageSuccess"
-									value="${sessionScope.messageSuccess }" />
-								<c:set var="messageError" value="${sessionScope.messageError }" />
-								<c:if test="${not empty messageSuccess}">
-									<div class="row">
-										<div data-alert class="alert-box success radius inline">
-											${messageSuccess} <a href="#" class="close">&times;</a>
-										</div>
-									</div>
-									<%
-										request.getSession().removeAttribute("messageSuccess");
-									%>
-								</c:if>
-								<c:if test="${not empty messageError}">
-									<div class="row">
-										<div data-alert class="alert-box alert radius inline">
-											${messageError} <a href="#" class="close">&times;</a>
-										</div>
-
-									</div>
-									<%
-										request.getSession().removeAttribute("messageError");
-									%>
 								</c:if>
 							</div>
 							<div class="large-12 columns">
@@ -132,9 +102,12 @@
 									<thead>
 										<tr>
 											<th><font color="orange">#</font></th>
-											<th><font color="orange">MÃ HÀNG</font></th>
+											<th><font color="orange">MÃ HĐ</font></th>
 											<th><font color="orange">LOẠI HÀNG</font></th>
 											<th><font color="orange">THỜI GIAN</font></th>
+											<th><font color="orange">KHỐI LƯỢNG</font></th>
+											<th><font color="orange">GIÁ TIỀN</font></th>
+
 											<th><h4>
 													<font color="orange"></font>
 												</h4></th>
@@ -142,25 +115,41 @@
 									</thead>
 									<tbody>
 										<c:set var="count" value="0" />
-										<c:set var="listOrder" value="${sessionScope.listOrder }" />
+										<c:set var="listOrder" value="${requestScope.listOrder }" />
 										<c:if test="${not empty listOrder }">
 											<c:forEach var="order" items="${listOrder}">
 												<c:set var="count" value="${count+1 }" />
 												<tr>
 													<td>${count }</td>
-													<td>${fn:substringBefore(fn:replace(order.createTime, '-', ''),' ')}${order.deal.goodsID }</td>
+													<td><font color="black" style="font-weight: 900;">OD${order.orderID }</font></td>
 													<c:forEach var="row" items="${typeGoods }">
 														<c:if
 															test="${order.deal.goods.goodsCategoryID==row.goodsCategoryId }">
 															<td>${row.name }</td>
 														</c:if>
 													</c:forEach>
-													<td>Ngày giao: ${order.deal.goods.pickupTime}</br> </br>Ngày
-														nhận: ${order.deal.goods.deliveryTime}
+													<td><c:set var="stringPickupTime"
+															value="${order.deal.goods.pickupTime}" /> <fmt:parseDate
+															value="${stringPickupTime}" var="datePickupTime"
+															pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+															value="${datePickupTime}" pattern="dd-MM-yyyy"
+															var="pickUpTimeFormatted" /> Ngày giao: <c:out
+															value="${pickUpTimeFormatted}" /> </br> </br> <c:set
+															var="stringDeliveryTime"
+															value="${order.deal.goods.deliveryTime}" /> <fmt:parseDate
+															value="${stringDeliveryTime}" var="dateDeliveryTime"
+															pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+															value="${dateDeliveryTime}" pattern="dd-MM-yyyy"
+															var="deliveryTimeFormatted" /> Ngày nhận: <c:out
+															value="${deliveryTimeFormatted}" /></td>
+													<td><fmt:formatNumber type="number" pattern="###,###,###,###,###"
+															value="${order.deal.goods.weight }"/>
 													</td>
+													<td><fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															 value="${order.deal.price }" /></td>
 													<td><a class="button"
-														href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID }">Xem
-															chi tiết</a></td>
+														href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID}">Chi
+															tiết</a></td>
 												</tr>
 											</c:forEach>
 										</c:if>

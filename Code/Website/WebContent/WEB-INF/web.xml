@@ -85,6 +85,26 @@
 		<servlet-name>NotificationServlet</servlet-name>
 		<url-pattern>/NotificationServlet</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>ExportServlet</display-name>
+		<servlet-name>ExportServlet</servlet-name>
+		<servlet-class>vn.edu.fpt.fts.servlet.ExportServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ExportServlet</servlet-name>
+		<url-pattern>/ExportServlet</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<description></description>
+		<display-name>ConfigurationServlet</display-name>
+		<servlet-name>ConfigurationServlet</servlet-name>
+		<servlet-class>vn.edu.fpt.fts.servlet.ConfigurationServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ConfigurationServlet</servlet-name>
+		<url-pattern>/ConfigurationServlet</url-pattern>
+	</servlet-mapping>
 	<listener>
 		<listener-class>vn.edu.fpt.fts.servlet.ServletListener</listener-class>
 	</listener>

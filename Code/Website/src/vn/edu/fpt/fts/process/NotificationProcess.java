@@ -6,7 +6,6 @@ package vn.edu.fpt.fts.process;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.NotificationDAO;
-import vn.edu.fpt.fts.pojo.Account;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Notification;
 import vn.edu.fpt.fts.pojo.Order;
@@ -152,27 +151,7 @@ public class NotificationProcess {
 		return ret;
 	}
 
-	public int insertOwnerConfirmOrderNotification(Order order) {
-		int ret = 0;
-
-		Notification notification = new Notification();
-
-		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
-		notification
-				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
-		notification.setMessage("Chủ hàng "
-				+ order.getDeal().getGoods().getOwner().getEmail()
-				+ " đã xác nhận đơn giao hàng thành công.");
-		notification.setStatusOfType(Common.order_owner);
-		notification.setType("order");
-
-		ret = notificationDao.insertNotification(notification);
-
-		return ret;
-	}
-
-	public int insertDriverConfirmOrderNotification(Order order) {
+	public int insertAcceptOrderNotification(Order order) {
 		int ret = 0;
 
 		Notification notification = new Notification();
@@ -180,36 +159,11 @@ public class NotificationProcess {
 		notification.setActive(Common.activate);
 		notification.setCreateTime(order.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Tài xế "
-				+ order.getDeal().getRoute().getDriver().getEmail()
-				+ " đã xác nhận đơn giao hàng thành công.");
-		notification.setStatusOfType(Common.order_driver);
+		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD" + order.getOrderID() +" chấp nhận!");
+		notification.setStatusOfType(Common.order_accept);
+		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
 		
-		ret = notificationDao.insertNotification(notification);
-
-		return ret;
-	}
-
-	public int insertStaffConfirmOrderNotification(Order order, Account acc) {
-		int ret = 0;
-
-		Notification notification = new Notification();
-
-		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
-
-		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Nhân viên " + acc.getEmail()
-				+ " đã xác nhận đơn giao hàng thành công.");
-		notification.setStatusOfType(Common.order_staff);
-		notification.setType("order");
-		
-		ret = notificationDao.insertNotification(notification);
-
-		notification
-				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
-
 		ret = notificationDao.insertNotification(notification);
 
 		return ret;

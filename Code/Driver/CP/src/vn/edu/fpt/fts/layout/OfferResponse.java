@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -77,6 +78,7 @@ public class OfferResponse extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(
 				R.drawable.ic_action_sort_by_size_white);
 		getActivity().getActionBar().setTitle("Trả lời đề nghị");
@@ -485,7 +487,7 @@ public class OfferResponse extends Fragment {
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
-				Fragment fragment = new TabDeals();
+				TabDeals fragment = new TabDeals();
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();

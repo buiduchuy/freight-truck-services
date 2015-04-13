@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +22,6 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import vn.edu.fpt.fts.dao.CityDAO;
-import vn.edu.fpt.fts.pojo.City;
-
 /**
  * @author Huy
  *
@@ -33,24 +29,25 @@ import vn.edu.fpt.fts.pojo.City;
 public class MapsUtils {
 
 	public static void main(String[] args) {
-		MapsUtils mapsUtils = new MapsUtils();
-		CityDAO cityDao = new CityDAO();
-		List<City> l_city = cityDao.getAllCity();
-
-		for (int i = 0; i < l_city.size(); i++) {
-			LatLng latLng = mapsUtils.parseJson(mapsUtils
-					.getJSONFromUrl(mapsUtils.makeURL(l_city.get(i)
-							.getCityName())));
-			cityDao.updateLocationCity(l_city.get(i).getCityID(), latLng);
-
-			System.out.println(latLng.getLatitude() + " , "
-					+ latLng.getLongitude());
-		}
+//		MapsUtils mapsUtils = new MapsUtils();
+//		CityDAO cityDao = new CityDAO();
+//		List<City> l_city = cityDao.getAllCity();
+//
+//		for (int i = 0; i < l_city.size(); i++) {
+//			LatLng latLng = mapsUtils.parseJson(mapsUtils
+//					.getJSONFromUrl(mapsUtils.makeGeoCodeURL(l_city.get(i)
+//							.getCityName())));
+//			cityDao.updateLocationCity(l_city.get(i).getCityID(), latLng);
+//
+//			System.out.println(latLng.getLatitude() + " , "
+//					+ latLng.getLongitude());
+//		}
+		
 	}
 
 	private final static String TAG = "MapsUtils";
 
-	public String makeURL(String address) {
+	public String makeGeoCodeURL(String address) {
 		StringBuilder urlString = new StringBuilder();
 		urlString.append("https://maps.googleapis.com/maps/api/geocode/json");
 		urlString.append("?address=");
@@ -136,6 +133,54 @@ public class MapsUtils {
 			// Log.e("Buffer Error", "Error converting result " + e.toString());
 		}
 		return json;
+	}
+
+	public String makeDirectionURL(String pickupAddress, String deliveryAddress) {
+		StringBuilder urlString = new StringBuilder();
+		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
+		urlString.append("?origin=");
+		try {
+			pickupAddress = URLEncoder.encode(pickupAddress, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		urlString.append(pickupAddress);
+		urlString.append("&destination=");
+		try {
+			deliveryAddress = URLEncoder.encode(deliveryAddress, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		urlString.append(deliveryAddress);
+		return urlString.toString();
+	}
+
+	public double parseJsonToGetDistance(String jsonResult) {
+		double ret = 0.0;
+		try {
+			final JSONObject jObject = new JSONObject(jsonResult);
+			JSONArray routes = jObject.getJSONArray("routes");
+			// Grab the first route
+			JSONObject route = routes.getJSONObject(0);
+			// Take all legs from the route
+			JSONArray legs = route.getJSONArray("legs");
+			// Grab first leg
+			JSONObject leg = legs.getJSONObject(0);
+
+			JSONObject distance = leg.getJSONObject("distance");
+
+			ret = distance.getDouble("value");
+
+		} catch (JSONException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return ret;
 	}
 
 }

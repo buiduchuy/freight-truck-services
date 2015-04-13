@@ -35,7 +35,10 @@ import vn.edu.fpt.fts.drawer.ListItemAdapter2;
 import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.R.anim;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,12 +47,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 public class History extends Fragment {
@@ -69,8 +76,10 @@ public class History extends Fragment {
 	@SuppressLint("UseSparseArrays")
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		getActivity().getActionBar().setTitle("Hóa đơn");
-		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setTitle("Hóa đơn");
+		actionBar.setIcon(R.drawable.ic_action_copy_white);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
 		mapFilter = new ArrayList<String>();
@@ -88,6 +97,9 @@ public class History extends Fragment {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				int id = Integer.parseInt(mapFilter.get((int) arg3));
+				NotificationManager mNotificationManager = (NotificationManager) getActivity()
+						.getSystemService(Context.NOTIFICATION_SERVICE);
+				mNotificationManager.cancel(id);
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
 				HistoryDetail frag = new HistoryDetail();
@@ -99,42 +111,7 @@ public class History extends Fragment {
 				trs.commit();
 			}
 		}));
-		spinner = (Spinner) myFragmentView.findViewById(R.id.spinner1);
-		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				String selected = spinner.getSelectedItem().toString();
-				if (selected.equals("Hiện tất cả")) {
-					adapter = new ListItemAdapter3(getActivity(), list);
-					list1.setEmptyView(myFragmentView
-							.findViewById(R.id.emptyElement));
-					list1.setAdapter(adapter);
-					mapFilter = map;
-				} else {
-					listFilter = new ArrayList<ListItem>();
-					mapFilter = new ArrayList<String>();
-					for (ListItem item : list) {
-						if (item.getDate().equals(selected)) {
-							listFilter.add(item);
-							mapFilter.add(map.get(list.indexOf(item)));
-						}
-					}
-					adapter = new ListItemAdapter3(getActivity(), listFilter);
-					list1.setEmptyView(myFragmentView
-							.findViewById(R.id.emptyElement));
-					list1.setAdapter(adapter);
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
-
-			}
-
-		});
+		setHasOptionsMenu(true);
 		return myFragmentView;
 	}
 
@@ -219,7 +196,7 @@ public class History extends Fragment {
 			// handleResponse(response);
 			JSONObject obj;
 			filter = new ArrayList<String>();
-			filter.add("Hiện tất cả");
+			filter.add("Tất cả");
 			if (!response.equals("null")) {
 				try {
 					obj = new JSONObject(response);
@@ -227,7 +204,7 @@ public class History extends Fragment {
 					if (invervent instanceof JSONArray) {
 						JSONArray array = obj.getJSONArray("order");
 						int count = 1;
-						for (int i = array.length() - 1; i >= 0; i--) {
+						for (int i = 0; i < array.length(); i++) {
 							JSONObject item = array.getJSONObject(i);
 							JSONObject rt = item.getJSONObject("deal")
 									.getJSONObject("route");
@@ -275,10 +252,18 @@ public class History extends Fragment {
 							String price = item.getString("price");
 							if (driverStatus.equals("1")) {
 								status += "Đang chở hàng";
+								// button.setEnabled(false);
+							} else if (driverStatus.equals("2")) {
+								status += "Đã giao hàng";
+								// button.setEnabled(false);
+							} else if (driverStatus.equals("3")) {
+								status += "Đã xác nhận giao hàng";
+								// button.setEnabled(false);
+							} else if (driverStatus.equals("4")) {
+								status += "Đã xác nhận giao hàng";
+								// button.setEnabled(false);
 							} else if (driverStatus.equals("5")) {
 								status += "Mất hàng";
-							} else {
-								status += "Đã giao hàng";
 							}
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm:ss");
@@ -342,10 +327,12 @@ public class History extends Fragment {
 						String price = item.getString("price");
 						if (driverStatus.equals("1")) {
 							status += "Đang chở hàng";
-						} else if (driverStatus.equals("5")) {
-							status += "Mất hàng";
-						} else {
+							// button.setEnabled(false);
+						} else if (driverStatus.equals("2")) {
 							status += "Đã giao hàng";
+							// button.setEnabled(false);
+						} else if (driverStatus.equals("3")) {
+							status += "Mất hàng";
 						}
 						SimpleDateFormat format = new SimpleDateFormat(
 								"yyyy-MM-dd hh:mm:ss");
@@ -376,10 +363,41 @@ public class History extends Fragment {
 			adapter = new ListItemAdapter3(getActivity(), list);
 			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
 			list1.setAdapter(adapter);
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-					getActivity(), android.R.layout.simple_spinner_item, filter);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			spinner.setAdapter(adapter);
+			@SuppressWarnings("unchecked")
+			SpinnerAdapter mSpinnerAdapter = new ArrayAdapter(getActivity(),
+					android.R.layout.simple_spinner_dropdown_item, filter);
+
+			OnNavigationListener mOnNavigationListener = new OnNavigationListener() {
+				@Override
+				public boolean onNavigationItemSelected(int position, long itemId) {
+					String selected = filter.get(position);
+					if (selected.equals("Tất cả")) {
+						adapter = new ListItemAdapter3(getActivity(), list);
+						list1.setEmptyView(myFragmentView
+								.findViewById(R.id.emptyElement));
+						list1.setAdapter(adapter);
+						mapFilter = map;
+					} else {
+						listFilter = new ArrayList<ListItem>();
+						mapFilter = new ArrayList<String>();
+						for (ListItem item : list) {
+							if (item.getDate().equals(selected)) {
+								listFilter.add(item);
+								mapFilter.add(map.get(list.indexOf(item)));
+							}
+						}
+						adapter = new ListItemAdapter3(getActivity(), listFilter);
+						list1.setEmptyView(myFragmentView
+								.findViewById(R.id.emptyElement));
+						list1.setAdapter(adapter);
+					}
+					return true;
+				}
+			};
+			ActionBar actionBar = getActivity().getActionBar();
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			actionBar.setListNavigationCallbacks(mSpinnerAdapter, mOnNavigationListener);
+
 			pDlg.dismiss();
 		}
 
@@ -454,5 +472,10 @@ public class History extends Fragment {
 			// Return full string
 			return total.toString();
 		}
+	}
+	
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
 	}
 }

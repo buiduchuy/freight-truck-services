@@ -2,7 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<c:set var="reqUrl" value="${pageContext.request.requestURI}" />
+<c:set var="reqUrl" value="${pageContext.request.requestURI}"
+	scope="session" />
 <c:set var="namePage" value="${fn:substringAfter(reqUrl, 'FTS/')}"
 	scope="session" />
 <!DOCTYPE html>
@@ -17,10 +18,10 @@
 	media="screen" />
 <link type="text/css" rel="stylesheet"
 	href="css/font-awesome/font-awesome.css" media="screen" />
-	
+
 <link type="text/css" rel="stylesheet" href="css/style.css"
 	media="screen" />
-	
+
 
 <script src="js/jquerytab.js" type="text/javascript"></script>
 <script src="js/custom.modernizr.js" type="text/javascript"></script>
@@ -48,12 +49,16 @@
 	$(document).ready(function() {
 		$('#example1').dataTable();
 	});
+	
+	$(document).ready(function() {
+		$('#example2').dataTable();
+	});
 </script>
 <script
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 
 </head>
-<body onload="getLastID();auto();">
+<body onload="getLastID();getListNotification();auto();">
 	<div class="top-bar">
 		<div class="row">
 			<div class="large-12 columns">
@@ -76,18 +81,9 @@
 											<li><a href="ProcessServlet?btnAction=logout"><i
 													class="icon-off"></i>Đăng xuất</a></li>
 										</ul></li>
-									<li id="notification_li">
-										<!--  <div id="notification_count">1</div>--> <a href="#"
-										id="notificationLink"><i class="icon-notification"></i>Thông
-											báo</a>
-										<div id="notificationContainer">
-											<div id="notificationTitle">Notifications</div>
-											<div id="notificationsBody" class="notifications"></div>
-											<div id="notificationFooter">
-												<a href="#">See All</a>
-											</div>
-										</div>
-									</li>
+										<li><a href="#"><i class="icon-notification"></i>Thông báo</a>
+										<ul id="notificationList" class="sub-topbar">
+										</ul></li>
 								</ul>
 							</c:when>
 							<c:otherwise>
@@ -106,7 +102,7 @@
 					<a href="ProcessServlet">FTS</a>
 				</h1>
 			</div>
-			<div class="large-7 columns top-bar-section">
+			<!-- <div class="large-7 columns top-bar-section">
 				<nav class="">
 					<ul class="inline-list">
 						<c:choose>
@@ -149,6 +145,6 @@
 						</c:choose>
 					</ul>
 				</nav>
-			</div>
+			</div> -->
 		</div>
 	</div>

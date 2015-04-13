@@ -109,7 +109,10 @@ public class MainActivity extends FragmentActivity {
 				R.array.nav_drawer_icons);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
+		
+		array.add(new NavDrawerItem("Xin chào, " + getIntent().getStringExtra("email"),
+				mNavigationImage.getResourceId(0, -1)));
+		
 		for (int i = 0; i < mNavigationDrawerItemTitles.length; i++) {
 			array.add(new NavDrawerItem(mNavigationDrawerItemTitles[i],
 					mNavigationImage.getResourceId(i, -1)));
@@ -236,30 +239,25 @@ public class MainActivity extends FragmentActivity {
 		private void selectItem(int position) {
 			Fragment fragment = null;
 			switch (position) {
-			case 0:
+			case 1:
 				fragment = new RouteList();
 				break;
-			case 1:
+			case 2:
 				fragment = new TabDeals();
 				break;
-			case 2:
+			case 3:
 				fragment = new DealHistory();
 				break;
-			case 3:
+			case 4:
 				fragment = new History();
 				break;
-			case 4:
-				fragment = new Notification();
-				break;
 			case 5:
-				fragment = new SuggestList();
-				break;
-			case 6:
 				SharedPreferences share = getSharedPreferences("driver",
 						Context.MODE_PRIVATE);
 				Editor editor = share.edit();
 				editor.remove("driverID");
 				editor.commit();
+				AlarmReceiver.list = null;
 				Intent intent = new Intent(getApplicationContext(), Login.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK

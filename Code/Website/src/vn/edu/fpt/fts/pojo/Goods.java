@@ -9,22 +9,22 @@ public class Goods implements java.io.Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -3929332099032600939L;
-	private int GoodsID;
-	private int Weight;
-	private double Price;
-	private String PickupTime;
-	private String PickupAddress;
-	private String DeliveryTime;
-	private String DeliveryAddress;
-	private float PickupMarkerLongtitude;
-	private float PickupMarkerLatidute;
-	private float DeliveryMarkerLongtitude;
-	private float DeliveryMarkerLatidute;
-	private String Notes;
-	private String CreateTime;
-	private int Active;
-	private int OwnerID;
-	private int GoodsCategoryID;
+	private int goodsID;
+	private int weight;
+	private double price;
+	private String pickupTime;
+	private String pickupAddress;
+	private String deliveryTime;
+	private String deliveryAddress;
+	private double pickupMarkerLongtitude;
+	private double pickupMarkerLatidute;
+	private double deliveryMarkerLongtitude;
+	private double deliveryMarkerLatidute;
+	private String notes;
+	private String createTime;
+	private int active;
+	private int ownerID;
+	private int goodsCategoryID;
 
 	private Owner owner;
 
@@ -32,120 +32,120 @@ public class Goods implements java.io.Serializable {
 
 	public Goods(int weight, double price, String pickupTime,
 			String pickupAddress, String deliveryTime, String deliveryAddress,
-			float pickupMarkerLongtitude, float pickupMarkerLatidute,
-			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			double pickupMarkerLongtitude, double pickupMarkerLatidute,
+			double deliveryMarkerLongtitude, double deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
 			int goodsCategoryID, GoodsCategory goodsCategory, Owner owner) {
 		super();
-		Weight = weight;
-		Price = price;
-		PickupTime = pickupTime;
-		PickupAddress = pickupAddress;
-		DeliveryTime = deliveryTime;
-		DeliveryAddress = deliveryAddress;
-		PickupMarkerLongtitude = pickupMarkerLongtitude;
-		PickupMarkerLatidute = pickupMarkerLatidute;
-		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
-		DeliveryMarkerLatidute = deliveryMarkerLatidute;
-		Notes = notes;
-		CreateTime = createTime;
-		Active = active;
-		OwnerID = ownerID;
-		GoodsCategoryID = goodsCategoryID;
+		this.weight = weight;
+		this.price = price;
+		this.pickupTime = pickupTime;
+		this.pickupAddress = pickupAddress;
+		this.deliveryTime = deliveryTime;
+		this.deliveryAddress = deliveryAddress;
+		this.pickupMarkerLongtitude = pickupMarkerLongtitude;
+		this.pickupMarkerLatidute = pickupMarkerLatidute;
+		this.deliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		this.deliveryMarkerLatidute = deliveryMarkerLatidute;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.active = active;
+		this.ownerID = ownerID;
+		this.goodsCategoryID = goodsCategoryID;
 		this.goodsCategory = goodsCategory;
 		this.owner = owner;
 	}
 
 	public Goods(int goodsID, int weight, double price, String pickupTime,
 			String pickupAddress, String deliveryTime, String deliveryAddress,
-			float pickupMarkerLongtitude, float pickupMarkerLatidute,
-			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			double pickupMarkerLongtitude, double pickupMarkerLatidute,
+			double deliveryMarkerLongtitude, double deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
 			int goodsCategoryID, GoodsCategory goodsCategory, Owner owner) {
 		super();
-		GoodsID = goodsID;
-		Weight = weight;
-		Price = price;
-		PickupTime = pickupTime;
-		PickupAddress = pickupAddress;
-		DeliveryTime = deliveryTime;
-		DeliveryAddress = deliveryAddress;
-		PickupMarkerLongtitude = pickupMarkerLongtitude;
-		PickupMarkerLatidute = pickupMarkerLatidute;
-		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
-		DeliveryMarkerLatidute = deliveryMarkerLatidute;
-		Notes = notes;
-		CreateTime = createTime;
-		Active = active;
-		OwnerID = ownerID;
-		GoodsCategoryID = goodsCategoryID;
+		this.goodsID = goodsID;
+		this.weight = weight;
+		this.price = price;
+		this.pickupTime = pickupTime;
+		this.pickupAddress = pickupAddress;
+		this.deliveryTime = deliveryTime;
+		this.deliveryAddress = deliveryAddress;
+		this.pickupMarkerLongtitude = pickupMarkerLongtitude;
+		this.pickupMarkerLatidute = pickupMarkerLatidute;
+		this.deliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		this.deliveryMarkerLatidute = deliveryMarkerLatidute;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.active = active;
+		this.ownerID = ownerID;
+		this.goodsCategoryID = goodsCategoryID;
 		this.goodsCategory = goodsCategory;
 		this.owner = owner;
 	}
 
 	public Goods(int weight, String notes, int goodsCategoryID) {
 		super();
-		Weight = weight;
-		Notes = notes;
-		GoodsCategoryID = goodsCategoryID;
+		this.weight = weight;
+		this.notes = notes;
+		this.goodsCategoryID = goodsCategoryID;
 	}
 
 	public Goods(String pickupTime, String pickupAddress, String deliveryTime,
 			String deliveryAddress) {
 		super();
-		PickupTime = pickupTime;
-		PickupAddress = pickupAddress;
-		DeliveryTime = deliveryTime;
-		DeliveryAddress = deliveryAddress;
+		this.pickupTime = pickupTime;
+		this.pickupAddress = pickupAddress;
+		this.deliveryTime = deliveryTime;
+		this.deliveryAddress = deliveryAddress;
 	}
 
 	public Goods(int weight, double price, String pickupTime,
 			String pickupAddress, String deliveryTime, String deliveryAddress,
-			float pickupMarkerLongtitude, float pickupMarkerLatidute,
-			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			double pickupMarkerLongtitude, double pickupMarkerLatidute,
+			double deliveryMarkerLongtitude, double deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
 			int goodsCategoryID) {
 		super();
-		Weight = weight;
-		Price = price;
-		PickupTime = pickupTime;
-		PickupAddress = pickupAddress;
-		DeliveryTime = deliveryTime;
-		DeliveryAddress = deliveryAddress;
-		PickupMarkerLongtitude = pickupMarkerLongtitude;
-		PickupMarkerLatidute = pickupMarkerLatidute;
-		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
-		DeliveryMarkerLatidute = deliveryMarkerLatidute;
-		Notes = notes;
-		CreateTime = createTime;
-		Active = active;
-		OwnerID = ownerID;
-		GoodsCategoryID = goodsCategoryID;
+		this.weight = weight;
+		this.price = price;
+		this.pickupTime = pickupTime;
+		this.pickupAddress = pickupAddress;
+		this.deliveryTime = deliveryTime;
+		this.deliveryAddress = deliveryAddress;
+		this.pickupMarkerLongtitude = pickupMarkerLongtitude;
+		this.pickupMarkerLatidute = pickupMarkerLatidute;
+		this.deliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		this.deliveryMarkerLatidute = deliveryMarkerLatidute;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.active = active;
+		this.ownerID = ownerID;
+		this.goodsCategoryID = goodsCategoryID;
 	}
 
 	public Goods(int goodsID, int weight, double price, String pickupTime,
 			String pickupAddress, String deliveryTime, String deliveryAddress,
-			float pickupMarkerLongtitude, float pickupMarkerLatidute,
-			float deliveryMarkerLongtitude, float deliveryMarkerLatidute,
+			double pickupMarkerLongtitude, double pickupMarkerLatidute,
+			double deliveryMarkerLongtitude, double deliveryMarkerLatidute,
 			String notes, String createTime, int active, int ownerID,
 			int goodsCategoryID) {
 		super();
-		GoodsID = goodsID;
-		Weight = weight;
-		Price = price;
-		PickupTime = pickupTime;
-		PickupAddress = pickupAddress;
-		DeliveryTime = deliveryTime;
-		DeliveryAddress = deliveryAddress;
-		PickupMarkerLongtitude = pickupMarkerLongtitude;
-		PickupMarkerLatidute = pickupMarkerLatidute;
-		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
-		DeliveryMarkerLatidute = deliveryMarkerLatidute;
-		Notes = notes;
-		CreateTime = createTime;
-		Active = active;
-		OwnerID = ownerID;
-		GoodsCategoryID = goodsCategoryID;
+		this.goodsID = goodsID;
+		this.weight = weight;
+		this.price = price;
+		this.pickupTime = pickupTime;
+		this.pickupAddress = pickupAddress;
+		this.deliveryTime = deliveryTime;
+		this.deliveryAddress = deliveryAddress;
+		this.pickupMarkerLongtitude = pickupMarkerLongtitude;
+		this.pickupMarkerLatidute = pickupMarkerLatidute;
+		this.deliveryMarkerLongtitude = deliveryMarkerLongtitude;
+		this.deliveryMarkerLatidute = deliveryMarkerLatidute;
+		this.notes = notes;
+		this.createTime = createTime;
+		this.active = active;
+		this.ownerID = ownerID;
+		this.goodsCategoryID = goodsCategoryID;
 	}
 
 	public Goods() {
@@ -153,131 +153,131 @@ public class Goods implements java.io.Serializable {
 	}
 
 	public int getGoodsID() {
-		return GoodsID;
+		return goodsID;
 	}
 
 	public void setGoodsID(int goodsID) {
-		GoodsID = goodsID;
+		this.goodsID = goodsID;
 	}
 
 	public int getWeight() {
-		return Weight;
+		return weight;
 	}
 
 	public void setWeight(int weight) {
-		Weight = weight;
+		this.weight = weight;
 	}
 
 	public double getPrice() {
-		return Price;
+		return price;
 	}
 
 	public void setPrice(double price) {
-		Price = price;
+		this.price = price;
 	}
 
 	public String getPickupTime() {
-		return PickupTime;
+		return pickupTime;
 	}
 
 	public void setPickupTime(String pickupTime) {
-		PickupTime = pickupTime;
+		this.pickupTime = pickupTime;
 	}
 
 	public String getPickupAddress() {
-		return PickupAddress;
+		return pickupAddress;
 	}
 
 	public void setPickupAddress(String pickupAddress) {
-		PickupAddress = pickupAddress;
+		this.pickupAddress = pickupAddress;
 	}
 
 	public String getDeliveryTime() {
-		return DeliveryTime;
+		return deliveryTime;
 	}
 
 	public void setDeliveryTime(String deliveryTime) {
-		DeliveryTime = deliveryTime;
+		this.deliveryTime = deliveryTime;
 	}
 
 	public String getDeliveryAddress() {
-		return DeliveryAddress;
+		return deliveryAddress;
 	}
 
 	public void setDeliveryAddress(String deliveryAddress) {
-		DeliveryAddress = deliveryAddress;
+		this.deliveryAddress = deliveryAddress;
 	}
 
-	public float getPickupMarkerLongtitude() {
-		return PickupMarkerLongtitude;
+	public double getPickupMarkerLongtitude() {
+		return pickupMarkerLongtitude;
 	}
 
-	public void setPickupMarkerLongtitude(float pickupMarkerLongtitude) {
-		PickupMarkerLongtitude = pickupMarkerLongtitude;
+	public void setPickupMarkerLongtitude(double pickupMarkerLongtitude) {
+		this.pickupMarkerLongtitude = pickupMarkerLongtitude;
 	}
 
-	public float getPickupMarkerLatidute() {
-		return PickupMarkerLatidute;
+	public double getPickupMarkerLatidute() {
+		return pickupMarkerLatidute;
 	}
 
-	public void setPickupMarkerLatidute(float pickupMarkerLatidute) {
-		PickupMarkerLatidute = pickupMarkerLatidute;
+	public void setPickupMarkerLatidute(double pickupMarkerLatidute) {
+		this.pickupMarkerLatidute = pickupMarkerLatidute;
 	}
 
-	public float getDeliveryMarkerLongtitude() {
-		return DeliveryMarkerLongtitude;
+	public double getDeliveryMarkerLongtitude() {
+		return deliveryMarkerLongtitude;
 	}
 
-	public void setDeliveryMarkerLongtitude(float deliveryMarkerLongtitude) {
-		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
+	public void setDeliveryMarkerLongtitude(double deliveryMarkerLongtitude) {
+		this.deliveryMarkerLongtitude = deliveryMarkerLongtitude;
 	}
 
-	public float getDeliveryMarkerLatidute() {
-		return DeliveryMarkerLatidute;
+	public double getDeliveryMarkerLatidute() {
+		return deliveryMarkerLatidute;
 	}
 
-	public void setDeliveryMarkerLatidute(float deliveryMarkerLatidute) {
-		DeliveryMarkerLatidute = deliveryMarkerLatidute;
+	public void setDeliveryMarkerLatidute(double deliveryMarkerLatidute) {
+		this.deliveryMarkerLatidute = deliveryMarkerLatidute;
 	}
 
 	public String getNotes() {
-		return Notes;
+		return notes;
 	}
 
 	public void setNotes(String notes) {
-		Notes = notes;
+		this.notes = notes;
 	}
 
 	public String getCreateTime() {
-		return CreateTime;
+		return createTime;
 	}
 
 	public void setCreateTime(String createTime) {
-		CreateTime = createTime;
+		this.createTime = createTime;
 	}
 
 	public int getActive() {
-		return Active;
+		return active;
 	}
 
 	public void setActive(int active) {
-		Active = active;
+		this.active = active;
 	}
 
 	public int getOwnerID() {
-		return OwnerID;
+		return ownerID;
 	}
 
 	public void setOwnerID(int ownerID) {
-		OwnerID = ownerID;
+		this.ownerID = ownerID;
 	}
 
 	public int getGoodsCategoryID() {
-		return GoodsCategoryID;
+		return goodsCategoryID;
 	}
 
 	public void setGoodsCategoryID(int goodsCategoryID) {
-		GoodsCategoryID = goodsCategoryID;
+		this.goodsCategoryID = goodsCategoryID;
 	}
 
 	public GoodsCategory getGoodsCategory() {

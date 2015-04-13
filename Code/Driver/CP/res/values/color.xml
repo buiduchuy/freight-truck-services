@@ -9,4 +9,5 @@
     <color name="button_pressed">#D32F2F</color>
     <color name="button">#F44336</color>
     <color name="app_color">#2196F3</color>
+    <color name="pressed">#CC97e08f</color>
 </resources>

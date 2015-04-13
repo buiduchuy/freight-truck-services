@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -58,6 +59,7 @@ public class DealHistoryDetail extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setTitle("Lịch sử");
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),

@@ -3,28 +3,11 @@
  */
 package vn.edu.fpt.fts.common;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * @author Huy
@@ -38,11 +21,13 @@ public final class Common {
 	public static final String usernamedb = "sa";
 	public static final String passworddb = "123456";
 
-//	 public static final String CONNECTION = "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
-//	 public static final String usernamedb = "duchuy";
-//	 public static final String passworddb = "huy2108.";
+	// public static final String CONNECTION =
+	// "jdbc:sqlserver://fts2015.cloudapp.net:1433;databaseName=FTS";
+	// public static final String usernamedb = "duchuy";
+	// public static final String passworddb = "huy2108.";
 
-//	 public static final String CONNECTION = "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
+//	 public static final String CONNECTION =
+//	 "jdbc:sqlserver://huybd-capstone.cloudapp.net:1433;databaseName=FTS";
 //	 public static final String usernamedb = "duchuy";
 //	 public static final String passworddb = "huy2108.";
 
@@ -64,21 +49,20 @@ public final class Common {
 
 	// Status of Order
 	public static final int order_pending = 1;
-	public static final int order_driver = 2;
-	public static final int order_owner = 3;
-	public static final int order_staff = 4;
-	public static final int order_lost = 5;
+	public static final int order_accept = 2;
+	public static final int order_lost = 3;
 
-	// Max allow distance for matching goods and routes
+	// Max allow distance for matching goods and routes (km)
 	public static final int maxAllowDistance = 50;
 
-	// Period day for delivery
-	public static final int periodDay = 3;
+	// Period day for delivery (day)
+	public static final int periodDay = 1;
 
-	// Price for 1 kilometer
-	public static final double perKilometer = 0;
-	public static final double perKilogram = 0;
-	public static final double priceCreateGood = 0;
+	// Counter when send deal or counter
+	public static final int maxCounterTime = 3;
+
+	// Fee for create goods
+	public static final int priceCreateGood = 0;
 
 	public static final String API_KEY = "AIzaSyD_etqEdI3WY_xfwnnJNuzT8uLalBofaT0";
 
@@ -92,6 +76,7 @@ public final class Common {
 			return dateInput.toString();
 
 		} catch (ParseException pe) {
+			pe.printStackTrace();
 			return dateInput;
 		}
 	}
@@ -104,157 +89,33 @@ public final class Common {
 		return formatter.format(number);
 	}
 
-	private static final String GEOCODER_REQUEST_PREFIX_FOR_XML = "http://maps.google.com/maps/api/geocode/xml";
+	// Weight kg, distance km
+	public static int calculateGoodsPrice(int weight, double distance) {
+		int price = 22;
+		if (distance <= 300) {
+			if (weight <= 500) {
+				price += (weight - 2) * 3.5;
+			}
+			if (weight <= 1000 && weight > 500) {
+				price += 448 * 3.5 + (weight - 500) * 3.3;
+			}
+			if (weight > 1000) {
+				price += 448 * 3.5 + 500 * 3.3 + (weight - 1000) * 3;
+			}
 
-	public static float latGeoCoding(String address) throws IOException,
-			XPathExpressionException, ParserConfigurationException,
-			SAXException {
+		} else {
 
-		// prepare a URL to the geocoder
-		URL url = new URL(GEOCODER_REQUEST_PREFIX_FOR_XML + "?address="
-				+ URLEncoder.encode(address, "UTF-8") + "&sensor=false");
-
-		// prepare an HTTP connection to the geocoder
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-		Document geocoderResultDocument = null;
-		try {
-			// open the connection and get results as InputSource.
-			conn.connect();
-			InputSource geocoderResultInputSource = new InputSource(
-					conn.getInputStream());
-
-			// read result and parse into XML Document
-			geocoderResultDocument = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().parse(geocoderResultInputSource);
-		} finally {
-			conn.disconnect();
+			if (weight <= 500) {
+				price += (weight - 2) * 4.2;
+			}
+			if (weight <= 1000 && weight > 500) {
+				price += 448 * 4.2 + (weight - 500) * 3.8;
+			}
+			if (weight > 1000) {
+				price += 448 * 4.2 + 500 * 3.8 + (weight - 1000) * 3.5;
+			}
 		}
-
-		// prepare XPath
-		XPath xpath = XPathFactory.newInstance().newXPath();
-
-		// extract the result
-		NodeList resultNodeList = null;
-
-		// a) obtain the formatted_address field for every result
-		resultNodeList = (NodeList) xpath.evaluate(
-				"/GeocodeResponse/result/formatted_address",
-				geocoderResultDocument, XPathConstants.NODESET);
-		for (int i = 0; i < resultNodeList.getLength(); ++i) {
-
-		}
-
-		// b) extract the locality for the first result
-		resultNodeList = (NodeList) xpath
-				.evaluate(
-						"/GeocodeResponse/result[1]/address_component[type/text()='locality']/long_name",
-						geocoderResultDocument, XPathConstants.NODESET);
-		for (int i = 0; i < resultNodeList.getLength(); ++i) {
-		}
-
-		// c) extract the coordinates of the first result
-		resultNodeList = (NodeList) xpath.evaluate(
-				"/GeocodeResponse/result[1]/geometry/location/*",
-				geocoderResultDocument, XPathConstants.NODESET);
-		float lat = Float.NaN;
-		for (int i = 0; i < resultNodeList.getLength(); ++i) {
-			Node node = resultNodeList.item(i);
-			if ("lat".equals(node.getNodeName()))
-				lat = Float.parseFloat(node.getTextContent());
-		}
-		return lat;
-	}
-
-	public static float lngGeoCoding(String address) throws IOException,
-			XPathExpressionException, ParserConfigurationException,
-			SAXException {
-
-		// prepare a URL to the geocoder
-		URL url = new URL(GEOCODER_REQUEST_PREFIX_FOR_XML + "?address="
-				+ URLEncoder.encode(address, "UTF-8") + "&sensor=false");
-
-		// prepare an HTTP connection to the geocoder
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-		Document geocoderResultDocument = null;
-		try {
-			// open the connection and get results as InputSource.
-			conn.connect();
-			InputSource geocoderResultInputSource = new InputSource(
-					conn.getInputStream());
-
-			// read result and parse into XML Document
-			geocoderResultDocument = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder().parse(geocoderResultInputSource);
-		} finally {
-			conn.disconnect();
-		}
-
-		// prepare XPath
-		XPath xpath = XPathFactory.newInstance().newXPath();
-
-		// extract the result
-		NodeList resultNodeList = null;
-
-		// a) obtain the formatted_address field for every result
-		resultNodeList = (NodeList) xpath.evaluate(
-				"/GeocodeResponse/result/formatted_address",
-				geocoderResultDocument, XPathConstants.NODESET);
-		for (int i = 0; i < resultNodeList.getLength(); ++i) {
-
-		}
-
-		// b) extract the locality for the first result
-		resultNodeList = (NodeList) xpath
-				.evaluate(
-						"/GeocodeResponse/result[1]/address_component[type/text()='locality']/long_name",
-						geocoderResultDocument, XPathConstants.NODESET);
-		for (int i = 0; i < resultNodeList.getLength(); ++i) {
-		}
-
-		// c) extract the coordinates of the first result
-		resultNodeList = (NodeList) xpath.evaluate(
-				"/GeocodeResponse/result[1]/geometry/location/*",
-				geocoderResultDocument, XPathConstants.NODESET);
-		float lng = Float.NaN;
-		for (int i = 0; i < resultNodeList.getLength(); ++i) {
-			Node node = resultNodeList.item(i);
-			if ("lng".equals(node.getNodeName()))
-				lng = Float.parseFloat(node.getTextContent());
-		}
-		return lng;
-	}
-
-	public static double distance(double lat1, double lon1, double lat2,
-			double lon2, String unit) {
-		double theta = lon1 - lon2;
-		double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2))
-				+ Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
-				* Math.cos(deg2rad(theta));
-		dist = Math.acos(dist);
-		dist = rad2deg(dist);
-		dist = dist * 60 * 1.1515;
-		if (unit == "K") {
-			dist = dist * 1.609344;
-		} else if (unit == "N") {
-			dist = dist * 0.8684;
-		}
-		return (dist);
-	}
-
-	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-	/* :: This function converts decimal degrees to radians : */
-	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-	public static double deg2rad(double deg) {
-		return (deg * Math.PI / 180.0);
-	}
-
-	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-	/* :: This function converts radians to decimal degrees : */
-	/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-	public static double rad2deg(double rad) {
-		return (rad * 180 / Math.PI);
+		return price;
 	}
 
 }

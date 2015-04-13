@@ -35,8 +35,11 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.classes.Constant;
 import vn.edu.fpt.fts.helper.Common;
 
+import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -76,6 +79,8 @@ public class CancelOffer extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(
 				R.drawable.ic_action_sort_by_size_white);
 		getActivity().getActionBar().setTitle("Đề nghị");
@@ -555,27 +560,45 @@ public class CancelOffer extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				WebService2 ws = new WebService2(WebService.POST_TASK,
-						getActivity(), "Đang xử lý ...");
-				ws.addNameValuePair("dealID", getArguments()
-						.getString("dealID"));
-				ws.addNameValuePair("price", oldPrice);
-				ws.addNameValuePair("notes", note.getText().toString());
-				SimpleDateFormat format = new SimpleDateFormat(
-						"yyyy-MM-dd hh:mm");
-				String createTime = format.format(Calendar.getInstance()
-						.getTime());
-				ws.addNameValuePair("createTime", createTime);
-				ws.addNameValuePair("createBy", "driver");
-				ws.addNameValuePair("routeID", routeID);
-				ws.addNameValuePair("goodsID", goodID);
-				if (refID.equals("0")) {
-					ws.addNameValuePair("refDealID", "");
-				} else {
-					ws.addNameValuePair("refDealID", refID);
-				}
-				ws.addNameValuePair("active", "1");
-				ws.execute(new String[] { SERVICE_URL2 });
+				DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case DialogInterface.BUTTON_POSITIVE:
+							WebService2 ws = new WebService2(
+									WebService.POST_TASK, getActivity(),
+									"Đang xử lý ...");
+							ws.addNameValuePair("dealID", getArguments()
+									.getString("dealID"));
+							ws.addNameValuePair("price", oldPrice);
+							ws.addNameValuePair("notes", note.getText()
+									.toString());
+							SimpleDateFormat format = new SimpleDateFormat(
+									"yyyy-MM-dd hh:mm");
+							String createTime = format.format(Calendar
+									.getInstance().getTime());
+							ws.addNameValuePair("createTime", createTime);
+							ws.addNameValuePair("createBy", "driver");
+							ws.addNameValuePair("routeID", routeID);
+							ws.addNameValuePair("goodsID", goodID);
+							if (refID.equals("0")) {
+								ws.addNameValuePair("refDealID", "");
+							} else {
+								ws.addNameValuePair("refDealID", refID);
+							}
+							ws.addNameValuePair("active", "1");
+							ws.execute(new String[] { SERVICE_URL2 });
+							break;
+						case DialogInterface.BUTTON_NEGATIVE:
+							break;
+						}
+					}
+				};
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						getActivity());
+				builder.setMessage("Bạn có muốn hủy đề nghị này không?")
+						.setPositiveButton("Có", dialogClickListener)
+						.setNegativeButton("Không", dialogClickListener).show();
 			}
 		});
 		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT

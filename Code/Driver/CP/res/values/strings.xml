@@ -73,18 +73,15 @@
         <item>Đề nghị</item>
         <item>Lịch sử</item>
         <item>Hóa đơn</item>
-        <item>Thông báo</item>
-        <item>Tài khoản</item>
         <item>Đăng xuất</item>
     </string-array>
 
     <array name="nav_drawer_icons">
+        <item>@drawable/ic_action_person</item>
         <item>@drawable/ic_action_place</item>
         <item>@drawable/ic_action_sort_by_size</item>
         <item>@drawable/ic_action_event</item>
         <item>@drawable/ic_action_copy</item>
-        <item>@drawable/ic_action_alarms</item>
-        <item>@drawable/ic_action_accounts</item>
         <item>@drawable/ic_action_not_secure</item>
     </array>
 
@@ -110,5 +107,6 @@
     <string name="title_activity_notification">Notification</string>
     <string name="title_activity_deal_history_detail">DealHistoryDetail</string>
     <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_map">Map</string>
 
 </resources>

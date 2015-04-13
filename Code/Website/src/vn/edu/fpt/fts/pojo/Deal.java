@@ -25,9 +25,7 @@ public class Deal implements Serializable {
 	private int routeID;
 	private int goodsID;
 	private int dealStatusID;
-	private int refDealID;
 	private int active;
-
 	private Goods goods;
 	private Route route;
 	private DealStatus dealStatus;
@@ -38,7 +36,7 @@ public class Deal implements Serializable {
 	
 	//not have refDealID
 	public Deal(double price, String notes, String createTime, String createBy,
-			int routeID, int goodsID, int dealStatusID, int active) {
+			int routeID, int goodsID, int active) {
 		super();
 		this.price = price;
 		this.notes = notes;
@@ -46,12 +44,11 @@ public class Deal implements Serializable {
 		this.createBy = createBy;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
-		this.dealStatusID = dealStatusID;
 		this.active = active;
 	}
 
 	public Deal(double price, String notes, String createTime, String createBy,
-			int routeID, int goodsID, int refDealID, int dealStatusID,
+			int routeID, int goodsID, int dealStatusID,
 			int active) {
 		super();
 		this.price = price;
@@ -60,13 +57,12 @@ public class Deal implements Serializable {
 		this.createBy = createBy;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
-		this.refDealID = refDealID;
 		this.dealStatusID = dealStatusID;
 		this.active = active;
 	}
 
 	public Deal(int dealID, double price, String notes, String createTime,
-			String createBy, int routeID, int goodsID, int refDealID,
+			String createBy, int routeID, int goodsID,
 			int dealStatusID, int active) {
 		super();
 		this.dealID = dealID;
@@ -76,7 +72,6 @@ public class Deal implements Serializable {
 		this.createBy = createBy;
 		this.routeID = routeID;
 		this.goodsID = goodsID;
-		this.refDealID = refDealID;
 		this.dealStatusID = dealStatusID;
 		this.active = active;
 	}
@@ -135,14 +130,6 @@ public class Deal implements Serializable {
 
 	public void setGoodsID(int goodsID) {
 		this.goodsID = goodsID;
-	}
-
-	public int getRefDealID() {
-		return refDealID;
-	}
-
-	public void setRefDealID(int refDealID) {
-		this.refDealID = refDealID;
 	}
 
 	public int getDealStatusID() {

@@ -32,6 +32,7 @@ import vn.edu.fpt.fts.drawer.ListItem;
 import vn.edu.fpt.fts.drawer.ListItemAdapter;
 import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
@@ -63,6 +64,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
 		getActivity().getActionBar().setTitle("Lịch sử");
 		list = new ArrayList<ListItem>();
@@ -101,10 +103,10 @@ public class DealHistory extends android.support.v4.app.Fragment {
 		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 30000;
+		private static final int CONN_TIMEOUT = 60000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 30000;
+		private static final int SOCKET_TIMEOUT = 60000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -179,7 +181,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 					String status = "";
 					obj = new JSONObject(response);
 					JSONArray array = obj.getJSONArray("deal");
-					for (int i = array.length() - 1; i >= 0; i--) {
+					for (int i = 0; i < array.length(); i++) {
 						JSONObject item = array.getJSONObject(i);
 						if (!item.getString("dealStatusID").equals("1")) {
 							if (item.getString("createBy").equals("driver")) {

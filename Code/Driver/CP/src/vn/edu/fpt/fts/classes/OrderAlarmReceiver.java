@@ -251,11 +251,11 @@ public class OrderAlarmReceiver extends BroadcastReceiver {
 
 	public void displayOrderNotification() {
 		for (ListItem item : orderList) {
-			String contentText = item.getInfo() + " - " + item.getTitle()
-					+ " kg - " + item.getDescription().replace(".0", "")
+			String contentText = item.getTitle() + " - " + item.getDescription()
+					+ " kg - " + item.getDate().replace(".0", "")
 					+ " nghìn đồng";
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-					con).setSmallIcon(R.drawable.ic_action_alarms)
+					con).setSmallIcon(R.drawable.ic_stat_untitled_1)
 					.setContentTitle("Xác nhận giao hàng")
 					.setContentText(contentText)
 					.setAutoCancel(true)

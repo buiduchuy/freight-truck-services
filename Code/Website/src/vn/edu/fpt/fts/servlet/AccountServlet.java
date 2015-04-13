@@ -5,7 +5,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +13,12 @@ import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
+import vn.edu.fpt.fts.dao.EmployeeDAO;
 import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
+import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.Employee;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Owner;
@@ -34,6 +36,7 @@ public class AccountServlet extends HttpServlet {
 	AccountDAO accountDao = new AccountDAO();
 	GoodsDAO goodsDao = new GoodsDAO();
 	OwnerDAO ownerDao = new OwnerDAO();
+	EmployeeDAO employeeDao = new EmployeeDAO();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -68,64 +71,82 @@ public class AccountServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-
+			
 			if (action.equalsIgnoreCase("login")) {
 				String email = request.getParameter("txtEmail");
 				String password = request.getParameter("txtPassword");
 
-				session.removeAttribute("errorLogin");
-				session.removeAttribute("account");
+				Account account = accountDao.checkLoginAccount(email, password);
 
-				if (accountDao.checkLoginAccount(email, password) != null) {
-					Owner owner = ownerDao.getOwnerByEmail(accountDao
-							.checkLoginAccount(email, password).getEmail());
-					List<GoodsCategory> l_goodsCategory = goodsCategory
-							.getAllGoodsCategory();
+				if (account != null) {
+					if (account.getRoleID() == Common.role_owner) {
 
-					session.setAttribute("typeGoods", l_goodsCategory);
-					session.setAttribute("owner", owner);
-					session.setAttribute("account", owner.getLastName());
+						Owner owner = ownerDao.getOwnerByEmail(account
+								.getEmail());
+						List<GoodsCategory> l_goodsCategory = goodsCategory
+								.getAllGoodsCategory();
 
-					List<Goods> listGoodsByOwner = goodsDao
-							.getListGoodsByOwnerID(owner.getOwnerID());
-					List<Goods> listGoods = new ArrayList<Goods>();
-					for (int i = 0; i < listGoodsByOwner.size(); i++) {
-						if (listGoodsByOwner.get(i).getActive() == 1) {
-							listGoodsByOwner.get(i).setPickupTime(
-									Common.changeFormatDate(listGoodsByOwner
-											.get(i).getPickupTime(),
-											"yyyy-MM-dd hh:mm:ss.s",
-											"dd-MM-yyyy"));
-							listGoodsByOwner.get(i).setDeliveryTime(
-									Common.changeFormatDate(listGoodsByOwner
-											.get(i).getDeliveryTime(),
-											"yyyy-MM-dd hh:mm:ss.s",
-											"dd-MM-yyyy"));
-							listGoods.add(listGoodsByOwner.get(i));
+						session.setAttribute("typeGoods", l_goodsCategory);
+						session.setAttribute("owner", owner);
+						session.setAttribute("account", owner.getLastName());
+
+						List<Goods> listGoodsByOwner = goodsDao
+								.getListGoodsByOwnerID(owner.getOwnerID());
+						List<Goods> listGoods = new ArrayList<Goods>();
+						for (int i = 0; i < listGoodsByOwner.size(); i++) {
+							if (listGoodsByOwner.get(i).getActive() == 1) {
+								listGoodsByOwner.get(i).setPickupTime(
+										Common.changeFormatDate(
+												listGoodsByOwner.get(i)
+														.getPickupTime(),
+												"yyyy-MM-dd hh:mm:ss.s",
+												"dd-MM-yyyy"));
+								listGoodsByOwner.get(i).setDeliveryTime(
+										Common.changeFormatDate(
+												listGoodsByOwner.get(i)
+														.getDeliveryTime(),
+												"yyyy-MM-dd hh:mm:ss.s",
+												"dd-MM-yyyy"));
+								listGoods.add(listGoodsByOwner.get(i));
+							}
 						}
+						session.setAttribute("listGoods", listGoods);
+
+						String returnUrl = request.getParameter("ReturnUrl");
+
+						if (!returnUrl.isEmpty()) {
+							if (returnUrl.contains("loginPage")) {
+								response.sendRedirect("ProcessServlet");
+							} else {
+								response.sendRedirect(returnUrl);
+							}
+						} else {
+							request.getRequestDispatcher("ProcessServlet")
+									.forward(request, response);
+						}
+					} else if (account.getRoleID() == Common.role_staff) {
+						Employee employee = employeeDao
+								.getEmployeeByEmail(account.getEmail());
+						List<GoodsCategory> l_goodsCategory = goodsCategory
+								.getAllGoodsCategory();
+
+						session.setAttribute("typeGoods", l_goodsCategory);
+						session.setAttribute("employee", employee);
+
+						request.getRequestDispatcher("admin/index.jsp")
+								.forward(request, response);
+
 					}
-					session.setAttribute("listGoods", listGoods);
-					if (session.getAttribute("namePage") != null) {
-						String prePage = (String) session
-								.getAttribute("namePage");
-						RequestDispatcher rd = request
-								.getRequestDispatcher(prePage);
-						rd.forward(request, response);
-					} else {
-						request.getRequestDispatcher("index.jsp").forward(
-								request, response);
-					}
+
 				} else {
 					session.setAttribute("errorLogin",
 							"Email hoặc mật khẩu không đúng. Xin đăng nhập lại !");
 					request.getRequestDispatcher("dang-nhap.jsp").forward(
 							request, response);
 				}
+
 			} else if (action.equalsIgnoreCase("logout")) {
-				if (session != null) {
-					session.invalidate();
-				}
-				session = request.getSession(true);
+				session.invalidate();
 				request.getRequestDispatcher("index.jsp").forward(request,
 						response);
 			} else if (action.equalsIgnoreCase("loginPage")) {

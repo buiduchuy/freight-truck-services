@@ -37,6 +37,7 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:textSize="14sp"
+            android:maxLength="50"
             android:hint="@string/note2" >
             <requestFocus />
         </EditText>

@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.methods.HttpGet;
@@ -15,9 +17,11 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
+import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,16 +39,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.internal.pd;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	ArrayList<LatLng> locations = new ArrayList<LatLng>();
@@ -53,6 +63,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	GeocoderHelper helper = new GeocoderHelper();
 	Button button;
 	ProgressDialog pDlg;
+	boolean change = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,14 +71,15 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Tùy chỉnh lộ trình");
-		View v = inflater.inflate(R.layout.activity_customize_route, container,
+		View v = inflater.inflate(R.layout.map, container,
 				false);
 		InputMethodManager imm = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -77,6 +89,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				.findFragmentById(R.id.map);
 		mapFragment.getMapAsync(this);
 		map = mapFragment.getMap();
+
 		map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
 			@Override
@@ -87,6 +100,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			@Override
 			public void onMarkerDragEnd(Marker mrk) {
+				change = true;
 				mrk.remove();
 				String param = mrk.getPosition().latitude + ","
 						+ mrk.getPosition().longitude;
@@ -94,8 +108,11 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				try {
 					real = new GetLatLng().execute(param).get();
 					MarkerOptions realMarker = new MarkerOptions()
-							.position(real).draggable(true)
-							.snippet(mrk.getSnippet());
+							.position(real)
+							.draggable(true)
+							.snippet(mrk.getSnippet())
+							.icon(BitmapDescriptorFactory
+									.fromResource(R.drawable.driver_marker_icon_small));
 					map.addMarker(realMarker);
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
@@ -151,6 +168,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 							"Chỉ thêm được tối đa 2 địa điểm đi qua",
 							Toast.LENGTH_SHORT).show();
 				} else {
+					change = true;
 					for (int i = 0; i < locations.size() - 1; i++) {
 						LatLng s = locations.get(i);
 						LatLng e = locations.get(i + 1);
@@ -162,12 +180,16 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 					map.clear();
 					for (int i = 0; i < locations.size() - 1; i++) {
 						map.addMarker(new MarkerOptions()
-								.position(locations.get(i)).draggable(true)
-								.snippet(String.valueOf(i + 1)));
+								.position(locations.get(i))
+								.icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.driver_marker_icon_small))
+								.draggable(true).snippet(String.valueOf(i + 1)));
 						if (i == locations.size() - 2) {
 							map.addMarker(new MarkerOptions()
 									.position(locations.get(i + 1))
 									.draggable(true)
+									.icon(BitmapDescriptorFactory
+											.fromResource(R.drawable.driver_marker_icon_small))
 									.snippet(String.valueOf(i + 2)));
 						}
 					}
@@ -196,18 +218,21 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			@Override
 			public boolean onMarkerClick(Marker arg0) {
+				change = true;
 				int id = Integer.parseInt(arg0.getSnippet());
 				if (id != 1 && id != locations.size()) {
 					locations.remove(id - 1);
 					map.clear();
 					for (int i = 0; i < locations.size() - 1; i++) {
 						map.addMarker(new MarkerOptions()
-								.position(locations.get(i)).draggable(true)
+								.position(locations.get(i)).draggable(true).icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.driver_marker_icon_small))
 								.snippet(String.valueOf(i + 1)));
 						if (i == locations.size() - 2) {
 							map.addMarker(new MarkerOptions()
 									.position(locations.get(i + 1))
-									.draggable(true)
+									.draggable(true).icon(BitmapDescriptorFactory
+											.fromResource(R.drawable.driver_marker_icon_small))
 									.snippet(String.valueOf(i + 2)));
 						}
 					}
@@ -295,10 +320,11 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			JSONObject obj;
 			try {
 				obj = new JSONObject(result);
-				if(obj.getString("status").equals("ZERO_RESULTS")) {
-					Toast.makeText(getActivity(), "Không có lộ trình qua các điểm này", Toast.LENGTH_SHORT).show();
-				}
-				else {
+				if (obj.getString("status").equals("ZERO_RESULTS")) {
+					Toast.makeText(getActivity(),
+							"Không có lộ trình qua các điểm này",
+							Toast.LENGTH_SHORT).show();
+				} else {
 					helper.drawPath(result, map);
 				}
 			} catch (JSONException e) {
@@ -325,7 +351,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			LatLng start = new GetLatLng().execute(startPoint).get();
 			MarkerOptions startMarker = new MarkerOptions().draggable(true)
-					.snippet("1");
+					.snippet("1").icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.driver_marker_icon_small));
 			startMarker.position(start);
 			locations.add(start);
 			map.addMarker(startMarker);
@@ -333,7 +360,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			if (!point1.equals("")) {
 				p1 = new GetLatLng().execute(point1).get();
 				MarkerOptions p1Marker = new MarkerOptions().draggable(true)
-						.snippet("2");
+						.snippet("2").icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.driver_marker_icon_small));
 				p1Marker.position(p1);
 				locations.add(p1);
 				map.addMarker(p1Marker);
@@ -341,7 +369,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			if (!point2.equals("")) {
 				p2 = new GetLatLng().execute(point2).get();
 				MarkerOptions p2Marker = new MarkerOptions().draggable(true)
-						.snippet("3");
+						.snippet("3").icon(BitmapDescriptorFactory
+								.fromResource(R.drawable.driver_marker_icon_small));
 				p2Marker.position(p2);
 				locations.add(p2);
 				map.addMarker(p2Marker);
@@ -349,7 +378,8 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			LatLng end = new GetLatLng().execute(endPoint).get();
 			MarkerOptions endMarker = new MarkerOptions().draggable(true)
-					.snippet("4");
+					.snippet("4").icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.driver_marker_icon_small));
 			endMarker.position(end);
 			locations.add(end);
 			map.addMarker(endMarker);
@@ -375,7 +405,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
@@ -384,30 +414,50 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				R.string.change);
 		item.setActionView(R.layout.actionbar_update_route);
 		item.getActionView().setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Intent intent = getActivity().getIntent();
 
 				FragmentManager mng = getActivity().getSupportFragmentManager();
 				FragmentTransaction trs = mng.beginTransaction();
-				Fragment fragment = new Fragment();
 				if (intent.getStringExtra("sender").equalsIgnoreCase(
 						"createRoute")) {
-					fragment = getActivity().getSupportFragmentManager()
-							.findFragmentByTag("createRoute");
+					CreateRoute fragment = new CreateRoute();
+					fragment = (CreateRoute) getActivity()
+							.getSupportFragmentManager().findFragmentByTag(
+									"createRoute");
 					intent.putExtra("markerList", locations);
+					intent.putExtra("change", change);
+					fragment.setString("create");
+					trs.replace(R.id.content_frame, fragment);
+					trs.addToBackStack(null);
+					trs.commit();
 				} else {
-					fragment = getActivity().getSupportFragmentManager()
-							.findFragmentByTag("changeRoute");
+					ChangeRoute fragment = new ChangeRoute();
+					fragment = (ChangeRoute) getActivity()
+							.getSupportFragmentManager().findFragmentByTag(
+									"changeRoute");
 					intent.putExtra("markerList2", locations);
+					intent.putExtra("change", change);
+					trs.replace(R.id.content_frame, fragment);
+					trs.addToBackStack(null);
+					trs.commit();
 				}
-				trs.replace(R.id.content_frame, fragment);
-				trs.commit();
 			}
 		});
 		item.setIcon(R.drawable.ic_action_accept);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT|MenuItem.SHOW_AS_ACTION_ALWAYS);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT
+				| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	public void onDestroyView() {
+		super.onDestroyView();
+
+		Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+		if (f != null)
+			getChildFragmentManager().beginTransaction().remove(f)
+					.commitAllowingStateLoss();
 	}
 }

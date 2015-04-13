@@ -9,7 +9,7 @@
 <a href="ProcessServlet?btnAction=manageGoods"
 	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-list"></i> Quản lý hàng</a>
 <a href="ProcessServlet?btnAction=manageDeal"
-	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-exchange"></i> Quản lý đề nghị</a>
+	class="button menu-button expand left" style="text-align:left;padding-left:10px;background-color: #F99D1C;color: white;"><i class="icon-exchange"></i> Quản lý đề nghị</a>
 <a href="ProcessServlet?btnAction=manageOrder"
 	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-list-alt"></i> Quản lý hoá đơn</a>
 

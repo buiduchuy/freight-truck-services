@@ -27,7 +27,7 @@ import vn.edu.fpt.fts.process.NotificationProcess;
  */
 @Path("Order")
 public class OrderAPI {
-	private final static String TAG = "GoodsCategoryAPI";
+	private final static String TAG = "OrderAPI";
 	OrderDAO orderDao = new OrderDAO();
 	NotificationProcess notificationProcess = new NotificationProcess();
 
@@ -78,7 +78,7 @@ public class OrderAPI {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return null;
+		return order;
 	}
 
 	@POST
@@ -87,26 +87,15 @@ public class OrderAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Order> getOrderByDriverID(MultivaluedMap<String, String> params) {
 		List<Order> list = new ArrayList<Order>();
-		List<Order> listOrderByDriver = new ArrayList<Order>();
-
-		list = orderDao.getAllOrder();
 		try {
 			int driverID = Integer.valueOf(params.getFirst("driverID"));
-			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).getDeal() != null) {
-					if (list.get(i).getDeal().getRoute() != null) {
-						if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
-							listOrderByDriver.add(list.get(i));
-						}
-					}
-				}
-			}
+			list = orderDao.getOrderByDriverID(driverID);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return listOrderByDriver;
+		return list;
 	}
 
 	@POST
@@ -115,75 +104,15 @@ public class OrderAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Order> getOrderByOwnerID(MultivaluedMap<String, String> params) {
 		List<Order> list = new ArrayList<Order>();
-		List<Order> listOrderByOwner = new ArrayList<Order>();
-
-		list = orderDao.getAllOrder();
 		try {
 			int ownerID = Integer.valueOf(params.getFirst("ownerID"));
-			for (int i = 0; i < list.size(); i++) {
-				if (list.get(i).getDeal() != null) {
-					if (list.get(i).getDeal().getGoods() != null) {
-						if (list.get(i).getDeal().getGoods().getOwnerID() == ownerID) {
-							listOrderByOwner.add(list.get(i));
-						}
-					}
-				}
-			}
+			list = orderDao.getOrderByOwnerID(ownerID);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-		return listOrderByOwner;
-	}
-
-	@POST
-	@Path("driverConfirmDelivery")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String driverConfirmDelivery(MultivaluedMap<String, String> params) {
-		int ret = 0;
-		try {
-			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			Order db_order = orderDao.getOrderByID(orderID);
-			if (db_order != null) {
-				ret = orderDao
-						.updateOrderStatusID(orderID, Common.order_driver);
-
-				// Insert notification
-				notificationProcess
-						.insertDriverConfirmOrderNotification(db_order);
-			}
-		} catch (NumberFormatException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		}
-		return String.valueOf(ret);
-	}
-
-	@POST
-	@Path("ownerConfirmDelivery")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	@Produces(MediaType.APPLICATION_JSON)
-	public String ownerConfirmDelivery(MultivaluedMap<String, String> params) {
-		int ret = 0;
-		try {
-			int orderID = Integer.valueOf(params.getFirst("orderID"));
-			Order db_order = orderDao.getOrderByID(orderID);
-			if (db_order != null) {
-				ret = orderDao.updateOrderStatusID(orderID, Common.order_owner);
-
-				// Insert notification
-				notificationProcess
-						.insertOwnerConfirmOrderNotification(db_order);
-			}
-		} catch (NumberFormatException e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		}
-		return String.valueOf(ret);
+		return list;
 	}
 
 	@POST
@@ -197,10 +126,6 @@ public class OrderAPI {
 			Order db_order = orderDao.getOrderByID(orderID);
 			if (db_order != null) {
 				ret = orderDao.updateOrderStatusID(orderID, Common.order_lost);
-
-				// Insert notification
-				// notificationProcess
-				// .insertOwnerConfirmOrderNotification(db_order);
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception

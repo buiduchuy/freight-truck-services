@@ -176,6 +176,7 @@ public class OrderDAO {
 				order.setCreateTime(rs.getString("CreateTime"));
 				order.setOrderStatusID(rs.getInt("OrderStatusID"));
 				order.setActive(rs.getInt("Active"));
+
 				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
 						.getInt("OrderID"));
 				order.setDeal(dealDao.getDealByID(dealOrder.getDealID()));
@@ -284,7 +285,7 @@ public class OrderDAO {
 	public List<Order> getOrderByOwnerID(int ownerID) {
 		OrderDAO orderDao = new OrderDAO();
 		List<Order> list = new ArrayList<Order>();
-		
+
 		List<Order> listOrder = new ArrayList<Order>();
 
 		list = orderDao.getAllOrder();
@@ -300,4 +301,86 @@ public class OrderDAO {
 		}
 		return listOrder;
 	}
+
+	public List<Order> getOrderByDriverID(int driverID) {
+		OrderDAO orderDao = new OrderDAO();
+		List<Order> list = new ArrayList<Order>();
+
+		List<Order> listOrder = new ArrayList<Order>();
+
+		list = orderDao.getAllOrder();
+
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getDeal() != null) {
+				if (list.get(i).getDeal().getRoute() != null) {
+					if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
+						listOrder.add(list.get(i));
+					}
+				}
+			}
+		}
+		return listOrder;
+	}
+
+	public List<Order> searchOrderByID(int orderID) {
+		Connection con = null;
+		PreparedStatement stm = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT * FROM [Order] WHERE OrderID LIKE '%?%'";
+
+			stm = con.prepareStatement(sql);
+			int i = 1;
+			stm.setInt(i++, orderID);
+
+			rs = stm.executeQuery();
+			DealOrderDAO dealOrderDao = new DealOrderDAO();
+			DealDAO dealDao = new DealDAO();
+			DealOrder dealOrder = new DealOrder();
+			Order order;
+			List<Order> list = new ArrayList<Order>();
+			while (rs.next()) {
+				order = new Order();
+
+				order.setOrderID(rs.getInt("OrderID"));
+				order.setPrice(rs.getDouble("Price"));
+				order.setCreateTime(rs.getString("CreateTime"));
+				order.setOrderStatusID(rs.getInt("OrderStatusID"));
+				order.setActive(rs.getInt("Active"));
+
+				dealOrder = dealOrderDao.getDealOrderByOrderID(rs
+						.getInt("OrderID"));
+				if (dealOrder != null) {
+					order.setDeal(dealDao.getDealByID(dealOrder.getDealID()));
+				}
+
+				list.add(order);
+			}
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Order table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
 }

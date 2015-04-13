@@ -3,7 +3,6 @@ package vn.edu.fpt.fts.servlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,25 +14,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.xml.sax.SAXException;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
+import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.process.LatLng;
+import vn.edu.fpt.fts.process.MapsUtils;
 import vn.edu.fpt.fts.process.MatchingProcess;
 
 /**
  * Servlet implementation class GoodsServlet
  */
 public class GoodsServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2830056779242459724L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -60,21 +62,23 @@ public class GoodsServlet extends HttpServlet {
 	 *             if a servlet-specific error occurs
 	 * @throws IOException
 	 *             if an I/O error occurs
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 * @throws XPathExpressionException
 	 */
 	protected void processRequest(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException,
-			XPathExpressionException, ParserConfigurationException,
-			SAXException {
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 		try (PrintWriter out = response.getWriter()) {
 			/* TODO output your page here. You may use following sample code. */
 			request.setCharacterEncoding("UTF-8");
+
+			response.setCharacterEncoding("UTF-8");
+
 			String action = request.getParameter("btnAction");
+
 			HttpSession session = request.getSession(true);
-			GoodsDAO goodDao = new GoodsDAO();
+
+			GoodsDAO goodsDao = new GoodsDAO();
+			RouteDAO routeDao = new RouteDAO();
+			MapsUtils mapUtils = new MapsUtils();
 			if ("next1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
@@ -82,78 +86,99 @@ public class GoodsServlet extends HttpServlet {
 						.getParameter("txtdeliveryAddress");
 				String deliveryTime = request.getParameter("txtdeliveryTime");
 
-				Goods r = new Goods(pickupTime, pickupAddress, deliveryTime,
-						deliveryAddress);
-				session.setAttribute("router", r);
-				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
-						response);
+				double distance = mapUtils.parseJsonToGetDistance(mapUtils
+						.getJSONFromUrl(mapUtils.makeDirectionURL(
+								pickupAddress, deliveryAddress)));
+				if (distance >= 10000) {
+					Goods routeInfoOfGoods = new Goods(pickupTime,
+							pickupAddress, deliveryTime, deliveryAddress);
+					session.setAttribute("router", routeInfoOfGoods);
+
+					request.getRequestDispatcher("tao-hang-2.jsp").forward(
+							request, response);
+				} else {
+					request.setAttribute("messageError",
+							"Không thể tạo hàng với khoảng cách dưới 10 km.");
+					request.getRequestDispatcher("tao-hang-1.jsp").forward(
+							request, response);
+				}
 			}
 			if ("next2".equals(action)) {
 				int goodsCategoryID = Integer.parseInt(request
 						.getParameter("ddlgoodsCategoryID"));
-				int weight = Integer
-						.parseInt(request.getParameter("txtWeight"));
-				String notes = "";
-				try {
-					notes = notes + request.getParameter("txtNotes");
-				} catch (Exception ex) {
+				String weightString = request.getParameter("txtWeight");
+				String note = request.getParameter("txtNotes");
+				if (!weightString.isEmpty()) {
+					int weight = Integer.valueOf(weightString);
+					if (weight > 500) {
+						String notes = "";
+						if (!note.isEmpty()) {
+							notes = notes + request.getParameter("txtNotes");
+						}
 
+						Goods g = new Goods(weight, notes, goodsCategoryID);
+						session.setAttribute("good", g);
+
+						// Calculate the price suggest
+						Goods goods = (Goods) session.getAttribute("router");
+
+						double distance = mapUtils
+								.parseJsonToGetDistance(mapUtils.getJSONFromUrl(mapUtils
+										.makeDirectionURL(
+												goods.getPickupAddress(),
+												goods.getDeliveryAddress())));
+						System.out.println("Tải trọng: " + weight
+								+ " Khoảng cách: " + distance);
+
+						session.setAttribute("priceSuggest", Common
+								.calculateGoodsPrice(weight, (distance / 1000)));
+
+						request.getRequestDispatcher("tao-hang-3.jsp").forward(
+								request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Không thể tạo hàng với trọng lượng dưới 500kg.");
+						request.getRequestDispatcher("tao-hang-2.jsp").forward(
+								request, response);
+					}
+				} else {
+					request.setAttribute("messageError",
+							"Xin vui lòng nhập trọng lượng của hàng.");
+					request.getRequestDispatcher("tao-hang-2.jsp").forward(
+							request, response);
 				}
-				Goods g = new Goods(weight, notes, goodsCategoryID);
-				session.setAttribute("good", g);
-				Goods r = (Goods) session.getAttribute("router");
-				DecimalFormat formatPrice = new DecimalFormat("#");
-				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(Common.perKilometer
-								* Common.perKilogram
-								* weight
-								* Common.distance(Common.latGeoCoding(r
-										.getPickupAddress()), Common
-										.lngGeoCoding(r.getPickupAddress()),
-										Common.latGeoCoding(r
-												.getDeliveryAddress()), Common
-												.lngGeoCoding(r
-														.getDeliveryAddress()),
-										"K"))));
-				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
-						response);
+
 			}
 			if ("next3".equals(action)) {
-				double priceSuggest = (Double) session
+				int priceSuggest = (Integer) session
 						.getAttribute("priceSuggest");
-				double price = 0;
+				int price = 0;
 				try {
-					price = Double
-							.parseDouble(request.getParameter("txtPrice"));
+					price = Integer.valueOf(request.getParameter("txtPrice"));
 
 				} catch (Exception ex) {
-
+					ex.printStackTrace();
 				}
 				if (price == 0) {
 					price = priceSuggest;
 				}
-				double total = price + Common.priceCreateGood;
-				session.setAttribute("priceCreate", Common.priceCreateGood);
-				session.setAttribute("total", total);
+
 				session.setAttribute("price", price);
+
 				if (session.getAttribute("router") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-1.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("tao-hang-1.jsp").forward(
+							request, response);
 				}
 				if (session.getAttribute("good") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-2.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("tao-hang-2.jsp").forward(
+							request, response);
 				}
 				if (session.getAttribute("price") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-3.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("tao-hang-3.jsp").forward(
+							request, response);
 				} else {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-4.jsp");
-					rd.forward(request, response);
+					request.getRequestDispatcher("tao-hang-4.jsp").forward(
+							request, response);
 				}
 			}
 			if ("viewCreate_1".equals(action)) {
@@ -167,21 +192,7 @@ public class GoodsServlet extends HttpServlet {
 				rd.forward(request, response);
 			}
 			if ("viewCreate_3".equals(action)) {
-				DecimalFormat formatPrice = new DecimalFormat("#");
-				Goods g = (Goods) session.getAttribute("good");
-				Goods r = (Goods) session.getAttribute("router");
-				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(Common.perKilometer
-								* Common.perKilogram
-								* g.getWeight()
-								* Common.distance(Common.latGeoCoding(r
-										.getPickupAddress()), Common
-										.lngGeoCoding(r.getPickupAddress()),
-										Common.latGeoCoding(r
-												.getDeliveryAddress()), Common
-												.lngGeoCoding(r
-														.getDeliveryAddress()),
-										"K"))));
+				// session.setAttribute("priceSuggest", 0.0);
 
 				request.getRequestDispatcher("tao-hang-3.jsp").forward(request,
 						response);
@@ -212,22 +223,21 @@ public class GoodsServlet extends HttpServlet {
 
 				}
 
-				DecimalFormat formatPrice = new DecimalFormat("#");
 				Goods g = new Goods(weight, notes, goodsCategoryID);
 				session.setAttribute("good", g);
-				Goods r = (Goods) session.getAttribute("router");
-				session.setAttribute("priceSuggest", Double.valueOf(formatPrice
-						.format(Common.perKilometer
-								* Common.perKilogram
-								* weight
-								* Common.distance(Common.latGeoCoding(r
-										.getPickupAddress()), Common
-										.lngGeoCoding(r.getPickupAddress()),
-										Common.latGeoCoding(r
-												.getDeliveryAddress()), Common
-												.lngGeoCoding(r
-														.getDeliveryAddress()),
-										"K"))));
+
+				// Calculate the price suggest
+				Goods goods = (Goods) session.getAttribute("router");
+
+				double distance = mapUtils.parseJsonToGetDistance(mapUtils
+						.getJSONFromUrl(mapUtils.makeDirectionURL(
+								goods.getPickupAddress(),
+								goods.getDeliveryAddress())));
+				System.out.println("Tải trọng: " + weight + " Khoảng cách: "
+						+ distance);
+				session.setAttribute("priceSuggest",
+						Common.calculateGoodsPrice(weight, (distance / 1000)));
+
 				request.getRequestDispatcher("tao-hang-2.jsp").forward(request,
 						response);
 			}
@@ -241,7 +251,7 @@ public class GoodsServlet extends HttpServlet {
 							.parseDouble(request.getParameter("txtPrice"));
 
 				} catch (Exception ex) {
-
+					ex.printStackTrace();
 				}
 				if (price == 0) {
 					price = priceSuggest;
@@ -251,105 +261,124 @@ public class GoodsServlet extends HttpServlet {
 						response);
 			}
 
-			if ("createGood".equals(action)) {
-				if (session.getAttribute("router") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-1.jsp");
-					rd.forward(request, response);
-				}
-				if (session.getAttribute("good") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-2.jsp");
-					rd.forward(request, response);
-				}
-				if (session.getAttribute("price") == null) {
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-3.jsp");
-					rd.forward(request, response);
-				}
-
-				DateFormat dateFormat = new SimpleDateFormat(
-						"yyyy/MM/dd HH:mm:ss");
-				Date date = new Date();
-				String createTime = dateFormat.format(date);
-				String pickupAdress = ((Goods) session.getAttribute("router"))
-						.getPickupAddress();
-				String deliveryAddress = ((Goods) session
-						.getAttribute("router")).getDeliveryAddress();
-				String pickupTime = ((Goods) session.getAttribute("router"))
-						.getPickupTime();
-				String deliveryTime = ((Goods) session.getAttribute("router"))
-						.getDeliveryTime();
-				int weight = ((Goods) session.getAttribute("good")).getWeight();
-				int GoodsCategoryID = ((Goods) session.getAttribute("good"))
-						.getGoodsCategoryID();
-				String notes = ((Goods) session.getAttribute("good"))
-						.getNotes();
-				Double price = (Double) session.getAttribute("price");
-				float lngpickAddress = Common.lngGeoCoding(pickupAdress);
-				if (session.getAttribute("lngpickupAddress") != null) {
-					lngpickAddress = (float) session
-							.getAttribute("lngpickupAddress");
-				}
-				float latpickAddress = Common.latGeoCoding(pickupAdress);
-				if (session.getAttribute("latpickupAddress") != null) {
-					latpickAddress = (float) session
-							.getAttribute("latpickupAddress");
-				}
-				float lngdeliveryAddress = Common.lngGeoCoding(deliveryAddress);
-				if (session.getAttribute("lngdeliveryAddress") != null) {
-					lngpickAddress = (float) session
-							.getAttribute("lngdeliveryAddress");
-				}
-				float latdeliveryAddress = Common.latGeoCoding(deliveryAddress);
-				if (session.getAttribute("latdeliveryAddress") != null) {
-					latpickAddress = (float) session
-							.getAttribute("latdeliveryAddress");
-				}
-				Owner owner = (Owner) session.getAttribute("owner");
-				Goods goo = new Goods(weight, price, Common.changeFormatDate(
-						pickupTime, "dd-MM-yyyy", "MM-dd-yyyy"), pickupAdress,
-						Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-								"MM-dd-yyyy"), deliveryAddress, lngpickAddress,
-						latpickAddress, lngdeliveryAddress, latdeliveryAddress,
-						notes, createTime, Common.activate, owner.getOwnerID(),
-						GoodsCategoryID);
-				int idnewGood = goodDao.insertGoods(goo);
-				if (idnewGood != -1) {
-					session.removeAttribute("router");
-					session.removeAttribute("good");
-					session.removeAttribute("price");
-					session.setAttribute("detailGood1",
-							goodDao.getGoodsByID(idnewGood));
-					session.setAttribute("messageSuccess",
-							"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=suggestFromSystem&txtIdGood="
-									+ idnewGood);
-					rd.forward(request, response);
+			if (action.equalsIgnoreCase("createGoods")) {
+				boolean isCreateGoods = request.getParameterMap().containsKey(
+						"isCreateGoods");
+				if (!isCreateGoods) {
+					request.getRequestDispatcher("tao-hang-1.jsp").forward(
+							request, response);
 				} else {
-					session.setAttribute("messageError",
-							"Có lỗi khi tạo hàng. Vui lòng thử lại");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("tao-hang-4.jsp");
-					rd.forward(request, response);
+					DateFormat dateFormat = new SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss");
+					Date date = new Date();
+					String createTime = dateFormat.format(date);
+					String pickupAdress = ((Goods) session
+							.getAttribute("router")).getPickupAddress();
+					String deliveryAddress = ((Goods) session
+							.getAttribute("router")).getDeliveryAddress();
+					String pickupTime = ((Goods) session.getAttribute("router"))
+							.getPickupTime();
+					String deliveryTime = ((Goods) session
+							.getAttribute("router")).getDeliveryTime();
+					int weight = ((Goods) session.getAttribute("good"))
+							.getWeight();
+					int GoodsCategoryID = ((Goods) session.getAttribute("good"))
+							.getGoodsCategoryID();
+					String notes = ((Goods) session.getAttribute("good"))
+							.getNotes();
+					int price = (Integer) session.getAttribute("price");
+
+					LatLng latLngPickupAddress = mapUtils.parseJson(mapUtils
+							.getJSONFromUrl(mapUtils
+									.makeGeoCodeURL(pickupAdress)));
+
+					double lngpickAddress = latLngPickupAddress.getLongitude();
+					if (session.getAttribute("lngpickupAddress") != null) {
+						lngpickAddress = (double) session
+								.getAttribute("lngpickupAddress");
+					}
+					double latpickAddress = latLngPickupAddress.getLatitude();
+					if (session.getAttribute("latpickupAddress") != null) {
+						latpickAddress = (double) session
+								.getAttribute("latpickupAddress");
+					}
+
+					LatLng latLngDeliveryAddress = mapUtils.parseJson(mapUtils
+							.getJSONFromUrl(mapUtils
+									.makeGeoCodeURL(deliveryAddress)));
+
+					double lngdeliveryAddress = latLngDeliveryAddress
+							.getLongitude();
+					if (session.getAttribute("lngdeliveryAddress") != null) {
+						lngpickAddress = (double) session
+								.getAttribute("lngdeliveryAddress");
+					}
+					double latdeliveryAddress = latLngDeliveryAddress
+							.getLatitude();
+					if (session.getAttribute("latdeliveryAddress") != null) {
+						latpickAddress = (double) session
+								.getAttribute("latdeliveryAddress");
+					}
+					Owner owner = (Owner) session.getAttribute("owner");
+					Goods goo = new Goods(weight, price,
+							Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
+									"MM-dd-yyyy"), pickupAdress,
+							Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+									"MM-dd-yyyy"), deliveryAddress,
+							lngpickAddress, latpickAddress, lngdeliveryAddress,
+							latdeliveryAddress, notes, createTime,
+							Common.activate, owner.getOwnerID(),
+							GoodsCategoryID);
+					int idnewGood = goodsDao.insertGoods(goo);
+					if (idnewGood != -1) {
+						session.removeAttribute("router");
+						session.removeAttribute("good");
+						session.removeAttribute("price");
+						session.setAttribute("detailGood1",
+								goodsDao.getGoodsByID(idnewGood));
+						request.setAttribute("messageSuccess",
+								"Tạo hàng thành công. Hệ thống đưa ra những lộ trình thích hợp!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=getSuggestionRoute&txtGoodsID="
+										+ idnewGood).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Có lỗi khi tạo hàng. Vui lòng thử lại");
+						RequestDispatcher rd = request
+								.getRequestDispatcher("tao-hang-4.jsp");
+						rd.forward(request, response);
+					}
 				}
-			}
-
-			if ("detailroutepickupAddress".equals(action)) {
-
+				// if (session.getAttribute("router") == null) {
+				// // response.sendRedirect("tao-hang-1.jsp");
+				// request.getRequestDispatcher("tao-hang-1.jsp").forward(
+				// request, response);
+				// }
+				// if (session.getAttribute("good") == null) {
+				// // response.sendRedirect("tao-hang-2.jsp");
+				// request.getRequestDispatcher("tao-hang-2.jsp").forward(
+				// request, response);
+				// }
+				// if (session.getAttribute("price") == null) {
+				// // response.sendRedirect("tao-hang-3.jsp");
+				// request.getRequestDispatcher("tao-hang-3.jsp").forward(
+				// request, response);
+				// }
+			} else if ("detailroutepickupAddress".equals(action)) {
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getPickupAddress();
+				LatLng latLngPickupAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils.makeGeoCodeURL(address)));
+
 				session.setAttribute("latpickupAddress",
-						Common.latGeoCoding(address));
+						latLngPickupAddress.getLatitude());
 				session.setAttribute("lngpickupAddress",
-						Common.lngGeoCoding(address));
+						latLngPickupAddress.getLongitude());
 				RequestDispatcher rd = request
 						.getRequestDispatcher("clearpickupAddress.jsp");
 				rd.forward(request, response);
 
-			}
-			if ("finishClearPickupAddress".equals(action)) {
+			} else if ("finishClearPickupAddress".equals(action)) {
 
 				session.setAttribute("latpickAddress", Float.parseFloat(request
 						.getParameter("latpickAddress")));
@@ -362,21 +391,22 @@ public class GoodsServlet extends HttpServlet {
 				RequestDispatcher rd = request
 						.getRequestDispatcher("tao-hang-4.jsp");
 				rd.forward(request, response);
-			}
-			if ("detailroutedeliveryAddress".equals(action)) {
+			} else if ("detailroutedeliveryAddress".equals(action)) {
 
 				Goods good = (Goods) session.getAttribute("router");
 				String address = good.getDeliveryAddress();
+				LatLng latLngDeliveryAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils.makeGeoCodeURL(address)));
+
 				session.setAttribute("latdeliveryAddress",
-						Common.latGeoCoding(address));
+						latLngDeliveryAddress.getLatitude());
 				session.setAttribute("lngdeliveryAddress",
-						Common.lngGeoCoding(address));
+						latLngDeliveryAddress.getLongitude());
 				RequestDispatcher rd = request
 						.getRequestDispatcher("cleardeliveryAddress.jsp");
 				rd.forward(request, response);
 
-			}
-			if ("finishClearDeliveryAddress".equals(action)) {
+			} else if ("finishClearDeliveryAddress".equals(action)) {
 
 				session.setAttribute("latdeliveryAddress", Float
 						.parseFloat(request.getParameter("latdeliveryAddress")));
@@ -393,23 +423,18 @@ public class GoodsServlet extends HttpServlet {
 
 			DriverDAO driverDao = new DriverDAO();
 			MatchingProcess matchingProcess = new MatchingProcess();
-			if ("suggestFromSystem".equals(action)) {
+			if (action.equalsIgnoreCase("getSuggestionRoute")) {
 				session.removeAttribute("listRouter");
-				Goods goods = (Goods) session.getAttribute("detailGood1");
-				int IdGood = goods.getGoodsID();
-				// int IdGood = Integer
-				// .parseInt(request.getParameter("txtIdGood"));
-				List<Route> list = matchingProcess.getSuggestionRoute(IdGood);
-				if (list.size() != 0) {
-					Route[] listRou = new Route[list.size()];
-					list.toArray(listRou);
+				int goodsID = Integer.valueOf(request
+						.getParameter("txtGoodsID"));
+				List<Route> listRoute = matchingProcess
+						.getSuggestionRoute(goodsID);
+				if (listRoute.size() != 0) {
 					List<Driver> listDriver = driverDao.getAllDriver();
-					Driver[] listDri = new Driver[listDriver.size()];
-					listDriver.toArray(listDri);
-					session.setAttribute("detailGood",
-							goodDao.getGoodsByID(IdGood));
-					session.setAttribute("listRouter", listRou);
-					session.setAttribute("listDriver", listDri);
+					request.setAttribute("detailGoods",
+							goodsDao.getGoodsByID(goodsID));
+					request.setAttribute("listRoute", listRoute);
+					request.setAttribute("listDriver", listDriver);
 					request.getRequestDispatcher("goi-y-he-thong.jsp").forward(
 							request, response);
 				} else {
@@ -419,25 +444,9 @@ public class GoodsServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("manageGoods")) {
 				Owner owner = (Owner) session.getAttribute("owner");
 				if (owner != null) {
-					List<Goods> manageGood = goodDao
+					List<Goods> listGoods = goodsDao
 							.getListGoodsByOwnerID(owner.getOwnerID());
-					List<Goods> manageGood1 = new ArrayList<Goods>();
-					for (int i = 0; i < manageGood.size(); i++) {
-						if (manageGood.get(i).getActive() == 1) {
-							manageGood.get(i).setPickupTime(
-									Common.changeFormatDate(manageGood.get(i)
-											.getPickupTime(),
-											"yyyy-MM-dd hh:mm:ss.s",
-											"dd-MM-yyyy"));
-							manageGood.get(i).setDeliveryTime(
-									Common.changeFormatDate(manageGood.get(i)
-											.getDeliveryTime(),
-											"yyyy-MM-dd hh:mm:ss.s",
-											"dd-MM-yyyy"));
-							manageGood1.add(manageGood.get(i));
-						}
-					}
-					session.setAttribute("listGoods", manageGood1);
+					session.setAttribute("listGoods", listGoods);
 
 					request.getRequestDispatcher("quan-ly-hang.jsp").forward(
 							request, response);
@@ -446,151 +455,110 @@ public class GoodsServlet extends HttpServlet {
 							request, response);
 				}
 
-			} else if (action.equalsIgnoreCase("viewDetailGood1")) {
-				try {
-					int goodsID = Integer.parseInt(request
-							.getParameter("idGood"));
-					Goods goods = goodDao.getGoodsByID(goodsID);
-					goods.setPickupTime(Common.changeFormatDate(
-							goods.getPickupTime(), "yyyy-MM-dd hh:mm:ss.s",
-							"dd-MM-yyyy"));
-					goods.setDeliveryTime(Common.changeFormatDate(
-							goods.getDeliveryTime(), "yyyy-MM-dd hh:mm:ss.s",
-							"dd-MM-yyyy"));
-					session.setAttribute("detailGood1", goods);
-					session.setAttribute("priceCreateGood",
-							Common.priceCreateGood);
-					session.setAttribute("priceTotal", goods.getPrice()
-							+ Common.priceCreateGood);
-					request.getRequestDispatcher("chi-tiet-hang.jsp").forward(
-							request, response);
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				}
-			} else if ("viewDetailGood2".equals(action)) {
-				try {
-					int goodsID = Integer.parseInt(request
-							.getParameter("idGood"));
-					Goods goods = goodDao.getGoodsByID(goodsID);
-					session.setAttribute("detailGood2", goods);
-					RequestDispatcher rd = request
-							.getRequestDispatcher("chi-tiet-order.jsp");
-					rd.forward(request, response);
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-				}
-			}
-			if ("updateGood".equals(action)) {
-				Goods go = (Goods) session.getAttribute("detailGood1");
+			} else if (action.equalsIgnoreCase("updateGoods")) {
+
+				int goodsID = Integer.valueOf(request
+						.getParameter("txtGoodsID"));
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
 				String deliveryAddress = request
 						.getParameter("txtdeliveryAddress");
 				String deliveryTime = request.getParameter("txtdeliveryTime");
-				int weight = Integer
-						.parseInt(request.getParameter("txtWeight"));
-				int goodsCategoryID = Integer.parseInt(request
+
+				String createTime = request.getParameter("txtCreateTime");
+				int ownerID = Integer.valueOf(request
+						.getParameter("txtOwnerID"));
+				int weight = Integer.valueOf(request.getParameter("txtWeight"));
+				int goodsCategoryID = Integer.valueOf(request
 						.getParameter("ddlgoodsCategoryID"));
 				String notes = "";
+
 				try {
 					notes = notes + request.getParameter("txtNotes");
 				} catch (Exception ex) {
-
+					ex.printStackTrace();
 				}
 
 				double price = Double.parseDouble(request
 						.getParameter("txtPrice"));
-				if (price == 0) {
-					DecimalFormat formatPrice = new DecimalFormat("#");
-					try {
-						price = Double
-								.valueOf(formatPrice.format(Common.perKilometer
-										* Common.perKilogram
-										* weight
-										* Common.distance(
-												Common.latGeoCoding(pickupAddress),
-												Common.lngGeoCoding(pickupAddress),
-												Common.latGeoCoding(deliveryAddress),
-												Common.lngGeoCoding(deliveryAddress),
-												"K")));
-					} catch (NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (XPathExpressionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ParserConfigurationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SAXException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+
+				Goods goods = new Goods();
+				LatLng latLngPickupAddress = mapUtils
+						.parseJson(mapUtils.getJSONFromUrl(mapUtils
+								.makeGeoCodeURL(pickupAddress)));
+				LatLng latLngDeliveryAddress = mapUtils.parseJson(mapUtils
+						.getJSONFromUrl(mapUtils
+								.makeGeoCodeURL(deliveryAddress)));
+				goods = new Goods(goodsID, weight, price,
+						Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
+								"MM-dd-yyyy"), pickupAddress,
+						Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
+								"MM-dd-yyyy"), deliveryAddress,
+						latLngPickupAddress.getLongitude(),
+						latLngPickupAddress.getLatitude(),
+						latLngDeliveryAddress.getLongitude(),
+						latLngDeliveryAddress.getLatitude(), notes, createTime,
+						Common.activate, ownerID, goodsCategoryID);
+
+				if (routeDao.getListRouteInDealByGoodsID(goodsID).size() > 0) {
+					request.setAttribute(
+							"messageError",
+							"Không thể cập nhật. Món hàng này đã đã được đồng ý hoặc đang trong quá trình thương lượng.");
+				} else {
+					int ret = goodsDao.updateGoods(goods);
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Cập nhật thành công!");
+					} else {
+						request.setAttribute("messageError",
+								"Cập nhật thất bại. Xin vui lòng thử lại sau!");
 					}
 				}
-				Goods good = new Goods();
-				try {
-					good = new Goods(go.getGoodsID(), weight, price,
-							Common.changeFormatDate(pickupTime, "dd-MM-yyyy",
-									"MM-dd-yyyy"), pickupAddress,
-							Common.changeFormatDate(deliveryTime, "dd-MM-yyyy",
-									"MM-dd-yyyy"), deliveryAddress,
-							Common.lngGeoCoding(pickupAddress),
-							Common.latGeoCoding(pickupAddress),
-							Common.lngGeoCoding(deliveryAddress),
-							Common.latGeoCoding(deliveryAddress), notes, go
-									.getCreateTime().toString(),
-							Common.activate, go.getOwnerID(), goodsCategoryID);
-				} catch (XPathExpressionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParserConfigurationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (goodDao.updateGoods(good) == 1) {
-					session.setAttribute("messageSuccess",
-							"Cập nhật thành công");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ go.getGoodsID());
-					rd.forward(request, response);
+				request.getRequestDispatcher(
+						"ProcessServlet?btnAction=viewDetailGoods&goodsID="
+								+ goodsID).forward(request, response);
+			} else if (action.equalsIgnoreCase("deleteGoods")) {
+				int goodsID = Integer.valueOf(request
+						.getParameter("txtGoodsID"));
+
+				if (routeDao
+						.getListRouteInDealPendingOrAcceptByGoodsID(goodsID)
+						.size() > 0) {
+					request.setAttribute("messageError",
+							"Không thể xóa. Món hàng này đang trong quá trình thực hiện thương lượng!");
 				} else {
-					session.setAttribute("messageError",
-							"Cập nhật thất bại. Xin vui lòng thử lại sau!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ go.getGoodsID());
-					rd.forward(request, response);
+					int ret = goodsDao.updateGoodsStatus(goodsID,
+							Common.deactivate);
+					if (ret == 1) {
+						request.setAttribute("messageSuccess",
+								"Xoá hàng thành công!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=manageGoods")
+								.forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Xoá hàng thất bại. Xin vui lòng thử lại sau!");
+					}
 				}
-			} else if ("deleteGood".equals(action)) {
-				int goodsID = Integer.parseInt(request
-						.getParameter("txtIdGood"));
-				Goods goodsDelete = goodDao.getGoodsByID(goodsID);
-				goodsDelete.setActive(10);
-				if (goodDao.updateGoods(goodsDelete) == 1) {
-					session.setAttribute("messageSuccess",
-							"Xoá hàng thành công!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("ProcessServlet?btnAction=manageGoods");
-					rd.forward(request, response);
-				} else {
-					session.setAttribute("messageError",
-							"Xoá hàng thất bại. Xin vui lòng thử lại sau!");
-					RequestDispatcher rd = request
-							.getRequestDispatcher("GoodsServlet?btnAction=viewDetailGood1&idGood="
-									+ goodsID);
-					rd.forward(request, response);
-				}
-			} else if ("viewDetailGood1".equals(action)) {
+
+				request.getRequestDispatcher(
+						"ProcessServlet?btnAction=viewDetailGoods&goodsID="
+								+ goodsID).forward(request, response);
+			} else if ("viewDetailGoods".equals(action)) {
 				try {
-					int goodsID = Integer.parseInt(request
-							.getParameter("idGood"));
-					Goods goods = goodDao.getGoodsByID(goodsID);
-					session.setAttribute("detailGood1", goods);
-					
+					int goodsID = Integer.valueOf(request
+							.getParameter("goodsID"));
+					Goods goods = goodsDao.getGoodsByID(goodsID);
+
+					goods.setDeliveryTime(Common.changeFormatDate(
+							goods.getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS",
+							"dd-MM-yyyy"));
+					goods.setPickupTime(Common.changeFormatDate(
+							goods.getPickupTime(), "yyyy-MM-dd HH:mm:ss.SSS",
+							"dd-MM-yyyy"));
+
+					request.setAttribute("goodsDetail", goods);
+
 					request.getRequestDispatcher("chi-tiet-hang.jsp").forward(
 							request, response);
 				} catch (NumberFormatException e) {
@@ -608,7 +576,7 @@ public class GoodsServlet extends HttpServlet {
 				//
 				// }
 				Owner owner = (Owner) session.getAttribute("owner");
-				List<Goods> manageGood = goodDao.getListGoodsByOwnerID(owner
+				List<Goods> manageGood = goodsDao.getListGoodsByOwnerID(owner
 						.getOwnerID());
 				List<Goods> manageGood1 = new ArrayList<Goods>();
 				for (int i = 0; i < manageGood.size(); i++) {
@@ -628,6 +596,8 @@ public class GoodsServlet extends HttpServlet {
 				request.getRequestDispatcher("quan-ly-hang.jsp").forward(
 						request, response);
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -648,13 +618,7 @@ public class GoodsServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		try {
-			processRequest(request, response);
-		} catch (XPathExpressionException | ParserConfigurationException
-				| SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		processRequest(request, response);
 	}
 
 	/**
@@ -672,13 +636,7 @@ public class GoodsServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		try {
-			processRequest(request, response);
-		} catch (XPathExpressionException | ParserConfigurationException
-				| SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		processRequest(request, response);
 	}
 
 	/**

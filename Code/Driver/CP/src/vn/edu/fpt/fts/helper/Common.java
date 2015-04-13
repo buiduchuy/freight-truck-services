@@ -42,12 +42,12 @@ public final class Common {
 
 	public static String formatLocation(String input) {
 		String keywords[] = { "Việt Nam", "vietnam", "Viet Nam", "Province",
-				"City", "Vietnam" };
+				"City", "Vietnam", "Unnamed Road" };
 		for (int i = 0; i < keywords.length; i++) {
 			if (input.contains(keywords[i])) {
 				input = input.replaceAll(", " + keywords[i], "");
+				input = input.replaceAll(keywords[i] + ", ", "");
 				input = input.replaceAll(keywords[i], "");
-
 			}
 		}
 		return input;

@@ -23,15 +23,11 @@
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 				<jsp:include page="process-create-good.jsp" />
-
-
-				<form action="GoodsServlet" method="post" accept-charset="utf-8">
+				<form action="GoodsServlet" method="POST" accept-charset="utf-8">
 					<div class="row">
 						<c:choose>
 							<c:when test="${not empty router}">
-
 								<div class="large-12 columns">
-
 									<div class="extra-title">
 										<h3>
 											<font color="blue">Địa chỉ giao hàng</font>
@@ -177,7 +173,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtdeliveryTime"
-													value="<fmt:formatDate type="date" value='${tomorrow}' pattern='dd-MM-yyyy'/>"
+													value="<fmt:formatDate type="date" value='${today}' pattern='dd-MM-yyyy'/>"
 													id="delivery-date" data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>
