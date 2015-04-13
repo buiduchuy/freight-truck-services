@@ -39,8 +39,8 @@ public class DealDAO {
 
 			String sql = "INSERT INTO Deal ( " + "Price," + "Notes,"
 					+ "CreateTime," + "CreateBy," + "RouteID," + "GoodsID,"
-					+ "DealStatusID," + "RefDealID," + "Active" + ") VALUES ("
-					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
+					+ "DealStatusID," + "Active" + ") VALUES ("
+					+ "?, " + "?, " + "?, " + "?, " + "?, " + "?, "
 					+ "?, " + "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
@@ -524,7 +524,7 @@ public class DealDAO {
 			String sql = "UPDATE Deal SET " + " Price = ?," + " Notes = ?,"
 					+ " CreateTime = ?," + " CreateBy = ?," + " RouteID = ?,"
 					+ " GoodsID = ?," + " DealStatusID = ?,"
-					+ " RefDealID = ?," + " Active = ? " + " WHERE DealID = '"
+					+ " Active = ? " + " WHERE DealID = '"
 					+ bean.getDealID() + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
@@ -597,47 +597,47 @@ public class DealDAO {
 		return ret;
 	}
 
-	public int getNumberOfDealParent(int goodsID, int routeID) {
-		Connection con = null;
-		PreparedStatement stm = null;
-		ResultSet rs = null;
-		int cnt = 0;
-		try {
-			con = DBAccess.makeConnection();
-
-			String sql = "SELECT RouteID, GoodsID, COUNT(1) as [Count] "
-					+ "FROM Deal WHERE RefDealID IS NULL " + "AND RouteID = "
-					+ routeID + "AND GoodsID = " + goodsID
-					+ "AND DealStatusID <> 4 " + "GROUP BY RouteID, GoodsID";
-
-			stm = con.prepareStatement(sql);
-			rs = stm.executeQuery();
-
-			while (rs.next()) {
-				cnt = rs.getInt("Count");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Can't load data from Deal table");
-			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-		} finally {
-			try {
-				if (rs != null) {
-					rs.close();
-				}
-				if (stm != null) {
-					stm.close();
-				}
-				if (con != null) {
-					con.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
-			}
-		}
-		return cnt;
-	}
+//	public int getNumberOfDealParent(int goodsID, int routeID) {
+//		Connection con = null;
+//		PreparedStatement stm = null;
+//		ResultSet rs = null;
+//		int cnt = 0;
+//		try {
+//			con = DBAccess.makeConnection();
+//
+//			String sql = "SELECT RouteID, GoodsID, COUNT(1) as [Count] "
+//					+ "FROM Deal WHERE RefDealID IS NULL " + "AND RouteID = "
+//					+ routeID + "AND GoodsID = " + goodsID
+//					+ "AND DealStatusID <> 4 " + "GROUP BY RouteID, GoodsID";
+//
+//			stm = con.prepareStatement(sql);
+//			rs = stm.executeQuery();
+//
+//			while (rs.next()) {
+//				cnt = rs.getInt("Count");
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			System.out.println("Can't load data from Deal table");
+//			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+//		} finally {
+//			try {
+//				if (rs != null) {
+//					rs.close();
+//				}
+//				if (stm != null) {
+//					stm.close();
+//				}
+//				if (con != null) {
+//					con.close();
+//				}
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+//			}
+//		}
+//		return cnt;
+//	}
 
 	public int updateStatusOfOtherDeal(int dealStatusID, int goodsID,
 			int remainingWeightOfRoute, int routeID) {

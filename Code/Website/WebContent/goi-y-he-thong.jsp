@@ -3,11 +3,20 @@
 <title>Gợi ý hệ thống</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:set var="listDriver" value="${requestScope.listDriver}" />
 <c:set var="detailGoods" value="${requestScope.detailGoods}" />
 <jsp:include page="header.jsp" />
 <div class="container">
 	<div class="large-12 columns">
+	<div class="row">
+	<div class="large-12 columns">
+		<nav class="breadcrumbs left" id="login-form">
+			<a href="ProcessServlet">Trang chủ</a> <a href="ProcessServlet?btnAction=manageGoods">Quản lý hàng</a> <a href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${detailGoods.goodsID}">Chi tiết hàng</a> <a class="current" href="#">Gợi ý từ hệ thống</a>
+		</nav>
+	</div>
+</div>
+<br/>
 		<div class="large-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
@@ -18,15 +27,12 @@
 		<div class="large-9 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-
-
 				<div class="form-content">
-					<form action="DealServlet" method="get" accept-charset="utf-8">
-						<div class="row">
+					<form action="DealServlet" method="POST" accept-charset="utf-8">
 							<div class="row">
 								<div class="large-12 columns">
 									<h2 class="page-title">
-										<font color="orange">Danh sách tuyến đường phù hợp</font>
+										<font color="orange">Các tuyến đường phù hợp</font>
 									</h2>
 									<c:set var="messageSuccess"
 										value="${requestScope.messageSuccess }" />
@@ -58,7 +64,7 @@
 												<th style="width: 200px;"><font color="orange">ĐIỂM
 														KẾT THÚC</font></th>
 												<th><font color="orange">THỜI GIAN</font></th>
-												<th></th>
+												<th><font color="orange">THAO TÁC</font></th>
 											</tr>
 										</thead>
 										<tbody>
@@ -71,8 +77,22 @@
 														<td>${count}</td>
 														<td>${rows.startingAddress}</td>
 														<td>${rows.destinationAddress}</td>
-														<td>Ngày giao: ${rows.startTime}<br /> <br />Ngày
-															nhận: ${rows.finishTime}
+														<td>
+														<c:set var="stringStartTime"
+																	value="${rows.startTime}" /> <fmt:parseDate
+																	value="${stringStartTime}" var="dateStartTime"
+																	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+																	value="${dateStartTime}" pattern="dd-MM-yyyy"
+																	var="startTimeTimeFormatted" /> Ngày đi: <c:out
+																	value="${startTimeTimeFormatted}" /> 
+														<br /> <br />
+															<c:set var="stringFinishTime"
+																	value="${rows.finishTime}" /> <fmt:parseDate
+																	value="${stringFinishTime}" var="dateFinishTime"
+																	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+																	value="${dateFinishTime}" pattern="dd-MM-yyyy"
+																	var="finishTimeFormatted" /> Ngày về: <c:out
+																	value="${finishTimeFormatted}" /> 
 														</td>
 														<!--<c:if test="${not empty listDriver }">
 														<c:forEach var="driver" items="${listDriver}">
@@ -81,9 +101,17 @@
 															</c:if>
 														</c:forEach>
 													</c:if>-->
-														<td><a class="button"
+														<td>
+														<!--  <a class="button"
 															href="DealServlet?btnAction=routeDetail&routeID=${rows.routeID}&goodsID=${detailGoods.goodsID}">
-																Xem chi tiết</a></td>
+																Chi tiết</a>-->
+																<a class="button success"
+												href="DealServlet?btnAction=createDeal&routeID=${rows.routeID }&goodsID=${detailGoods.goodsID}"
+												onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
+												<i class="icon-envelope"></i> Gửi để nghị
+											</a>
+																
+																</td>
 													</tr>
 												</c:forEach>
 											</c:if>

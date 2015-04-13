@@ -84,7 +84,7 @@ function getListNotification() {
 							if (e.type == "deal") {
 								el = $('<li><a onclick="deactiveNotification('
 										+ e.notificationID
-										+ ')" style="color:#3C763D" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+										+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
 										+ e.idOfType
 										+ '">'
 										+ e.message
@@ -93,7 +93,7 @@ function getListNotification() {
 							if (e.type == "order") {
 								el = $('<li><a onclick="deactiveNotification('
 										+ e.notificationID
-										+ ')" style="color:#31708F" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+										+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
 										+ e.idOfType
 										+ '">'
 										+ e.message

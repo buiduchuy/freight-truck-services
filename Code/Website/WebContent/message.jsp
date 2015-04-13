@@ -7,15 +7,9 @@
 	<div data-alert class="alert-box success radius inline">
 		${messageSuccess} <a href="#" class="close">&times;</a>
 	</div>
-	<%
-		request.getSession().removeAttribute("messageSuccess");
-	%>
 </c:if>
 <c:if test="${not empty messageError}">
 	<div data-alert class="alert-box alert radius inline">
 		${messageError} <a href="#" class="close">&times;</a>
 	</div>
-	<%
-		request.getSession().removeAttribute("messageError");
-	%>
 </c:if>

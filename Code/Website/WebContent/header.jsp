@@ -82,7 +82,7 @@
 													class="icon-off"></i>Đăng xuất</a></li>
 										</ul></li>
 										<li><a href="#"><i class="icon-notification"></i>Thông báo</a>
-										<ul id="notificationList" class="sub-topbar">
+										<ul id="notificationList" class="sub-topbar" style="width:400px;">
 										</ul></li>
 								</ul>
 							</c:when>

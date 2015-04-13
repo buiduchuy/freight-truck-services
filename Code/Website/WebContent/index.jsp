@@ -56,8 +56,9 @@
                     <div class="col-md-4">
                         <div class="iconBox type3">
                             <div class="media text-center ">
-                                <div class="media-body"><h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-truck"></i></font> Tạo hàng nhanh</a>
+                                <div class="media-body"><h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-shopping-cart"></i></font> Tạo hàng nhanh</a>
                                     </h4><p>Tạo hàng nhanh và dễ dàng với hướng dẫn chi tiết cho người sử dụng</p>
+                                    <br/>
                                     <a class="button" href="ProcessServlet?btnAction=createGoods"><i class="icon-ok"></i> Tạo hàng</a>
                                 </div>
                             </div>
@@ -67,8 +68,9 @@
                         <div class="iconBox type3">
                             <div class="media text-center">
                                 <div class="media-body">
-                                    <h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-desktop"></i></font> Quản lý hàng</a></h4>
+                                    <h4 class="  media-heading"><a href=""><font size="+3"><i class="icon-list-ul"></i></font> Quản lý hàng</a></h4>
                                     <p>Giúp người sử dụng quản lý các hàng đã đăng cũng như tìm tài xế cho hàng</p>
+                                    <br/>
                                     <a class="button" href="ProcessServlet?btnAction=manageGoods"><i class="icon-ok"></i> Quản lý hàng</a>
                                 </div>
                             </div>
@@ -79,10 +81,10 @@
                         <div class="iconBox type3">
                             <div class="media text-center">
                                 <div class="media-body"><h4 class="  media-heading">
-                                        <a href=""> <font size="+3"><i class="icon-bar-chart"></i></font> Xem lịch sử hàng</a>
-                                    </h4><p>Quản lý giao hàng chuyên nghiệp hơn, kiểm soát giao hàng, nhận hàng.</p>
-
-                                    <a class="button" href="ProcessServlet?btnAction=manageOrder"><i class="icon-ok"></i> Xem lịch sử hàng</a>
+                                        <a href=""> <font size="+3"><i class="icon-list-alt"></i></font> Quản lý hóa đơn</a>
+                                    </h4><p>Quản lý hóa đơn giao hàng chuyên nghiệp hơn, kiểm soát giao nhận hàng.</p>
+									<br/>
+                                    <a class="button" href="ProcessServlet?btnAction=manageOrder"><i class="icon-ok"></i> Quản lý hóa đơn</a>
                                 </div>
                             </div>
                         </div>

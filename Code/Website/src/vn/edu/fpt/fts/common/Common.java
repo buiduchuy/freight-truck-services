@@ -59,7 +59,7 @@ public final class Common {
 	public static final int periodDay = 1;
 
 	// Counter when send deal or counter
-	public static final int maxCounterTime = 3;
+	public static final int maxCounterTime = 10;
 
 	// Fee for create goods
 	public static final int priceCreateGood = 0;
