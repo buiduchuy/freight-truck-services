@@ -9,7 +9,7 @@
     <string name="action_logout">Đăng xuất</string>
     <string name="title_activity_goods_detail">Chi tiết hàng</string>
     <string name="action_create_goods">Đăng hàng</string>
-    <string name="action_suggest_driver">Gợi ý tài xế</string>
+    <string name="action_suggest_driver">Gợi ý lộ trình</string>
     <string name="action_send_deal">Gửi đề nghị</string>
     <string name="action_accept_deal">Chấp nhận</string>
     <string name="action_decline_deal">Từ chối</string>
