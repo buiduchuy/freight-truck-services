@@ -53,10 +53,8 @@
 										<thead>
 											<tr>
 												<th><font color="orange">#</font></th>
-												<th><font color="orange">Mã tuyến đường</font></th>
 												<th><font color="orange">Địa điểm bắt đầu</font></th>
 												<th><font color="orange">Địa điểm kết thúc</font></th>
-												<th><font color="orange">Điểm uy tín</font></th>
 												<th><font color="orange"></font></th>
 											</tr>
 										</thead>
@@ -70,23 +68,12 @@
 														<c:set var="count" value="${count+1 }" />
 														<tr>
 															<td>${count}</td>
-															<td>
-																${fn:substringBefore(fn:replace(listRoute.createTime, '-', ''),' ')}${listRoute.routeID }</td>
 															<td>${listRoute.startingAddress }</td>
 															<td>${listRoute.destinationAddress }</td>
-															<c:set var="dri" value="${sessionScope.listDriver}" />
-															<c:if test="${not empty dri }">
-																<c:forEach var="driver" items="${dri }">
-																	<c:if test="${driver.driverID==listRoute.driverID }">
-																		<td>${driver.point }</td>
-																	</c:if>
-																</c:forEach>
-															</c:if>
 															<td><a class="button"
 																href="DealServlet?btnAction=viewDetailDeal&dealID=${listDeal.dealID }"><i
 																	class="icon-remove"></i>Chi tiết</a></td>
 														</tr>
-
 													</c:if>
 												</c:forEach>
 											</c:forEach>

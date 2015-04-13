@@ -4,11 +4,21 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
+
 <div class="large-12 columns">
+<div class="row">
+	<div class="large-12 columns">
+		<nav class="breadcrumbs left" id="login-form">
+			<a href="ProcessServlet">Trang chủ</a> <a href="ProcessServlet?btnAction=manageOrder">Quản lý hóa đơn</a> <a class="current"
+				href="#">Chi tiết hóa đơn</a>
+		</nav>
+	</div>
+</div>
+<br/>
 	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
-			<jsp:include page="vertical-menu-manage-good.jsp" />
+			<jsp:include page="vertical-menu-manage-order.jsp" />
 			<div class="row"></div>
 		</div>
 	</div>
@@ -21,26 +31,28 @@
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
-								<font color="orange">Chi tiết hoá đơn <font style="font-weight: 800;">#OD<c:out value="${order.orderID}" /></font></font>
+								<font color="orange">Chi tiết hoá đơn <font
+									style="font-weight: 800;">#OD<c:out
+											value="${order.orderID}" /></font></font>
 							</h2>
 							<c:set var="messageSuccess"
-									value="${requestScope.messageSuccess }" />
-								<c:set var="messageError" value="${requestScope.messageError }" />
-								<c:if test="${not empty messageSuccess}">
-									<div class="row">
-										<div data-alert class="alert-box success radius inline">
-											${messageSuccess} <a href="#" class="close">&times;</a>
-										</div>
+								value="${requestScope.messageSuccess }" />
+							<c:set var="messageError" value="${requestScope.messageError }" />
+							<c:if test="${not empty messageSuccess}">
+								<div class="row">
+									<div data-alert class="alert-box success radius inline">
+										${messageSuccess} <a href="#" class="close">&times;</a>
 									</div>
-								</c:if>
-								<c:if test="${not empty messageError}">
-									<div class="row">
-										<div data-alert class="alert-box alert radius inline">
-											${messageError} <a href="#" class="close">&times;</a>
-										</div>
+								</div>
+							</c:if>
+							<c:if test="${not empty messageError}">
+								<div class="row">
+									<div data-alert class="alert-box alert radius inline">
+										${messageError} <a href="#" class="close">&times;</a>
+									</div>
 
-									</div>
-								</c:if>
+								</div>
+							</c:if>
 						</div>
 						<div class="large-12 columns">
 							<div class="extra-title">
@@ -120,9 +132,12 @@
 												class="validate">*</small> Ngày: </label>
 										</div>
 										<div class="small-7 columns">
-										<c:set var="stringPickupTime" value="${order.deal.goods.pickupTime}" />
-										<fmt:parseDate value="${stringPickupTime}" var="datePickupTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${datePickupTime}" pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
+											<c:set var="stringPickupTime"
+												value="${order.deal.goods.pickupTime}" />
+											<fmt:parseDate value="${stringPickupTime}"
+												var="datePickupTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+											<fmt:formatDate value="${datePickupTime}"
+												pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
 											<input type="text" name="txtpickupTime"
 												value="${pickUpTimeFormatted}" id="pick-up-date"
 												data-date-format="dd-mm-yyyy" readonly>
@@ -156,10 +171,13 @@
 												class="validate">*</small> Ngày: </label>
 										</div>
 										<div class="small-7 columns">
-										
-										<c:set var="stringDeliveryTime" value="${order.deal.goods.deliveryTime}" />
-										<fmt:parseDate value="${stringDeliveryTime}" var="dateDeliveryTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${dateDeliveryTime}" pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
+
+											<c:set var="stringDeliveryTime"
+												value="${order.deal.goods.deliveryTime}" />
+											<fmt:parseDate value="${stringDeliveryTime}"
+												var="dateDeliveryTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+											<fmt:formatDate value="${dateDeliveryTime}"
+												pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
 											<input type="text" name="txtdeliveryTime"
 												value="${deliveryTimeFormatted}" id="dilivery-date"
 												data-date-format="dd-mm-yyyy" readonly>
@@ -194,67 +212,71 @@
 									</h3>
 								</div>
 								<div class="row">
-									<div class="small-4 columns ">
+									<div class="small-3 columns ">
 										<label class="right inline">Địa điểm bắt đầu:</label>
 									</div>
-									<div class="small-6 columns left">
+									<div class="small-4 columns left">
 										<input type="text" id="startAddress" class="left inline"
 											value="${order.deal.route.startingAddress }"
 											readonly="readonly">
 									</div>
-								</div>
-								<div class="row">
-									<div class="small-4 columns ">
+									<div class="small-3 columns ">
 										<label class="right inline">Thời gian bắt đầu:</label>
 									</div>
-									<div class="small-6 columns left">
-										<c:set var="stringStartTime" value="${order.deal.route.startTime}" />
-										<fmt:parseDate value="${stringStartTime}" var="dateStartTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${dateStartTime}" pattern="dd-MM-yyyy" var="startTimeFormatted" />
-										<input type="text" class="left inline" value="<c:out value="${startTimeFormatted}" />"
+									<div class="small-2 columns left">
+										<c:set var="stringStartTime"
+											value="${order.deal.route.startTime}" />
+										<fmt:parseDate value="${stringStartTime}" var="dateStartTime"
+											pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+										<fmt:formatDate value="${dateStartTime}" pattern="dd-MM-yyyy"
+											var="startTimeFormatted" />
+										<input type="text" class="left inline"
+											value="<c:out value="${startTimeFormatted}" />"
 											readonly="readonly">
 									</div>
 								</div>
 								<div class="row">
-									<div class="small-4 columns ">
+									<div class="small-3 columns ">
 										<label class="right inline">Địa điểm kết thúc:</label>
 									</div>
-									<div class="small-6 columns left">
+									<div class="small-4 columns left">
 										<input type="text" id="endAddress" class="left inline"
 											value="${order.deal.route.destinationAddress }"
 											readonly="readonly">
 									</div>
-								</div>
-								<div class="row">
-									<div class="small-4 columns ">
+									<div class="small-3 columns ">
 										<label class="right inline">Thời gian kết thúc:</label>
 									</div>
-									<div class="small-6 columns left">
-										<c:set var="stringFinishTime" value="${order.deal.route.finishTime }" />
-										<fmt:parseDate value="${stringFinishTime}" var="dateFinishTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${dateFinishTime}"	pattern="dd-MM-yyyy" var="finishTimeFormatted" />
-										<input type="text" class="left inline" value="<c:out value="${finishTimeFormatted}"/>"
+									<div class="small-2 columns left">
+										<c:set var="stringFinishTime"
+											value="${order.deal.route.finishTime }" />
+										<fmt:parseDate value="${stringFinishTime}"
+											var="dateFinishTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+										<fmt:formatDate value="${dateFinishTime}" pattern="dd-MM-yyyy"
+											var="finishTimeFormatted" />
+										<input type="text" class="left inline"
+											value="<c:out value="${finishTimeFormatted}"/>"
 											readonly="readonly">
 									</div>
 								</div>
 								<div class="row">
-									<div class="small-4 columns ">
+									<div class="small-3 columns ">
 										<label class="right inline">Khối lượng có thể chở:</label>
 									</div>
-									<div class="small-6 columns left">
+									<div class="small-2 columns left">
 										<input type="text" class="left inline"
 											value="${order.deal.route.weight } kg" readonly="readonly">
 									</div>
 								</div>
-								<div class="row">
-									<div class="small-4 columns ">
+								<!--  <div class="row">
+									<div class="small-3 columns ">
 										<label class="right inline">Ghi chú:</label>
 									</div>
-									<div class="small-6 columns left">
+									<div class="small-9 columns left">
 										<input type="text" class="left inline"
 											value="${order.deal.route.notes }" readonly="readonly">
 									</div>
-								</div>
+								</div>-->
 
 							</div>
 							<div class="row">
@@ -286,7 +308,7 @@
 								</div>
 							</div>
 							<div class="row">
-							
+
 								<div class="large-12 columns">
 									<div class="submit-area">
 										<c:if test="${order.orderStatusID==2}">
@@ -295,7 +317,9 @@
 												onclick="return confirm('Bạn có muốn báo mất hàng không?')">
 												Báo mất hàng </a>
 										</c:if>
-										<a class="button success" href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}"> In hóa đơn </a>
+										<a class="button success"
+											href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
+											In hóa đơn </a>
 									</div>
 								</div>
 							</div>

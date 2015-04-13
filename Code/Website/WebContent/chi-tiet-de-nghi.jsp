@@ -3,13 +3,22 @@
 <title>Chi tiết đề nghị</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<fmt:setLocale value="vi_VN"/>
+<fmt:setLocale value="vi_VN" />
 <jsp:include page="header.jsp" />
-<c:set var="historyDeal" value="${sessionScope.listDealDetail}" />
-<c:set var="sizeHistory" value="${sessionScope.sizeHistory}" />
-<c:set var="detailGood1" value="${sessionScope.detailGood1 }" />
+<c:set var="historyDeal" value="${requestScope.listDealDetail}" />
+<c:set var="sizeHistory" value="${requestScope.sizeHistory}" />
 <div class="container">
 	<div class="large-12 columns">
+		<div class="row">
+			<div class="large-12 columns">
+				<nav class="breadcrumbs left" id="login-form">
+					<a href="ProcessServlet">Trang chủ</a> <a
+						href="ProcessServlet?btnAction=manageDeal">Quản lý đề nghị</a> <a
+						class="current" href="#">Chi tiết đề nghị</a>
+				</nav>
+			</div>
+		</div>
+		<br />
 		<div class="large-3 columns">
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
@@ -84,11 +93,21 @@
 												<c:set var="count" value="${count+1 }" />
 												<tr>
 													<td>${count }</td>
-													<td>${history.createTime }</td>
-													<td>${history.createBy }</td>
-													<td>
-													<fmt:formatNumber type="currency" pattern="###,###,###,###,###"
-															 value="${history.price }" />
+													<td><c:set var="createTime"
+															value="${history.createTime}" /> <fmt:parseDate
+															value="${createTime}" var="dateCreateTime"
+															pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
+															value="${dateCreateTime}" pattern="hh:mm dd-MM-yyyy"
+															var="createTimeFormatted" />
+														<c:out value="${createTimeFormatted}" /></td>
+
+													<td><c:if test="${history.createBy eq 'owner'}">
+													Chủ hàng: ${history.goods.owner.email}
+													</c:if> <c:if test="${history.createBy eq 'driver'}">
+													Tài xế: ${history.route.driver.email}
+													</c:if></td>
+													<td><fmt:formatNumber type="currency"
+															pattern="###,###,###,###,###" value="${history.price }" />
 													</td>
 													<td>${history.notes }</td>
 													<c:if test="${history.dealStatusID==1 }">
@@ -107,7 +126,6 @@
 														<c:when test="${count==sizeHistory}">
 															<c:choose>
 																<c:when test="${history.dealStatusID==1}">
-																	<c:set var="isPending" value="1" />
 																	<c:choose>
 																		<c:when test="${history.createBy== 'driver'}">
 																			<td><a class="button alert"
@@ -194,7 +212,6 @@
 			</div>
 		</div>
 	</div>
-</div>
 </div>
 
 <script>

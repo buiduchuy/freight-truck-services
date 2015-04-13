@@ -12,6 +12,14 @@
 <link rel="stylesheet" href="css/foundation-datepicker.css">
 <div class="container">
 	<div class="large-12 columns">
+	<div class="row">
+	<div class="large-12 columns">
+		<nav class="breadcrumbs left" id="login-form">
+			<a href="ProcessServlet">Trang chủ</a> <a class="current" href="#">Tạo hàng</a>
+		</nav>
+	</div>
+</div>
+<br/>
 		<div class="small-3 columns">
 			<div class="form-content "
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
@@ -173,7 +181,7 @@
 											</div>
 											<div class="small-7 columns">
 												<input type="text" name="txtdeliveryTime"
-													value="<fmt:formatDate type="date" value='${today}' pattern='dd-MM-yyyy'/>"
+													value="<fmt:formatDate type="date" value='${tomorrow}' pattern='dd-MM-yyyy'/>"
 													id="delivery-date" data-date-format="dd-mm-yyyy" readonly>
 											</div>
 										</div>

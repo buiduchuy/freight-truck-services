@@ -217,7 +217,7 @@ public class DealAPI {
 			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
-			// Insert new deal with status accept
+			// Update current deal with status accept
 			ret = dealProcess.acceptDeal1(deal);
 
 		} catch (NumberFormatException e) {
@@ -251,7 +251,7 @@ public class DealAPI {
 			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
-			// Insert new deal with status decline
+			// Update current deal with status decline
 			ret = dealProcess.declineDeal1(deal);
 
 		} catch (NumberFormatException e) {
@@ -285,7 +285,7 @@ public class DealAPI {
 			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			// }
 			deal.setActive(Integer.valueOf(params.getFirst("active")));
-			// Insert new deal with status pending
+			// Update current deal with status cancel
 			ret = dealProcess.cancelDeal1(deal);
 
 		} catch (NumberFormatException e) {

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -143,7 +142,7 @@ public class DealServlet extends HttpServlet {
 								request.setAttribute("messageError",
 										"Không thể gửi đề nghị. Xin vui lòng thử lại sau!");
 								request.getRequestDispatcher(
-										"ProcessSerlvet?btnAction=manageDeal")
+										"ProcessServlet?btnAction=manageDeal")
 										.forward(request, response);
 							}
 						}
@@ -200,8 +199,8 @@ public class DealServlet extends HttpServlet {
 					request.setAttribute("messageError",
 							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
-							"ProcessServlet?btnAction=manageDeal").forward(
-							request, response);
+							"ProcessServlet?btnAction=viewDetailDeal&dealID="
+									+ dealID).forward(request, response);
 				} else {
 
 					Deal acceptDeal = dealDao.getDealByID(dealID);
@@ -211,14 +210,20 @@ public class DealServlet extends HttpServlet {
 						request.setAttribute("messageSuccess",
 								"Đồng ý đề nghị thành công. Xin vui kiểm tra thông tin hóa đơn!");
 						request.getRequestDispatcher(
-								"ProcessSerlvet?btnAction=manageOrder")
+								"ProcessServlet?btnAction=manageOrder")
 								.forward(request, response);
-					} else {
+					} else if (ret == 0) {
 						request.setAttribute("messageError",
 								"Không thể đồng ý đề nghị này. Xin vui lòng thử lại sau!");
 						request.getRequestDispatcher(
-								"ProcessServlet?btnAction=manageDeal").forward(
-								request, response);
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Đề nghị này trước đó đã thay đổi sang trạng thái từ chối hoặc đã đồng ý!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("declineDeal")) {
@@ -227,10 +232,9 @@ public class DealServlet extends HttpServlet {
 				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
 					request.setAttribute("messageError",
 							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
-
 					request.getRequestDispatcher(
-							"ProcessSerlvet?btnAction=manageOrder").forward(
-							request, response);
+							"ProcessServlet?btnAction=viewDetailDeal&dealID="
+									+ dealID).forward(request, response);
 				} else {
 					Deal declineDeal = dealDao.getDealByID(dealID);
 					int ret = dealProcess.declineDeal1(declineDeal);
@@ -238,15 +242,22 @@ public class DealServlet extends HttpServlet {
 						request.setAttribute("messageSuccess",
 								"Từ chối đề nghị thành công!");
 						request.getRequestDispatcher(
-								"ProcessSerlvet?btnAction=viewDetailDeal&dealID="
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ dealID).forward(request, response);
-					} else {
+					} else if (ret == 0) {
 						request.setAttribute("messageError",
 								"Không thể từ chối đề nghị này. Xin vui lòng thử lại sau!");
 						request.getRequestDispatcher(
-								"ProcessSerlvet?btnAction=viewDetailDeal&dealID="
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Đề nghị này trước đó đã thay đổi sang trạng thái từ chối hoặc đã đồng ý!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ dealID).forward(request, response);
 					}
+
 				}
 			} else if (action.equalsIgnoreCase("cancelDeal")) {
 				int dealID = Integer.parseInt(request.getParameter("dealID"));
@@ -268,9 +279,15 @@ public class DealServlet extends HttpServlet {
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ dealID).forward(request, response);
-					} else {
+					} else if (ret == 0) {
 						request.setAttribute("messageError",
 								"Không thể hủy đề nghị. Xin vui lòng thử lại sau!");
+						request.getRequestDispatcher(
+								"ProcessServlet?btnAction=viewDetailDeal&dealID="
+										+ dealID).forward(request, response);
+					} else {
+						request.setAttribute("messageError",
+								"Đề nghị này trước đó đã được thay đổi trạng thái khác nên bạn không thể hủy.");
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=viewDetailDeal&dealID="
 										+ dealID).forward(request, response);
@@ -281,29 +298,17 @@ public class DealServlet extends HttpServlet {
 				List<Deal> listDeal = dealDao.getDealByOwnerID(owner
 						.getOwnerID());
 				request.setAttribute("listDeal", listDeal);
-				
+
 				request.getRequestDispatcher("manage-deal.jsp").forward(
 						request, response);
 			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
 				int dealID = Integer.parseInt(request.getParameter("dealID"));
-				Deal dealFa = dealDao.getDealByID(dealID);
-				List<Deal> listDeal = new ArrayList<Deal>();
-				List<Deal> listDealByGoodId = dealDao.getDealByGoodsID(dealFa
+				Deal deal = dealDao.getDealByID(dealID);
+				List<Deal> listDealByGoodsID = dealDao.getDealByGoodsID(deal
 						.getGoodsID());
-				for (int i = 0; i < listDealByGoodId.size(); i++) {
-					if (listDealByGoodId.get(i).getRouteID() == dealFa
-							.getRouteID()) {
-						listDealByGoodId.get(i).setCreateTime(
-								Common.changeFormatDate(listDealByGoodId.get(i)
-										.getCreateTime(),
-										"yyyy-MM-dd hh:mm:ss.s",
-										"hh:mm dd-MM-yyyy"));
-						listDeal.add(listDealByGoodId.get(i));
-					}
-				}
-				session.setAttribute("listDealDetail", listDeal);
-				session.setAttribute("sizeHistory", listDeal.size());
-				session.setAttribute("dealFa", dealFa);
+				
+				request.setAttribute("listDealDetail", listDealByGoodsID);
+				request.setAttribute("sizeHistory", listDealByGoodsID.size());
 				request.getRequestDispatcher("chi-tiet-de-nghi.jsp").forward(
 						request, response);
 			}
