@@ -5,7 +5,7 @@
 <a class="button menu-button menu-primary-button expand center">Trình đơn</a>
 
 <a href="ProcessServlet?btnAction=createGoods"
-	class="button menu-button expand left active" style="text-align:left;padding-left:10px"><i class="icon-shopping-cart"></i> Tạo hàng</a>
+	class="button menu-button expand left" style="text-align:left;padding-left:10px;background-color: #F99D1C;color: white;"><i class="icon-shopping-cart"></i> Tạo hàng</a>
 <a href="ProcessServlet?btnAction=manageGoods"
 	class="button menu-button expand left" style="text-align:left;padding-left:10px"><i class="icon-list"></i> Quản lý hàng</a>
 <a href="ProcessServlet?btnAction=manageDeal"

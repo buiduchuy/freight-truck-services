@@ -42,15 +42,13 @@
         <section class="content-area bg2 animated" id="chapter644" data-fx="fadeInLeft">
             <div class="container  ">
                 <div class="row">
-                    <h3 class="  text-center">Vận chuyển hàng hoá FTS</h3>
-                    <p class="larger text-center">Lời giải bài toán vận chuyển hàng hoá cho các doanh nghiệp</p>
+                    <h3 class="text-center">Vận chuyển hàng hoá FTS</h3>
                     <p class="larger text-center">Cắt giảm chi phí vận chuyển.
                         </br>
                         Giúp bạn tiết kiệm thời gian, nhân sự đi giao hàng.
                         </br>
-                        Mở rộng vận chuyển hàng hoá toàn quốc, gia tăng cơ hội.
+                        Vận chuyển hàng hoá toàn quốc, gia tăng cơ hội.
                         </br>
-                        Được FTS bảo vệ nếu xảy ra sự cố.
                     </p>
                     <hr>
                 </div>

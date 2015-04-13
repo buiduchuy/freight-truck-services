@@ -14,7 +14,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:set var="order" value="${requestScope.order }" />
 <title>Chi tiết hóa đơn</title>
-
 <jsp:include page="header.jsp"></jsp:include>
 </head>
 
@@ -49,7 +48,9 @@
 				</div>
 				<!-- /.row -->
 				<div class="col-lg-12">
-					<div class="large-12 columns">
+					<div class="panel panel-primary">
+						<!--  <div class="panel-heading">Bootstrap: Basic Form</div>-->
+						<div class="panel-body">
 							<div class="extra-title">
 								<h3>
 									<font color="blue">Thông tin hàng hoá</font>
@@ -127,9 +128,12 @@
 												class="validate">*</small> Ngày: </label>
 										</div>
 										<div class="small-7 columns">
-										<c:set var="stringPickupTime" value="${order.deal.goods.pickupTime}" />
-										<fmt:parseDate value="${stringPickupTime}" var="datePickupTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${datePickupTime}" pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
+											<c:set var="stringPickupTime"
+												value="${order.deal.goods.pickupTime}" />
+											<fmt:parseDate value="${stringPickupTime}"
+												var="datePickupTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+											<fmt:formatDate value="${datePickupTime}"
+												pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
 											<input type="text" name="txtpickupTime"
 												value="${pickUpTimeFormatted}" id="pick-up-date"
 												data-date-format="dd-mm-yyyy" readonly>
@@ -163,10 +167,13 @@
 												class="validate">*</small> Ngày: </label>
 										</div>
 										<div class="small-7 columns">
-										
-										<c:set var="stringDeliveryTime" value="${order.deal.goods.deliveryTime}" />
-										<fmt:parseDate value="${stringDeliveryTime}" var="dateDeliveryTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${dateDeliveryTime}" pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
+
+											<c:set var="stringDeliveryTime"
+												value="${order.deal.goods.deliveryTime}" />
+											<fmt:parseDate value="${stringDeliveryTime}"
+												var="dateDeliveryTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+											<fmt:formatDate value="${dateDeliveryTime}"
+												pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
 											<input type="text" name="txtdeliveryTime"
 												value="${deliveryTimeFormatted}" id="dilivery-date"
 												data-date-format="dd-mm-yyyy" readonly>
@@ -215,10 +222,14 @@
 										<label class="right inline">Thời gian bắt đầu:</label>
 									</div>
 									<div class="small-6 columns left">
-										<c:set var="stringStartTime" value="${order.deal.route.startTime}" />
-										<fmt:parseDate value="${stringStartTime}" var="dateStartTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${dateStartTime}" pattern="dd-MM-yyyy" var="startTimeFormatted" />
-										<input type="text" class="left inline" value="<c:out value="${startTimeFormatted}" />"
+										<c:set var="stringStartTime"
+											value="${order.deal.route.startTime}" />
+										<fmt:parseDate value="${stringStartTime}" var="dateStartTime"
+											pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+										<fmt:formatDate value="${dateStartTime}" pattern="dd-MM-yyyy"
+											var="startTimeFormatted" />
+										<input type="text" class="left inline"
+											value="<c:out value="${startTimeFormatted}" />"
 											readonly="readonly">
 									</div>
 								</div>
@@ -237,10 +248,14 @@
 										<label class="right inline">Thời gian kết thúc:</label>
 									</div>
 									<div class="small-6 columns left">
-										<c:set var="stringFinishTime" value="${order.deal.route.finishTime }" />
-										<fmt:parseDate value="${stringFinishTime}" var="dateFinishTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
-										<fmt:formatDate value="${dateFinishTime}"	pattern="dd-MM-yyyy" var="finishTimeFormatted" />
-										<input type="text" class="left inline" value="<c:out value="${finishTimeFormatted}"/>"
+										<c:set var="stringFinishTime"
+											value="${order.deal.route.finishTime }" />
+										<fmt:parseDate value="${stringFinishTime}"
+											var="dateFinishTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
+										<fmt:formatDate value="${dateFinishTime}" pattern="dd-MM-yyyy"
+											var="finishTimeFormatted" />
+										<input type="text" class="left inline"
+											value="<c:out value="${finishTimeFormatted}"/>"
 											readonly="readonly">
 									</div>
 								</div>
@@ -293,7 +308,7 @@
 								</div>
 							</div>
 							<div class="row">
-							
+
 								<div class="large-12 columns">
 									<div class="submit-area">
 										<c:if test="${order.orderStatusID==2}">
@@ -308,6 +323,7 @@
 							</div>
 							<div class="row"></div>
 						</div>
+					</div>
 				</div>
 				<!-- /.container-fluid -->
 
@@ -322,11 +338,6 @@
 
 		<!-- Bootstrap Core JavaScript -->
 		<script src="admin/js/bootstrap.min.js"></script>
-
-		<!-- Morris Charts JavaScript -->
-		<script src="admin/js/plugins/morris/raphael.min.js"></script>
-		<script src="admin/js/plugins/morris/morris.min.js"></script>
-		<script src="admin/js/plugins/morris/morris-data.js"></script>
 </body>
 
 </html>

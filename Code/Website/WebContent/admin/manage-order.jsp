@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:setLocale value="vi_VN"/>
 <html lang="en">
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <head>
@@ -51,8 +52,8 @@
 									<th><font color="orange">MÃ HĐ</font></th>
 									<th><font color="orange">LOẠI HÀNG</font></th>
 									<th><font color="orange">THỜI GIAN</font></th>
-									<th><font color="orange">GIÁ TIỀN<br/>(NGHÌN VNĐ)</font></th>
 									<th><font color="orange">KHỐI LƯỢNG<br/>(KG)</font></th>
+									<th><font color="orange">GIÁ TIỀN<br/>(NGHÌN VNĐ)</font></th>
 									<th><font color="orange">TRẠNG THÁI</font></th>
 									<th><h4>
 											<font color="orange"></font>
@@ -81,38 +82,32 @@
 											<c:set var="stringPickupTime" value="${order.deal.goods.pickupTime}" /> 
 															<fmt:parseDate value="${stringPickupTime}" var="datePickupTime"	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> 
 															<fmt:formatDate	value="${datePickupTime}" pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
-															Ngày giao: <c:out value="${pickUpTimeFormatted}" />
+															<c:out value="${pickUpTimeFormatted}" />
 											
 											 </br>
 											<c:set var="stringDeliveryTime" value="${order.deal.goods.deliveryTime}" /> 
 															<fmt:parseDate value="${stringDeliveryTime}" var="dateDeliveryTime"	pattern="yyyy-MM-dd HH:mm:ss.SSS" /> 
 															<fmt:formatDate	value="${dateDeliveryTime}" pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
-															Ngày nhận: <c:out value="${deliveryTimeFormatted}" /></td>
-											<td><fmt:formatNumber type="number"
-															groupingUsed="false" value="${order.price}" /></td>
-											<td>${order.deal.goods.weight }</td>
+															<c:out value="${deliveryTimeFormatted}" /></td>
 											<td>
-											<select class="form-control">
-											<c:forEach var="rowOrderStatus" items="${listOrderStatus }">
-											<option value="${rowOrderStatus.orderStatusID }">
-											<c:if test="${rowOrderStatus.orderStatusID==1 }">
-												Đang vận chuyển
+											<fmt:formatNumber type="number" pattern="###,###,###,###,###"
+															value="${order.deal.goods.weight }" />
+											</td>				
+											<td><fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															value="${order.price}" /></td>
+											<td>
+											<c:if test="${order.orderStatusID==1 }">
+												<span class="label label-info">Đang vận chuyển</span>
 											</c:if>
-											<c:if test="${rowOrderStatus.orderStatusID==2 }">
-												Đã chấp nhận
+											<c:if test="${order.orderStatusID==2 }">
+												<span class="label label-success">Đã chấp nhận</span>
 											</c:if>
-											<c:if test="${rowOrderStatus.orderStatusID==3 }">
-												Mất hàng
+											<c:if test="${order.orderStatusID==3 }">
+												<span class="label label-danger">Mất hàng</span>
 											</c:if>
-											</option>
-											</c:forEach>
-											</select>
-											
 											</td>
-											
 											<td>
-											<button class="btn btn-sm btn-success" type="submit" value="employeeUpdateOrderStatus" name="btnAction">Cập nhật</button>
-											<button class="btn btn-sm btn-info" type="submit" value="employeeViewDetailOrder" name="btnAction">Chi tiết</button>
+											<button class="btn btn-sm btn-warning" type="submit" value="employeeViewDetailOrder" name="btnAction">Chi tiết</button>
 											</td>
 											<!--  <td><a class="button"
 												href="ProcessServlet?btnAction=viewDetailOrder&orderID=${order.orderID }">Xem
@@ -141,11 +136,6 @@
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="admin/js/bootstrap.min.js"></script>
-
-	<!-- Morris Charts JavaScript -->
-	<script src="admin/js/plugins/morris/raphael.min.js"></script>
-	<script src="admin/js/plugins/morris/morris.min.js"></script>
-	<script src="admin/js/plugins/morris/morris-data.js"></script>
 
 </body>
 

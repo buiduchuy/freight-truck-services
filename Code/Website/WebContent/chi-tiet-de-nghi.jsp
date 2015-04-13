@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <title>Chi tiết đề nghị</title>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:setLocale value="vi_VN"/>
 <jsp:include page="header.jsp" />
 <c:set var="historyDeal" value="${sessionScope.listDealDetail}" />
 <c:set var="sizeHistory" value="${sessionScope.sizeHistory}" />
@@ -84,7 +86,10 @@
 													<td>${count }</td>
 													<td>${history.createTime }</td>
 													<td>${history.createBy }</td>
-													<td>${history.price }</td>
+													<td>
+													<fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															 value="${history.price }" />
+													</td>
 													<td>${history.notes }</td>
 													<c:if test="${history.dealStatusID==1 }">
 														<td>Đang chờ</td>

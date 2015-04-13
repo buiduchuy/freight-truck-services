@@ -3,6 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<fmt:setLocale value="vi_VN"/>
 <c:set var="namePage" value="${sessionScope.namePage}" />
 <c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 <jsp:include page="header.jsp" />
@@ -82,7 +83,7 @@
 										<th><font color="orange">LOẠI HÀNG</font></th>
 										<th><font color="orange">THỜI GIAN</font></th>
 										<th><font color="orange">KHỐI LƯỢNG</font></th>
-										<th><font color="orange">GIÁ</font></th>
+										<th><font color="orange">GIÁ TIỀN</font></th>
 										<th><h4>
 												<font color="orange"></font>
 											</h4></th>
@@ -119,11 +120,14 @@
 																	var="deliveryTimeFormatted" /> Ngày nhận: <c:out
 																	value="${deliveryTimeFormatted}" />
 													</td>
-													<td>${goods.weight }<input type="hidden"
+													<td>
+													<fmt:formatNumber type="number" pattern="###,###,###,###,###"
+															value="${goods.weight }"/>
+													<input type="hidden"
 														name="goodsID" value="${goods.goodsID}" />
 													</td>
-													<td><fmt:formatNumber type="number"
-															groupingUsed="false" value="${goods.price }" /></td>
+													<td><fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															 value="${goods.price }" /></td>
 													<td><a class="button"
 														href="ProcessServlet?btnAction=viewDetailGoods&goodsID=${goods.goodsID}">Chi tiết</a> <!--  <button type="submit" class="button" name="btnAction"
 														value="viewDetailGoods">Xem chi tiết</button>
