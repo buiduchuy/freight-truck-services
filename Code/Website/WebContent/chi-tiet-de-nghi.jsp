@@ -64,24 +64,13 @@
 								<table id="example" class="display" cellspacing="0" width="100%">
 									<thead>
 										<tr>
-											<th><h3>
-													<font color="orange">#</font>
-												</h3></th>
-											<th><h3>
-													<font color="orange">THỜI GIAN</font>
-												</h3></th>
-											<th><h3>
-													<font color="orange">NGƯỜI GỬI</font>
-												</h3></th>
-											<th><h3>
-													<font color="orange">GIÁ</font>
-												</h3></th>
-											<th><h3>
-													<font color="orange">GHI CHÚ</font>
-												</h3></th>
-											<th><h3>
-													<font color="orange">TRẠNG THÁI</font>
-												</h3></th>
+											<th><font color="orange">#</font></th>
+											<th><font color="orange">THỜI GIAN</font></th>
+											<th><font color="orange">NGƯỜI GỬI</font></th>
+											<th><font color="orange">NGƯỜI NHẬN</font></th>
+											<th><font color="orange">GIÁ</font></th>
+											<th><font color="orange">GHI CHÚ</font></th>
+											<th><font color="orange">TRẠNG THÁI</font></th>
 											<th></th>
 										</tr>
 									</thead>
@@ -98,14 +87,16 @@
 															value="${createTime}" var="dateCreateTime"
 															pattern="yyyy-MM-dd HH:mm:ss.SSS" /> <fmt:formatDate
 															value="${dateCreateTime}" pattern="hh:mm dd-MM-yyyy"
-															var="createTimeFormatted" />
-														<c:out value="${createTimeFormatted}" /></td>
-
-													<td><c:if test="${history.createBy eq 'owner'}">
-													Chủ hàng: ${history.goods.owner.email}
-													</c:if> <c:if test="${history.createBy eq 'driver'}">
-													Tài xế: ${history.route.driver.email}
-													</c:if></td>
+															var="createTimeFormatted" /> <c:out
+															value="${createTimeFormatted}" /></td>
+													<c:if test="${history.createBy eq 'owner'}">
+													<td>Chủ hàng: ${history.goods.owner.email}</td>
+													<td>Tài xế:  ${history.route.driver.email}</td>
+													</c:if>
+													<c:if test="${history.createBy eq 'driver'}">
+													<td>Tài xế: ${history.route.driver.email}</td>
+													<td>Chủ hàng: ${history.goods.owner.email}</td>
+													</c:if>
 													<td><fmt:formatNumber type="currency"
 															pattern="###,###,###,###,###" value="${history.price }" />
 													</td>

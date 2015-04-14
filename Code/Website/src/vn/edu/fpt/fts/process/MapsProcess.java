@@ -35,7 +35,7 @@ import vn.edu.fpt.fts.pojo.RouteMarker;
 public class MapsProcess {
 
 	private final static String TAG = "MapsProcess";
-	MapsUtils mapsUtils = new MapsUtils();
+	MapsUtil mapsUtils = new MapsUtil();
 
 	public String makeURL(String src, List<String> listMarker, String des) {
 //		String urlSrc = mapsUtils.makeURL(src);

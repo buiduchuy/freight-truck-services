@@ -218,7 +218,6 @@ public class OfferResponse extends Fragment {
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
 				oldPrice = obj.getString("price");
-				refID = obj.getString("refDealID");
 
 				obj = obj.getJSONObject("route");
 				Object intervent;
@@ -799,11 +798,6 @@ public class OfferResponse extends Fragment {
 			ws.addNameValuePair("createBy", "driver");
 			ws.addNameValuePair("routeID", routeID);
 			ws.addNameValuePair("goodsID", goodID);
-			if (refID.equals("")) {
-				ws.addNameValuePair("refDealID", id);
-			} else {
-				ws.addNameValuePair("refDealID", refID);
-			}
 			ws.execute(new String[] { SERVICE_URL2 });
 			return true;
 		case R.id.action_decline:
@@ -820,11 +814,6 @@ public class OfferResponse extends Fragment {
 			ws2.addNameValuePair("createBy", "driver");
 			ws2.addNameValuePair("routeID", routeID);
 			ws2.addNameValuePair("goodsID", goodID);
-			if (refID.equals("")) {
-				ws2.addNameValuePair("refDealID", id);
-			} else {
-				ws2.addNameValuePair("refDealID", refID);
-			}
 			ws2.execute(new String[] { SERVICE_URL3 });
 			return true;
 		default:
