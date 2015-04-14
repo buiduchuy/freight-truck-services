@@ -59,9 +59,9 @@
 										<thead>
 											<tr>
 												<th><font color="orange">#</font></th>
-												<th style="width: 200px;"><font color="orange">ĐIỂM
+												<th style="width: 100px;"><font color="orange">ĐIỂM
 														BẮT ĐẦU</font></th>
-												<th style="width: 200px;"><font color="orange">ĐIỂM
+												<th style="width: 100px;"><font color="orange">ĐIỂM
 														KẾT THÚC</font></th>
 												<th><font color="orange">THỜI GIAN</font></th>
 												<th><font color="orange">THAO TÁC</font></th>

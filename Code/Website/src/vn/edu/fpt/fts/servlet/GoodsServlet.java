@@ -24,7 +24,7 @@ import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.process.LatLng;
-import vn.edu.fpt.fts.process.MapsUtils;
+import vn.edu.fpt.fts.process.MapsUtil;
 import vn.edu.fpt.fts.process.MatchingProcess;
 
 /**
@@ -78,7 +78,7 @@ public class GoodsServlet extends HttpServlet {
 
 			GoodsDAO goodsDao = new GoodsDAO();
 			RouteDAO routeDao = new RouteDAO();
-			MapsUtils mapUtils = new MapsUtils();
+			MapsUtil mapUtils = new MapsUtil();
 			if ("next1".equals(action)) {
 				String pickupAddress = request.getParameter("txtpickupAddress");
 				String pickupTime = request.getParameter("txtpickupTime");
