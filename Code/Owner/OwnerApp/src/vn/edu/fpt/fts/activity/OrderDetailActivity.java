@@ -599,11 +599,14 @@ public class OrderDetailActivity extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			if (response.equals("1")) {
+				Toast.makeText(OrderDetailActivity.this,
+						"Phản hồi đơn hàng thành công",
+						Toast.LENGTH_LONG).show();
 				finish();
 				startActivity(getIntent());
 			} else {
 				Toast.makeText(OrderDetailActivity.this,
-						"Chức năng báo mất hàng hiện không hoạt động",
+						"Phản hồi đơn hàng không thành công. Xin vui lòng thử lại",
 						Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
