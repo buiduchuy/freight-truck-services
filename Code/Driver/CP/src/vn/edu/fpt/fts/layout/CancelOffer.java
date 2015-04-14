@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -342,6 +343,15 @@ public class CancelOffer extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -461,7 +471,7 @@ public class CancelOffer extends Fragment {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 1) {
 				Toast.makeText(getActivity(), "Hủy đề nghị thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -470,6 +480,14 @@ public class CancelOffer extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
+			}
+			else if (Integer.parseInt(response) == 0) {
+				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.",
+						Toast.LENGTH_SHORT).show();
+			}
+			else {
+				Toast.makeText(getActivity(), "Đề nghị đã được chấp nhận/ từ chối. Không thể hủy đề nghị.",
+						Toast.LENGTH_SHORT).show();
 			}
 			pDlg.dismiss();
 		}
@@ -509,6 +527,15 @@ public class CancelOffer extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override

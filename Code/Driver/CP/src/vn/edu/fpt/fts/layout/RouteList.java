@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -441,6 +442,15 @@ public class RouteList extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			}  catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override

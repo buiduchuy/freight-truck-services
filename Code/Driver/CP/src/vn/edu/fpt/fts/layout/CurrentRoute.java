@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -94,39 +95,12 @@ public class CurrentRoute extends Fragment {
 		endDate = (TextView) v.findViewById(R.id.textView12);
 		payload = (TextView) v.findViewById(R.id.textView14);
 		cantLoad = (TextView) v.findViewById(R.id.textView16);
-		viewSuggest = (Button) v.findViewById(R.id.button1);
 		Bundle bundle = getArguments();
 		id = bundle.getString("routeID");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang xử lý ...");
 		ws.addNameValuePair("routeID", id);
 		ws.execute(new String[] { SERVICE_URL });
-		viewSuggest.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				SystemSuggest frag = new SystemSuggest();
-				Bundle bundle = new Bundle();
-				bundle.putString("routeID", String.valueOf(id));
-				String[] start = startPoint.getText().toString()
-						.replaceAll("(?i), Vietnam", "")
-						.replaceAll("(?i), Viet Nam", "")
-						.replaceAll("(?i), Việt Nam", "").split(",");
-				String st = start[start.length - 1];
-				String[] end = endPoint.getText().toString()
-						.replaceAll("(?i), Vietnam", "")
-						.replaceAll("(?i), Viet Nam", "")
-						.replaceAll("(?i), Việt Nam", "").split(",");
-				String ed = end[end.length - 1];
-				bundle.putString("route", st + " - " + ed);
-				frag.setArguments(bundle);
-				trs.replace(R.id.content_frame, frag);
-				trs.addToBackStack(null);
-				trs.commit();
-			}
-		});
 		return v;
 	}
 
@@ -333,6 +307,15 @@ public class CurrentRoute extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -451,7 +434,7 @@ public class CurrentRoute extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 1) {
 				Toast.makeText(getActivity(), "Hủy lộ trình thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -460,11 +443,15 @@ public class CurrentRoute extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
+			} else if (Integer.parseInt(response) == 2) {
+				Toast.makeText(getActivity(),
+						"Hủy lộ trình thất bại. Vui lòng thử lại.",
+						Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(),
 						"Hủy lộ trình thất bại. Vui lòng thử lại.",
 						Toast.LENGTH_SHORT).show();
-			}
+			} 
 		}
 
 		// Establish connection and socket (data retrieval) timeouts
@@ -502,6 +489,15 @@ public class CurrentRoute extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -787,7 +783,7 @@ public class CurrentRoute extends Fragment {
 			// handleResponse(response);
 			if (response.equals("0")) {
 				Toast.makeText(getActivity(),
-						"Có lỗi xảy ra,  vui lòng thử lại sau",
+						"Có lỗi xảy ra. Vui lòng thử lại.",
 						Toast.LENGTH_SHORT).show();
 			} else if (response.equals("1")) {
 				Toast.makeText(getActivity(), "Đã hủy lộ trình thành công",
@@ -842,6 +838,15 @@ public class CurrentRoute extends Fragment {
 					response = httpclient.execute(httpget);
 					break;
 				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			} catch (ConnectTimeoutException e) {
 				getActivity().runOnUiThread(new Runnable() {
 					@Override
@@ -891,18 +896,40 @@ public class CurrentRoute extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
-		case R.id.action_update:
-			Intent intent = getActivity().getIntent();
-			intent.removeExtra("markerList");
+		case R.id.action_suggest:
 			FragmentManager mng = getActivity().getSupportFragmentManager();
 			FragmentTransaction trs = mng.beginTransaction();
-			ChangeRoute frag = new ChangeRoute();
+			SystemSuggest frag = new SystemSuggest();
 			Bundle bundle = new Bundle();
-			bundle.putString("id", id);
+			bundle.putString("routeID", String.valueOf(id));
+			String[] start = startPoint.getText().toString()
+					.replaceAll("(?i), Vietnam", "")
+					.replaceAll("(?i), Viet Nam", "")
+					.replaceAll("(?i), Việt Nam", "").split(",");
+			String st = start[start.length - 1];
+			String[] end = endPoint.getText().toString()
+					.replaceAll("(?i), Vietnam", "")
+					.replaceAll("(?i), Viet Nam", "")
+					.replaceAll("(?i), Việt Nam", "").split(",");
+			String ed = end[end.length - 1];
+			bundle.putString("route", st + " - " + ed);
 			frag.setArguments(bundle);
-			trs.replace(R.id.content_frame, frag, "changeRoute");
-			trs.addToBackStack("changeRoute");
+			trs.replace(R.id.content_frame, frag);
+			trs.addToBackStack(null);
 			trs.commit();
+			return true;
+		case R.id.action_update:
+			Intent intent = getActivity().getIntent();
+			intent.removeExtra("markerList2");
+			FragmentManager mng1 = getActivity().getSupportFragmentManager();
+			FragmentTransaction trs1 = mng1.beginTransaction();
+			ChangeRoute frag1 = new ChangeRoute();
+			Bundle bundle1 = new Bundle();
+			bundle1.putString("id", id);
+			frag1.setArguments(bundle1);
+			trs1.replace(R.id.content_frame, frag1, "changeRoute");
+			trs1.addToBackStack("changeRoute");
+			trs1.commit();
 			return true;
 		case R.id.action_delete:
 			DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {

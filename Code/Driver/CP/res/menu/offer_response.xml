@@ -2,6 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="test.example.cp.OfferResponse" >
 
+    <item
+        android:id="@+id/action_counter"
+        android:showAsAction="always|withText"
+        android:icon="@drawable/ic_action_undo"
+        android:title="@string/counter"/>
+    
    <item
         android:id="@+id/action_accept"
         android:showAsAction="always|withText"
