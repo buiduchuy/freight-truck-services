@@ -80,8 +80,7 @@ public class HistoryActivity extends Activity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				int pos = listView.getPositionForView(view);
-				int dealID = list.get(pos).getDealID();
-				int refDealID = list.get(pos).getRefDealID();
+				int dealID = list.get(pos).getDealID();			
 				int dealStatus = list.get(pos).getDealStatusID();
 				String createBy = list.get(pos).getCreateBy();
 				int routeID = list.get(pos).getRouteID();
@@ -90,8 +89,7 @@ public class HistoryActivity extends Activity {
 				String note = list.get(pos).getNotes();
 				Intent intent = new Intent(HistoryActivity.this,
 						DealDetailActivity.class);
-				intent.putExtra("dealID", dealID);
-				intent.putExtra("refDealID", refDealID);
+				intent.putExtra("dealID", dealID);				
 				intent.putExtra("dealStatus", dealStatus);
 				intent.putExtra("createBy", createBy);
 				intent.putExtra("routeID", routeID);
@@ -257,9 +255,7 @@ public class HistoryActivity extends Activity {
 										.getString("goodsID")));
 								deal.setNotes(jsonObject2.getString("notes"));
 								deal.setPrice(Double.parseDouble(jsonObject2
-										.getString("price")));
-								deal.setRefDealID(Integer.parseInt(jsonObject2
-										.getString("refDealID")));
+										.getString("price")));								
 								deal.setRouteID(Integer.parseInt(jsonObject2
 										.getString("routeID")));
 								list.add(deal);
@@ -290,9 +286,7 @@ public class HistoryActivity extends Activity {
 									.getString("goodsID")));
 							deal.setNotes(jsonObject2.getString("notes"));
 							deal.setPrice(Double.parseDouble(jsonObject2
-									.getString("price")));
-							deal.setRefDealID(Integer.parseInt(jsonObject2
-									.getString("refDealID")));
+									.getString("price")));							
 							deal.setRouteID(Integer.parseInt(jsonObject2
 									.getString("routeID")));
 							list.add(deal);

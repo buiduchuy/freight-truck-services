@@ -122,8 +122,7 @@ public class SuggestDetailActivity extends Activity {
 				wst2.addNameValuePair("createTime", Common.formatDate(calendar));
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeid + "");
-				wst2.addNameValuePair("goodsID", goodsID + "");
-				wst2.addNameValuePair("refDealID", "0");
+				wst2.addNameValuePair("goodsID", goodsID + "");				
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
 				// wst2.execute(new String[] { url });
@@ -194,8 +193,7 @@ public class SuggestDetailActivity extends Activity {
 			wst2.addNameValuePair("createTime", Common.formatDate(calendar));
 			wst2.addNameValuePair("createBy", "owner");
 			wst2.addNameValuePair("routeID", routeid + "");
-			wst2.addNameValuePair("goodsID", goodsID + "");
-			wst2.addNameValuePair("refDealID", "0");
+			wst2.addNameValuePair("goodsID", goodsID + "");			
 			wst2.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Create;
 			// wst2.execute(new String[] { url });
