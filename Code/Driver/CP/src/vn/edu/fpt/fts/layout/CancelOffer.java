@@ -216,7 +216,6 @@ public class CancelOffer extends Fragment {
 				}
 				routeID = obj.getString("routeID");
 				goodID = obj.getString("goodsID");
-				refID = obj.getString("refDealID");
 				oldPrice = obj.getString("price");
 
 				obj = obj.getJSONObject("route");
@@ -608,11 +607,6 @@ public class CancelOffer extends Fragment {
 							ws.addNameValuePair("createBy", "driver");
 							ws.addNameValuePair("routeID", routeID);
 							ws.addNameValuePair("goodsID", goodID);
-							if (refID.equals("0")) {
-								ws.addNameValuePair("refDealID", "");
-							} else {
-								ws.addNameValuePair("refDealID", refID);
-							}
 							ws.addNameValuePair("active", "1");
 							ws.execute(new String[] { SERVICE_URL2 });
 							break;
