@@ -55,7 +55,7 @@ public class DealDetailActivity extends Activity {
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote,
 			tvStatus, tvNote1, tvStatus1, tvWeight, tvText;
 	private int dealID;
-	private String refDealID, dealStatus, routeID, goodsID, goodsCategory;
+	private String dealStatus, routeID, goodsID, goodsCategory;
 	private double price;
 	private String note, createBy;
 	private Button btn_counter;
@@ -95,7 +95,6 @@ public class DealDetailActivity extends Activity {
 		// goodspickup = (TextView) findViewById(R.id.textview_pickupgoods);
 		// goodsdeliver = (TextView) findViewById(R.id.textview_delivergoods);
 
-		// refDealID = getIntent().getIntExtra("refDealID", 0);
 		// dealStatus = getIntent().getIntExtra("dealStatus", 0);
 		// routeID = getIntent().getIntExtra("routeID", 0);
 		// goodsID = getIntent().getIntExtra("goodsID", 0);
@@ -126,11 +125,7 @@ public class DealDetailActivity extends Activity {
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeID + "");
 				wst2.addNameValuePair("goodsID", goodsID + "");
-				if (refDealID.equals("0")) {
-					wst2.addNameValuePair("refDealID", dealID + "");
-				} else {
-					wst2.addNameValuePair("refDealID", refDealID + "");
-				}
+				
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
 				// wst2.execute(new String[] { url });
@@ -190,11 +185,7 @@ public class DealDetailActivity extends Activity {
 			wst3.addNameValuePair("createBy", "owner");
 			wst3.addNameValuePair("routeID", routeID + "");
 			wst3.addNameValuePair("goodsID", goodsID + "");
-			if (refDealID.equals("0")) {
-				wst3.addNameValuePair("refDealID", dealID + "");
-			} else {
-				wst3.addNameValuePair("refDealID", refDealID + "");
-			}
+			
 			wst3.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Accept;
 			// wst3.execute(new String[] { url });
@@ -213,11 +204,7 @@ public class DealDetailActivity extends Activity {
 			wst4.addNameValuePair("createBy", "owner");
 			wst4.addNameValuePair("routeID", routeID + "");
 			wst4.addNameValuePair("goodsID", goodsID + "");
-			if (refDealID.equals("0")) {
-				wst4.addNameValuePair("refDealID", dealID + "");
-			} else {
-				wst4.addNameValuePair("refDealID", refDealID + "");
-			}
+			
 			wst4.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Decline;
 			// wst4.execute(new String[] { url });
@@ -236,11 +223,7 @@ public class DealDetailActivity extends Activity {
 			wst5.addNameValuePair("createBy", "owner");
 			wst5.addNameValuePair("routeID", routeID + "");
 			wst5.addNameValuePair("goodsID", goodsID + "");
-			if (refDealID.equals("0")) {
-				wst5.addNameValuePair("refDealID", dealID + "");
-			} else {
-				wst5.addNameValuePair("refDealID", refDealID + "");
-			}
+			
 			wst5.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Cancel;
 			// wst5.execute(new String[] { url });
@@ -762,10 +745,13 @@ public class DealDetailActivity extends Activity {
 						MainActivity.class);
 				startActivity(intent);
 
+			} else if (response.equals("0")) {
+				Toast.makeText(DealDetailActivity.this,
+						"Đề nghị chưa được chấp nhận. Xin vui lòng thử lại",
+						Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(DealDetailActivity.this,
-						"Đề nghị chưa được chấp nhận", Toast.LENGTH_LONG)
-						.show();
+						"Đề nghị không còn tồn tại", Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}
@@ -928,9 +914,13 @@ public class DealDetailActivity extends Activity {
 						MainActivity.class);
 				startActivity(intent);
 
+			} else if (response.equals("0")) {
+				Toast.makeText(DealDetailActivity.this,
+						"Đề nghị chưa được từ chối. Xin vui lòng thử lại",
+						Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(DealDetailActivity.this,
-						"Đề nghị chưa được từ chối", Toast.LENGTH_LONG).show();
+						"Đề nghị không còn tồn tại", Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}
@@ -1093,9 +1083,13 @@ public class DealDetailActivity extends Activity {
 						MainActivity.class);
 				startActivity(intent);
 
+			} else if (response.equals("0")) {
+				Toast.makeText(DealDetailActivity.this,
+						"Đề nghị chưa được hủy. Xin vui lòng thử lại",
+						Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(DealDetailActivity.this,
-						"Đề nghị chưa được hủy", Toast.LENGTH_LONG).show();
+						"Đề nghị không còn tồn tại", Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}
@@ -1253,8 +1247,7 @@ public class DealDetailActivity extends Activity {
 			// handleResponse(response);
 			if (response != null) {
 				try {
-					JSONObject jsonObject = new JSONObject(response);
-					refDealID = jsonObject.getString("refDealID");
+					JSONObject jsonObject = new JSONObject(response);					
 					dealStatus = jsonObject.getString("dealStatusID");
 					routeID = jsonObject.getString("routeID");
 					goodsID = jsonObject.getString("goodsID");
@@ -1274,15 +1267,14 @@ public class DealDetailActivity extends Activity {
 						decline.setVisible(false);
 						cancel.setVisible(true);
 
-					} else if(dealStatus.equals("1") && createBy.equals("driver"))
-					{
+					} else if (dealStatus.equals("1")
+							&& createBy.equals("driver")) {
 						btn_counter.setVisibility(View.VISIBLE);
 						etPrice.setVisibility(View.VISIBLE);
 						etNote.setVisibility(View.VISIBLE);
 						viewLine.setVisibility(View.VISIBLE);
 						tvText.setVisibility(View.VISIBLE);
-					}
-					else if (dealStatus.equals("2")) {
+					} else if (dealStatus.equals("2")) {
 						btn_counter.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
 						etNote.setVisibility(View.GONE);

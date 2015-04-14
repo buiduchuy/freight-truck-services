@@ -8,15 +8,13 @@ public class Deal {
 	private String createBy;
 	private int routeID;
 	private int goodsID;
-	private int dealStatusID;
-	private int refDealID;
+	private int dealStatusID;	
 	private int active;
 	
 	public Deal() {
 		// TODO Auto-generated constructor stub
 	}
 
-	//not have refDealID
 		public Deal(double price, String notes, String createTime, String createBy,
 				int routeID, int goodsID, int dealStatusID, int active) {
 			super();
@@ -30,20 +28,7 @@ public class Deal {
 			this.active = active;
 		}
 
-		public Deal(double price, String notes, String createTime, String createBy,
-				int routeID, int goodsID, int refDealID, int dealStatusID,
-				int active) {
-			super();
-			this.price = price;
-			this.notes = notes;
-			this.createTime = createTime;
-			this.createBy = createBy;
-			this.routeID = routeID;
-			this.goodsID = goodsID;
-			this.refDealID = refDealID;
-			this.dealStatusID = dealStatusID;
-			this.active = active;
-		}
+		
 	public int getDealID() {
 		return dealID;
 	}
@@ -108,13 +93,6 @@ public class Deal {
 		this.dealStatusID = dealStatusID;
 	}
 
-	public int getRefDealID() {
-		return refDealID;
-	}
-
-	public void setRefDealID(int refDealID) {
-		this.refDealID = refDealID;
-	}
 
 	public int getActive() {
 		return active;

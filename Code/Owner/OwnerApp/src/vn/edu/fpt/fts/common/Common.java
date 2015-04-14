@@ -47,8 +47,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public final class Common {
-//	 public static final String IP_URL = "http://192.168.1.200:8080/FTS/api/";
-	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
+	 public static final String IP_URL = "http://192.168.1.200:8080/FTS/api/";
+//	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
 	public static final String Service_Goods_Create = "Goods/Create";
 	public static final String Service_Login = "Account/OwnerLogin";
 	public static final String Service_GoodsCategory_Get = "GoodsCategory/get";
