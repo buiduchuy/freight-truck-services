@@ -9,6 +9,7 @@
     <string name="action_logout">Đăng xuất</string>
     <string name="title_activity_goods_detail">Chi tiết hàng</string>
     <string name="action_create_goods">Đăng hàng</string>
+    <string name="action_pay">Thanh toán</string>
     <string name="action_suggest_driver">Gợi ý lộ trình</string>
     <string name="action_send_deal">Gửi đề nghị</string>
     <string name="action_accept_deal">Chấp nhận</string>
@@ -35,5 +36,6 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="title_activity_route_map">Lộ trình</string>
     <string name="title_activity_edit_goods_map">Bản đồ</string>
+    <string name="title_activity_paypal">Thanh toán</string>
 
 </resources>

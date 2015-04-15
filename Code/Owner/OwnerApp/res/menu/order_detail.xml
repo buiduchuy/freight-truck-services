@@ -8,6 +8,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_call"/>
     <item
+        android:id="@+id/action_pay"
+        android:icon="@drawable/ic_action_black_white_metro_money_bag_icon"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_pay"/>
+    <item
         android:id="@+id/lost_order"
         android:icon="@drawable/ic_action_bad"
         android:orderInCategory="100"

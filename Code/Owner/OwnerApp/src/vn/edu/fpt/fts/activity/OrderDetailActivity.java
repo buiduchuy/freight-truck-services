@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.fragment.PaypalActivity;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -76,6 +77,11 @@ public class OrderDetailActivity extends Activity {
 				new String[] { url });
 
 	}
+	
+	public void makePayment() {
+		Intent intent = new Intent(this, PaypalActivity.class);
+		startActivity(intent);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,6 +113,9 @@ public class OrderDetailActivity extends Activity {
 			Uri uri = Uri.parse("tel:" + tvPhone.getText().toString());
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
+		}
+		if (id == R.id.action_pay) {
+			makePayment();
 		}
 		// if (id == R.id.confirm_order) {
 		// WebServiceTask2 wst2 = new WebServiceTask2(
