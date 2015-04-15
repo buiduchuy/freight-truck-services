@@ -77,7 +77,8 @@ public class SendOffer extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setTitle("Gửi đề nghị");
 		getActivity().getActionBar().setIcon(
 				R.drawable.ic_action_sort_by_size_white);
@@ -188,12 +189,11 @@ public class SendOffer extends Fragment {
 			// handleResponse(response);
 			pDlg.dismiss();
 			if (Integer.parseInt(response) == 0) {
-				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.",
-						Toast.LENGTH_SHORT).show();
-			}
-			if (Integer.parseInt(response) == 2) {
-				Toast.makeText(
-						getActivity(),
+				Toast.makeText(getActivity(),
+						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
+			} else if (Integer.parseInt(response) == 2) {
+				Toast.makeText(getActivity(),
 						"Đề nghị đã bị hủy. Gửi đề nghị thất bại.",
 						Toast.LENGTH_SHORT).show();
 			} else if (Integer.parseInt(response) > 0) {
@@ -652,7 +652,7 @@ public class SendOffer extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	private class WebService4 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -733,7 +733,13 @@ public class SendOffer extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 2) {
+				Toast.makeText(
+						getActivity(),
+						"Hàng đã có hóa đơn liên quan. Bạn không thể chấp nhận hàng này.",
+						Toast.LENGTH_SHORT).show();
+			}
+			else if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Hàng hóa đã được chấp nhận.",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -827,7 +833,6 @@ public class SendOffer extends Fragment {
 		}
 	}
 
-	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
@@ -936,8 +941,8 @@ public class SendOffer extends Fragment {
 			}
 			return true;
 		case R.id.action_accept:
-			WebService4 ws = new WebService4(WebService.POST_TASK, getActivity(),
-					"Đang xử lý ...");
+			WebService4 ws = new WebService4(WebService.POST_TASK,
+					getActivity(), "Đang xử lý ...");
 			ws.addNameValuePair("createBy", "driver");
 			ws.addNameValuePair("routeID", getArguments().getString("routeID"));
 			ws.addNameValuePair("goodsID", getArguments().getString("goodID"));
