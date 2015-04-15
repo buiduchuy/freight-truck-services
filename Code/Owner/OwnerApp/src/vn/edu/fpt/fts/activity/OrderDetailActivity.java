@@ -261,7 +261,7 @@ public class OrderDetailActivity extends Activity {
 				if (count.equals("2")) {
 					tvStatus.setText("Đã nhận hàng");
 
-					lost.setVisible(false);
+					lost.setVisible(true);
 				} else if (count.equals("1")) {
 					tvStatus.setText("Hàng chưa giao");
 
