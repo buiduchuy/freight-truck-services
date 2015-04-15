@@ -187,7 +187,16 @@ public class SendOffer extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) > 0) {
+			if (Integer.parseInt(response) == 0) {
+				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.",
+						Toast.LENGTH_SHORT).show();
+			}
+			if (Integer.parseInt(response) == 2) {
+				Toast.makeText(
+						getActivity(),
+						"Đề nghị đã bị hủy. Gửi đề nghị thất bại.",
+						Toast.LENGTH_SHORT).show();
+			} else if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Gửi đề nghị thành công",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();
@@ -196,14 +205,6 @@ public class SendOffer extends Fragment {
 				trs.replace(R.id.content_frame, fragment);
 				trs.addToBackStack(null);
 				trs.commit();
-			} else if (Integer.parseInt(response) == 0) {
-				Toast.makeText(
-						getActivity(),
-						"Đang có một đề nghị hiện hành với cùng lộ trình và hàng hóa. Gửi đề nghị thất bại.",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getActivity(), "Gửi đề nghị thất bại",
-						Toast.LENGTH_SHORT).show();
 			}
 		}
 
