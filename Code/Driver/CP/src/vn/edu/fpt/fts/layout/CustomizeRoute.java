@@ -165,7 +165,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				}
 				if (locations.size() >= 4) {
 					Toast.makeText(getActivity(),
-							"Chỉ thêm được tối đa 2 địa điểm đi qua",
+							"Chỉ thêm được tối đa 2 địa điểm đi qua.",
 							Toast.LENGTH_SHORT).show();
 				} else {
 					change = true;
@@ -322,7 +322,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				obj = new JSONObject(result);
 				if (obj.getString("status").equals("ZERO_RESULTS")) {
 					Toast.makeText(getActivity(),
-							"Không có lộ trình qua các điểm này",
+							"Không có lộ trình qua các điểm này.",
 							Toast.LENGTH_SHORT).show();
 				} else {
 					helper.drawPath(result, map);
