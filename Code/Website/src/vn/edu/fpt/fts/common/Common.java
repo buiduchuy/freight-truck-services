@@ -3,11 +3,15 @@
  */
 package vn.edu.fpt.fts.common;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 /**
  * @author Huy
@@ -116,6 +120,34 @@ public final class Common {
 			}
 		}
 		return price;
+	}
+
+	public String getPropValues() throws IOException {
+
+		String result = "";
+		Properties prop = new Properties();
+
+		prop.load(new FileInputStream("config.properties"));
+
+		Date time = new Date(System.currentTimeMillis());
+
+		// get the property value and print it out
+		String user = prop.getProperty("user");
+		String company1 = prop.getProperty("company1");
+		String company2 = prop.getProperty("company2");
+		String company3 = prop.getProperty("company3");
+
+		result = "Company List = " + company1 + ", " + company2 + ", "
+				+ company3;
+		System.out.println(result + "\nProgram Ran on " + time + " by user="
+				+ user);
+		return result;
+	}
+
+	public static final String getCreateTime() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		return dateFormat.format(date);
 	}
 
 }

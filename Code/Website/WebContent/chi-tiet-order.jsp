@@ -301,7 +301,7 @@
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==3}">
-											<input type="text" id="right-label" value="Báo mất hàng"
+											<input type="text" id="right-label" value="Đã báo mất hàng"
 												readonly="readonly" />
 										</c:if>
 									</div>
@@ -314,12 +314,16 @@
 										<c:if test="${order.orderStatusID==2}">
 											<a class="button alert"
 												href="OrderServlet?btnAction=lostGoods&orderID=${order.orderID}"
-												onclick="return confirm('Bạn có muốn báo mất hàng không?')">
-												Báo mất hàng </a>
+												onclick="return confirm('Bạn có muốn báo mất hàng không?')">Báo mất hàng </a>
+										</c:if>
+										<c:if test="${order.orderStatusID!=1}">
+										<a class="button success"
+												href="PaypalServlet?btnAction=pay&orderID=${order.orderID}">
+												<i class="icon-ok"></i> Thanh toán </a>
 										</c:if>
 										<a class="button success"
 											href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
-											In hóa đơn </a>
+											<i class="icon-print"></i>  In hóa đơn </a>
 									</div>
 								</div>
 							</div>

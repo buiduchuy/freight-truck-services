@@ -73,34 +73,62 @@ function getListNotification() {
 				json = JSON.parse(json);
 				var size = json.notification.length;
 				var notificationList = new Array();
-				$
-				.each(
-						json.notification,
-						function(i, e) {
-							// var el = $('<div
-							// class="notify-item"><a
-							// href="ProcessServlet?action'+e.url+'"'+e.message+'</a></div>');
-							var el;
-							if (e.type == "deal") {
-								el = $('<li><a onclick="deactiveNotification('
-										+ e.notificationID
-										+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
-										+ e.idOfType
-										+ '">'
-										+ e.message
-										+ '</a></li>');
-							}
-							if (e.type == "order") {
-								el = $('<li><a onclick="deactiveNotification('
-										+ e.notificationID
-										+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
-										+ e.idOfType
-										+ '">'
-										+ e.message
-										+ '</a></li>');
-							}
-							notificationList.push(el);
-						});
+				if (size > 1) {
+					$
+					.each(
+							json.notification,
+							function(i, e) {
+								// var el = $('<div
+								// class="notify-item"><a
+								// href="ProcessServlet?action'+e.url+'"'+e.message+'</a></div>');
+								var el;
+								if (e.type == "deal") {
+									el = $('<li><a onclick="deactiveNotification('
+											+ e.notificationID
+											+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+											+ e.idOfType
+											+ '">'
+											+ e.message
+											+ '</a></li>');
+								}
+								if (e.type == "order") {
+									el = $('<li><a onclick="deactiveNotification('
+											+ e.notificationID
+											+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+											+ e.idOfType
+											+ '">'
+											+ e.message
+											+ '</a></li>');
+								}
+								notificationList.push(el);
+							});
+				} else {
+					var notificationID = json.notification.notificationID;
+					var type = json.notification.type;
+					var idOfType = json.notification.idOfType;
+					var message = json.notification.message;
+					var el;
+					if (type == "deal") {
+						el = $('<li><a onclick="deactiveNotification('
+								+ notificationID
+								+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+								+ idOfType
+								+ '">'
+								+ message
+								+ '</a></div>');
+					}
+					if (type == "order") {
+						el = $('<li><a onclick="deactiveNotification('
+								+ notificationID
+								+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+								+ idOfType
+								+ '">'
+								+ message
+								+ '</a></div>');
+					}
+					notificationList.push(el);
+				}
+				
 				$('#notificationList').html(notificationList);
 			}
 		}

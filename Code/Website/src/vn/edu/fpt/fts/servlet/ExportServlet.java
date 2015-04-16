@@ -21,6 +21,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.pojo.Order;
 
@@ -139,18 +140,18 @@ public class ExportServlet extends HttpServlet {
 		// table.addCell(cell2);
 
 		Paragraph id = new Paragraph();
-		id.add(new Paragraph("Order #OD" + order.getOrderID(), smallBold));
-		id.add(new Paragraph("Invoice Date: " + order.getCreateTime(), font));
-		id.add(new Paragraph("Due Date: "
+		id.add(new Paragraph("Mã hóa đơn #OD" + order.getOrderID(), smallBold));
+		id.add(new Paragraph("Ngày tạo hóa đơn: " + order.getCreateTime(), font));
+		id.add(new Paragraph("Ngày thanh toán: "
 				+ order.getDeal().getGoods().getDeliveryTime(), font));
 		addEmptyLine(id, 1);
-		id.add(new Paragraph("Order for: "
+		id.add(new Paragraph("Tên khách hàng: "
 				+ order.getDeal().getGoods().getOwner().getFirstName() + " "
 				+ order.getDeal().getGoods().getOwner().getLastName(),
 				smallBold));
-		id.add(new Paragraph("Address: "
+		id.add(new Paragraph("Địa chỉ: "
 				+ order.getDeal().getGoods().getOwner().getAddress(), font));
-		id.add(new Paragraph("Phone Number: "
+		id.add(new Paragraph("Số điện thoại: "
 				+ order.getDeal().getGoods().getOwner().getPhone(), font));
 		addEmptyLine(id, 2);
 		id.setIndentationLeft(50);
@@ -159,6 +160,7 @@ public class ExportServlet extends HttpServlet {
 		float[] columnWidths = { 3f, 1f };
 		detail.setWidths(columnWidths);
 		PdfPCell desc = new PdfPCell(new Paragraph("Nội dung", font));
+		
 		desc.setHorizontalAlignment(Element.ALIGN_CENTER);
 		PdfPCell price = new PdfPCell(new Paragraph("Thành tiền", font));
 		price.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -175,7 +177,17 @@ public class ExportServlet extends HttpServlet {
 				+ order.getDeal().getGoods().getPickupAddress(), font));
 		goods.add(new Paragraph("Địa chỉ nhận hàng: "
 				+ order.getDeal().getGoods().getDeliveryAddress(), font));
-		goods.add(new Paragraph("Trạng thái: " + order.getOrderStatusID(), font));
+		
+		String orderStatus = "";
+		if (order.getOrderStatusID() == Common.order_accept) {
+			orderStatus = "Đã giao hàng";
+		} else if (order.getOrderStatusID() == Common.order_pending) {
+			orderStatus = "Đang vận chuyển";
+		} else if (order.getOrderStatusID() == Common.order_lost) {
+			orderStatus = "Đã báo mất hàng";
+		}
+		
+		goods.add(new Paragraph("Trạng thái: " + orderStatus, font));
 		// goods.add(new Paragraph("Ghi chú:", font));
 		PdfPCell goodsCell = new PdfPCell();
 		goodsCell.addElement(goods);

@@ -18,7 +18,7 @@ public class NotificationProcess {
 
 	NotificationDAO notificationDao = new NotificationDAO();
 	DealDAO dealDao = new DealDAO();
-
+	
 	public int insertDealSendNotification(Deal deal) {
 		int ret = 0;
 
@@ -42,7 +42,7 @@ public class NotificationProcess {
 		}
 		notification.setMessage(msg);
 		notification.setActive(Common.activate);
-		notification.setCreateTime(deal.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
 		notification.setStatusOfType(deal.getDealStatusID());
@@ -75,7 +75,7 @@ public class NotificationProcess {
 		}
 		notification.setMessage(msg);
 		notification.setActive(Common.activate);
-		notification.setCreateTime(deal.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setType("order");
 		notification.setIdOfType(orderID);
 		notification.setStatusOfType(deal.getDealStatusID());
@@ -108,7 +108,7 @@ public class NotificationProcess {
 		}
 		notification.setMessage(msg);
 		notification.setActive(Common.activate);
-		notification.setCreateTime(deal.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
 		notification.setStatusOfType(deal.getDealStatusID());
@@ -141,7 +141,7 @@ public class NotificationProcess {
 		}
 		notification.setMessage(msg);
 		notification.setActive(Common.activate);
-		notification.setCreateTime(deal.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setType("deal");
 		notification.setIdOfType(deal.getDealID());
 		notification.setStatusOfType(deal.getDealStatusID());

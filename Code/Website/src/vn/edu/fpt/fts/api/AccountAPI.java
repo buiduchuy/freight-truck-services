@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
@@ -106,7 +107,7 @@ public class AccountAPI {
 			String phone = params.getFirst("phone");
 			String address = params.getFirst("address");
 			String createBy = params.getFirst("createBy");
-			String createTime = params.getFirst("createTime");
+			String createTime = params.getFirst(Common.getCreateTime());
 			String dateOfBirth = params.getFirst("dateOfBirth");
 
 			ret = accountProcess.createOwnerAccount(email, password, firstName,
@@ -135,7 +136,7 @@ public class AccountAPI {
 			int gender = Integer.valueOf(params.getFirst("gender"));
 			String phone = params.getFirst("phone");
 			String createBy = params.getFirst("createBy");
-			String createTime = params.getFirst("createTime");
+			String createTime = params.getFirst(Common.getCreateTime());
 			String dateOfBirth = params.getFirst("dateOfBirth");
 			String image = params.getFirst("image");
 

@@ -106,12 +106,9 @@
 															href="DealServlet?btnAction=routeDetail&routeID=${rows.routeID}&goodsID=${detailGoods.goodsID}">
 																Chi tiết</a>-->
 																<a class="button success"
-												href="DealServlet?btnAction=createDeal&routeID=${rows.routeID }&goodsID=${detailGoods.goodsID}"
-												onclick="return confirm('Bạn có muốn gửi đề nghị này không?')">
-												<i class="icon-envelope"></i> Gửi để nghị
-											</a>
-																
-																</td>
+												href="DealServlet?btnAction=createDeal&routeID=${rows.routeID }&goodsID=${detailGoods.goodsID}">
+												<i class="icon-envelope"></i> Gửi để nghị</a>
+													   </td>
 													</tr>
 												</c:forEach>
 											</c:if>

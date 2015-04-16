@@ -2,9 +2,6 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -85,12 +82,11 @@ public class DealServlet extends HttpServlet {
 				rd.forward(request, response);
 			} else if (action.equalsIgnoreCase("createDeal")) {
 
-				int goodsID = Integer.parseInt(request.getParameter("goodsID"));
-				int routeID = Integer.parseInt(request.getParameter("routeID"));
+				int goodsID = Integer.valueOf(request.getParameter("goodsID"));
+				int routeID = Integer.valueOf(request.getParameter("routeID"));
 
-				List<Deal> listCurrentDeal = dealDao
-						.getListDealByGoodsIDAndRouteID(goodsID, routeID,
-								Common.deal_pending);
+				List<Deal> listCurrentDeal = dealDao.getListDealByGoodsIDAndRouteIDAndDealStatusID(goodsID, routeID, Common.deal_pending);
+						
 
 				if (listCurrentDeal.size() >= Common.maxCounterTime) {
 					request.setAttribute(
@@ -106,29 +102,25 @@ public class DealServlet extends HttpServlet {
 					Goods goods = goodsDao.getGoodsByID(goodsID);
 					if (goods.getActive() == Common.deactivate) {
 						request.setAttribute("messageError",
-								"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
+								"Hàng này không tồn tại. Bạn không thể thực hiện thao tác này!");
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=manageDeal").forward(
 								request, response);
 					} else {
 						if (goods != null) {
-							DateFormat dateFormat = new SimpleDateFormat(
-									"yyyy/MM/dd HH:mm:ss");
-							Date date = new Date();
-							String createTime = dateFormat.format(date);
 
 							Deal deal = new Deal();
 
 							deal.setPrice(goods.getPrice());
 							deal.setNotes(goods.getNotes());
-							deal.setCreateTime(createTime);
+							deal.setCreateTime(Common.getCreateTime());
 							deal.setCreateBy("owner");
 							deal.setRouteID(routeID);
 							deal.setGoodsID(goodsID);
 							deal.setDealStatusID(Common.deal_pending);
 							deal.setActive(Common.activate);
 
-							int dealID = dealDao.insertDeal(deal);
+							int dealID = dealProcess.sendDeal(deal);
 
 							if (dealID != 0) {
 
@@ -149,47 +141,44 @@ public class DealServlet extends HttpServlet {
 					}
 				}
 			} else if (action.equalsIgnoreCase("sendDeal")) {
-				int idDealFa = ((Deal) session.getAttribute("dealFa"))
-						.getDealID();
+				String dealIDStr = request.getParameter("dealID");
+				
+				int dealID = Integer.valueOf(dealIDStr);
 
-				Deal dealFa = dealDao.getDealByID(idDealFa);
-				int idGood = dealFa.getGoodsID();
-				if (goodsDao.getGoodsByID(idGood).getActive() == Common.deactivate) {
+				Deal deal = dealDao.getDealByID(dealID);
+				int goodsID = deal.getGoodsID();
+				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
 					request.setAttribute("messageError",
-							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
+							"Hàng này không tồn tại. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
 							"ProcessServlet?btnAction=manageOrder").forward(
 							request, response);
 				} else {
 					int price = Integer.parseInt(request
 							.getParameter("txtPrice"));
-					DateFormat dateFormat = new SimpleDateFormat(
-							"yyyy/MM/dd HH:mm:ss");
-					Date date = new Date();
-					String createTime = dateFormat.format(date);
 					String notes = "";
 					try {
 						notes = notes + request.getParameter("txtNotes");
 					} catch (Exception ex) {
 
 					}
-					dealFa.setDealStatusID(1);
-					dealFa.setPrice(price);
-					dealFa.setNotes(notes);
-					dealFa.setCreateTime(createTime);
-					dealFa.setCreateBy("owner");
-					if (dealDao.insertDeal(dealFa) != -1) {
+					deal.setDealStatusID(1);
+					deal.setPrice(price);
+					deal.setNotes(notes);
+					deal.setCreateTime(Common.getCreateTime());
+					deal.setCreateBy("owner");
+					if (dealProcess.sendDeal(deal) != 0) {
 						request.setAttribute("messageSuccess",
 								"Gửi đề nghị thành công");
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=viewDetailDeal&dealID="
-										+ idDealFa).forward(request, response);
+										+ dealID).forward(request, response);
 					} else {
 						request.setAttribute("messageError",
 								"Không thể gửi đề nghị. Xin vui lòng thử lại sau!");
 						request.getRequestDispatcher(
 								"ProcessServlet?btnAction=viewDetailDeal&dealID="
-										+ idDealFa).forward(request, response);
+										+ dealID).forward(request, response);
 					}
 				}
 			} else if (action.equalsIgnoreCase("acceptDeal")) {
@@ -231,7 +220,7 @@ public class DealServlet extends HttpServlet {
 				int goodsID = dealDao.getDealByID(dealID).getGoodsID();
 				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
 					request.setAttribute("messageError",
-							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
+							"Hàng này không tồn tại. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
 							"ProcessServlet?btnAction=viewDetailDeal&dealID="
 									+ dealID).forward(request, response);
@@ -264,7 +253,7 @@ public class DealServlet extends HttpServlet {
 				int goodsID = dealDao.getDealByID(dealID).getGoodsID();
 				if (goodsDao.getGoodsByID(goodsID).getActive() == Common.deactivate) {
 					request.setAttribute("messageError",
-							"Hàng này đã có hoá đơn. Bạn không thể thực hiện thao tác này!");
+							"Hàng này không tồn tại. Bạn không thể thực hiện thao tác này!");
 					request.getRequestDispatcher(
 							"ProcessServlet?btnAction=manageDeal").forward(
 							request, response);
@@ -304,9 +293,9 @@ public class DealServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
 				int dealID = Integer.parseInt(request.getParameter("dealID"));
 				Deal deal = dealDao.getDealByID(dealID);
-				List<Deal> listDealByGoodsID = dealDao.getDealByGoodsID(deal
-						.getGoodsID());
+				List<Deal> listDealByGoodsID = dealDao.getListDealByGoodsIDAndRouteID(deal.getGoodsID(), deal.getRouteID());
 				
+				request.setAttribute("dealID", dealID);
 				request.setAttribute("listDealDetail", listDealByGoodsID);
 				request.setAttribute("sizeHistory", listDealByGoodsID.size());
 				request.getRequestDispatcher("chi-tiet-de-nghi.jsp").forward(

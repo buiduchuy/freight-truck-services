@@ -57,7 +57,7 @@ public class GoodsAPI {
 			goods.setDeliveryMarkerLatidute(Float.valueOf(goodsParams
 					.getFirst("deliveryMarkerLatidute")));
 			goods.setNotes(goodsParams.getFirst("notes"));
-			goods.setCreateTime(goodsParams.getFirst("createTime"));
+			goods.setCreateTime(Common.getCreateTime());
 			goods.setActive(Integer.valueOf(goodsParams.getFirst("active")));
 			goods.setOwnerID(Integer.valueOf(goodsParams.getFirst("ownerID")));
 			goods.setGoodsCategoryID(Integer.valueOf(goodsParams

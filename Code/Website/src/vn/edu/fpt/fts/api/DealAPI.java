@@ -3,8 +3,6 @@
  */
 package vn.edu.fpt.fts.api;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +32,7 @@ public class DealAPI {
 	DealDAO dealDao = new DealDAO();
 	DealProcess dealProcess = new DealProcess();
 	GoodsDAO goodsDao = new GoodsDAO();
-
+	
 	@GET
 	@Path("get")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -93,7 +91,7 @@ public class DealAPI {
 			}
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
-			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateTime(Common.getCreateTime());
 			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
@@ -173,10 +171,8 @@ public class DealAPI {
 			deal.setPrice(goodsDao.getGoodsByID(goodsID).getPrice());
 			// deal.setNotes(params.getFirst("notes"));
 			// deal.setCreateTime(params.getFirst("createTime"));
-			Date current = new Date();
-			String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S")
-					.format(current);
-			deal.setCreateTime(date);
+			
+			deal.setCreateTime(Common.getCreateTime());
 			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(routeID);
 			deal.setGoodsID(goodsID);
@@ -207,7 +203,7 @@ public class DealAPI {
 			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
-			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateTime(Common.getCreateTime());
 			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
@@ -241,7 +237,7 @@ public class DealAPI {
 			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
-			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateTime(Common.getCreateTime());
 			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));
@@ -275,7 +271,7 @@ public class DealAPI {
 			deal.setDealID(Integer.valueOf(params.getFirst("dealID")));
 			deal.setPrice(Double.valueOf(params.getFirst("price")));
 			deal.setNotes(params.getFirst("notes"));
-			deal.setCreateTime(params.getFirst("createTime"));
+			deal.setCreateTime(Common.getCreateTime());
 			deal.setCreateBy(params.getFirst("createBy"));
 			deal.setRouteID(Integer.valueOf(params.getFirst("routeID")));
 			deal.setGoodsID(Integer.valueOf(params.getFirst("goodsID")));

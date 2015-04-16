@@ -3,6 +3,7 @@
  */
 package vn.edu.fpt.fts.process;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +30,10 @@ public class DealProcess {
 	RouteDAO routeDao = new RouteDAO();
 	DealOrderDAO dealOrderDao = new DealOrderDAO();
 	NotificationProcess notiProcess = new NotificationProcess();
+
+	public DealProcess() {
+		// TODO Auto-generated constructor stub
+	}
 
 	// public String acceptDeal(int dealID) {
 	//
@@ -168,15 +173,31 @@ public class DealProcess {
 				int newDealID = dealDao.insertDeal(deal);
 
 				// Change Cancel status to other deal
-				int totalGoodsWeightOfRoute = goodsDao.getTotalWeightByRouteID(deal
-						.getRouteID());
-				int weightRoute = routeDao.getActiveRouteByID(deal.getRouteID())
-						.getWeight();
-				int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
-						deal.getGoodsID(), (weightRoute - totalGoodsWeightOfRoute),
-						deal.getRouteID());
-				System.out.println("Co " + n
-						+ " deal da thay doi trang thai la cancel");
+				int totalGoodsWeightOfRoute = goodsDao
+						.getTotalWeightByRouteID(deal.getRouteID());
+				int weightRoute = routeDao
+						.getActiveRouteByID(deal.getRouteID()).getWeight();
+
+				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
+				List<Deal> listDeal = dealDao
+						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
+								deal.getGoodsID());
+
+				for (int i = 0; i < listDeal.size(); i++) {
+					if (listDeal.get(i).getCreateBy()
+							.equalsIgnoreCase(deal.getCreateBy())) {
+						cancelDeal1(listDeal.get(i));
+					} else {
+						declineDeal1(listDeal.get(i));
+					}
+				}
+
+				// int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
+				// deal.getGoodsID(),
+				// (weightRoute - totalGoodsWeightOfRoute),
+				// deal.getRouteID());
+				// System.out.println("Co " + n
+				// + " deal da thay doi trang thai la cancel");
 
 				// Deactivate goods of this deal
 				goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
@@ -202,7 +223,6 @@ public class DealProcess {
 			} else {
 				ret = 2;
 			}
-			
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -216,10 +236,9 @@ public class DealProcess {
 	public int acceptDeal1(Deal deal) {
 		int ret = 0;
 		try {
-			int currentDealStatusID = dealDao.getDealByID(deal.getDealID())
-					.getDealStatusID();
+			Deal db_deal = dealDao.getDealByID(deal.getDealID());
 			// Current deal must have pending status
-			if (currentDealStatusID == Common.deal_pending) {
+			if (db_deal.getDealStatusID() == Common.deal_pending) {
 				// Update current deal
 				// dealDao.updateDealStatus(deal.getDealID(),
 				// Common.deal_accept);
@@ -234,12 +253,27 @@ public class DealProcess {
 						.getTotalWeightByRouteID(deal.getRouteID());
 				int weightRoute = routeDao
 						.getActiveRouteByID(deal.getRouteID()).getWeight();
-				int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
-						deal.getGoodsID(),
-						(weightRoute - totalGoodsWeightOfRoute),
-						deal.getRouteID());
-				System.out.println("Co " + n
-						+ " deal da thay doi trang thai la cancel");
+				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
+
+				List<Deal> listDeal = dealDao
+						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
+								deal.getGoodsID());
+
+				for (int i = 0; i < listDeal.size(); i++) {
+					if (listDeal.get(i).getCreateBy()
+							.equalsIgnoreCase(deal.getCreateBy())) {
+						cancelDeal1(listDeal.get(i));
+					} else {
+						declineDeal1(listDeal.get(i));
+					}
+				}
+
+				// int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
+				// deal.getGoodsID(),
+				// (weightRoute - totalGoodsWeightOfRoute),
+				// deal.getRouteID());
+				// System.out.println("Co " + n
+				// + " deal da thay doi trang thai la cancel");
 
 				// Deactivate goods of this deal
 				goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
@@ -264,7 +298,7 @@ public class DealProcess {
 				}
 
 				// Insert Notification
-				notiProcess.insertDealAcceptNotification(deal, newDealOrderID);
+				notiProcess.insertDealAcceptNotification(deal, newOrderID);
 			} else {
 				ret = 2;
 				System.out.println("Current Status of deal isn't Pending");
@@ -281,10 +315,9 @@ public class DealProcess {
 	public int declineDeal1(Deal deal) {
 		int ret = 0;
 		try {
-			int currentDealStatusID = dealDao.getDealByID(deal.getDealID())
-					.getDealStatusID();
+			Deal db_deal = dealDao.getDealByID(deal.getDealID());
 			// Current deal must have pending status
-			if (currentDealStatusID == Common.deal_pending) {
+			if (db_deal.getDealStatusID() == Common.deal_pending) {
 				// Update current deal
 				// dealDao.updateDealStatus(deal.getDealID(),
 				// Common.deal_decline);
@@ -349,7 +382,6 @@ public class DealProcess {
 
 			if (db_dealStatusID == Common.deal_pending) {
 
-				// Get current deal
 				Deal currentDeal = dealDao.getDealByID(deal.getDealID());
 				if (currentDeal != null) {
 					// Update status
@@ -361,11 +393,10 @@ public class DealProcess {
 						// Insert Notification
 						deal.setDealID(ret); // Update last dealID
 						notiProcess.insertDealSendNotification(deal);
-					} else {
-						ret = 0;
 					}
+				} else {
+					ret = 0;
 				}
-
 			} else if (db_dealStatusID == Common.deal_accept) {
 				ret = 0;
 			} else if (db_dealStatusID == Common.deal_decline) {

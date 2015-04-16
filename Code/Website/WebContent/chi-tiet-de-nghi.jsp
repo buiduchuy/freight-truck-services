@@ -30,7 +30,7 @@
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
 				<div class="form-content">
-					<form action="DealServlet" method="post" accept-charset="utf-8">
+					<form action="DealServlet" method="POST" accept-charset="utf-8">
 						<div class="row">
 							<div class="large-12 columns">
 								<h2 class="page-title">
@@ -119,11 +119,13 @@
 																<c:when test="${history.dealStatusID==1}">
 																	<c:choose>
 																		<c:when test="${history.createBy== 'driver'}">
+																		<c:set var="dealID" value="${history.dealID }" />
+																		<c:set var="createBy" value="${history.createBy }" />
 																			<td><a class="button alert"
 																				href="DealServlet?btnAction=declineDeal&dealID=${history.dealID }"
 																				onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')">Từ
 																					chối</a> <a class="button success"
-																				href="DealServlet?btnAction=confirmDeal&dealID=${history.dealID }"
+																				href="DealServlet?btnAction=acceptDeal&dealID=${history.dealID }"
 																				onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
 																					nhận</a></td>
 
@@ -154,6 +156,7 @@
 							</div>
 							</br>
 					</form>
+					<c:if test="${createBy eq 'driver' }">
 					<form action="DealServlet" method="post" accept-charset="utf-8">
 						<div class="large-12 columns">
 							</br>
@@ -162,6 +165,7 @@
 									<font color="blue">Phản hồi</font>
 								</h3>
 							</div>
+							<input type="hidden" value="${dealID}" name="dealID" />
 							<div class="row">
 								<div class="small-3 columns">
 									<label for="right-label" class="right inline"><small
@@ -199,6 +203,7 @@
 							</br>
 						</div>
 					</form>
+					</c:if>
 				</div>
 			</div>
 		</div>

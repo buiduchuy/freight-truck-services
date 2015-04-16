@@ -61,7 +61,7 @@ public class RouteAPI {
 			route.setFinishTime(params.getFirst("finishTime"));
 			route.setNotes(params.getFirst("notes"));
 			route.setWeight(Integer.valueOf(params.getFirst("weight")));
-			route.setCreateTime(params.getFirst("createTime"));
+			route.setCreateTime(Common.getCreateTime());
 			route.setActive(Integer.valueOf(params.getFirst("active")));
 			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
 
