@@ -57,7 +57,6 @@ public class OrderServlet extends HttpServlet {
 					List<Order> listOrder = orderDao.getOrderByOwnerID(owner
 							.getOwnerID());
 
-					session.removeAttribute("orderStatus");
 					request.setAttribute("listOrder", listOrder);
 					request.getRequestDispatcher("quan-ly-order.jsp").forward(
 							request, response);
@@ -85,7 +84,7 @@ public class OrderServlet extends HttpServlet {
 						if (today.getDate() > deliveryDate.getDate()
 								&& today.getDate() <= (deliveryDate.getDate() + Common.periodDay)) {
 							if (orderDao.updateOrderStatusID(orderID,
-									Common.order_lost) == 1) {
+									Common.order_report) == 1) {
 								request.setAttribute(
 										"messageSuccess",
 										"Báo mất hàng thành công. Chúng tôi sẽ kiểm tra và liên hệ trực tiếp trong thời gian sớm nhất!");

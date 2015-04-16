@@ -183,7 +183,7 @@ public class ExportServlet extends HttpServlet {
 			orderStatus = "Đã giao hàng";
 		} else if (order.getOrderStatusID() == Common.order_pending) {
 			orderStatus = "Đang vận chuyển";
-		} else if (order.getOrderStatusID() == Common.order_lost) {
+		} else if (order.getOrderStatusID() == Common.order_report) {
 			orderStatus = "Đã báo mất hàng";
 		}
 		

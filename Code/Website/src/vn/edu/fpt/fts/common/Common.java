@@ -53,8 +53,17 @@ public final class Common {
 
 	// Status of Order
 	public static final int order_pending = 1;
-	public static final int order_accept = 2;
-	public static final int order_lost = 3;
+	public static final int order_delivering = 2;
+	public static final int order_accept = 3;
+	public static final int order_report = 3;
+	public static final int order_deactive = 3;
+	
+	// Status of Payment
+	public static final int payment_deposit = 1;
+	public static final int payment_full = 2;
+	public static final int payment_driver = 3;
+	public static final int payment_refund = 4;
+	
 
 	// Max allow distance for matching goods and routes (km)
 	public static final int maxAllowDistance = 50;
