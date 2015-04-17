@@ -43,7 +43,7 @@ public class OrderProcess {
 				int orderStatusID = l_order.get(i).getOrderStatusID();
 
 				if (orderStatusID != Common.order_accept
-						&& orderStatusID != Common.order_lost) {
+						&& orderStatusID != Common.order_report) {
 					if (l_order.get(i).getDeal() != null) {
 						if (l_order.get(i).getDeal().getGoods() != null) {
 							deliveryDate = dateFormat.parse(l_order.get(i)
