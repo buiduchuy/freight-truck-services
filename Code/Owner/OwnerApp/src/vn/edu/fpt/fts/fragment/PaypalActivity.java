@@ -26,11 +26,16 @@ public class PaypalActivity extends Activity {
 			.environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
 			.clientId(
 					"AUYEywUBcwk_YKlg-Bqmfp2yx-ecX4A7qU6MN-oU12eq3k1xoH1JKnAfDjeFLjmDTIOSNgRBcAB8mwXm");
-
+	private static double exchangeRate = 21;
+	private String orderID;
+	private int price;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		orderID = getIntent().getStringExtra("orderID");
+		price = getIntent().getIntExtra("price", 0);
+		
 		setContentView(R.layout.activity_paypal);
 		Intent intent = new Intent(this, PayPalService.class);
 		intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
@@ -45,8 +50,9 @@ public class PaypalActivity extends Activity {
 	}
 
 	public void onBuyPressed(View pressed) {
-		PayPalPayment payment = new PayPalPayment(new BigDecimal("1.75"),
-				"USD", "Hàng thực phẩm", PayPalPayment.PAYMENT_INTENT_SALE);
+		BigDecimal bdPrice = BigDecimal.valueOf(price / exchangeRate);
+		PayPalPayment payment = new PayPalPayment(bdPrice,
+				"USD", orderID, PayPalPayment.PAYMENT_INTENT_SALE);
 		Intent intent = new Intent(this, PaymentActivity.class);
 		intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION, config);
 		intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
