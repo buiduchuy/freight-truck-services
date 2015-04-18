@@ -76,8 +76,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 								<div class="large-12 columns">
 									<div class="row">
 										<div class="small-2 columns">
-											<label for="right-label" class="right inline"><small
-												class="validate">*</small> Loại hàng: </label>
+											<label for="right-label" class="right inline">Loại hàng: </label>
 										</div>
 
 										<div class="small-4 columns">
@@ -85,33 +84,15 @@ var Msg ='<%=request.getAttribute("message")%>';
 											<c:forEach var="row" items="${typeGoods }">
 												<c:if
 													test="${row.goodsCategoryId==order.deal.goods.goodsCategoryID}">
-													<input type="text" value="${row.name }" readonly="readonly" />
+													<label for="right-label" class="left inline">${row.name}</label>
 												</c:if>
 											</c:forEach>
 										</div>
 										<div class="small-2 columns">
-											<label for="right-label" class="right inline"><small
-												class="validate">*</small> Khối lượng: </label>
+											<label for="right-label" class="right inline">Khối lượng: </label>
 										</div>
-										<div class="small-2 columns">
-											<input type="text" id="right-label" name="txtWeight"
-												onkeypress="return keyPhone(event);"
-												placeholder="Nhập khối lượng hàng" required=""
-												data-errormessage-value-missing="Vui lòng nhập khối lượng của hàng !"
-												maxlength="5" value="${order.deal.goods.weight}"
-												readonly="readonly" />
-										</div>
-										<div class="small-2 columns">
-											<label for="right-label" class="left inline">kg</label>
-										</div>
-									</div>
-									<div class="row">
-										<div class="small-2 columns">
-											<label for="right-label" class="right inline">Ghi chú
-												: </label>
-										</div>
-										<div class="small-8 columns left inline">
-											<textarea maxlength="250" name="txtNotes" readonly="readonly">${order.deal.goods.notes }</textarea>
+										<div class="small-4 columns">
+											<label for="left-label" class="left inline">${order.deal.goods.weight} kg</label>
 										</div>
 									</div>
 								</div>
@@ -119,29 +100,22 @@ var Msg ='<%=request.getAttribute("message")%>';
 							<div class="row">
 								<div class="extra-title">
 									<h3>
-										<font color="blue">Địa chỉ giao hàng</font>
+										<font color="blue">Địa chỉ</font>
 									</h3>
 								</div>
 								<div class="row">
 									<div class="small-8 columns">
 										<div class="small-3 columns">
-											<label class="right inline"><small class="validate">*</small>
-												Địa chỉ: </label>
+											<label class="right inline">
+												Giao hàng: </label>
 										</div>
 										<div class="small-9 columns">
-											<input class="left inline"
-												value="${order.deal.goods.pickupAddress}"
-												readonly="readonly" name="txtpickupAddress" type="text"
-												onFocus="geolocate()" id="place_start" pattern=".{1,100}"
-												placeholder="Nhập địa điểm giao hàng" required=""
-												data-errormessage-value-missing="Vui lòng chọn địa điểm giao hàng !"
-												data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+											<label for="right-label" class="left inline">${order.deal.goods.pickupAddress}</label>
 										</div>
 									</div>
 									<div class="small-4 columns">
 										<div class="small-5 columns">
-											<label for="right-label" class="right inline"><small
-												class="validate">*</small> Ngày: </label>
+											<label for="right-label" class="right inline"> Ngày: </label>
 										</div>
 										<div class="small-7 columns">
 											<c:set var="stringPickupTime"
@@ -150,37 +124,22 @@ var Msg ='<%=request.getAttribute("message")%>';
 												var="datePickupTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
 											<fmt:formatDate value="${datePickupTime}"
 												pattern="dd-MM-yyyy" var="pickUpTimeFormatted" />
-											<input type="text" name="txtpickupTime"
-												value="${pickUpTimeFormatted}" id="pick-up-date"
-												data-date-format="dd-mm-yyyy" readonly>
+											<label for="right-label" class="left inline">${pickUpTimeFormatted}</label>
 										</div>
 									</div>
-								</div>
-
-								<div class="extra-title">
-									<h3>
-										<font color="blue">Địa chỉ nhận hàng</font>
-									</h3>
 								</div>
 								<div class="row">
 									<div class="small-8 columns">
 										<div class="small-3 columns">
-											<label for="right-label" class="right inline"><small
-												class="validate">*</small> Địa chỉ: </label>
+											<label for="right-label" class="right inline"> Nhận hàng: </label>
 										</div>
 										<div class="small-9 columns">
-											<input type="text" readonly="readonly" onFocus="geolocate()"
-												value="${order.deal.goods.deliveryAddress}"
-												name="txtdeliveryAddress" id="place_end" pattern=".{1,100}"
-												placeholder="Nhập địa điểm nhận hàng" required=""
-												data-errormessage-value-missing="Vui lòng chọn địa điểm nhận hàng !"
-												data-errormessage-pattern-mismatch="Bạn phải nhập địa chỉ [1-100] kí tự !" />
+											<label for="right-label" class="left inline">${order.deal.goods.deliveryAddress}</label>
 										</div>
 									</div>
 									<div class="small-4 columns">
 										<div class="small-5 columns">
-											<label for="right-label" class="right inline"><small
-												class="validate">*</small> Ngày: </label>
+											<label for="right-label" class="right inline">Ngày: </label>
 										</div>
 										<div class="small-7 columns">
 
@@ -190,13 +149,10 @@ var Msg ='<%=request.getAttribute("message")%>';
 												var="dateDeliveryTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
 											<fmt:formatDate value="${dateDeliveryTime}"
 												pattern="dd-MM-yyyy" var="deliveryTimeFormatted" />
-											<input type="text" name="txtdeliveryTime"
-												value="${deliveryTimeFormatted}" id="dilivery-date"
-												data-date-format="dd-mm-yyyy" readonly>
+											<label for="right-label" class="left inline">${deliveryTimeFormatted}</label>
 										</div>
 									</div>
 								</div>
-
 							</div>
 							<div class="row">
 								<div class="extra-title">
@@ -209,10 +165,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 										<label class="right inline">Chi phí: </label>
 									</div>
 									<div class="small-4 columns left">
-										<input type="text" id="right-label"
-											value="<fmt:formatNumber type="number"
-															groupingUsed="false" value="${order.price}" />"
-											readonly="readonly" />
+										<label for="right-label" class="left inline">${order.price} nghìn đồng</label>
 									</div>
 								</div>
 							</div>
@@ -228,9 +181,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 										<label class="right inline">Địa điểm bắt đầu:</label>
 									</div>
 									<div class="small-4 columns left">
-										<input type="text" id="startAddress" class="left inline"
-											value="${order.deal.route.startingAddress }"
-											readonly="readonly">
+										<label for="right-label" class="left inline">${order.deal.route.startingAddress }</label>
 									</div>
 									<div class="small-3 columns ">
 										<label class="right inline">Thời gian bắt đầu:</label>
@@ -242,9 +193,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 											pattern="yyyy-MM-dd HH:mm:ss.SSS" />
 										<fmt:formatDate value="${dateStartTime}" pattern="dd-MM-yyyy"
 											var="startTimeFormatted" />
-										<input type="text" class="left inline"
-											value="<c:out value="${startTimeFormatted}" />"
-											readonly="readonly">
+										<label for="right-label" class="left inline">${startTimeFormatted}</label>
 									</div>
 								</div>
 								<div class="row">
@@ -252,9 +201,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 										<label class="right inline">Địa điểm kết thúc:</label>
 									</div>
 									<div class="small-4 columns left">
-										<input type="text" id="endAddress" class="left inline"
-											value="${order.deal.route.destinationAddress }"
-											readonly="readonly">
+										<label for="right-label" class="left inline">${order.deal.route.destinationAddress }</label>
 									</div>
 									<div class="small-3 columns ">
 										<label class="right inline">Thời gian kết thúc:</label>
@@ -266,9 +213,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 											var="dateFinishTime" pattern="yyyy-MM-dd HH:mm:ss.SSS" />
 										<fmt:formatDate value="${dateFinishTime}" pattern="dd-MM-yyyy"
 											var="finishTimeFormatted" />
-										<input type="text" class="left inline"
-											value="<c:out value="${finishTimeFormatted}"/>"
-											readonly="readonly">
+										<label for="right-label" class="left inline">${finishTimeFormatted}</label>
 									</div>
 								</div>
 								<div class="row">
@@ -276,8 +221,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 										<label class="right inline">Khối lượng có thể chở:</label>
 									</div>
 									<div class="small-2 columns left">
-										<input type="text" class="left inline"
-											value="${order.deal.route.weight } kg" readonly="readonly">
+										<label for="right-label" class="left inline">${order.deal.route.weight } kg</label>
 									</div>
 								</div>
 								<!--  <div class="row">
@@ -299,23 +243,23 @@ var Msg ='<%=request.getAttribute("message")%>';
 								</div>
 								<div class="row">
 									<div class="small-4 columns">
-										<label class="right inline">Trạng thái </label>
+										<label class="right inline">Trạng thái: </label>
 									</div>
 									<div class="small-4 columns left">
 										<c:if test="${order.orderStatusID ==1}">
-											<input type="text" id="right-label" value="Đang vận chuyển"
-												readonly="readonly" />
+											<label for="right-label" class="left inline">Đang vận chuyển</label>
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==2}">
-											<input type="text" id="right-label" value="Đã giao hàng"
-												readonly="readonly" />
+										<label for="right-label" class="left inline">Đã giao hàng</label>
+											
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==3}">
-											<input type="text" id="right-label" value="Đã báo mất hàng"
-												readonly="readonly" />
+											<label for="right-label" class="left inline">Đã báo mất hàng</label>
+										
 										</c:if>
+										
 									</div>
 								</div>
 							</div>
@@ -348,4 +292,6 @@ var Msg ='<%=request.getAttribute("message")%>';
 	</div>
 </div>
 <jsp:include page="footer.jsp" />
-<script type="text/javascript"> window.onload = message; </script>
+<script type="text/javascript">
+	window.onload = message;
+</script>
