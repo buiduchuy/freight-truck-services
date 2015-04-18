@@ -5,6 +5,17 @@
 <title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
 
+<script type="text/javascript">
+var Msg ='<%=request.getAttribute("message")%>';
+	function message() {
+		if (Msg == "success") {
+			alert("Thanh toán thành công!");
+		} else if (Msg == "fail") {
+			alert("Thanh toán thất bại!");
+		}
+	}
+</script>
+
 <div class="large-12 columns">
 	<div class="row">
 		<div class="large-12 columns">
@@ -337,3 +348,4 @@
 	</div>
 </div>
 <jsp:include page="footer.jsp" />
+<script type="text/javascript"> window.onload = message; </script>

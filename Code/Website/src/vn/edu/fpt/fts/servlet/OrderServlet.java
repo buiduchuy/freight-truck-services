@@ -122,8 +122,11 @@ public class OrderServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
 				int orderID = Integer.valueOf(request.getParameter("orderID"));
 				Order order = orderDao.getOrderByID(orderID);
+				
+				String message = request.getParameter("message");
 
 				request.setAttribute("order", order);
+				request.setAttribute("message", message);
 				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
 						request, response);
 			} else if (action.equalsIgnoreCase("employeeManageOrder")) {
