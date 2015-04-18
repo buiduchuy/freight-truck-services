@@ -5,5 +5,5 @@ public final class Constant {
 	public static final String user = "sa";
 	public static final String pass = "123456";
 	public static final String API_KEY = "AIzaSyBNUIX7BTt5ibvMPFY5AsPW4Va0XcQckqg";
-	public static final String SERVICE_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
+	public static final String SERVICE_URL = "http://192.168.1.200:8080/FTS/api/";
 }

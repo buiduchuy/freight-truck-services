@@ -6,15 +6,16 @@
 <jsp:include page="header.jsp" />
 
 <div class="large-12 columns">
-<div class="row">
-	<div class="large-12 columns">
-		<nav class="breadcrumbs left" id="login-form">
-			<a href="ProcessServlet">Trang chủ</a> <a href="ProcessServlet?btnAction=manageOrder">Quản lý hóa đơn</a> <a class="current"
-				href="#">Chi tiết hóa đơn</a>
-		</nav>
+	<div class="row">
+		<div class="large-12 columns">
+			<nav class="breadcrumbs left" id="login-form">
+				<a href="ProcessServlet">Trang chủ</a> <a
+					href="ProcessServlet?btnAction=manageOrder">Quản lý hóa đơn</a> <a
+					class="current" href="#">Chi tiết hóa đơn</a>
+			</nav>
+		</div>
 	</div>
-</div>
-<br/>
+	<br />
 	<div class="large-3 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
@@ -22,7 +23,7 @@
 			<div class="row"></div>
 		</div>
 	</div>
-	<c:set var="order" value="${requestScope.order }" />
+	<c:set var="order" value="${requestScope.order}" />
 	<div class="large-9 columns">
 		<div class="form-content"
 			style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 100%;">
@@ -314,16 +315,17 @@
 										<c:if test="${order.orderStatusID==2}">
 											<a class="button alert"
 												href="OrderServlet?btnAction=lostGoods&orderID=${order.orderID}"
-												onclick="return confirm('Bạn có muốn báo mất hàng không?')">Báo mất hàng </a>
+												onclick="return confirm('Bạn có muốn báo mất hàng không?')">Báo
+												mất hàng </a>
 										</c:if>
-										<c:if test="${order.orderStatusID!=1}">
+
 										<a class="button success"
-												href="PaypalServlet?btnAction=pay&orderID=${order.orderID}">
-												<i class="icon-ok"></i> Thanh toán </a>
-										</c:if>
-										<a class="button success"
+											href="PaypalServlet?btnAction=pay&orderID=${order.orderID}&amount=${order.price}">
+											<i class="icon-ok"></i> Thanh toán
+										</a> <a class="button success"
 											href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
-											<i class="icon-print"></i>  In hóa đơn </a>
+											<i class="icon-print"></i> In hóa đơn
+										</a>
 									</div>
 								</div>
 							</div>
