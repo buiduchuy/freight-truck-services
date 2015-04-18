@@ -125,7 +125,7 @@ public class OrderAPI {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
 			Order db_order = orderDao.getOrderByID(orderID);
 			if (db_order != null) {
-				ret = orderDao.updateOrderStatusID(orderID, Common.order_lost);
+				ret = orderDao.updateOrderStatusID(orderID, Common.order_report);
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception

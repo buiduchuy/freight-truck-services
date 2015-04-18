@@ -47,7 +47,7 @@ public class OrderDetailActivity extends Activity {
 			tvPrice, tvNote, tvPhone, tvStatus, tvWeight, tvOrderid;
 	private String orderID;
 	private MenuItem lost;
-
+	private int price;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,6 +80,8 @@ public class OrderDetailActivity extends Activity {
 	
 	public void makePayment() {
 		Intent intent = new Intent(this, PaypalActivity.class);
+		intent.putExtra("orderID", orderID);
+		intent.putExtra("price", price);
 		startActivity(intent);
 	}
 
@@ -253,7 +255,7 @@ public class OrderDetailActivity extends Activity {
 				tvFinishTime.setText(Common.formatDateFromString(tmp1[0]));
 				String test = jsonObject4.getString("name");
 				tvCate.setText(jsonObject4.getString("name"));
-				int price = (int) Double.parseDouble(jsonObject2
+				price = (int) Double.parseDouble(jsonObject2
 						.getString("price"));
 				tvPrice.setText(price + " nghìn đồng");
 				tvWeight.setText(jsonObject3.getString("weight") + " kg");
