@@ -290,11 +290,13 @@ public class OrderDAO {
 
 		list = orderDao.getAllOrder();
 
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getDeal() != null) {
-				if (list.get(i).getDeal().getGoods() != null) {
-					if (list.get(i).getDeal().getGoods().getOwnerID() == ownerID) {
-						listOrder.add(list.get(i));
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getDeal() != null) {
+					if (list.get(i).getDeal().getGoods() != null) {
+						if (list.get(i).getDeal().getGoods().getOwnerID() == ownerID) {
+							listOrder.add(list.get(i));
+						}
 					}
 				}
 			}
@@ -310,11 +312,13 @@ public class OrderDAO {
 
 		list = orderDao.getAllOrder();
 
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getDeal() != null) {
-				if (list.get(i).getDeal().getRoute() != null) {
-					if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
-						listOrder.add(list.get(i));
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getDeal() != null) {
+					if (list.get(i).getDeal().getRoute() != null) {
+						if (list.get(i).getDeal().getRoute().getDriverID() == driverID) {
+							listOrder.add(list.get(i));
+						}
 					}
 				}
 			}
