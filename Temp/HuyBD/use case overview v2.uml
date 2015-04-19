@@ -3767,7 +3767,7 @@ Extension Point: Select report order
 </XPD:OBJ>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:ATTR name="#OwnedElements" type="integer">241</XPD:ATTR>
+<XPD:ATTR name="#OwnedElements" type="integer">246</XPD:ATTR>
 <XPD:OBJ name="OwnedElements[0]" type="UMLActor" guid="mSy/uZ3MMUKb5ATJSFtV5wAA">
 <XPD:ATTR name="Name" type="string">Member</XPD:ATTR>
 <XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
@@ -6158,10 +6158,6 @@ Extension Point: Select report order
 <XPD:OBJ name="OwnedElements[211]" type="UMLClass" guid="l8JzqEC3QkaQFe/qQ3XypwAA">
 <XPD:ATTR name="Name" type="string">Model</XPD:ATTR>
 <XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
-<XPD:ATTR name="#Instances" type="integer">3</XPD:ATTR>
-<XPD:REF name="Instances[0]">ce4qOKgzTU2sZzDWxZyUxgAA</XPD:REF>
-<XPD:REF name="Instances[1]">xylxUNDnnkCPKt7/Sx07lgAA</XPD:REF>
-<XPD:REF name="Instances[2]">xEqN5kqZZUu6BqBw98v1NAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedElements[212]" type="UMLClass" guid="kcgTaI/PyU69df6aMUpYVAAA">
 <XPD:ATTR name="Name" type="string">PayPalUtil</XPD:ATTR>
@@ -6583,6 +6579,32 @@ Extension Point: Select report order
 <XPD:REF name="Views[2]">LPraIZvpIkm2FNh4+P0oMAAA</XPD:REF>
 <XPD:REF name="Views[3]">TcIyX9jky0i8ubF5bJwrfQAA</XPD:REF>
 </XPD:OBJ>
+<XPD:OBJ name="OwnedElements[241]" type="UMLClass" guid="cwx77qoia0OTTGhwKKhuhgAA">
+<XPD:ATTR name="Name" type="string">Goods</XPD:ATTR>
+<XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedElements[242]" type="UMLClass" guid="dOOKqWLxY0CdhIHvHNZ0kQAA">
+<XPD:ATTR name="Name" type="string">Route</XPD:ATTR>
+<XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
+<XPD:ATTR name="#Instances" type="integer">1</XPD:ATTR>
+<XPD:REF name="Instances[0]">xylxUNDnnkCPKt7/Sx07lgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedElements[243]" type="UMLClass" guid="K9Ox78RgTk+fdgGvUQvwgAAA">
+<XPD:ATTR name="Name" type="string">Deal</XPD:ATTR>
+<XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
+<XPD:ATTR name="#Instances" type="integer">1</XPD:ATTR>
+<XPD:REF name="Instances[0]">ce4qOKgzTU2sZzDWxZyUxgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedElements[244]" type="UMLClass" guid="zCBya7gBtEahMH+BeIVzMAAA">
+<XPD:ATTR name="Name" type="string">PaypalUtil</XPD:ATTR>
+<XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
+<XPD:ATTR name="#Instances" type="integer">1</XPD:ATTR>
+<XPD:REF name="Instances[0]">xEqN5kqZZUu6BqBw98v1NAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="OwnedElements[245]" type="UMLClass" guid="/iBVB5BpTk2Kjag4mEQgbwAA">
+<XPD:ATTR name="Name" type="string">Goods</XPD:ATTR>
+<XPD:REF name="Namespace">LgO60FlcCE2EIlp3X7Mq4gAA</XPD:REF>
+</XPD:OBJ>
 <XPD:ATTR name="#OwnedCollaborationInstanceSets" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="OwnedCollaborationInstanceSets[0]" type="UMLCollaborationInstanceSet" guid="ofLtxl64aUOBjJtuuuIwggAA">
 <XPD:ATTR name="Name" type="string">CollaborationInstanceSet1</XPD:ATTR>
@@ -6725,7 +6747,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="/OyHktrFukakrcC1AeRv2gAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="BqyMWMbcaUWUsLtLS0z+SQAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Goods</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="EpmjADlclke0eoJ8w6/k9AAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -7454,15 +7476,15 @@ Extension Point: Select report order
 <XPD:OBJ name="OwnedViews[3]" type="UMLSeqObjectView" guid="JOuEeibs8kyJ53tme1aV9wAA">
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">672</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">696</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">160</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">129</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">601</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">105</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">605</XPD:ATTR>
 <XPD:REF name="Model">xylxUNDnnkCPKt7/Sx07lgAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="RhKNMtJD/kuCEMEN7ytaPgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="Mu0rAPcqF0C6z/uwZQrAFQAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Route</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="jI/agVSYEkOaDa8PcNyxkgAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -7599,7 +7621,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">576,276;729,276</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">576,276;741,276</XPD:ATTR>
 <XPD:REF name="Model">5X8Fp0/tbEq1wjwaG7tsFQAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">oQuDemHRvEGGBgJtsHpSrQAA</XPD:REF>
@@ -7625,7 +7647,7 @@ Extension Point: Select report order
 <XPD:REF name="HostEdge">KVXRY5yKMEuroaL+s3EObgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="koE/zRzdqkarUQRjRiOSCgAA">
-<XPD:ATTR name="Left" type="integer">729</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">741</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">276</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">464</XPD:ATTR>
@@ -7635,7 +7657,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">742,292;960,292</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">754,292;960,292</XPD:ATTR>
 <XPD:REF name="Model">C0CDBj2MC0CzMzkqM62JdAAA</XPD:REF>
 <XPD:REF name="Head">2ysBMuvWxU6CMI0Y4xqgFgAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -7671,7 +7693,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">960,308;742,308</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">960,308;754,308</XPD:ATTR>
 <XPD:REF name="Model">D/Ons4fdB0i3Q3jNVZOTagAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">2ysBMuvWxU6CMI0Y4xqgFgAA</XPD:REF>
@@ -7698,7 +7720,7 @@ Extension Point: Select report order
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="EhhsxEtW+EqAOAIixSD4EAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">729</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">741</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">308</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
@@ -7708,7 +7730,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">742,336;772,336;772,356;749,356</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">754,336;784,336;784,356;761,356</XPD:ATTR>
 <XPD:REF name="Model">1VLmpUsvWUym6pvwOJi0hAAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -7734,7 +7756,7 @@ Extension Point: Select report order
 <XPD:REF name="HostEdge">XPuG6B+wKk2XgD/glNdSTAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="E7l3hj/N7UGgJFOgwb/dfQAA">
-<XPD:ATTR name="Left" type="integer">736</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">748</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">356</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">373</XPD:ATTR>
@@ -7744,7 +7766,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">749,393;779,393;779,413;756,413</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">761,393;791,393;791,413;768,413</XPD:ATTR>
 <XPD:REF name="Model">g9X1vsG6BkqmCNLdfooVyAAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -7770,7 +7792,7 @@ Extension Point: Select report order
 <XPD:REF name="HostEdge">PoAOHbft/0uvqRrPVH2c5wAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="2FyPN1znWU+Bw/wPPVO9KQAA">
-<XPD:ATTR name="Left" type="integer">743</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">755</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">413</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">301</XPD:ATTR>
@@ -7780,7 +7802,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">756,444;786,444;786,464;763,464</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">768,444;798,444;798,464;775,464</XPD:ATTR>
 <XPD:REF name="Model">hcG9WPJA5EehTAaub8qbswAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -7806,7 +7828,7 @@ Extension Point: Select report order
 <XPD:REF name="HostEdge">1oT8qGDZdkC94p6+dOPdUgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="DOk3ZlB+TkGvZSVoUIRo9gAA">
-<XPD:ATTR name="Left" type="integer">750</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">762</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">464</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">229</XPD:ATTR>
@@ -7816,7 +7838,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">763,552;894,552</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">775,552;894,552</XPD:ATTR>
 <XPD:REF name="Model">lyIdYJG4x0+b8LOJsDab1AAA</XPD:REF>
 <XPD:REF name="Head">Js4zCOTibk+0qSqhESvJjAAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -7852,7 +7874,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">894,569;763,569</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">894,569;775,569</XPD:ATTR>
 <XPD:REF name="Model">VEH/HYEAuEmhikO4V0/KCwAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">Js4zCOTibk+0qSqhESvJjAAA</XPD:REF>
@@ -7879,7 +7901,7 @@ Extension Point: Select report order
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="OJJ4ouLD90+4aZ46AvQ4EQAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">750</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">762</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">569</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">29</XPD:ATTR>
@@ -7889,7 +7911,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">763,602;793,602;793,622;770,622</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">775,602;805,602;805,622;782,622</XPD:ATTR>
 <XPD:REF name="Model">g2rYgJqcFEmiBo2y5+lBTQAA</XPD:REF>
 <XPD:REF name="Head">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -7915,7 +7937,7 @@ Extension Point: Select report order
 <XPD:REF name="HostEdge">z/NZm6pZ5UKmFdGpwc7suQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Activation" type="UMLActivationView" guid="JGQKU9xyiUSu7tiTpRQPSwAA">
-<XPD:ATTR name="Left" type="integer">757</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">769</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">622</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">14</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">43</XPD:ATTR>
@@ -7925,7 +7947,7 @@ Extension Point: Select report order
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">757,643;576,643</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">769,643;576,643</XPD:ATTR>
 <XPD:REF name="Model">9+I1uxfJ00edG25PT2Zw9gAA</XPD:REF>
 <XPD:REF name="Head">oQuDemHRvEGGBgJtsHpSrQAA</XPD:REF>
 <XPD:REF name="Tail">6TXCFzK6Uk+Q235a/tTF5AAA</XPD:REF>
@@ -8419,7 +8441,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="+WF78hZElESxI6mMeBPevgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="xSRRBXcYsEaZZz80zO+52AAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Deal</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="pbSh2kOnI0igbcFm6anWuwAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -9580,7 +9602,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="DwoiyH1xKk+L7pNoPma/OQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="3if8Tv9HC0OEv/7SGj4l7gAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Deal</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="72ey6dIXMEy89t6n2N4qjQAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -10402,7 +10424,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="pWrnsUD2vUG3j6MgBLzuLwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="8gqQ1eux00WtIQ9el9UQewAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Deal</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="sx2vjCVH1ESCyryXUu/xsAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -11223,7 +11245,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="4FqqKA1yaEqIQ7rxVeyyHgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="Ir+FfKHYZk+wfd4aoTBK+gAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Deal</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="yaoKJiBUbEWkpsXBm8kvEAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -12001,7 +12023,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="ZUlVby7bNUyYNFhYSoHEkgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="GaZTOExydUKRIqx/4ks4mgAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : PayPalUtil</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : PaypalUtil</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="DkB7K8rJa0+INPXl5frWrgAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -12049,7 +12071,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="Hu58k3qIYU+xawny8uZbuwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="F0qnC/U3Pk2YSHdmbhi9JwAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Deal</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="wXVTE30W/kOTKThIJ6xEhgAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -12875,7 +12897,7 @@ Extension Point: Select report order
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="ryoijCHBV0+zgaMIbQqBIgAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="0hz1h8Ejnk+u1wMLEkV61AAA">
 <XPD:ATTR name="FontStyle" type="integer">4</XPD:ATTR>
-<XPD:ATTR name="Text" type="string"> : Model</XPD:ATTR>
+<XPD:ATTR name="Text" type="string"> : Goods</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="uQtwwC+vl0ORxWk9GH8eAAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -13791,7 +13813,7 @@ Extension Point: Select report order
 <XPD:REF name="ReceivingStimuli[6]">ajuC+5uUXUiUv8kNxeC+UgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="ParticipatingInstances[3]" type="UMLObject" guid="xEqN5kqZZUu6BqBw98v1NAAA">
-<XPD:REF name="Classifier">l8JzqEC3QkaQFe/qQ3XypwAA</XPD:REF>
+<XPD:REF name="Classifier">zCBya7gBtEahMH+BeIVzMAAA</XPD:REF>
 <XPD:REF name="CollaborationInstanceSet">ofLtxl64aUOBjJtuuuIwggAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">wrQcBpSrz0mWT/wbiKoRxwAA</XPD:REF>
@@ -13884,7 +13906,7 @@ Extension Point: Select report order
 <XPD:REF name="ReceivingStimuli[1]">UjpJWEtk3U+/6Se2nJLB5gAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="ParticipatingInstances[7]" type="UMLObject" guid="xylxUNDnnkCPKt7/Sx07lgAA">
-<XPD:REF name="Classifier">l8JzqEC3QkaQFe/qQ3XypwAA</XPD:REF>
+<XPD:REF name="Classifier">dOOKqWLxY0CdhIHvHNZ0kQAA</XPD:REF>
 <XPD:REF name="CollaborationInstanceSet">ofLtxl64aUOBjJtuuuIwggAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">JOuEeibs8kyJ53tme1aV9wAA</XPD:REF>
@@ -13919,10 +13941,10 @@ Extension Point: Select report order
 <XPD:ATTR name="Name" type="string">Google Maps API</XPD:ATTR>
 <XPD:REF name="CollaborationInstanceSet">ofLtxl64aUOBjJtuuuIwggAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">6</XPD:ATTR>
-<XPD:REF name="Views[0]">HeGvAjjDaEuq4AtTcKzaQQAA</XPD:REF>
-<XPD:REF name="Views[1]">Js4zCOTibk+0qSqhESvJjAAA</XPD:REF>
-<XPD:REF name="Views[2]">Y6Z1ekmsXUqvoruMLINwZQAA</XPD:REF>
-<XPD:REF name="Views[3]">GxYERNaQWkG7ujKdW/vKLwAA</XPD:REF>
+<XPD:REF name="Views[0]">Y6Z1ekmsXUqvoruMLINwZQAA</XPD:REF>
+<XPD:REF name="Views[1]">GxYERNaQWkG7ujKdW/vKLwAA</XPD:REF>
+<XPD:REF name="Views[2]">HeGvAjjDaEuq4AtTcKzaQQAA</XPD:REF>
+<XPD:REF name="Views[3]">Js4zCOTibk+0qSqhESvJjAAA</XPD:REF>
 <XPD:REF name="Views[4]">4v8uEWnnl0SvdfARMwzANgAA</XPD:REF>
 <XPD:REF name="Views[5]">bbK1W/rIx0eA5KqG9whPYwAA</XPD:REF>
 <XPD:ATTR name="#SendingStimuli" type="integer">3</XPD:ATTR>
@@ -14016,7 +14038,7 @@ Extension Point: Select report order
 <XPD:REF name="ReceivingStimuli[13]">H6lVQ0vTZUS5qPazbq0bUwAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="ParticipatingInstances[12]" type="UMLObject" guid="ce4qOKgzTU2sZzDWxZyUxgAA">
-<XPD:REF name="Classifier">l8JzqEC3QkaQFe/qQ3XypwAA</XPD:REF>
+<XPD:REF name="Classifier">K9Ox78RgTk+fdgGvUQvwgAAA</XPD:REF>
 <XPD:REF name="CollaborationInstanceSet">ofLtxl64aUOBjJtuuuIwggAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">10</XPD:ATTR>
 <XPD:REF name="Views[0]">nK4RUSUZHEWZg+BxFTUuWwAA</XPD:REF>

@@ -6,30 +6,48 @@ package vn.edu.fpt.fts.common;
  */
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DBAccess {
 
+	// public static Connection makeConnection() {
+	// try {
+	// Class.forName(Common.CLASSSQLSERVERDRIVER);
+	// String url = Common.CONNECTION;
+	// // Connection con = DriverManager.getConnection(url);
+	// Connection con = DriverManager.getConnection(url,
+	// Common.usernamedb, Common.passworddb);
+	// return con;
+	// } catch (ClassNotFoundException e) {
+	// e.printStackTrace();
+	// Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null,
+	// e);
+	// } catch (SQLException e) {
+	// e.printStackTrace();
+	// Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null,
+	// e);
+	// }
+	// return null;
+	// }
+
 	public static Connection makeConnection() {
+		Connection con = null;
 		try {
-			Class.forName(Common.CLASSSQLSERVERDRIVER);
-			String url = Common.CONNECTION;
-			// Connection con = DriverManager.getConnection(url);
-			Connection con = DriverManager.getConnection(url,
-					Common.usernamedb, Common.passworddb);
-			return con;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null,
-					e);
-		} catch (SQLException e) {
+			ResourceBundle rb = ResourceBundle.getBundle("config");
+			Class.forName(rb.getString("driver"));
+			con = DriverManager.getConnection(rb.getString("connection"),
+					rb.getString("username"), rb.getString("password"));
+
+		} catch (Exception e) {
+			// TODO: handle exception
 			e.printStackTrace();
 			Logger.getLogger(DBAccess.class.getName()).log(Level.SEVERE, null,
 					e);
 		}
-		return null;
+
+		return con;
 	}
 
 }

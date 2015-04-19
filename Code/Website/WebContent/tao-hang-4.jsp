@@ -151,7 +151,7 @@
 								</div>
 								<div class="row">
 									<div class="small-4 columns">
-										<label class="right inline">Chi phí tài xế: </label>
+										<label class="right inline">Chi phí: </label>
 									</div>
 									<div class="small-4 columns left">
 										<input type="text" id="right-label" name="txtPrice"
