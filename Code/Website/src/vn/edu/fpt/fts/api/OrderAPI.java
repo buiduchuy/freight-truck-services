@@ -121,7 +121,7 @@ public class OrderAPI {
 	}
 
 	@POST
-	@Path("ownerNoticeLostGoods")
+	@Path("ownerReportOrder")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String ownerNoticeLostGoods(MultivaluedMap<String, String> params) {
@@ -129,9 +129,7 @@ public class OrderAPI {
 		try {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
 			Order db_order = orderDao.getOrderByID(orderID);
-			if (db_order != null) {
-				ret = orderDao.updateOrderStatusID(orderID, Common.order_refund);
-			}
+			notificationProcess.insertOwnerReportOrder(db_order);
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -139,7 +137,7 @@ public class OrderAPI {
 		}
 		return String.valueOf(ret);
 	}
-	
+
 	@POST
 	@Path("ownerCancelOrder")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -159,15 +157,15 @@ public class OrderAPI {
 		}
 		return String.valueOf(ret);
 	}
-	
+
 	@POST
-	@Path("ownerPay")
+	@Path("ownerPayOrder")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String ownerPay(MultivaluedMap<String, String> params) {
 		int ret = 0;
 		try {
-			
+
 			String paypalID = params.getFirst("paypalID");
 			String paypalAccount = params.getFirst("paypalAccount");
 			String description = params.getFirst("description");
@@ -180,10 +178,10 @@ public class OrderAPI {
 			payment.setDescription(description);
 			payment.setCreateTime(Common.getCreateTime());
 			payment.setOrderID(orderID);
-			
+
 			ret = orderDao.updateOrderStatusID(orderID, Common.order_paid);
 			paymentDao.insertPayment(payment);
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			ret = 0;
