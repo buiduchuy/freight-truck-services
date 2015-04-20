@@ -42,8 +42,7 @@ public class OrderProcess {
 
 				int orderStatusID = l_order.get(i).getOrderStatusID();
 
-				if (orderStatusID != Common.order_accept
-						&& orderStatusID != Common.order_report) {
+				if (orderStatusID != Common.order_paid) {
 					if (l_order.get(i).getDeal() != null) {
 						if (l_order.get(i).getDeal().getGoods() != null) {
 							deliveryDate = dateFormat.parse(l_order.get(i)
@@ -52,7 +51,7 @@ public class OrderProcess {
 									.getDate()) {
 								int orderID = l_order.get(i).getOrderID();
 								int ret = orderDao.updateOrderStatusID(orderID,
-										Common.order_accept);
+										Common.order_delivering);
 								logger.warning("AUTO ACCEPT ORDER: " + orderID
 										+ " --- Time: " + new Date().toString());
 								if (ret == 1) {
@@ -69,5 +68,22 @@ public class OrderProcess {
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
+	}
+	
+	public int cancelOrder(int orderID) {
+		int ret = 0;
+		Order order = orderDao.getOrderByID(orderID);
+		int orderStatusID = order.getOrderStatusID();
+		if (orderStatusID == Common.order_unpaid) {
+			// Update to cancelled and create notification
+			ret = orderDao.updateOrderStatusID(orderID, Common.order_cancelled);
+			notificationProcess.insertOwnerCancelOrderWhenUnpaid(order);
+			
+		} else if (orderStatusID == Common.order_paid) {
+			// Update to cancelled and create notification penalty
+			ret = orderDao.updateOrderStatusID(orderID, Common.order_cancelled);
+			notificationProcess.insertOwnerCancelOrderWhenPaid(order);
+		}
+		return ret;
 	}
 }

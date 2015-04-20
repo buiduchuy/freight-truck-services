@@ -18,7 +18,7 @@ public class NotificationProcess {
 
 	NotificationDAO notificationDao = new NotificationDAO();
 	DealDAO dealDao = new DealDAO();
-	
+
 	public int insertDealSendNotification(Deal deal) {
 		int ret = 0;
 
@@ -159,11 +159,69 @@ public class NotificationProcess {
 		notification.setActive(Common.activate);
 		notification.setCreateTime(order.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD" + order.getOrderID() +" chấp nhận!");
-		notification.setStatusOfType(Common.order_accept);
+		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"
+				+ order.getOrderID() + " chấp nhận!");
+		notification.setStatusOfType(Common.order_unpaid);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
-		
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertOwnerCancelOrderWhenPaid(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Đơn hàng #OD" + order.getOrderID()
+				+ " đã hủy. Bạn phải chịu một khoản tiền phạt nhất định.");
+		notification.setStatusOfType(Common.order_cancelled);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertOwnerCancelOrderWhenUnpaid(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Đơn hàng #OD" + order.getOrderID()
+				+ " đã hủy!");
+		notification.setStatusOfType(Common.order_cancelled);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+	
+	public int insertSystemCancelOrderTimeout(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Hệ thống đã tự động hủy đơn hàng #OD" + order.getOrderID()
+				+ ".");
+		notification.setStatusOfType(Common.order_cancelled);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
 		ret = notificationDao.insertNotification(notification);
 
 		return ret;

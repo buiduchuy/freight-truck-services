@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.edu.fpt.fts.process;
+package vn.edu.fpt.fts.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,30 +22,37 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import vn.edu.fpt.fts.process.LatLng;
+
 /**
  * @author Huy
  *
  */
 public class MapsUtil {
+	
+	private final static String TAG = "MapsUtil";
 
 	public static void main(String[] args) {
-//		MapsUtils mapsUtils = new MapsUtils();
-//		CityDAO cityDao = new CityDAO();
-//		List<City> l_city = cityDao.getAllCity();
-//
-//		for (int i = 0; i < l_city.size(); i++) {
-//			LatLng latLng = mapsUtils.parseJson(mapsUtils
-//					.getJSONFromUrl(mapsUtils.makeGeoCodeURL(l_city.get(i)
-//							.getCityName())));
-//			cityDao.updateLocationCity(l_city.get(i).getCityID(), latLng);
-//
-//			System.out.println(latLng.getLatitude() + " , "
-//					+ latLng.getLongitude());
-//		}
-		
+		MapsUtil mapsUtil = new MapsUtil();
+		System.out.println(mapsUtil.getAverageTime("Hà Nội", "Hồ Chí Minh", 50));
+
 	}
 
-	private final static String TAG = "MapsUtil";
+	public MapsUtil() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getAverageTime(String startAddress, String endAddress,
+			int velocityKmH) {
+//		 LatLng latLngStart = parseJson(getJSONFromUrl(makeGeoCodeURL(startAddress)));
+//		 LatLng latLngEnd = parseJson(getJSONFromUrl(makeGeoCodeURL(endAddress)));
+		 
+		 double distance = parseJsonToGetDistance(getJSONFromUrl(makeDirectionURL(
+				 startAddress, endAddress)));
+		 
+		 double averageTime = Math.ceil(distance / (velocityKmH*1000*24));
+		return (int) averageTime;
+	}
 
 	public String makeGeoCodeURL(String address) {
 		StringBuilder urlString = new StringBuilder();

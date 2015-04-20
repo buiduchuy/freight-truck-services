@@ -206,7 +206,7 @@ public class DealProcess {
 				Order order = new Order();
 				order.setPrice(deal.getPrice());
 				order.setCreateTime(deal.getCreateTime());
-				order.setOrderStatusID(Common.order_pending);
+				order.setOrderStatusID(Common.order_unpaid);
 				ret = orderDao.insertOrder(order);
 
 				// Insert into DealOrder Table
@@ -282,7 +282,7 @@ public class DealProcess {
 				Order order = new Order();
 				order.setPrice(deal.getPrice());
 				order.setCreateTime(deal.getCreateTime());
-				order.setOrderStatusID(Common.order_pending);
+				order.setOrderStatusID(Common.order_unpaid);
 				int newOrderID = orderDao.insertOrder(order);
 
 				// Insert into DealOrder Table

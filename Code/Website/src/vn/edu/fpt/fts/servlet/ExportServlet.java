@@ -179,11 +179,11 @@ public class ExportServlet extends HttpServlet {
 				+ order.getDeal().getGoods().getDeliveryAddress(), font));
 		
 		String orderStatus = "";
-		if (order.getOrderStatusID() == Common.order_accept) {
+		if (order.getOrderStatusID() == Common.order_finish) {
 			orderStatus = "Đã giao hàng";
-		} else if (order.getOrderStatusID() == Common.order_pending) {
+		} else if (order.getOrderStatusID() == Common.order_delivering) {
 			orderStatus = "Đang vận chuyển";
-		} else if (order.getOrderStatusID() == Common.order_report) {
+		} else if (order.getOrderStatusID() == Common.order_delivered) {
 			orderStatus = "Đã báo mất hàng";
 		}
 		

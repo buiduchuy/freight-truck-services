@@ -84,7 +84,7 @@ public class OrderServlet extends HttpServlet {
 						if (today.getDate() > deliveryDate.getDate()
 								&& today.getDate() <= (deliveryDate.getDate() + Common.periodDay)) {
 							if (orderDao.updateOrderStatusID(orderID,
-									Common.order_report) == 1) {
+									Common.order_refund) == 1) {
 								request.setAttribute(
 										"messageSuccess",
 										"Báo mất hàng thành công. Chúng tôi sẽ kiểm tra và liên hệ trực tiếp trong thời gian sớm nhất!");
@@ -147,7 +147,7 @@ public class OrderServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("employeeUpdateOrderStatus")) {
 				int orderID = Integer.valueOf(request.getParameter("orderID"));
 				try {
-					orderDao.updateOrderStatusID(orderID, Common.order_accept);
+					orderDao.updateOrderStatusID(orderID, Common.order_finish);
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();

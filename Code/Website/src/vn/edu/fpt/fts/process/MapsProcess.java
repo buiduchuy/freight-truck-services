@@ -27,6 +27,8 @@ import org.codehaus.jettison.json.JSONObject;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.dao.RouteMarkerDAO;
 import vn.edu.fpt.fts.pojo.RouteMarker;
+import vn.edu.fpt.fts.util.MapsUtil;
+import vn.edu.fpt.fts.util.MatchingUtil;
 
 /**
  * @author Huy
@@ -38,73 +40,6 @@ public class MapsProcess {
 	MapsUtil mapsUtils = new MapsUtil();
 
 	public String makeURL(String src, List<String> listMarker, String des) {
-//		String urlSrc = mapsUtils.makeURL(src);
-//		String jsonSrc = mapsUtils.getJSONFromUrl(urlSrc);
-//		LatLng latLngSrc = mapsUtils.parseJson(jsonSrc);
-//
-//		String urlDes = mapsUtils.makeURL(des);
-//		String jsonDes = mapsUtils.getJSONFromUrl(urlDes);
-//		LatLng latLngDes = mapsUtils.parseJson(jsonDes);
-//
-//		LatLng latLngP1 = new LatLng();
-//		LatLng latLngP2 = new LatLng();
-//		
-//		if (listMarker.size() == 1) {
-//			String urlP1 = mapsUtils.makeURL(listMarker.get(0));
-//			String jsonP1 = mapsUtils.getJSONFromUrl(urlP1);
-//			latLngP1 = mapsUtils.parseJson(jsonP1);
-//		} else if (listMarker.size() == 2) {
-//			String urlP1 = mapsUtils.makeURL(listMarker.get(0));
-//			String jsonP1 = mapsUtils.getJSONFromUrl(urlP1);
-//			latLngP1 = mapsUtils.parseJson(jsonP1);
-//
-//			String urlP2 = mapsUtils.makeURL(listMarker.get(1));
-//			String jsonP2 = mapsUtils.getJSONFromUrl(urlP2);
-//			latLngP2 = mapsUtils.parseJson(jsonP2);
-//		}
-//
-//		StringBuilder urlString = new StringBuilder();
-//		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
-//		urlString.append("?origin=");
-//		urlString.append(Double.toString(latLngSrc.getLatitude()));
-//		urlString.append(",");
-//		urlString.append(Double.toString(latLngSrc.getLongitude()));
-//		urlString.append("&destination=");
-//		urlString.append(Double.toString(latLngDes.getLatitude()));
-//		urlString.append(",");
-//		urlString.append(Double.toString(latLngDes.getLongitude()));
-//		if (latLngP1 != null || latLngP2 != null) {
-//			urlString.append("&waypoints=via:");
-//			String waypoints = "";
-//			
-//			String latP1 =  Double.toString(latLngP1.getLatitude());
-//			String longP1 = Double.toString(latLngP1.getLongitude());
-//
-//			if (!latP1.equalsIgnoreCase("0.0") && !longP1.equalsIgnoreCase("0.0")) {
-//				waypoints += Double.toString(latLngP1.getLatitude());
-//				waypoints += ",";
-//				waypoints += Double.toString(latLngP1.getLongitude());
-//			}
-//			
-//			String latP2 =  Double.toString(latLngP2.getLatitude());
-//			String longP2 = Double.toString(latLngP2.getLongitude());
-//			if (!latP2.equalsIgnoreCase("0.0") && !longP2.equalsIgnoreCase("0.0")) {
-//				waypoints += "|via:";
-//				waypoints += Double.toString(latLngP2.getLatitude());
-//				waypoints += ",";
-//				waypoints += Double.toString(latLngP2.getLongitude());
-//			}
-//			try {
-//				waypoints = URLEncoder.encode(waypoints, "UTF-8");
-//			} catch (UnsupportedEncodingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			urlString.append(waypoints);
-//		}
-//		urlString.append("&mode=driving&region=vi");
-//		return urlString.toString();
-
 		StringBuilder urlString = new StringBuilder();
 		urlString.append("http://maps.googleapis.com/maps/api/directions/json");
 		urlString.append("?origin=");
@@ -279,7 +214,7 @@ public class MapsProcess {
 
 	public boolean checkDistance(int routeID, LatLng goodsStartLocation,
 			LatLng goodsFinishLocation, double maxAllowDistance) {
-		MatchingUtils matching = new MatchingUtils();
+		MatchingUtil matching = new MatchingUtil();
 
 		RouteDAO routeDao = new RouteDAO();
 		RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();

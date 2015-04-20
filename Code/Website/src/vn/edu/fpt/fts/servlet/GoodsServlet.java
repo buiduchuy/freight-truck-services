@@ -24,8 +24,8 @@ import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Owner;
 import vn.edu.fpt.fts.pojo.Route;
 import vn.edu.fpt.fts.process.LatLng;
-import vn.edu.fpt.fts.process.MapsUtil;
 import vn.edu.fpt.fts.process.MatchingProcess;
+import vn.edu.fpt.fts.util.MapsUtil;
 
 /**
  * Servlet implementation class GoodsServlet

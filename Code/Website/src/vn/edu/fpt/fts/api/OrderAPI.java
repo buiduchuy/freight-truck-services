@@ -20,6 +20,7 @@ import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.process.NotificationProcess;
+import vn.edu.fpt.fts.process.OrderProcess;
 
 /**
  * @author Huy
@@ -29,6 +30,7 @@ import vn.edu.fpt.fts.process.NotificationProcess;
 public class OrderAPI {
 	private final static String TAG = "OrderAPI";
 	OrderDAO orderDao = new OrderDAO();
+	OrderProcess orderProcess = new OrderProcess();
 	NotificationProcess notificationProcess = new NotificationProcess();
 
 	@GET
@@ -125,7 +127,7 @@ public class OrderAPI {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
 			Order db_order = orderDao.getOrderByID(orderID);
 			if (db_order != null) {
-				ret = orderDao.updateOrderStatusID(orderID, Common.order_report);
+				ret = orderDao.updateOrderStatusID(orderID, Common.order_refund);
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
@@ -134,5 +136,24 @@ public class OrderAPI {
 		}
 		return String.valueOf(ret);
 	}
-
+	
+	@POST
+	@Path("ownerCancelOrder")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String ownerCancelOrder(MultivaluedMap<String, String> params) {
+		int ret = 0;
+		try {
+			int orderID = Integer.valueOf(params.getFirst("orderID"));
+			Order db_order = orderDao.getOrderByID(orderID);
+			if (db_order != null) {
+				ret = orderProcess.cancelOrder(orderID);
+			}
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return String.valueOf(ret);
+	}
 }

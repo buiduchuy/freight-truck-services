@@ -1,7 +1,7 @@
 /**
  * 
  */
-package vn.edu.fpt.fts.process;
+package vn.edu.fpt.fts.util;
 
 /**
  * @author Duc Huy
