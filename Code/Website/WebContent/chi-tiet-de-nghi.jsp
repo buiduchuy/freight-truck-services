@@ -121,13 +121,15 @@
 																		<c:when test="${history.createBy== 'driver'}">
 																		<c:set var="dealID" value="${history.dealID }" />
 																		<c:set var="createBy" value="${history.createBy }" />
-																			<td><a class="button alert"
-																				href="DealServlet?btnAction=declineDeal&dealID=${history.dealID }"
-																				onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')">Từ
-																					chối</a> <a class="button success"
+																			<td>
+																			<a class="button success"
 																				href="DealServlet?btnAction=acceptDeal&dealID=${history.dealID }"
-																				onclick="return confirm('Bạn có chấp nhận đề nghị này không?')">Chấp
-																					nhận</a></td>
+																				onclick="return confirm('Bạn có chấp nhận đề nghị này không?')" style="width: 48%;">Chấp
+																					nhận</a>
+																			<a class="button alert"
+																				href="DealServlet?btnAction=declineDeal&dealID=${history.dealID }"
+																				onclick="return confirm('Bạn có muốn từ chối đề nghị này không?')" style="width: 48%;">Từ
+																					chối</a> </td>
 
 																		</c:when>
 																		<c:when test="${history.createBy== 'owner'}">

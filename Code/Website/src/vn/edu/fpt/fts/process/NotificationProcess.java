@@ -208,6 +208,26 @@ public class NotificationProcess {
 		return ret;
 	}
 
+	public int insertOwnerReportOrder(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification.setEmail("staff@fts.vn");
+		notification.setMessage("Chủ hàng "
+				+ order.getDeal().getGoods().getOwner().getEmail()
+				+ "báo mất hàng. Mã hóa đơn: " + order.getOrderID() + ".");
+		notification.setStatusOfType(Common.order_delivered);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+	
 	public int insertSystemCancelOrderTimeout(Order order) {
 		int ret = 0;
 
@@ -226,18 +246,36 @@ public class NotificationProcess {
 
 		return ret;
 	}
-
-	public int insertOwnerReportOrder(Order order) {
+	
+	public int insertSystemChangeDeliveringOrder(Order order) {
 		int ret = 0;
 
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
 		notification.setCreateTime(order.getCreateTime());
-		notification.setEmail("staff@fts.vn");
-		notification.setMessage("Chủ hàng "
-				+ order.getDeal().getGoods().getOwner().getEmail()
-				+ "báo mất hàng. Mã hóa đơn: " + order.getOrderID() + ".");
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"
+				+ order.getOrderID() + " là đang vận chuyển.<br/>Xin liên hệ nhân viên nếu chưa có tài xế nhận hàng.");
+		notification.setStatusOfType(Common.order_delivering);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+	
+	public int insertSystemChangeDeliveredOrder(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(order.getCreateTime());
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"
+				+ order.getOrderID() + " là đã giao hàng.<br/>Xin liên hệ nhân viên nếu tài xế chưa giao hàng.");
 		notification.setStatusOfType(Common.order_delivered);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
