@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,11 @@ import javax.servlet.http.HttpSession;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.dao.OrderDAO;
+import vn.edu.fpt.fts.dao.PaymentDAO;
+import vn.edu.fpt.fts.pojo.OrderStatus;
 
 import com.google.gson.JsonObject;
 import com.paypal.api.openidconnect.Session;
@@ -63,10 +70,10 @@ public class PaypalServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			
+
 			Map<String, String> sdkConfig = new HashMap<String, String>();
 			sdkConfig.put("mode", "sandbox");
-			
+
 			String accessToken = new OAuthTokenCredential(
 					"AUYEywUBcwk_YKlg-Bqmfp2yx-ecX4A7qU6MN-oU12eq3k1xoH1JKnAfDjeFLjmDTIOSNgRBcAB8mwXm",
 					"ECMUGhPghn0gH_5H2fr7SHQM4RvDju367xF7s5KBSh_y5cFbWepXlZQExrPp_--7yVmweupj_j-yWZeu",
@@ -74,7 +81,7 @@ public class PaypalServlet extends HttpServlet {
 
 			APIContext apiContext = new APIContext(accessToken);
 			apiContext.setConfigurationMap(sdkConfig);
-			
+
 			String action = request.getParameter("btnAction");
 			if (action.equalsIgnoreCase("pay")) {
 
@@ -117,7 +124,8 @@ public class PaypalServlet extends HttpServlet {
 				HttpSession session = request.getSession();
 				session.setAttribute("url", request.getHeader("referer"));
 				redirectUrls
-						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return");
+						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return&orderID="
+								+ request.getParameter("orderID"));
 				payment.setRedirectUrls(redirectUrls);
 
 				Payment createdPayment = payment.create(apiContext);
@@ -130,21 +138,33 @@ public class PaypalServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("return")) {
 				String paymentID = request.getParameter("paymentId");
 				String payerID = request.getParameter("PayerID");
+				String orderID = request.getParameter("orderID");
 				Payment payment = new Payment();
 				payment.setId(paymentID);
 				PaymentExecution paymentExecute = new PaymentExecution();
 				paymentExecute.setPayerId(payerID);
-				Payment createdPayment = payment.execute(apiContext, paymentExecute);
-				
+				Payment createdPayment = payment.execute(apiContext,
+						paymentExecute);
+
 				HttpSession session = request.getSession();
 				String paymentURL = session.getAttribute("url").toString();
 				session.removeAttribute("url");
-				
-				
-				if(createdPayment.getState().equals("approved")) {
+
+				if (createdPayment.getState().equals("approved")) {
+					PaymentDAO paymentDao = new PaymentDAO();
+					OrderDAO orderDao = new OrderDAO();
+					SimpleDateFormat format = new SimpleDateFormat(
+							"yyyy-MM-dd hh:mm");
+					String createTime = format.format(Calendar.getInstance()
+							.getTime());
+					vn.edu.fpt.fts.pojo.Payment pmnt = new vn.edu.fpt.fts.pojo.Payment(
+							0, paymentID, createdPayment.getPayer()
+									.getPayerInfo().getEmail(), "", createTime,
+							Integer.parseInt(orderID));
+					paymentDao.insertPayment(pmnt);
+					orderDao.updateOrderStatusID(Integer.parseInt(orderID), Common.order_paid);
 					response.sendRedirect(paymentURL + "&message=success");
-				}
-				else {
+				} else {
 					response.sendRedirect(paymentURL + "&message=fail");
 				}
 			}

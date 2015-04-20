@@ -19,6 +19,8 @@ import vn.edu.fpt.fts.pojo.Employee;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.OrderStatus;
 import vn.edu.fpt.fts.pojo.Owner;
+import vn.edu.fpt.fts.process.NotificationProcess;
+import vn.edu.fpt.fts.process.OrderProcess;
 
 /**
  * Servlet implementation class OrderServlet
@@ -49,7 +51,6 @@ public class OrderServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			
 
 			if (action.equalsIgnoreCase("manageOrder")) {
 				Owner owner = (Owner) session.getAttribute("owner");
@@ -122,7 +123,7 @@ public class OrderServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
 				int orderID = Integer.valueOf(request.getParameter("orderID"));
 				Order order = orderDao.getOrderByID(orderID);
-				
+
 				String message = request.getParameter("message");
 
 				request.setAttribute("order", order);
@@ -133,11 +134,12 @@ public class OrderServlet extends HttpServlet {
 				Employee employee = (Employee) session.getAttribute("employee");
 				if (employee != null) {
 					List<Order> listOrder = orderDao.getAllOrder();
-					List<OrderStatus> listOrderStatus = orderStatusDao.getAllOrderStatus();
-					
+					List<OrderStatus> listOrderStatus = orderStatusDao
+							.getAllOrderStatus();
+
 					request.setAttribute("listOrder", listOrder);
 					request.setAttribute("listOrderStatus", listOrderStatus);
-					
+
 					request.getRequestDispatcher("admin/manage-order.jsp")
 							.forward(request, response);
 				} else {
@@ -193,6 +195,42 @@ public class OrderServlet extends HttpServlet {
 					request.getRequestDispatcher(
 							"OrderServlet?btnAction=manageOrderEmployee")
 							.forward(request, response);
+				}
+			} else if (action.equals("cancelOrder")) {
+				int orderID = Integer.valueOf(request.getParameter("orderID"));
+				try {
+					OrderProcess orderProcess = new OrderProcess();
+					orderProcess.cancelOrder(orderID);
+
+					Order order = orderDao.getOrderByID(orderID);
+
+					request.setAttribute("order", order);
+					request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+							request, response);
+				} catch (Exception e) {
+					// TODO: handle exception
+					request.setAttribute("messageError",
+							"Có lỗi xảy ra trong truy vấn. Xin vui lòng thử lại sau!");
+					request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+							request, response);
+				}
+			} else if (action.equals("reportOrder")) {
+				int orderID = Integer.valueOf(request.getParameter("orderID"));
+				try {
+					Order order = orderDao.getOrderByID(orderID);
+					NotificationProcess notificationProcess = new NotificationProcess();
+					notificationProcess.insertOwnerReportOrder(order);
+
+					request.setAttribute("order", order);
+					request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+							request, response);
+
+				} catch (Exception e) {
+					// TODO: handle exception
+					request.setAttribute("messageError",
+							"Có lỗi xảy ra trong truy vấn. Xin vui lòng thử lại sau!");
+					request.getRequestDispatcher("chi-tiet-order.jsp").forward(
+							request, response);
 				}
 			}
 		}

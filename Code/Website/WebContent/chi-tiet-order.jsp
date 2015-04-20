@@ -247,17 +247,33 @@ var Msg ='<%=request.getAttribute("message")%>';
 									</div>
 									<div class="small-4 columns left">
 										<c:if test="${order.orderStatusID ==1}">
-											<label for="right-label" class="left inline">Đang vận chuyển</label>
+											<label for="right-label" class="left inline">Chưa thanh toán</label>
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==2}">
-										<label for="right-label" class="left inline">Đã giao hàng</label>
+										<label for="right-label" class="left inline">Đã thanh toán</label>
 											
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==3}">
-											<label for="right-label" class="left inline">Đã báo mất hàng</label>
+											<label for="right-label" class="left inline">Đang vận chuyển</label>
 										
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==4}">
+											<label for="right-label" class="left inline">Đã giao hàng</label>
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==5}">
+											<label for="right-label" class="left inline">Đã hủy</label>
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==6}">
+											<label for="right-label" class="left inline">Hoàn tiền</label>
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==7}">
+											<label for="right-label" class="left inline">Kết thúc</label>
 										</c:if>
 										
 									</div>
@@ -267,19 +283,28 @@ var Msg ='<%=request.getAttribute("message")%>';
 
 								<div class="large-12 columns">
 									<div class="submit-area">
-										<c:if test="${order.orderStatusID==2}">
+										<c:if test="${order.orderStatusID==4}">
 											<a class="button alert"
 												href="OrderServlet?btnAction=lostGoods&orderID=${order.orderID}"
 												onclick="return confirm('Bạn có muốn báo mất hàng không?')">Báo
 												mất hàng </a>
 										</c:if>
-
+										<a class="button alert"
+												href="OrderServlet?btnAction=cancelOrder&orderID=${order.orderID}"
+												onclick="return confirm('Bạn có hủy hóa đơn này không?')">Hủy hóa đơn </a>
+										<c:if test="${order.orderStatusID==1}">
 										<a class="button success"
 											href="PaypalServlet?btnAction=pay&orderID=${order.orderID}&amount=${order.price}">
 											<i class="icon-ok"></i> Thanh toán
-										</a> <a class="button success"
+										</a> 
+										</c:if>
+										<a class="button success"
 											href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
 											<i class="icon-print"></i> In hóa đơn
+										</a>
+										<a class="button alert"
+											href="OrderServlet?btnAction=reportOrder&orderID=${order.orderID}">
+											Báo mất/ hỏng hàng
 										</a>
 									</div>
 								</div>

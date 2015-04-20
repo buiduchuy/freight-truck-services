@@ -67,6 +67,7 @@
     <string name="remember">Ghi nhớ</string>
     <string name="goodSent">Đã giao hàng</string>
     <string name="call">Gọi chủ hàng</string>
+    <string name="deleteOrder">Hủy hóa đơn</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Lộ trình</item>

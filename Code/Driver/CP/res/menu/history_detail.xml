@@ -3,12 +3,6 @@
     tools:context="test.example.cp.HistoryDetail" >
 
    <item
-        android:id="@+id/action_accept"
-        android:showAsAction="always|withText"
-        android:icon="@drawable/ic_action_accept"
-        android:title="@string/goodSent"/>
-
-   <item
         android:id="@+id/action_phone"
         android:showAsAction="always|withText"
         android:icon="@drawable/ic_action_call"

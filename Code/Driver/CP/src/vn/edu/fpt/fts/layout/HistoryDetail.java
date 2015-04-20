@@ -62,7 +62,6 @@ public class HistoryDetail extends Fragment {
 			phone;
 	String tel;
 	String statusID = "";
-	Menu menu;
 	// Button button;
 	
 	@Override
@@ -198,11 +197,9 @@ public class HistoryDetail extends Fragment {
 				}
 				else if (obj.getString("orderStatusID").equals("2")) {
 					stat = "Đã giao hàng";
-					menu.findItem(R.id.action_accept).setVisible(false);
 				}
 				else if (obj.getString("orderStatusID").equals("3")) {
 					stat += "Mất hàng";
-					menu.findItem(R.id.action_accept).setVisible(false);
 				}
 				status.setText(stat);
 				phone.setText(good.getJSONObject("owner").getString("phone"));
@@ -466,7 +463,6 @@ public class HistoryDetail extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
-		this.menu = menu;
 		menu.findItem(R.id.action_create).setVisible(false);
 		inflater.inflate(R.menu.history_detail, menu);
 	}
@@ -475,12 +471,6 @@ public class HistoryDetail extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
-		case R.id.action_accept:
-			WebService2 ws = new WebService2(WebService2.POST_TASK, getActivity(),
-					"Đang xử lý ...");
-			ws.addNameValuePair("orderID", getArguments().getString("orderID"));
-			ws.execute(new String[] { SERVICE_URL2 });
-			return true;
 		case R.id.action_phone:
 			Uri uri = Uri.parse("tel:" + tel);
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
