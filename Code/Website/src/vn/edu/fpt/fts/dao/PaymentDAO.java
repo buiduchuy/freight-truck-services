@@ -32,14 +32,16 @@ public class PaymentDAO {
 		try {
 			con = DBAccess.makeConnection();
 
-			String sql = "INSERT INTO Payment ( " + "PaypalID," + "CreateTime,"
-					+ "Status," + "OrderID" + ") VALUES (" + "?, " + "?, "
-					+ "?, " + "?)";
+			String sql = "INSERT INTO Payment ( " + "PaypalID,"
+					+ "PaypalAccount," + "Description," + "CreateTime,"
+					+ "OrderID" + ") VALUES (" + "?, " + "?, " + "?, " + "?, "
+					+ "?)";
 			stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			int i = 1;
-			stmt.setInt(i++, payment.getPaypalID()); // PaypalID
+			stmt.setString(i++, payment.getPaypalID()); // PaypalID
+			stmt.setString(i++, payment.getPaypalAccount()); // PaypalAccount
+			stmt.setString(i++, payment.getDescription()); // Description
 			stmt.setString(i++, payment.getCreateTime()); // CreateTime
-			stmt.setInt(i++, payment.getStatus()); // Status
 			stmt.setInt(i++, payment.getOrderID()); // OrderID
 
 			stmt.executeUpdate();
@@ -86,11 +88,12 @@ public class PaymentDAO {
 				payment = new Payment();
 
 				payment.setPaymentID(rs.getInt("PaymentID"));
-				payment.setPaypalID(rs.getInt("PaypalID"));
+				payment.setPaypalID(rs.getString("PaypalID"));
+				payment.setPaypalAccount(rs.getString("PaypalAccount"));
+				payment.setDescription(rs.getString("Description"));
 				payment.setCreateTime(rs.getString("CreateTime"));
-				payment.setStatus(rs.getInt("Status"));
 				payment.setOrderID(rs.getInt("OrderID"));
-
+				
 				return payment;
 			}
 		} catch (SQLException e) {
@@ -115,7 +118,7 @@ public class PaymentDAO {
 		}
 		return null;
 	}
-	
+
 	public List<Payment> getAllPayment() {
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -132,9 +135,10 @@ public class PaymentDAO {
 				payment = new Payment();
 
 				payment.setPaymentID(rs.getInt("PaymentID"));
-				payment.setPaypalID(rs.getInt("PaypalID"));
+				payment.setPaypalID(rs.getString("PaypalID"));
+				payment.setPaypalAccount(rs.getString("PaypalAccount"));
+				payment.setDescription(rs.getString("Description"));
 				payment.setCreateTime(rs.getString("CreateTime"));
-				payment.setStatus(rs.getInt("Status"));
 				payment.setOrderID(rs.getInt("OrderID"));
 
 				list.add(payment);
