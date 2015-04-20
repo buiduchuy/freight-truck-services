@@ -18,7 +18,9 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
+import vn.edu.fpt.fts.dao.PaymentDAO;
 import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.pojo.Payment;
 import vn.edu.fpt.fts.process.NotificationProcess;
 import vn.edu.fpt.fts.process.OrderProcess;
 
@@ -32,6 +34,7 @@ public class OrderAPI {
 	OrderDAO orderDao = new OrderDAO();
 	OrderProcess orderProcess = new OrderProcess();
 	NotificationProcess notificationProcess = new NotificationProcess();
+	PaymentDAO paymentDao = new PaymentDAO();
 
 	@GET
 	@Path("get")
@@ -151,6 +154,39 @@ public class OrderAPI {
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return String.valueOf(ret);
+	}
+	
+	@POST
+	@Path("ownerPay")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String ownerPay(MultivaluedMap<String, String> params) {
+		int ret = 0;
+		try {
+			
+			String paypalID = params.getFirst("paypalID");
+			String paypalAccount = params.getFirst("paypalAccount");
+			String description = params.getFirst("description");
+			int orderID = Integer.valueOf(params.getFirst("orderID"));
+
+			Payment payment = new Payment();
+
+			payment.setPaypalID(paypalID);
+			payment.setPaypalAccount(paypalAccount);
+			payment.setDescription(description);
+			payment.setCreateTime(Common.getCreateTime());
+			payment.setOrderID(orderID);
+			
+			ret = orderDao.updateOrderStatusID(orderID, Common.order_paid);
+			paymentDao.insertPayment(payment);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			ret = 0;
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
