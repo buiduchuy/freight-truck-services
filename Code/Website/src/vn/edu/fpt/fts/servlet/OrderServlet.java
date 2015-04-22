@@ -204,6 +204,8 @@ public class OrderServlet extends HttpServlet {
 
 					Order order = orderDao.getOrderByID(orderID);
 
+					request.setAttribute("messageSuccess",
+							"Hủy đơn hàng thành công.");
 					request.setAttribute("order", order);
 					request.getRequestDispatcher("chi-tiet-order.jsp").forward(
 							request, response);
@@ -221,6 +223,9 @@ public class OrderServlet extends HttpServlet {
 					NotificationProcess notificationProcess = new NotificationProcess();
 					notificationProcess.insertOwnerReportOrder(order);
 
+					request.setAttribute(
+							"messageSuccess",
+							"Báo mất hàng thành công. Chúng tôi sẽ kiểm tra và liên hệ trực tiếp trong thời gian sớm nhất!");
 					request.setAttribute("order", order);
 					request.getRequestDispatcher("chi-tiet-order.jsp").forward(
 							request, response);

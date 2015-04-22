@@ -44,7 +44,7 @@ public class EmployeeDAO {
 				employee.setFirstName(rs.getString("firstName"));
 				employee.setLastName(rs.getString("lastName"));
 				employee.setPhone(rs.getString("phone"));
-				employee.setSex(rs.getInt("sex"));
+				employee.setGender(rs.getInt("gender"));
 				employee.setImage(rs.getString("image"));
 				employee.setActive(rs.getInt("active"));
 

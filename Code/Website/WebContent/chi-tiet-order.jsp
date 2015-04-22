@@ -43,9 +43,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
-								<font color="orange">Chi tiết hoá đơn <font
-									style="font-weight: 800;">#OD<c:out
-											value="${order.orderID}" /></font></font>
+								<font color="orange">Chi tiết hoá đơn</font>
 							</h2>
 							<c:set var="messageSuccess"
 								value="${requestScope.messageSuccess }" />
@@ -283,15 +281,11 @@ var Msg ='<%=request.getAttribute("message")%>';
 
 								<div class="large-12 columns">
 									<div class="submit-area">
-										<c:if test="${order.orderStatusID==4}">
-											<a class="button alert"
-												href="OrderServlet?btnAction=lostGoods&orderID=${order.orderID}"
-												onclick="return confirm('Bạn có muốn báo mất hàng không?')">Báo
-												mất hàng </a>
-										</c:if>
+									<c:if test="${order.orderStatusID==1 or order.orderStatusID==2}">
 										<a class="button alert"
 												href="OrderServlet?btnAction=cancelOrder&orderID=${order.orderID}"
 												onclick="return confirm('Bạn có hủy hóa đơn này không?')">Hủy hóa đơn </a>
+									</c:if>
 										<c:if test="${order.orderStatusID==1}">
 										<a class="button success"
 											href="PaypalServlet?btnAction=pay&orderID=${order.orderID}&amount=${order.price}">
@@ -302,10 +296,13 @@ var Msg ='<%=request.getAttribute("message")%>';
 											href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
 											<i class="icon-print"></i> In hóa đơn
 										</a>
+										
+										<c:if test="${order.orderStatusID==4}">
 										<a class="button alert"
 											href="OrderServlet?btnAction=reportOrder&orderID=${order.orderID}">
 											Báo mất/ hỏng hàng
 										</a>
+										</c:if>
 									</div>
 								</div>
 							</div>

@@ -39,7 +39,7 @@ public class NotificationAPI {
 				.getAllNotification();
 		return l_notification;
 	}
-
+	
 	@POST
 	@Path("getNotificationByEmail")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)

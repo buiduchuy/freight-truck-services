@@ -5,11 +5,8 @@ package vn.edu.fpt.fts.servlet;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import vn.edu.fpt.fts.process.OrderProcess;
 import vn.edu.fpt.fts.process.Scheduler;
 
 /**
@@ -20,7 +17,7 @@ public class ServletListener implements ServletContextListener {
 	Scheduler scheduler = new Scheduler();
 
 	public void contextInitialized(ServletContextEvent arg0) {
-		
+
 		System.out.println("Servlet Context is started....");
 		TimerTask ftsTimer = new FTSTimerTask();
 		Timer timer = new Timer();
@@ -68,6 +65,8 @@ public class ServletListener implements ServletContextListener {
 		@Override
 		public void run() {
 			scheduler.orderScheduler();
+			scheduler.dealScheduler();
+			scheduler.itemsScheduler();
 		}
 	}
 

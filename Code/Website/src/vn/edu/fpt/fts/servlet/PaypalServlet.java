@@ -1,7 +1,6 @@
 package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -10,26 +9,21 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.PaymentDAO;
-import vn.edu.fpt.fts.pojo.OrderStatus;
+import vn.edu.fpt.fts.pojo.Order;
+import vn.edu.fpt.fts.process.NotificationProcess;
 
-import com.google.gson.JsonObject;
-import com.paypal.api.openidconnect.Session;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Item;
 import com.paypal.api.payments.ItemList;
@@ -40,7 +34,6 @@ import com.paypal.api.payments.PaymentExecution;
 import com.paypal.api.payments.RedirectUrls;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
-import com.paypal.base.rest.PayPalResource;
 import com.paypal.core.rest.OAuthTokenCredential;
 import com.paypal.core.rest.PayPalRESTException;
 
@@ -123,9 +116,12 @@ public class PaypalServlet extends HttpServlet {
 				redirectUrls.setCancelUrl(request.getHeader("referer"));
 				HttpSession session = request.getSession();
 				session.setAttribute("url", request.getHeader("referer"));
+//				redirectUrls
+//						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return&orderID="
+//								+ request.getParameter("orderID"));
 				redirectUrls
-						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return&orderID="
-								+ request.getParameter("orderID"));
+				.setReturnUrl("http://huybd-capstone.cloudapp.net/FTS/PaypalServlet?btnAction=return&orderID="
+						+ request.getParameter("orderID"));
 				payment.setRedirectUrls(redirectUrls);
 
 				Payment createdPayment = payment.create(apiContext);
@@ -163,6 +159,9 @@ public class PaypalServlet extends HttpServlet {
 							Integer.parseInt(orderID));
 					paymentDao.insertPayment(pmnt);
 					orderDao.updateOrderStatusID(Integer.parseInt(orderID), Common.order_paid);
+					NotificationProcess notificationProcess = new NotificationProcess();
+					Order orderNoti = orderDao.getOrderByID(Integer.parseInt(orderID));
+					notificationProcess.insertOwnerPayOrder(orderNoti);
 					response.sendRedirect(paymentURL + "&message=success");
 				} else {
 					response.sendRedirect(paymentURL + "&message=fail");

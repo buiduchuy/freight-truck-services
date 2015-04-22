@@ -97,13 +97,25 @@
 															value="${order.price}" /></td>
 											<td>
 											<c:if test="${order.orderStatusID==1 }">
-												<span class="label label-info">Đang vận chuyển</span>
+												<span>Chưa thanh toán</span>
 											</c:if>
 											<c:if test="${order.orderStatusID==2 }">
-												<span class="label label-success">Đã chấp nhận</span>
+												<span>Đã thanh toán</span>
 											</c:if>
 											<c:if test="${order.orderStatusID==3 }">
-												<span class="label label-danger">Mất hàng</span>
+												<span>Đang vận chuyển</span>
+											</c:if>
+											<c:if test="${order.orderStatusID==4 }">
+												<span>Đã giao hàng</span>
+											</c:if>
+											<c:if test="${order.orderStatusID==5 }">
+												<span>Hủy</span>
+											</c:if>
+											<c:if test="${order.orderStatusID==6 }">
+												<span>Hoàn trả tiền</span>
+											</c:if>
+											<c:if test="${order.orderStatusID==7 }">
+												<span>Hoàn tất</span>
 											</c:if>
 											</td>
 											<td>

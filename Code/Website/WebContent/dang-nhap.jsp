@@ -34,25 +34,32 @@
 			</div>
 		</div>
 	</div>
+	<div class="main-nav">
+			<div class="row">
+				<img src="css/img/logo.png" width="200px" style="padding-top: 10px;" />
+			</div>
+		</div>
 	<div class="page-header">
 		<div class="row">
-		<div class="large-12 columns">
-			<nav class="breadcrumbs left" id="login-form">
-				<a href="ProcessServlet">Trang chủ</a>
-				<a class="current" href="ProcessServlet?btnAction=login">Đăng nhập</a>
-			</nav>					
-		</div>					
-	</div>
-	<br/>
+			<div class="large-12 columns">
+				<nav class="breadcrumbs left" id="login-form">
+					<a href="ProcessServlet">Trang chủ</a> <a class="current"
+						href="ProcessServlet?btnAction=login">Đăng nhập</a>
+				</nav>
+			</div>
+		</div>
+		<br />
 	</div>
 	<section class="container">
+		
 		<center>
 			<div class="form-content"
 				style="border: 1px solid #ccc; box-shadow: 1px 1px 2px 2px #CCC; margin-bottom: 50px; width: 550px;">
 				<form action="AccountServlet" method="post" accept-charset="utf-8"
 					id="frm-login">
 					<h2>Đăng nhập</h2>
-					<input type="hidden" name="ReturnUrl" value='${requestScope["javax.servlet.forward.request_uri"]}?${requestScope["javax.servlet.forward.query_string"]}' />
+					<input type="hidden" name="ReturnUrl"
+						value='${requestScope["javax.servlet.forward.request_uri"]}?${requestScope["javax.servlet.forward.query_string"]}' />
 					</br>
 					<c:set var="error" value="${sessionScope.errorLogin}" />
 					<c:if test="${not empty error}">
@@ -85,5 +92,6 @@
 				</form>
 			</div>
 		</center>
+
 	</section>
 	<jsp:include page="footer.jsp" />

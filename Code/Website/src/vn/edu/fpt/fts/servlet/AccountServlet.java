@@ -88,7 +88,7 @@ public class AccountServlet extends HttpServlet {
 
 						session.setAttribute("typeGoods", l_goodsCategory);
 						session.setAttribute("owner", owner);
-						session.setAttribute("account", owner.getLastName());
+						session.setAttribute("account", owner.getLastName() + " " + owner.getFirstName());
 
 						List<Goods> listGoodsByOwner = goodsDao
 								.getListGoodsByOwnerID(owner.getOwnerID());

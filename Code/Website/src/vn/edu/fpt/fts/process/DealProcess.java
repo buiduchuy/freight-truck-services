@@ -173,12 +173,12 @@ public class DealProcess {
 				int newDealID = dealDao.insertDeal(deal);
 
 				// Change Cancel status to other deal
-				int totalGoodsWeightOfRoute = goodsDao
-						.getTotalWeightByRouteID(deal.getRouteID());
-				int weightRoute = routeDao
-						.getActiveRouteByID(deal.getRouteID()).getWeight();
-
-				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
+//				int totalGoodsWeightOfRoute = goodsDao
+//						.getTotalWeightByRouteID(deal.getRouteID());
+//				int weightRoute = routeDao
+//						.getActiveRouteByID(deal.getRouteID()).getWeight();
+//
+//				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
 				List<Deal> listDeal = dealDao
 						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
 								deal.getGoodsID());
@@ -249,11 +249,11 @@ public class DealProcess {
 				// int newDealID = dealDao.insertDeal(deal);
 
 				// Change Cancel status to other deal
-				int totalGoodsWeightOfRoute = goodsDao
-						.getTotalWeightByRouteID(deal.getRouteID());
-				int weightRoute = routeDao
-						.getActiveRouteByID(deal.getRouteID()).getWeight();
-				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
+//				int totalGoodsWeightOfRoute = goodsDao
+//						.getTotalWeightByRouteID(deal.getRouteID());
+//				int weightRoute = routeDao
+//						.getActiveRouteByID(deal.getRouteID()).getWeight();
+//				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
 
 				List<Deal> listDeal = dealDao
 						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
@@ -321,7 +321,13 @@ public class DealProcess {
 				// Update current deal
 				// dealDao.updateDealStatus(deal.getDealID(),
 				// Common.deal_decline);
+				if (db_deal.getCreateBy().equalsIgnoreCase("owner")) {
+					deal.setCreateBy("driver");
+				} else {
+					deal.setCreateBy("owner");
+				}
 				deal.setDealStatusID(Common.deal_decline);
+				
 				ret = dealDao.updateDeal(deal);
 
 				// Insert new deal with decline status

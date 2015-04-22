@@ -290,6 +290,11 @@ public class DealDAO {
 				deal.setGoodsID(rs.getInt("GoodsID"));
 				deal.setDealStatusID(rs.getInt("DealStatusID"));
 				deal.setActive(rs.getInt("Active"));
+				
+				deal.setGoods(goodsDao.getGoodsByID(rs.getInt("GoodsID")));
+				deal.setRoute(routeDao.getRouteByID(rs.getInt("RouteID")));
+				deal.setDealStatus(dealStatusDao.getDealStatusByID(rs
+						.getInt("DealStatusID")));
 
 				list.add(deal);
 
@@ -561,18 +566,18 @@ public class DealDAO {
 		return ret;
 	}
 
-	public int updateDealStatus(int dealID, int dealStatus) {
+	public int updateDealStatus(int dealID, int dealStatusID) {
 		Connection con = null;
 		PreparedStatement stmt = null;
 		int ret = 0;
 		try {
 			con = DBAccess.makeConnection();
-			String sql = "UPDATE Deal SET " + " Active = ? "
+			String sql = "UPDATE Deal SET " + " DealStatusID = ? "
 					+ " WHERE DealID = '" + dealID + "' ";
 			stmt = con.prepareStatement(sql);
 			int i = 1;
 
-			stmt.setInt(i++, dealStatus); // Active
+			stmt.setInt(i++, dealStatusID); // Active
 
 			ret = stmt.executeUpdate();
 

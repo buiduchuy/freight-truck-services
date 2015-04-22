@@ -53,6 +53,7 @@ function deactiveNotification(_notificationID) {
 //			alert(status);
 //		}
 	});
+	getListNotification();
 }
 
 function getListNotification() {
@@ -72,6 +73,7 @@ function getListNotification() {
 				var json = JSON.stringify(result);
 				json = JSON.parse(json);
 				var size = json.notification.length;
+				var count = 0;
 				var notificationList = new Array();
 				if (size > 1) {
 					$
@@ -83,22 +85,60 @@ function getListNotification() {
 								// href="ProcessServlet?action'+e.url+'"'+e.message+'</a></div>');
 								var el;
 								if (e.type == "deal") {
-									el = $('<li><a onclick="deactiveNotification('
-											+ e.notificationID
-											+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
-											+ e.idOfType
-											+ '">'
-											+ e.message
-											+ '</a></li>');
+									if (e.active == 1) {
+										el = $('<li><a onclick="deactiveNotification('
+												+ e.notificationID
+												+ ')" style="background-color:#FFFFFF;color:red;" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+												+ e.idOfType
+												+ '">'
+												+ e.message
+												+ '</a></li>');
+									} else {
+										el = $('<li><a onclick="deactiveNotification('
+												+ e.notificationID
+												+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+												+ e.idOfType
+												+ '">'
+												+ e.message
+												+ '</a></li>');
+									}
 								}
 								if (e.type == "order") {
-									el = $('<li><a onclick="deactiveNotification('
-											+ e.notificationID
-											+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
-											+ e.idOfType
-											+ '">'
-											+ e.message
-											+ '</a></li>');
+									if (e.active == 1) {
+										el = $('<li><a onclick="deactiveNotification('
+												+ e.notificationID
+												+ ')" style="background-color:#FFFFFF;color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+												+ e.idOfType
+												+ '">'
+												+ e.message
+												+ '</a></li>');
+									} else {
+										el = $('<li><a onclick="deactiveNotification('
+												+ e.notificationID
+												+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+												+ e.idOfType
+												+ '">'
+												+ e.message
+												+ '</a></li>');
+									}
+								}
+								if (e.type == "goods") {
+									if (e.active == 1) {
+										el = $('<li><a onclick="deactiveNotification('
+												+ e.notificationID
+												+ ')" style="background-color:#FFFFFF;" href="#">'
+												+ e.message
+												+ '</a></li>');
+									} else {
+										el = $('<li><a onclick="deactiveNotification('
+												+ e.notificationID
+												+ ')" href="#">'
+												+ e.message
+												+ '</a></li>');
+									}
+								}
+								if (e.active == 1) {
+									count++;
 								}
 								notificationList.push(el);
 							});
@@ -126,9 +166,18 @@ function getListNotification() {
 								+ message
 								+ '</a></div>');
 					}
+					if (type == "goods") {
+						el = $('<li><a onclick="deactiveNotification('
+								+ e.notificationID
+								+ ')" href="#">'
+								+ e.message
+								+ '</a></li>');
+					}
 					notificationList.push(el);
 				}
-				
+				if (count >= 1) {
+					$('#notificationSize').html(count);
+				}
 				$('#notificationList').html(notificationList);
 			}
 		}
