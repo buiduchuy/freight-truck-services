@@ -212,7 +212,7 @@ public class DealAPI {
 			// if (!params.getFirst("refDealID").equals("")) {
 			// deal.setRefDealID(Integer.valueOf(params.getFirst("refDealID")));
 			// }
-			deal.setActive(Integer.valueOf(params.getFirst("active")));
+			deal.setActive(Common.activate);
 			// Update current deal with status accept
 			ret = dealProcess.acceptDeal1(deal);
 

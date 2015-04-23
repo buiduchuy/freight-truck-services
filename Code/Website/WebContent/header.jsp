@@ -58,7 +58,7 @@
 	src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
 
 </head>
-<body onload="getLastID();getListNotification();">
+<body onload="getLastID();getListNotification();auto();">
 	<div class="top-bar">
 		<div class="row">
 			<div class="large-12 columns">
@@ -70,7 +70,12 @@
 							<c:when test="${not empty account}">
 								<input type="hidden" id="email" value="${owner.email}" />
 								<ul class="inline-list top-links right">
-									<li style="width: auto;"><a href="#"><i class="icon-user"></i> Xin chào,
+									<li><a href="#"><font color="red"
+											id="notificationSize"></font> <i class="icon-bell-alt"></i></a>
+										<ul id="notificationList" class="sub-topbar"
+											style="width: 400px;">
+										</ul></li>
+									<li style="width: auto;"><a href="#">Xin chào,
 											${account}!</a>
 										<ul class="sub-topbar">
 											<li><a href="ProcessServlet?btnAction=manageGoods"><i
@@ -80,10 +85,6 @@
 
 											<li><a href="ProcessServlet?btnAction=logout"><i
 													class="icon-off"></i>Đăng xuất</a></li>
-										</ul></li>
-									<li><a href="#"><b id="notificationSize"></b> <i class="icon-bell-alt"></i></a>
-										<ul id="notificationList" class="sub-topbar"
-											style="width: 400px;">
 										</ul></li>
 								</ul>
 							</c:when>
@@ -98,9 +99,9 @@
 	</div>
 	<div class="main-nav">
 		<div class="row">
-		<img src="css/img/logo.png" width="200px" style="padding-top: 10px;"/>
-			</div>
-			<!-- <div class="large-7 columns top-bar-section">
+			<img src="css/img/logo.png" width="200px" style="padding-top: 10px;" />
+		</div>
+		<!-- <div class="large-7 columns top-bar-section">
 				<nav class="">
 					<ul class="inline-list">
 						<c:choose>
@@ -144,5 +145,5 @@
 					</ul>
 				</nav>
 			</div> -->
-		</div>
+	</div>
 	</div>

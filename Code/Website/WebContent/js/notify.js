@@ -59,7 +59,7 @@ function deactiveNotification(_notificationID) {
 function getListNotification() {
 	var _email = document.getElementById("email").value;
 	$.ajax({
-		url : "/FTS/api/Notification/getNotificationByEmail",
+		url : "/FTS/api/Notification/getNotificationByEmailLimit10",
 		type : "POST",
 		crossDomain : true,
 		data : {
@@ -88,7 +88,7 @@ function getListNotification() {
 									if (e.active == 1) {
 										el = $('<li><a onclick="deactiveNotification('
 												+ e.notificationID
-												+ ')" style="background-color:#FFFFFF;color:red;" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+												+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
 												+ e.idOfType
 												+ '">'
 												+ e.message
@@ -107,7 +107,7 @@ function getListNotification() {
 									if (e.active == 1) {
 										el = $('<li><a onclick="deactiveNotification('
 												+ e.notificationID
-												+ ')" style="background-color:#FFFFFF;color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+												+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
 												+ e.idOfType
 												+ '">'
 												+ e.message
@@ -115,7 +115,7 @@ function getListNotification() {
 									} else {
 										el = $('<li><a onclick="deactiveNotification('
 												+ e.notificationID
-												+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+												+ ')" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
 												+ e.idOfType
 												+ '">'
 												+ e.message
@@ -126,7 +126,7 @@ function getListNotification() {
 									if (e.active == 1) {
 										el = $('<li><a onclick="deactiveNotification('
 												+ e.notificationID
-												+ ')" style="background-color:#FFFFFF;" href="#">'
+												+ ')" style="color:red;" href="#">'
 												+ e.message
 												+ '</a></li>');
 									} else {
@@ -147,31 +147,60 @@ function getListNotification() {
 					var type = json.notification.type;
 					var idOfType = json.notification.idOfType;
 					var message = json.notification.message;
+					var active = json.notification.active;
 					var el;
 					if (type == "deal") {
-						el = $('<li><a onclick="deactiveNotification('
-								+ notificationID
-								+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
-								+ idOfType
-								+ '">'
-								+ message
-								+ '</a></div>');
+						if (active == 1) {
+							el = $('<li><a onclick="deactiveNotification('
+									+ notificationID
+									+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+									+ idOfType
+									+ '">'
+									+ message
+									+ '</a></div>');
+						} else {
+							el = $('<li><a onclick="deactiveNotification('
+									+ notificationID
+									+ ')" href="ProcessServlet?btnAction=viewDetailDeal&dealID='
+									+ idOfType
+									+ '">'
+									+ message
+									+ '</a></div>');
+						}
 					}
 					if (type == "order") {
-						el = $('<li><a onclick="deactiveNotification('
-								+ notificationID
-								+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
-								+ idOfType
-								+ '">'
-								+ message
-								+ '</a></div>');
+						if (active == 1) {
+							el = $('<li><a onclick="deactiveNotification('
+									+ notificationID
+									+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+									+ idOfType
+									+ '">'
+									+ message
+									+ '</a></div>');
+						} else {
+							el = $('<li><a onclick="deactiveNotification('
+									+ notificationID
+									+ ')" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+									+ idOfType
+									+ '">'
+									+ message
+									+ '</a></div>');
+						}
 					}
 					if (type == "goods") {
-						el = $('<li><a onclick="deactiveNotification('
-								+ e.notificationID
-								+ ')" href="#">'
-								+ e.message
-								+ '</a></li>');
+						if (active == 1) {
+							el = $('<li><a onclick="deactiveNotification('
+									+ e.notificationID
+									+ ')" style="color:red;" href="#">'
+									+ e.message
+									+ '</a></li>');
+						} else {
+							el = $('<li><a onclick="deactiveNotification('
+									+ e.notificationID
+									+ ')" href="#">'
+									+ e.message
+									+ '</a></li>');
+						}
 					}
 					notificationList.push(el);
 				}

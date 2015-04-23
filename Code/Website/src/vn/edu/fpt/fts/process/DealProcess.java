@@ -181,7 +181,7 @@ public class DealProcess {
 //				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
 				List<Deal> listDeal = dealDao
 						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
-								deal.getGoodsID());
+								deal.getRouteID());
 
 				for (int i = 0; i < listDeal.size(); i++) {
 					if (listDeal.get(i).getCreateBy()
@@ -257,7 +257,7 @@ public class DealProcess {
 
 				List<Deal> listDeal = dealDao
 						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
-								deal.getGoodsID());
+								deal.getRouteID());
 
 				for (int i = 0; i < listDeal.size(); i++) {
 					if (listDeal.get(i).getCreateBy()

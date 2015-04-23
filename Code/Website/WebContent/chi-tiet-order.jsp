@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:setLocale value="vi_VN"/>
 <title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
 
@@ -73,6 +74,12 @@ var Msg ='<%=request.getAttribute("message")%>';
 							<div class="row">
 								<div class="large-12 columns">
 									<div class="row">
+									<div class="small-2 columns">
+											<label for="right-label" class="right inline">Mã hóa đơn: </label>
+										</div>
+										<div class="small-4 columns">
+											<label for="left-label" class="left inline">${order.orderID}</label>
+										</div>
 										<div class="small-2 columns">
 											<label for="right-label" class="right inline">Loại hàng: </label>
 										</div>
@@ -105,7 +112,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 									<div class="small-8 columns">
 										<div class="small-3 columns">
 											<label class="right inline">
-												Giao hàng: </label>
+												Địa chỉ giao: </label>
 										</div>
 										<div class="small-9 columns">
 											<label for="right-label" class="left inline">${order.deal.goods.pickupAddress}</label>
@@ -129,7 +136,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 								<div class="row">
 									<div class="small-8 columns">
 										<div class="small-3 columns">
-											<label for="right-label" class="right inline"> Nhận hàng: </label>
+											<label for="right-label" class="right inline"> Địa chỉ nhận: </label>
 										</div>
 										<div class="small-9 columns">
 											<label for="right-label" class="left inline">${order.deal.goods.deliveryAddress}</label>
@@ -163,12 +170,15 @@ var Msg ='<%=request.getAttribute("message")%>';
 										<label class="right inline">Chi phí: </label>
 									</div>
 									<div class="small-4 columns left">
-										<label for="right-label" class="left inline">${order.price} nghìn đồng</label>
+										<label for="right-label" class="left inline">
+										<fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															 value="${order.price}" />
+										 nghìn đồng</label>
 									</div>
 								</div>
 							</div>
 
-							<div class="row">
+							<!--  <div class="row">
 								<div class="extra-title">
 									<h3>
 										<font color="blue">Thông tin tuyến đường</font>
@@ -221,7 +231,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 									<div class="small-2 columns left">
 										<label for="right-label" class="left inline">${order.deal.route.weight } kg</label>
 									</div>
-								</div>
+								</div> -->
 								<!--  <div class="row">
 									<div class="small-3 columns ">
 										<label class="right inline">Ghi chú:</label>
@@ -282,9 +292,18 @@ var Msg ='<%=request.getAttribute("message")%>';
 								<div class="large-12 columns">
 									<div class="submit-area">
 									<c:if test="${order.orderStatusID==1 or order.orderStatusID==2}">
+									<c:set var="messageCancel" value="" />
+									
+									<c:if test="${order.orderStatusID==1}">
+									<c:set var="messageCancel" value="Bạn đã chắc chắn việc hủy hóa đơn này không?" />
+									</c:if>
+									
+									<c:if test="${order.orderStatusID==2}">
+									<c:set var="messageCancel" value="Hệ thống đã đặt tài xế đến vận chuyển hàng của bạn, nếu bạn hủy sẽ bị trừ khoản tiền nhất định. Bạn đã chắc chắn việc hủy hóa đơn này không?" />
+									</c:if>
 										<a class="button alert"
 												href="OrderServlet?btnAction=cancelOrder&orderID=${order.orderID}"
-												onclick="return confirm('Bạn có hủy hóa đơn này không?')">Hủy hóa đơn </a>
+												onclick="return confirm(${messageCancel})">Hủy hóa đơn </a>
 									</c:if>
 										<c:if test="${order.orderStatusID==1}">
 										<a class="button success"
@@ -313,7 +332,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 		</div>
 	</div>
 </div>
-<jsp:include page="footer.jsp" />
+<!--<jsp:include page="footer.jsp" />-->
 <script type="text/javascript">
 	window.onload = message;
 </script>

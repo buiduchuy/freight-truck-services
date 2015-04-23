@@ -36,12 +36,13 @@ public class ExportServlet extends HttpServlet {
 	private static final long serialVersionUID = 1121474671166226018L;
 	OrderDAO orderDao = new OrderDAO();
 
-//	private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
-//			Font.BOLD);
-//	private static Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 12,
-//			Font.NORMAL);
-//	private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
-//			Font.BOLD);
+	// private static Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,
+	// Font.BOLD);
+	// private static Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN,
+	// 12,
+	// Font.NORMAL);
+	// private static Font subFont = new Font(Font.FontFamily.TIMES_ROMAN, 16,
+	// Font.BOLD);
 	private static Font smallBold;
 	private static Font font;
 
@@ -160,7 +161,7 @@ public class ExportServlet extends HttpServlet {
 		float[] columnWidths = { 3f, 1f };
 		detail.setWidths(columnWidths);
 		PdfPCell desc = new PdfPCell(new Paragraph("Nội dung", font));
-		
+
 		desc.setHorizontalAlignment(Element.ALIGN_CENTER);
 		PdfPCell price = new PdfPCell(new Paragraph("Thành tiền", font));
 		price.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -177,16 +178,24 @@ public class ExportServlet extends HttpServlet {
 				+ order.getDeal().getGoods().getPickupAddress(), font));
 		goods.add(new Paragraph("Địa chỉ nhận hàng: "
 				+ order.getDeal().getGoods().getDeliveryAddress(), font));
-		
+
 		String orderStatus = "";
-		if (order.getOrderStatusID() == Common.order_finish) {
-			orderStatus = "Đã giao hàng";
+		if (order.getOrderStatusID() == Common.order_unpaid) {
+			orderStatus = "Chưa thanh toán";
+		} else if (order.getOrderStatusID() == Common.order_paid) {
+			orderStatus = "Đã thanh toán";
 		} else if (order.getOrderStatusID() == Common.order_delivering) {
-			orderStatus = "Đang vận chuyển";
+			orderStatus = "Đã vận chuyển";
 		} else if (order.getOrderStatusID() == Common.order_delivered) {
-			orderStatus = "Đã báo mất hàng";
+			orderStatus = "Đã giao hàng";
+		} else if (order.getOrderStatusID() == Common.order_finish) {
+			orderStatus = "Hoàn tất";
+		} else if (order.getOrderStatusID() == Common.order_cancelled) {
+			orderStatus = "Đã hủy";
+		} else if (order.getOrderStatusID() == Common.order_refund) {
+			orderStatus = "Hoàn trả tiền";
 		}
-		
+
 		goods.add(new Paragraph("Trạng thái: " + orderStatus, font));
 		// goods.add(new Paragraph("Ghi chú:", font));
 		PdfPCell goodsCell = new PdfPCell();

@@ -78,8 +78,8 @@ public class Scheduler {
 					.getDeal().getGoods().getPickupTime(),
 					"yyyy-MM-dd HH:mm:ss.SSS");
 			long dateDifferenceDelivering = Common.getTimeDifference(
-					goodsPickupDate, orderDate, "day");
-			if (dateDifferenceDelivering == 0) {
+					currentDate, goodsPickupDate, "day");
+			if (dateDifferenceDelivering >= 1) {
 				if (orderItem.getOrderStatusID() == Common.order_paid) {
 					// Change order status and create notification
 					orderDao.updateOrderStatusID(orderItem.getOrderID(),
@@ -95,7 +95,7 @@ public class Scheduler {
 					"yyyy-MM-dd HH:mm:ss.SSS");
 			long dateDifferenceDelivered = Common.getTimeDifference(
 					currentDate, goodsDeliveryDate, "day");
-			if (dateDifferenceDelivered == 1) {
+			if (dateDifferenceDelivered >= 1) {
 				if (orderItem.getOrderStatusID() == Common.order_delivering) {
 					// Change order status and create notification
 					orderDao.updateOrderStatusID(orderItem.getOrderID(),
@@ -116,7 +116,8 @@ public class Scheduler {
 			Deal dealItem = listDeal.get(i);
 			Date dealDate = Common.convertStringToDate(
 					dealItem.getCreateTime(), "yyyy-MM-dd HH:mm:ss.SSS");
-
+			Date goodsDeliveryDate = Common.convertStringToDate(dealItem.getGoods().getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS");
+			
 			long differenceDate = Common.getTimeDifference(currentDate,
 					dealDate, "day");
 

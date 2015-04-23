@@ -119,8 +119,14 @@ public class PaypalServlet extends HttpServlet {
 //				redirectUrls
 //						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return&orderID="
 //								+ request.getParameter("orderID"));
+				
+				String uri = request.getScheme() + "://" +
+			             request.getServerName() + 
+			             ("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443 ? "" : ":" + request.getServerPort() ) +
+			             request.getRequestURI();
+				System.out.println(uri);
 				redirectUrls
-				.setReturnUrl("http://huybd-capstone.cloudapp.net/FTS/PaypalServlet?btnAction=return&orderID="
+				.setReturnUrl(uri + "?btnAction=return&orderID="
 						+ request.getParameter("orderID"));
 				payment.setRedirectUrls(redirectUrls);
 
@@ -165,6 +171,129 @@ public class PaypalServlet extends HttpServlet {
 					response.sendRedirect(paymentURL + "&message=success");
 				} else {
 					response.sendRedirect(paymentURL + "&message=fail");
+				}
+			} else if (action.equalsIgnoreCase("employeePay")) {
+				
+				Amount amount = new Amount();
+				amount.setCurrency("USD");
+				double price = Double.parseDouble(request
+						.getParameter("txtPrice")) / 21;
+				DecimalFormat df = new DecimalFormat("#.##");
+				price = Double.valueOf(df.format(price));
+				amount.setTotal(String.valueOf(price));
+
+				Transaction transaction = new Transaction();
+				transaction.setAmount(amount);
+				transaction.setDescription("Hóa đơn mới");
+
+				ItemList itemList = new ItemList();
+
+				Item item = new Item();
+				item.setPrice(String.valueOf(price));
+				item.setName("Thanh toán hóa đơn chở hàng cho tài xế");
+				item.setCurrency("USD");
+				item.setQuantity("1");
+				List<Item> list = new ArrayList<Item>();
+				list.add(item);
+				itemList.setItems(list);
+
+				List<Transaction> transactions = new ArrayList<Transaction>();
+				transactions.add(transaction);
+				transaction.setItemList(itemList);
+
+				Payer payer = new Payer();
+				payer.setPaymentMethod("paypal");
+
+				Payment payment = new Payment();
+				payment.setIntent("sale");
+				payment.setPayer(payer);
+				payment.setTransactions(transactions);
+				RedirectUrls redirectUrls = new RedirectUrls();
+				redirectUrls.setCancelUrl(request.getHeader("referer"));
+				HttpSession session = request.getSession();
+				session.setAttribute("url", request.getHeader("referer"));
+//				redirectUrls
+//						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return&orderID="
+//								+ request.getParameter("orderID"));
+				
+				String uri = request.getScheme() + "://" +
+			             request.getServerName() + 
+			             ("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443 ? "" : ":" + request.getServerPort() ) +
+			             request.getRequestURI();
+				System.out.println(uri);
+				redirectUrls
+				.setReturnUrl(uri + "?btnAction=return&orderID="
+						+ request.getParameter("orderID"));
+				payment.setRedirectUrls(redirectUrls);
+
+				Payment createdPayment = payment.create(apiContext);
+				List<Links> links = createdPayment.getLinks();
+				for (Links li : links) {
+					if (li.getRel().equals("approval_url")) {
+						response.sendRedirect(li.getHref());
+					}
+				}
+				
+			} else if (action.equalsIgnoreCase("employeeRefund")) {
+				
+				Amount amount = new Amount();
+				amount.setCurrency("USD");
+				double price = Double.parseDouble(request
+						.getParameter("txtPrice")) / 21;
+				DecimalFormat df = new DecimalFormat("#.##");
+				price = Double.valueOf(df.format(price));
+				amount.setTotal(String.valueOf(price));
+
+				Transaction transaction = new Transaction();
+				transaction.setAmount(amount);
+				transaction.setDescription("Hóa đơn mới");
+
+				ItemList itemList = new ItemList();
+
+				Item item = new Item();
+				item.setPrice(String.valueOf(price));
+				item.setName("Thanh toán hóa đơn hoàn tiền cho chủ hàng");
+				item.setCurrency("USD");
+				item.setQuantity("1");
+				List<Item> list = new ArrayList<Item>();
+				list.add(item);
+				itemList.setItems(list);
+
+				List<Transaction> transactions = new ArrayList<Transaction>();
+				transactions.add(transaction);
+				transaction.setItemList(itemList);
+
+				Payer payer = new Payer();
+				payer.setPaymentMethod("paypal");
+
+				Payment payment = new Payment();
+				payment.setIntent("sale");
+				payment.setPayer(payer);
+				payment.setTransactions(transactions);
+				RedirectUrls redirectUrls = new RedirectUrls();
+				redirectUrls.setCancelUrl(request.getHeader("referer"));
+				HttpSession session = request.getSession();
+				session.setAttribute("url", request.getHeader("referer"));
+//				redirectUrls
+//						.setReturnUrl("http://localhost:8080/FTS/PaypalServlet?btnAction=return&orderID="
+//								+ request.getParameter("orderID"));
+				
+				String uri = request.getScheme() + "://" +
+			             request.getServerName() + 
+			             ("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443 ? "" : ":" + request.getServerPort() ) +
+			             request.getRequestURI();
+				System.out.println(uri);
+				redirectUrls
+				.setReturnUrl(uri + "?btnAction=return&orderID="
+						+ request.getParameter("orderID"));
+				payment.setRedirectUrls(redirectUrls);
+
+				Payment createdPayment = payment.create(apiContext);
+				List<Links> links = createdPayment.getLinks();
+				for (Links li : links) {
+					if (li.getRel().equals("approval_url")) {
+						response.sendRedirect(li.getHref());
+					}
 				}
 			}
 		}

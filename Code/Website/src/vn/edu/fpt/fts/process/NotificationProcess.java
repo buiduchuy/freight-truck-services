@@ -159,10 +159,10 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
 		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"
-				+ order.getOrderID() + " chấp nhận!");
+				+ order.getOrderID() + " chấp nhận.");
 		notification.setStatusOfType(Common.order_unpaid);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
@@ -178,7 +178,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getRoute().getDriver().getEmail());
 		notification.setMessage("Chủ hàng đã thanh toán cho chúng tôi.<br/>Tài xế có thể tiến hành vận chuyển hàng.");
 		notification.setStatusOfType(Common.order_paid);
@@ -196,7 +196,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
 		notification.setMessage("Đơn hàng #OD" + order.getOrderID()
 				+ " đã hủy. Bạn phải chịu một khoản tiền phạt nhất định.");
@@ -215,7 +215,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
 		notification.setMessage("Đơn hàng #OD" + order.getOrderID()
 				+ " đã hủy!");
@@ -234,7 +234,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail("staff@fts.vn");
 		notification.setMessage("Chủ hàng "
 				+ order.getDeal().getGoods().getOwner().getEmail()
@@ -254,7 +254,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
 		notification.setMessage("Hệ thống đã tự động hủy đơn hàng #OD"
 				+ order.getOrderID() + ".");
@@ -273,7 +273,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
 		notification
 				.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"
@@ -294,7 +294,7 @@ public class NotificationProcess {
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
-		notification.setCreateTime(order.getCreateTime());
+		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
 		notification
 				.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"

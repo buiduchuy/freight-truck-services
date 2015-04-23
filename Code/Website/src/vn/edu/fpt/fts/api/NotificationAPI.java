@@ -57,6 +57,25 @@ public class NotificationAPI {
 		}
 		return listDealNoti;
 	}
+	
+	
+	@POST
+	@Path("getNotificationByEmailLimit10")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Notification> getNotificationByEmailLimit10(
+			MultivaluedMap<String, String> params) {
+		List<Notification> listDealNoti = new ArrayList<Notification>();
+		try {
+			String email = String.valueOf(params.getFirst("email"));
+			listDealNoti = notificationDao.getNotificationByEmailLimit10(email);
+		} catch (NumberFormatException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return listDealNoti;
+	}
 
 	@POST
 	@Path("getNewestNotificationByEmail")

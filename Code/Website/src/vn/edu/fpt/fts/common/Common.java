@@ -23,6 +23,10 @@ public final class Common {
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
 	public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+	
+//	 public static final String usernamedb = "duchuy";
+//	 public static final String passworddb = "huy2108.";
+	 
 	public static final String usernamedb = "sa";
 	public static final String passworddb = "123456";
 
