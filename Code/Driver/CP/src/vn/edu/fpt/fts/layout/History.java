@@ -77,6 +77,8 @@ public class History extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		ActionBar actionBar = getActivity().getActionBar();
+		getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+				| ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
 		actionBar.setTitle("Hóa đơn");
 		actionBar.setIcon(R.drawable.ic_action_copy_white);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -251,13 +253,19 @@ public class History extends Fragment {
 									.getString("orderStatusID");
 							String price = item.getString("price");
 							if (driverStatus.equals("1")) {
-								status += "Đang chở hàng";
-								// button.setEnabled(false);
+								status = "Chưa nhận tiền";
 							} else if (driverStatus.equals("2")) {
-								status += "Đã giao hàng";
-								// button.setEnabled(false);
+								status = "Đã chuyển tiền cho hệ thống";
 							} else if (driverStatus.equals("3")) {
-								status += "Mất hàng";
+								status += "Đang vận chuyển";
+							} else if (driverStatus.equals("4")) {
+								status += "Đã chuyển hàng";
+							} else if (driverStatus.equals("5")) {
+								status += "Đã bị hủy";
+							} else if (driverStatus.equals("6")) {
+								status += "Mất/hỏng hàng";
+							} else if (driverStatus.equals("7")) {
+								status += "Hoàn thành";
 							}
 							SimpleDateFormat format = new SimpleDateFormat(
 									"yyyy-MM-dd hh:mm:ss");
@@ -320,13 +328,19 @@ public class History extends Fragment {
 						String driverStatus = item.getString("orderStatusID");
 						String price = item.getString("price");
 						if (driverStatus.equals("1")) {
-							status += "Đang chở hàng";
-							// button.setEnabled(false);
+							status = "Chưa nhận tiền";
 						} else if (driverStatus.equals("2")) {
-							status += "Đã giao hàng";
-							// button.setEnabled(false);
+							status = "Đã chuyển tiền cho hệ thống";
 						} else if (driverStatus.equals("3")) {
-							status += "Mất hàng";
+							status += "Đang vận chuyển";
+						} else if (driverStatus.equals("4")) {
+							status += "Đã chuyển hàng";
+						} else if (driverStatus.equals("5")) {
+							status += "Đã bị hủy";
+						} else if (driverStatus.equals("6")) {
+							status += "Mất/hỏng hàng";
+						} else if (driverStatus.equals("7")) {
+							status += "Hoàn thành";
 						}
 						SimpleDateFormat format = new SimpleDateFormat(
 								"yyyy-MM-dd hh:mm:ss");

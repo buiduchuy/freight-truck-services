@@ -79,6 +79,8 @@ public class RouteList extends Fragment {
 		list = new ArrayList<ListItem>();
 		map = new ArrayList<String>();
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+				| ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Lộ trình");
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),

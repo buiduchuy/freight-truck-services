@@ -62,8 +62,9 @@ public class HistoryDetail extends Fragment {
 			phone;
 	String tel;
 	String statusID = "";
+
 	// Button button;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -73,7 +74,8 @@ public class HistoryDetail extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setTitle("Hóa đơn");
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_copy_white);
 		View myFragmentView = inflater.inflate(
@@ -174,7 +176,7 @@ public class HistoryDetail extends Fragment {
 			// handleResponse(response);
 			JSONObject obj;
 			try {
-				obj = new JSONObject(response);				
+				obj = new JSONObject(response);
 				JSONObject good = obj.getJSONObject("deal").getJSONObject(
 						"goods");
 				startPlace.setText(good.getString("pickupAddress"));
@@ -191,15 +193,21 @@ public class HistoryDetail extends Fragment {
 				weight.setText(good.getString("weight") + " kg");
 				String stat = "";
 				statusID = obj.getString("orderStatusID");
-				
+
 				if (obj.getString("orderStatusID").equals("1")) {
-					stat = "Đang chở hàng";
-				}
-				else if (obj.getString("orderStatusID").equals("2")) {
-					stat = "Đã giao hàng";
-				}
-				else if (obj.getString("orderStatusID").equals("3")) {
-					stat += "Mất hàng";
+					stat = "Chưa nhận tiền";
+				} else if (obj.getString("orderStatusID").equals("2")) {
+					stat = "Đã chuyển tiền cho hệ thống";
+				} else if (obj.getString("orderStatusID").equals("3")) {
+					stat += "Đang vận chuyển";
+				} else if (obj.getString("orderStatusID").equals("4")) {
+					stat += "Đã chuyển hàng";
+				} else if (obj.getString("orderStatusID").equals("5")) {
+					stat += "Đã bị hủy";
+				} else if (obj.getString("orderStatusID").equals("6")) {
+					stat += "Mất/hỏng hàng";
+				} else if (obj.getString("orderStatusID").equals("7")) {
+					stat += "Hoàn thành";
 				}
 				status.setText(stat);
 				phone.setText(good.getJSONObject("owner").getString("phone"));
@@ -286,7 +294,7 @@ public class HistoryDetail extends Fragment {
 			return total.toString();
 		}
 	}
-	
+
 	private class WebService2 extends AsyncTask<String, Integer, String> {
 
 		public static final int POST_TASK = 1;
@@ -379,10 +387,10 @@ public class HistoryDetail extends Fragment {
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
-			}
-			else {
-				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.",
-						Toast.LENGTH_SHORT).show();
+			} else {
+				Toast.makeText(getActivity(),
+						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
 			}
 			pDlg.dismiss();
 		}

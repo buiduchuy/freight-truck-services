@@ -87,6 +87,8 @@ public class MainActivity extends FragmentActivity {
 	private static final String SERVICE_URL = Constant.SERVICE_URL
 			+ "DealNotification/getDealNotificationByDriverID";
 	int oldSize, newSize;
+	Intent alarmIntent;
+	Intent alarmIntent2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -147,18 +149,19 @@ public class MainActivity extends FragmentActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
-		Intent alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
+		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		
+		alarmIntent = new Intent(MainActivity.this, AlarmReceiver.class);
 		alarmIntent.putExtra("driverID", getIntent().getStringExtra("driverID"));
 		
-		Intent alarmIntent2 = new Intent(MainActivity.this, OrderAlarmReceiver.class);
+		alarmIntent2 = new Intent(MainActivity.this, OrderAlarmReceiver.class);
 		alarmIntent2.putExtra("driverID", getIntent().getStringExtra("driverID"));
-
+		
 		pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
 				alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 		pendingIntent2 = PendingIntent.getBroadcast(MainActivity.this, 0,
 				alarmIntent2, PendingIntent.FLAG_CANCEL_CURRENT);
-		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		int interval = 60000;
+		int interval = 10000;
 
 		manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis(), interval, pendingIntent);
@@ -257,7 +260,8 @@ public class MainActivity extends FragmentActivity {
 				Editor editor = share.edit();
 				editor.remove("driverID");
 				editor.commit();
-				AlarmReceiver.list = null;
+				
+				AlarmReceiver.list = new ArrayList<ListItem>();
 				Intent intent = new Intent(getApplicationContext(), Login.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 						| Intent.FLAG_ACTIVITY_CLEAR_TASK

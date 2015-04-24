@@ -37,8 +37,8 @@
     <string name="otherInfo"><b>HÀNG HÓA</b></string>
     <string name="pass">Mật khẩu</string>
     <string name="login">ĐĂNG NHẬP</string>
-    <string name="sendPlace">Địa điểm giao hàng:</string>
-    <string name="receivePlace">Địa điểm nhận hàng:</string>
+    <string name="sendPlace">Nơi giao hàng:</string>
+    <string name="receivePlace">Nơi nhận hàng:</string>
     <string name="sentTime">Thời gian giao hàng:</string>
     <string name="receiveTime">Thời gian nhận hàng:</string>
     <string name="kg">kg</string>
@@ -68,6 +68,8 @@
     <string name="goodSent">Đã giao hàng</string>
     <string name="call">Gọi chủ hàng</string>
     <string name="deleteOrder">Hủy hóa đơn</string>
+    <string name="oldPrice">Giá cũ:</string>
+    <string name="search">Tìm kiếm</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Lộ trình</item>
