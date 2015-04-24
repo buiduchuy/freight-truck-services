@@ -17,7 +17,7 @@
 
 </head>
 
-<body>
+<body onload="getLastID();getListNotification();">
 
 	<div id="wrapper">
 

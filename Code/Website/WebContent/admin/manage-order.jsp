@@ -13,12 +13,12 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Quản lý giao dịch</title>
+<title>Quản lý hóa đơn</title>
 
 <jsp:include page="header.jsp"></jsp:include>
 </head>
 
-<body>
+<body onload="getLastID();getListNotification();">
 
 	<div id="wrapper">
 
@@ -34,17 +34,23 @@
 				<div class="row">
 					<div class="col-lg-12">
 						<h1 class="page-header">
-							Quản lý giao dịch
+							Quản lý hóa đơn
 							<!--  <small>Subheading</small>-->
 						</h1>
 						<ol class="breadcrumb">
 							<li><i class="fa fa-dashboard"></i> <a
-								href="ProcessServlet?btnAction=aIndex">Dashboard</a></li>
-							<li class="active"><i class="fa fa-exchange"></i> Quản lý
-								giao dịch</li>
+								href="ProcessServlet?btnAction=aIndex">Tổng quan</a></li>
+							<li class="active"><i class="fa fa-table"></i> Quản lý hóa
+								đơn</li>
 						</ol>
 					</div>
 					<div class="col-lg-12">
+						<form action="OrderServlet" method="POST" accept-charset="UTF-8">
+							Tìm kiếm mã hóa đơn: <input type="number" name="txtSearch" min="0" max="99999"/></input>
+							<button type="submit" value="searchOrderByID" name="btnAction">Tìm
+								kiếm</button>
+						</form>
+						<br />
 						<table class="table table-bordered table-hover table-striped">
 							<thead>
 								<tr>
@@ -54,7 +60,7 @@
 									<th><font color="orange">THỜI GIAN</font></th>
 									<th><font color="orange">KHỐI LƯỢNG<br />(KG)
 									</font></th>
-									<th><font color="orange">GIÁ TIỀN<br />(NGHÌN VNĐ)
+									<th><font color="orange">GIÁ TIỀN<br />(NGHÌN)
 									</font></th>
 									<th><font color="orange">TRẠNG THÁI</font></th>
 									<th><h4>
@@ -76,7 +82,7 @@
 												<td>${count }<input type="hidden" name="txtOrderID"
 													value="${order.orderID }" />
 												</td>
-												<td><font color="black" style="font-weight: 700;">OD${order.orderID }</font></td>
+												<td><font color="black" style="font-weight: 700;">${order.orderID }</font></td>
 												<c:forEach var="row" items="${typeGoods }">
 													<c:if
 														test="${order.deal.goods.goodsCategoryID==row.goodsCategoryId }">
@@ -129,8 +135,9 @@
 													</c:if></td>-->
 
 												<td>
-													<button class="btn btn-sm btn-warning" type="submit"
-														value="employeeViewDetailOrder" name="btnAction">Chi tiết</button>
+													<button class="btn btn-sm btn-info" type="submit"
+														value="employeeViewDetailOrder" name="btnAction">Chi
+														tiết</button>
 												</td>
 											</tr>
 										</form>

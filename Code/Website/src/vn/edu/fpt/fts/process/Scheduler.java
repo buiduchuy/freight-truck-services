@@ -116,6 +116,7 @@ public class Scheduler {
 			Deal dealItem = listDeal.get(i);
 			Date dealDate = Common.convertStringToDate(
 					dealItem.getCreateTime(), "yyyy-MM-dd HH:mm:ss.SSS");
+			
 			Date goodsDeliveryDate = Common.convertStringToDate(dealItem.getGoods().getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS");
 			
 			long differenceDate = Common.getTimeDifference(currentDate,

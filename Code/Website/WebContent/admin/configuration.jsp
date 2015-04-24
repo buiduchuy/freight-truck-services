@@ -16,7 +16,7 @@
 <jsp:include page="header.jsp"></jsp:include>
 </head>
 
-<body>
+<body onload="getLastID();getListNotification();">
 
 	<div id="wrapper">
 

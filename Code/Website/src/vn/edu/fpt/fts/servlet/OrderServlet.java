@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -63,13 +64,18 @@ public class OrderServlet extends HttpServlet {
 							request, response);
 				}
 
-			}  else if (action.equalsIgnoreCase("viewDetailOrder")) {
-				
-				String uri = request.getScheme() + "://" +
-			             request.getServerName() + 
-			             ("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443 ? "" : ":" + request.getServerPort() ) +
-			             request.getRequestURI();
-				
+			} else if (action.equalsIgnoreCase("viewDetailOrder")) {
+
+				String uri = request.getScheme()
+						+ "://"
+						+ request.getServerName()
+						+ ("http".equals(request.getScheme())
+								&& request.getServerPort() == 80
+								|| "https".equals(request.getScheme())
+								&& request.getServerPort() == 443 ? "" : ":"
+								+ request.getServerPort())
+						+ request.getRequestURI();
+
 				System.out.println(uri);
 				int orderID = Integer.valueOf(request.getParameter("orderID"));
 				Order order = orderDao.getOrderByID(orderID);
@@ -83,7 +89,7 @@ public class OrderServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("employeeManageOrder")) {
 				Employee employee = (Employee) session.getAttribute("employee");
 				if (employee != null) {
-					List<Order> listOrder = orderDao.getAllOrder();
+					List<Order> listOrder = orderDao.getTop10Order();
 					List<OrderStatus> listOrderStatus = orderStatusDao
 							.getAllOrderStatus();
 
@@ -97,26 +103,29 @@ public class OrderServlet extends HttpServlet {
 							response);
 				}
 			} else if (action.equalsIgnoreCase("searchOrderByID")) {
-				String orderIDStr = request.getParameter("txtOrderID");
-				if (!orderIDStr.isEmpty()) {
+				String orderIDStr = request.getParameter("txtSearch");
+				List<Order> list = new ArrayList<Order>();
+				if (!orderIDStr.trim().isEmpty()) {
 					int orderID = Integer.valueOf(orderIDStr);
+
 					try {
-						List<Order> list = orderDao.searchOrderByID(orderID);
-						request.setAttribute("listOrder", list);
-						request.getRequestDispatcher(
-								"OrderServlet?btnAction=manageOrderEmployee")
-								.forward(request, response);
+						list = orderDao.searchOrderByID(orderID);
+
 					} catch (Exception e) {
 						// TODO: handle exception
 						e.printStackTrace();
 						request.setAttribute("messageError",
 								"Có lỗi xảy ra trong quá trình tìm kiếm. Xin vui lòng thử lại sau!");
-						request.getRequestDispatcher(
-								"OrderServlet?btnAction=manageOrderEmployee")
+						request.getRequestDispatcher("admin/manage-order.jsp")
 								.forward(request, response);
 
 					}
+				} else {
+					list = orderDao.getTop10Order();
 				}
+				request.setAttribute("listOrder", list);
+				request.getRequestDispatcher("admin/manage-order.jsp").forward(
+						request, response);
 			} else if (action.equals("employeeViewDetailOrder")) {
 				int orderID = Integer.valueOf(request
 						.getParameter("txtOrderID"));
@@ -130,7 +139,7 @@ public class OrderServlet extends HttpServlet {
 					request.setAttribute("messageError",
 							"Có lỗi xảy ra trong truy vấn. Xin vui lòng thử lại sau!");
 					request.getRequestDispatcher(
-							"OrderServlet?btnAction=manageOrderEmployee")
+							"OrderServlet?btnAction=employeeManageOrder")
 							.forward(request, response);
 				}
 			} else if (action.equals("cancelOrder")) {

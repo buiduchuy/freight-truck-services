@@ -73,18 +73,18 @@ var Msg ='<%=request.getAttribute("message")%>';
 							</div>
 							<div class="row">
 								<div class="large-12 columns">
-									<div class="row">
-									<div class="small-2 columns">
+										<div class="large-2 columns">
 											<label for="right-label" class="right inline">Mã hóa đơn: </label>
 										</div>
-										<div class="small-4 columns">
-											<label for="left-label" class="left inline">${order.orderID}</label>
+										<div class="large-10 columns">
+											<label for="right-label" class="left inline"><b style="font-weight:700">OD${order.orderID}</b></label>
 										</div>
-										<div class="small-2 columns">
+										</div>
+										<div class="large-12 columns">
+										<div class="large-2 columns">
 											<label for="right-label" class="right inline">Loại hàng: </label>
 										</div>
-
-										<div class="small-4 columns">
+										<div class="large-10 columns">
 											<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 											<c:forEach var="row" items="${typeGoods }">
 												<c:if
@@ -93,13 +93,14 @@ var Msg ='<%=request.getAttribute("message")%>';
 												</c:if>
 											</c:forEach>
 										</div>
-										<div class="small-2 columns">
+										<div class="large-12 columns">
+										<div class="large-2 columns">
 											<label for="right-label" class="right inline">Khối lượng: </label>
 										</div>
-										<div class="small-4 columns">
-											<label for="left-label" class="left inline">${order.deal.goods.weight} kg</label>
+										<div class="large-10 columns">
+											<label for="right-label" class="left inline">${order.deal.goods.weight} kg</label>
 										</div>
-									</div>
+										</div>
 								</div>
 							</div>
 							<div class="row">

@@ -15,7 +15,7 @@
 	</div>
 	<!-- Top Menu Items -->
 	<ul class="nav navbar-right top-nav">
-		<li class="dropdown"><a href="#" class="dropdown-toggle"
+		<!-- <li class="dropdown"><a href="#" class="dropdown-toggle"
 			data-toggle="dropdown"><i class="fa fa-envelope"></i> <b
 				class="caret"></b></a>
 			<ul class="dropdown-menu message-dropdown">
@@ -84,11 +84,11 @@
 				<li class="message-footer"><a href="#">Read All New
 						Messages</a></li>
 			</ul></li>
+			-->
 		<li class="dropdown"><a href="#" class="dropdown-toggle"
-			data-toggle="dropdown"><i class="fa fa-bell"></i> <b
-				class="caret"></b></a>
-			<ul class="dropdown-menu alert-dropdown">
-				<li><a href="#">Alert Name <span
+			data-toggle="dropdown"><font color="red" id="notificationSize"></font> <i class="fa fa-bell"></i> <b class="caret"></b></a>
+			<ul id="notificationList" class="dropdown-menu alert-dropdown" style="width: 500px;">
+				<!-- <li><a href="#">Alert Name <span
 						class="label label-default">Alert Badge</span></a></li>
 				<li><a href="#">Alert Name <span
 						class="label label-primary">Alert Badge</span></a></li>
@@ -100,20 +100,21 @@
 						class="label label-warning">Alert Badge</span></a></li>
 				<li><a href="#">Alert Name <span class="label label-danger">Alert
 							Badge</span></a></li>
-				<li class="divider"></li>
+				<li class="divider"></li> -->
 				<li><a href="#">View All</a></li>
 			</ul></li>
 
 		<li class="dropdown"><a href="#" class="dropdown-toggle"
 			data-toggle="dropdown"><i class="fa fa-user"></i>
-				${employee.email} <b class="caret"></b></a>
+				${employee.email} <b class="caret"></b></a> <input type="hidden"
+			id="email" value="${employee.email}" />
 			<ul class="dropdown-menu">
-				<li><a href="#"><i class="fa fa-fw fa-user"></i> Profile</a></li>
+				<li><a href="#"><i class="fa fa-fw fa-user"></i> Tài khoản</a></li>
 				<!--<li><a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a></li> -->
-				<li><a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a></li>
+				<li><a href="#"><i class="fa fa-fw fa-gear"></i> Thiết lập</a></li>
 				<li class="divider"></li>
-				<li><a href="ProcessServlet?btnAction=logout"><i class="fa fa-fw fa-power-off"></i> Log
-						Out</a></li>
+				<li><a href="ProcessServlet?btnAction=logout"><i
+						class="fa fa-fw fa-power-off"></i> Đăng xuất</a></li>
 			</ul></li>
 	</ul>
 	<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
@@ -123,11 +124,14 @@
 					class="fa fa-fw fa-dashboard"></i> Tổng quan</a></li>
 			<li><a href="ProcessServlet?btnAction=employeManageAccount"><i
 					class="fa fa-fw fa-users"></i> Quản lý tài khoản</a></li>
+			<li><a href="ProcessServlet?btnAction=employeeManageDeal"><i
+					class="fa fa-fw fa-exchange"></i> Quản lý thương lượng</a></li>
 			<li><a href="ProcessServlet?btnAction=employeeManageOrder"><i
-					class="fa fa-fw fa-exchange"></i> Quản lý giao dịch</a></li>
+					class="fa fa-fw fa-table"></i> Quản lý hóa đơn</a></li>
 			<li><a href="ProcessServlet?btnAction=employeeConfiguration"><i
 					class="fa fa-fw fa-gears"></i> Cấu hình thông số</a></li>
 		</ul>
 	</div>
 	<!-- /.navbar-collapse -->
 </nav>
+<div id="notify" class="notify"></div>

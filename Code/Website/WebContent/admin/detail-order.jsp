@@ -16,7 +16,7 @@
 <title>Chi tiết hóa đơn</title>
 <jsp:include page="header.jsp"></jsp:include>
 </head>
-<body>
+<body onload="getLastID();getListNotification();">
 	<div id="wrapper">
 		<!-- Navigation -->
 		<jsp:include page="navigation-bar.jsp"></jsp:include>
@@ -44,7 +44,7 @@
 				<div class="panel panel-default">
 					<!--  <div class="panel-heading">Bootstrap: Basic Form</div>-->
 					<div class="panel-body">
-						<form action="PaypalServlet" method="POST" accept-charset="UTF-8">
+						<form action="PaypalServlet" method="GET" accept-charset="UTF-8">
 							<div class="col-sm-12">
 								<div class="col-sm-12">
 									<label class="control-label col-sm-3">Mã hóa đơn: </label> <label
@@ -106,8 +106,7 @@
 								<div class="col-sm-12">
 									<label class="control-label col-sm-3">Chi phí: </label>
 									<div class="col-sm-3">
-									<input
-										type="hidden" name="txtPrice" value="${order.price }" />
+										<input type="hidden" name="txtPrice" value="${order.price }" />
 										<label for="right-label" class="left inline"> <fmt:formatNumber
 												type="currency" pattern="###,###,###,###,###"
 												value="${order.price}" /> nghìn đồng
@@ -140,11 +139,15 @@
 									<br />
 									<c:if test="${order.orderStatusID==5}">
 										<button class="btn btn-success" type="submit"
-											value="employeePay" name="btnAction">Thanh toán</button>
+											value="employeePay" name="btnAction"><i class="fa fa-paypal"></i> Thanh toán</button>
 										<button class="btn btn-warning" type="submit"
-											value="employeeRefund" name="btnAction">Hoàn trả
+											value="employeeRefund" name="btnAction"><i class="fa fa-undo"></i> Hoàn trả
 											tiền</button>
 									</c:if>
+									<a class="btn btn-primary"
+										href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
+										<i class="fa fa-print"></i> In hóa đơn
+									</a>
 								</div>
 							</div>
 						</form>

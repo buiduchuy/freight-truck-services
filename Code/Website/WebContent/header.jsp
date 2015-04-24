@@ -78,11 +78,8 @@
 									<li style="width: auto;"><a href="#">Xin chào,
 											${account}!</a>
 										<ul class="sub-topbar">
-											<li><a href="ProcessServlet?btnAction=manageGoods"><i
-													class="icon-desktop"></i>Quản lý hàng</a></li>
-											<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
-													hình tài khoản</a></li>
-
+											<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Tài
+													khoản</a></li>
 											<li><a href="ProcessServlet?btnAction=logout"><i
 													class="icon-off"></i>Đăng xuất</a></li>
 										</ul></li>

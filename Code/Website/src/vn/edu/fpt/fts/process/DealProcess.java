@@ -172,32 +172,56 @@ public class DealProcess {
 				// Insert new deal with accept status and CreateTime
 				int newDealID = dealDao.insertDeal(deal);
 
-				// Change Cancel status to other deal
-//				int totalGoodsWeightOfRoute = goodsDao
-//						.getTotalWeightByRouteID(deal.getRouteID());
-//				int weightRoute = routeDao
-//						.getActiveRouteByID(deal.getRouteID()).getWeight();
-//
-//				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
-				List<Deal> listDeal = dealDao
-						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
-								deal.getRouteID());
+				List<Deal> listDealCheckForOwner = dealDao
+						.getListOtherDealSameGoodsAndOtherRoute(
+								deal.getGoodsID(), deal.getRouteID());
 
-				for (int i = 0; i < listDeal.size(); i++) {
-					if (listDeal.get(i).getCreateBy()
-							.equalsIgnoreCase(deal.getCreateBy())) {
-						cancelDeal1(listDeal.get(i));
-					} else {
-						declineDeal1(listDeal.get(i));
+				if (listDealCheckForOwner != null) {
+					for (int i = 0; i < listDealCheckForOwner.size(); i++) {
+						Deal item = listDealCheckForOwner.get(i);
+						if (item.getDealStatusID() == Common.deal_pending) {
+							if (listDealCheckForOwner.get(i).getCreateBy()
+									.equalsIgnoreCase(deal.getCreateBy())) {
+								cancelDeal1(listDealCheckForOwner.get(i));
+							} else {
+								declineDeal1(listDealCheckForOwner.get(i));
+							}
+						}
 					}
 				}
 
-				// int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
-				// deal.getGoodsID(),
-				// (weightRoute - totalGoodsWeightOfRoute),
-				// deal.getRouteID());
-				// System.out.println("Co " + n
-				// + " deal da thay doi trang thai la cancel");
+				int totalGoodsWeightOfRoute = goodsDao
+						.getTotalWeightByRouteID(deal.getRouteID());
+				int weightRoute = routeDao
+						.getActiveRouteByID(deal.getRouteID()).getWeight();
+
+				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
+
+				Deal db_deal = dealDao.getDealByID(newDealID);
+
+				int goodsCategoryIDOfDealAccept = db_deal.getGoods()
+						.getGoodsCategoryID();
+
+				List<Deal> listDealCheckForDriver = dealDao
+						.getListOtherDealSameRouteAndOtherGoods(
+								deal.getGoodsID(), deal.getRouteID());
+				if (listDealCheckForDriver != null) {
+					for (int i = 0; i < listDealCheckForDriver.size(); i++) {
+						Deal item = listDealCheckForOwner.get(i);
+						if (item.getDealStatusID() == Common.deal_pending) {
+							// Tải trọng hoặc Loại hàng
+							if (item.getGoods().getWeight() >= remainPayloads
+									|| item.getGoods().getGoodsCategoryID() != goodsCategoryIDOfDealAccept) {
+								if (listDealCheckForDriver.get(i).getCreateBy()
+										.equalsIgnoreCase(deal.getCreateBy())) {
+									cancelDeal1(listDealCheckForDriver.get(i));
+								} else {
+									declineDeal1(listDealCheckForDriver.get(i));
+								}
+							}
+						}
+					}
+				}
 
 				// Deactivate goods of this deal
 				goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
@@ -249,31 +273,57 @@ public class DealProcess {
 				// int newDealID = dealDao.insertDeal(deal);
 
 				// Change Cancel status to other deal
-//				int totalGoodsWeightOfRoute = goodsDao
-//						.getTotalWeightByRouteID(deal.getRouteID());
-//				int weightRoute = routeDao
-//						.getActiveRouteByID(deal.getRouteID()).getWeight();
-//				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
 
-				List<Deal> listDeal = dealDao
-						.getListOtherDealByGoodsIDAndRouteID(deal.getGoodsID(),
-								deal.getRouteID());
+				// Xử lí cho owner
+				List<Deal> listDealCheckForOwner = dealDao
+						.getListOtherDealSameGoodsAndOtherRoute(
+								db_deal.getGoodsID(), db_deal.getRouteID());
 
-				for (int i = 0; i < listDeal.size(); i++) {
-					if (listDeal.get(i).getCreateBy()
-							.equalsIgnoreCase(deal.getCreateBy())) {
-						cancelDeal1(listDeal.get(i));
-					} else {
-						declineDeal1(listDeal.get(i));
+				if (listDealCheckForOwner != null) {
+					for (int i = 0; i < listDealCheckForOwner.size(); i++) {
+						Deal item = listDealCheckForOwner.get(i);
+						if (item.getDealStatusID() == Common.deal_pending) {
+							if (listDealCheckForOwner.get(i).getCreateBy()
+									.equalsIgnoreCase(deal.getCreateBy())) {
+								cancelDeal1(listDealCheckForOwner.get(i));
+							} else {
+								declineDeal1(listDealCheckForOwner.get(i));
+							}
+						}
 					}
 				}
 
-				// int n = dealDao.updateStatusOfOtherDeal(Common.deal_cancel,
-				// deal.getGoodsID(),
-				// (weightRoute - totalGoodsWeightOfRoute),
-				// deal.getRouteID());
-				// System.out.println("Co " + n
-				// + " deal da thay doi trang thai la cancel");
+				// Xử lí cho driver
+				int totalGoodsWeightOfRoute = goodsDao
+						.getTotalWeightByRouteID(db_deal.getRouteID());
+				int weightRoute = routeDao.getActiveRouteByID(
+						db_deal.getRouteID()).getWeight();
+
+				int remainPayloads = weightRoute - totalGoodsWeightOfRoute;
+
+				int goodsCategoryIDOfDealAccept = db_deal.getGoods()
+						.getGoodsCategoryID();
+
+				List<Deal> listDealCheckForDriver = dealDao
+						.getListOtherDealSameRouteAndOtherGoods(
+								db_deal.getGoodsID(), db_deal.getRouteID());
+				if (listDealCheckForDriver != null) {
+					for (int i = 0; i < listDealCheckForDriver.size(); i++) {
+						Deal item = listDealCheckForOwner.get(i);
+						if (item.getDealStatusID() == Common.deal_pending) {
+							// Tải trọng hoặc Loại hàng
+							if (item.getGoods().getWeight() >= remainPayloads
+									|| item.getGoods().getGoodsCategoryID() != goodsCategoryIDOfDealAccept) {
+								if (listDealCheckForDriver.get(i).getCreateBy()
+										.equalsIgnoreCase(deal.getCreateBy())) {
+									cancelDeal1(listDealCheckForDriver.get(i));
+								} else {
+									declineDeal1(listDealCheckForDriver.get(i));
+								}
+							}
+						}
+					}
+				}
 
 				// Deactivate goods of this deal
 				goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
@@ -327,7 +377,7 @@ public class DealProcess {
 					deal.setCreateBy("owner");
 				}
 				deal.setDealStatusID(Common.deal_decline);
-				
+
 				ret = dealDao.updateDeal(deal);
 
 				// Insert new deal with decline status
