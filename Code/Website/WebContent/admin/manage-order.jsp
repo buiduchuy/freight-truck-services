@@ -75,11 +75,11 @@
 									value="${requestScope.listOrderStatus }" />
 								<c:if test="${not empty listOrder }">
 									<c:forEach var="order" items="${listOrder}">
-										<form action="OrderServlet" method="POST"
+										<form action="OrderServlet" method="GET"
 											accept-charset="UTF-8">
 											<c:set var="count" value="${count+1 }" />
 											<tr>
-												<td>${count }<input type="hidden" name="txtOrderID"
+												<td>${count }<input type="hidden" name="orderID"
 													value="${order.orderID }" />
 												</td>
 												<td><font color="black" style="font-weight: 700;">${order.orderID }</font></td>

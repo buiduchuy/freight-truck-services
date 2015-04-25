@@ -128,7 +128,7 @@ public class OrderServlet extends HttpServlet {
 						request, response);
 			} else if (action.equals("employeeViewDetailOrder")) {
 				int orderID = Integer.valueOf(request
-						.getParameter("txtOrderID"));
+						.getParameter("orderID"));
 				try {
 					Order order = orderDao.getOrderByID(orderID);
 					request.setAttribute("order", order);

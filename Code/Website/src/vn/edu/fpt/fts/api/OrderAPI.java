@@ -125,13 +125,16 @@ public class OrderAPI {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public String ownerNoticeLostGoods(MultivaluedMap<String, String> params) {
-		int ret = 0;
+		int ret = 1;
 		try {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
 			Order db_order = orderDao.getOrderByID(orderID);
+
 			notificationProcess.insertOwnerReportOrder(db_order);
+
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
+			ret = 0;
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}

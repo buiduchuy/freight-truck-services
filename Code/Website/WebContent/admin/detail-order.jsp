@@ -137,7 +137,7 @@
 								</div>
 								<div class="col-sm-12">
 									<br />
-									<c:if test="${order.orderStatusID==5}">
+									<c:if test="${order.orderStatusID==4}">
 										<button class="btn btn-success" type="submit"
 											value="employeePay" name="btnAction"><i class="fa fa-paypal"></i> Thanh toán</button>
 										<button class="btn btn-warning" type="submit"

@@ -107,7 +107,7 @@ function getListNotification() {
 									if (e.active == 1) {
 										el = $('<li><a onclick="deactiveNotification('
 												+ e.notificationID
-												+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+												+ ')" style="color:red;" href="ProcessServlet?btnAction=employeeViewDetailOrder&orderID='
 												+ e.idOfType
 												+ '">'
 												+ e.message
@@ -115,7 +115,7 @@ function getListNotification() {
 									} else {
 										el = $('<li><a onclick="deactiveNotification('
 												+ e.notificationID
-												+ ')" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+												+ ')" href="ProcessServlet?btnAction=employeeViewDetailOrder&orderID='
 												+ e.idOfType
 												+ '">'
 												+ e.message
@@ -172,7 +172,7 @@ function getListNotification() {
 						if (active == 1) {
 							el = $('<li><a onclick="deactiveNotification('
 									+ notificationID
-									+ ')" style="color:red;" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+									+ ')" style="color:red;" href="ProcessServlet?btnAction=employeeViewDetailOrder&orderID='
 									+ idOfType
 									+ '">'
 									+ message
@@ -180,7 +180,7 @@ function getListNotification() {
 						} else {
 							el = $('<li><a onclick="deactiveNotification('
 									+ notificationID
-									+ ')" href="ProcessServlet?btnAction=viewDetailOrder&orderID='
+									+ ')" href="ProcessServlet?btnAction=employeeViewDetailOrder&orderID='
 									+ idOfType
 									+ '">'
 									+ message

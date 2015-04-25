@@ -79,7 +79,7 @@ public class Scheduler {
 					"yyyy-MM-dd HH:mm:ss.SSS");
 			long dateDifferenceDelivering = Common.getTimeDifference(
 					currentDate, goodsPickupDate, "day");
-			if (dateDifferenceDelivering >= 1) {
+			if (dateDifferenceDelivering >= 0) {
 				if (orderItem.getOrderStatusID() == Common.order_paid) {
 					// Change order status and create notification
 					orderDao.updateOrderStatusID(orderItem.getOrderID(),

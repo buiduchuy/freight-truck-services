@@ -238,7 +238,7 @@ public class NotificationProcess {
 		notification.setEmail("staff@fts.vn");
 		notification.setMessage("Chủ hàng "
 				+ order.getDeal().getGoods().getOwner().getEmail()
-				+ "báo mất hàng. Mã hóa đơn: " + order.getOrderID() + ".");
+				+ " báo mất hàng. Mã hóa đơn: " + order.getOrderID() + ".");
 		notification.setStatusOfType(Common.order_delivered);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");

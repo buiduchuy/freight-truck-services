@@ -267,7 +267,7 @@ public class DealProcess {
 				// dealDao.updateDealStatus(deal.getDealID(),
 				// Common.deal_accept);
 				deal.setDealStatusID(Common.deal_accept);
-				ret = dealDao.updateDeal(deal);
+				dealDao.updateDeal(deal);
 
 				// Insert new deal with accept status and CreateTime
 				// int newDealID = dealDao.insertDeal(deal);
@@ -356,6 +356,7 @@ public class DealProcess {
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			ret = 0;
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
