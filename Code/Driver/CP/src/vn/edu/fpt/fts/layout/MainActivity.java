@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.internal.hi;
+import com.google.android.gms.maps.MapView;
 
 import vn.edu.fpt.fts.classes.AlarmReceiver;
 import vn.edu.fpt.fts.classes.Constant;
@@ -63,6 +64,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -104,6 +106,9 @@ public class MainActivity extends FragmentActivity {
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
 		StrictMode.setThreadPolicy(policy);
+		
+		TextView driver = (TextView) findViewById(R.id.driver);
+		driver.setText("Xin chào, " + getIntent().getStringExtra("email"));
 
 		mNavigationDrawerItemTitles = getResources().getStringArray(
 				R.array.navigation_drawer_items_array);
@@ -112,8 +117,6 @@ public class MainActivity extends FragmentActivity {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		
-		array.add(new NavDrawerItem("Xin chào, " + getIntent().getStringExtra("email"),
-				mNavigationImage.getResourceId(0, -1)));
 		
 		for (int i = 0; i < mNavigationDrawerItemTitles.length; i++) {
 			array.add(new NavDrawerItem(mNavigationDrawerItemTitles[i],

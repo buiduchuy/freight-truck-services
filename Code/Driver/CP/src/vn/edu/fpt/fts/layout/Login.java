@@ -190,7 +190,6 @@ public class Login extends Activity {
 							Context.MODE_PRIVATE);
 					Editor editor = share.edit();
 					editor.putString("driverID", response);
-					editor.commit();
 					editor.putString("email", params.get(0).getValue());
 					editor.commit();
 					Toast.makeText(Login.this, "Đăng nhập thành công",

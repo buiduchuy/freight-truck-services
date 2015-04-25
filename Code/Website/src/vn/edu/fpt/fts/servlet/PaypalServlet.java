@@ -27,6 +27,7 @@ import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.process.NotificationProcess;
 
 import com.google.gson.JsonObject;
+import com.paypal.api.openidconnect.Session;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Item;
 import com.paypal.api.payments.ItemList;
@@ -51,6 +52,8 @@ import com.paypal.sdk.exceptions.OAuthException;
 import com.paypal.svcs.services.AdaptivePaymentsService;
 import com.paypal.svcs.types.ap.PayRequest;
 import com.paypal.svcs.types.ap.PayResponse;
+import com.paypal.svcs.types.ap.PaymentDetailsRequest;
+import com.paypal.svcs.types.ap.PaymentDetailsResponse;
 import com.paypal.svcs.types.ap.Receiver;
 import com.paypal.svcs.types.ap.ReceiverList;
 import com.paypal.svcs.types.common.RequestEnvelope;
@@ -201,6 +204,68 @@ public class PaypalServlet extends HttpServlet {
 				} else {
 					response.sendRedirect(paymentURL + "&message=fail");
 				}
+			} else if (action.equalsIgnoreCase("payReturn")) {
+				
+				HttpSession session = request.getSession();
+				String paykey = session.getAttribute("paykey").toString();
+				session.removeAttribute("paykey");
+				
+				RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
+				PaymentDetailsRequest paymentDetailsRequest = new PaymentDetailsRequest(requestEnvelope);
+				paymentDetailsRequest.setPayKey(paykey);
+				
+				sdkConfig.put("acct1.UserName", "ftswebsite_api1.gmail.com");
+				sdkConfig.put("acct1.Password", "WNGDNTT5TMD52VZR");
+				sdkConfig.put("acct1.Signature", "AFcWxV21C7fd0v3bYYYRCpSSRl31AOr-ik0fJN5Px8srU-8l3lY4lKA5");
+				sdkConfig.put("acct1.AppId","APP-80W284485P519543T");
+				
+				AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(sdkConfig);
+				PaymentDetailsResponse paymentDetailsResponse;
+				try {
+					paymentDetailsResponse = adaptivePaymentsService.paymentDetails(paymentDetailsRequest);
+					if(paymentDetailsResponse.getStatus().equalsIgnoreCase("COMPLETED")) {
+						int orderID = Integer.parseInt(request.getParameter("orderID"));
+						
+						OrderDAO orderDao = new OrderDAO();
+						orderDao.updateOrderStatusID(orderID, Common.order_finish);
+						
+						String url = request.getScheme()
+								+ "://"
+								+ request.getServerName()
+								+ ("http".equals(request.getScheme())
+										&& request.getServerPort() == 80
+										|| "https".equals(request.getScheme())
+										&& request.getServerPort() == 443 ? "" : ":"
+										+ request.getServerPort())
+								+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&txtOrderID=" + orderID;
+						
+						response.sendRedirect(url);
+					}
+				} catch (SSLConfigurationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidCredentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (HttpErrorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidResponseDataException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClientActionRequiredException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MissingCredentialException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OAuthException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} else if (action.equalsIgnoreCase("employeePay")) {
 				
 				int orderID = Integer.parseInt(request.getParameter("txtOrderID"));
@@ -229,8 +294,29 @@ public class PaypalServlet extends HttpServlet {
 				RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
 				payRequest.setRequestEnvelope(requestEnvelope); 
 				payRequest.setActionType("PAY");
-				payRequest.setCancelUrl("http://localhost:8080/FTS/ProcessServlet?btnAction=employeeManageOrder");
-				payRequest.setReturnUrl("http://localhost:8080/FTS/ProcessServlet?btnAction=employeeManageOrder");
+				
+				String uri = request.getScheme()
+						+ "://"
+						+ request.getServerName()
+						+ ("http".equals(request.getScheme())
+								&& request.getServerPort() == 80
+								|| "https".equals(request.getScheme())
+								&& request.getServerPort() == 443 ? "" : ":"
+								+ request.getServerPort())
+						+ request.getRequestURI();
+				
+				String url = request.getScheme()
+						+ "://"
+						+ request.getServerName()
+						+ ("http".equals(request.getScheme())
+								&& request.getServerPort() == 80
+								|| "https".equals(request.getScheme())
+								&& request.getServerPort() == 443 ? "" : ":"
+								+ request.getServerPort())
+						+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&txtOrderID=" + orderID;
+				
+				payRequest.setCancelUrl(url);
+				payRequest.setReturnUrl(uri + "?btnAction=payReturn&orderID=" + orderID);
 				payRequest.setCurrencyCode("USD");
 
 				sdkConfig.put("acct1.UserName", "ftswebsite_api1.gmail.com");
@@ -242,6 +328,8 @@ public class PaypalServlet extends HttpServlet {
 				
 				try {
 					PayResponse payResponse = adaptivePaymentsService.pay(payRequest);
+					HttpSession session = request.getSession(true);
+					session.setAttribute("paykey", payResponse.getPayKey());
 					response.sendRedirect("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey=" + payResponse.getPayKey());
 				} catch (SSLConfigurationException e) {
 					// TODO Auto-generated catch block
