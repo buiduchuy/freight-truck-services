@@ -743,7 +743,7 @@ public class SendOffer extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) == 2) {
+			if (Integer.parseInt(response) == -1) {
 				Toast.makeText(
 						getActivity(),
 						"Hàng đã có hóa đơn liên quan. Bạn không thể chấp nhận hàng này.",

@@ -34,22 +34,6 @@
         android:theme="@style/CustomActionBarTheme" >
         <receiver android:name="vn.edu.fpt.fts.classes.AlarmReceiver" >
         </receiver>
-        <receiver android:name="vn.edu.fpt.fts.classes.OrderAlarmReceiver" >
-        </receiver>
-        <receiver
-            android:name="vn.edu.fpt.fts.classes.NotificationReceiver"
-            android:enabled="false" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="vn.edu.fpt.fts.classes.OrderNotificationReceiver"
-            android:enabled="false" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <meta-data
             android:name="com.google.android.gms.version"

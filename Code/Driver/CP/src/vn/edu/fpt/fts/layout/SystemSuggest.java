@@ -241,7 +241,7 @@ public class SystemSuggest extends Fragment {
 									.replaceAll("(?i), Việt Nam", "")
 									.split(",");
 							title += " - " + end[end.length - 1].trim();
-							list.add(new ListItem(item.getJSONObject(
+							list.add(new ListItem("Chủ hàng " + item.getJSONObject("owner").getString("firstName") + ": " + item.getJSONObject(
 									"goodsCategory").getString("name")
 									+ " " + item.getString("weight") + " kg",
 									title, "Giá của chủ hàng: "
