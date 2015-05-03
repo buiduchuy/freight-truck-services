@@ -59,7 +59,7 @@ import android.widget.Toast;
 public class SuggestDetailActivity extends Activity {
 	private int routeid;
 	private TextView startAddr, destAddr, startTime, finishTime, category,
-			weight, tvMap;
+			weight, tvMap, driver;
 	private EditText etPrice, etNote;
 	private Button btnSend;
 	private String goodsID, ownerID, categoryID;
@@ -70,13 +70,19 @@ public class SuggestDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest_detail);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
+		actionBar.setTitle(this
+				.getString(R.string.title_activity_suggest_detail)
+				+ " - "
+				+ preferences.getString("email", ""));
 
 		routeid = getIntent().getIntExtra("route", 0);
-		goodsID = getIntent().getStringExtra("goodsID");		
+		goodsID = getIntent().getStringExtra("goodsID");
 		extra = getIntent().getBundleExtra("extra");
-		
+
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
 				SuggestDetailActivity.this, "Đang xử lý...");
 		String url = Common.IP_URL + Common.Service_Route_GetByID;
@@ -85,8 +91,6 @@ public class SuggestDetailActivity extends Activity {
 		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
 				new String[] { url });
 
-		SharedPreferences preferences = getSharedPreferences("MyPrefs",
-				Context.MODE_PRIVATE);
 		ownerID = preferences.getString("ownerID", "");
 
 		startAddr = (TextView) this.findViewById(R.id.textview_startAddr);
@@ -95,6 +99,7 @@ public class SuggestDetailActivity extends Activity {
 		finishTime = (TextView) this.findViewById(R.id.textview_finishTime);
 		category = (TextView) this.findViewById(R.id.textview_category);
 		weight = (TextView) this.findViewById(R.id.textview_weight);
+		driver = (TextView) this.findViewById(R.id.textview_driverName);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btnSend = (Button) findViewById(R.id.button_send);
@@ -122,7 +127,7 @@ public class SuggestDetailActivity extends Activity {
 				wst2.addNameValuePair("createTime", Common.formatDate(calendar));
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeid + "");
-				wst2.addNameValuePair("goodsID", goodsID + "");				
+				wst2.addNameValuePair("goodsID", goodsID + "");
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
 				// wst2.execute(new String[] { url });
@@ -193,7 +198,7 @@ public class SuggestDetailActivity extends Activity {
 			wst2.addNameValuePair("createTime", Common.formatDate(calendar));
 			wst2.addNameValuePair("createBy", "owner");
 			wst2.addNameValuePair("routeID", routeid + "");
-			wst2.addNameValuePair("goodsID", goodsID + "");			
+			wst2.addNameValuePair("goodsID", goodsID + "");
 			wst2.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Create;
 			// wst2.execute(new String[] { url });
@@ -228,7 +233,7 @@ public class SuggestDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
+		private static final int SOCKET_TIMEOUT = 20000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -421,6 +426,9 @@ public class SuggestDetailActivity extends Activity {
 					String rWeight = jsonObject.getString("weight");
 					String startAddress = jsonObject
 							.getString("startingAddress");
+					JSONObject jsonObject3 = jsonObject.getJSONObject("driver");
+					String driver = jsonObject3.getString("lastName") + " "
+							+ jsonObject3.getString("firstName");
 					try {
 						startAdd = new GetLatLng().execute(startAddress).get();
 					} catch (InterruptedException e) {
@@ -447,6 +455,7 @@ public class SuggestDetailActivity extends Activity {
 					route.setFinishTime(finishTime);
 					route.setCategory(category);
 					route.setWeight(Integer.parseInt(rWeight));
+					route.setDriverID(driver);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -458,6 +467,7 @@ public class SuggestDetailActivity extends Activity {
 				finishTime.setText(route.getFinishTime());
 				category.setText(route.getCategory());
 				weight.setText(route.getWeight() + " kg");
+				driver.setText(route.getDriverID());
 			} else {
 				Toast.makeText(SuggestDetailActivity.this,
 						"Lộ trình không còn tồn tại", Toast.LENGTH_LONG).show();

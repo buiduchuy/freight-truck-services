@@ -15,11 +15,11 @@
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/textview_status"
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:paddingLeft="13dp"
             android:paddingTop="5dp"
-            android:text="Thông tin"
             android:textSize="18sp" />
 
         <View
@@ -31,6 +31,80 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:minHeight="40dp"
+                    android:text="Giá đề nghị:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textview_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="40dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/textview_note1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:minHeight="40dp"
+                    android:text="Ghi chú:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textview_note"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="40dp" />
+            </TableRow>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:paddingLeft="13dp"
+                android:paddingTop="5dp"
+                android:text="Lộ trình"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:minHeight="40dp"
+                    android:text="Tài xế:"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textview_driver"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="40dp" />
+            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -150,70 +224,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:minHeight="40dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:minHeight="40dp"
-                    android:text="Giá đề nghị:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textview_price"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="40dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/textview_note1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:minHeight="40dp"
-                    android:text="Ghi chú:"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/textview_note"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="40dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/textview_status1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
-                    android:minHeight="40dp"
-                    android:text="Trạng thái:"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/textview_status"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:minHeight="40dp"
-                    android:visibility="gone" />
             </TableRow>
         </TableLayout>
 

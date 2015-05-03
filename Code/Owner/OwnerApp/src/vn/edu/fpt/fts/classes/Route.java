@@ -12,7 +12,7 @@ public class Route implements Serializable {
 	private int weight;
 	private String createTime;
 	private int active;
-	private int driverID;
+	private String driverID;
 	private String category;
 
 	public String getCategory() {
@@ -26,11 +26,11 @@ public class Route implements Serializable {
 	public Route() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Route(int routeID, String startingAddress,
 			String destinationAddress, String startTime, String finishTime,
 			String notes, int weight, String createTime, int active,
-			int driverID) {
+			String driverID) {
 		super();
 		this.RouteID = routeID;
 		this.startingAddress = startingAddress;
@@ -41,10 +41,11 @@ public class Route implements Serializable {
 		this.weight = weight;
 		this.createTime = createTime;
 		this.active = active;
-		this.driverID = driverID;		
+		this.driverID = driverID;
 	}
 
-	public Route(String startingAddress, String destinationAddress, String startTime, String finishTime, String category) {
+	public Route(String startingAddress, String destinationAddress,
+			String startTime, String finishTime, String category) {
 		// TODO Auto-generated constructor stub
 		this.startingAddress = startingAddress;
 		this.destinationAddress = destinationAddress;
@@ -52,6 +53,7 @@ public class Route implements Serializable {
 		this.finishTime = finishTime;
 		this.category = category;
 	}
+
 	public int getRouteID() {
 		return RouteID;
 	}
@@ -124,13 +126,12 @@ public class Route implements Serializable {
 		this.active = active;
 	}
 
-	public int getDriverID() {
+	public String getDriverID() {
 		return driverID;
 	}
 
-	public void setDriverID(int driverID) {
+	public void setDriverID(String driverID) {
 		this.driverID = driverID;
 	}
-	
-	
+
 }

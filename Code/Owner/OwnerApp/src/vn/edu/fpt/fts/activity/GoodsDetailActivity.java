@@ -6,7 +6,9 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -46,9 +48,11 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		default:
 			break;
 		}
-		
-		this.getActionBar().setTitle(categoryName);
-		
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		this.getActionBar().setTitle(
+				categoryName + " - " + preferences.getString("email", ""));
+
 		viewPager = (ViewPager) findViewById(R.id.pager_goods);
 		actionBar = getActionBar();
 		mAdapter = new GoodsDetailPagerAdapter(getSupportFragmentManager());
@@ -112,22 +116,25 @@ public class GoodsDetailActivity extends FragmentActivity implements
 			startActivity(intent);
 		}
 		if (id == R.id.action_history) {
-			Intent intent = new Intent(GoodsDetailActivity.this, HistoryActivity.class);
+			Intent intent = new Intent(GoodsDetailActivity.this,
+					HistoryActivity.class);
 			startActivity(intent);
 		}
 		if (id == android.R.id.home) {
-			Intent intent = new Intent(GoodsDetailActivity.this, MainActivity.class);
+			Intent intent = new Intent(GoodsDetailActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(GoodsDetailActivity.this, MainActivity.class);
+			Intent intent = new Intent(GoodsDetailActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
 		return super.onKeyDown(keyCode, event);
@@ -152,5 +159,4 @@ public class GoodsDetailActivity extends FragmentActivity implements
 
 	}
 
-	
 }

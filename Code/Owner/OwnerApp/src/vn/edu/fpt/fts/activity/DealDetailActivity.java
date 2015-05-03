@@ -38,8 +38,10 @@ import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract.CommonDataKinds.Email;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -53,7 +55,7 @@ import android.widget.Toast;
 public class DealDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			goodscate, goodsweight, goodspickup, goodsdeliver, tvPrice, tvNote,
-			tvStatus, tvNote1, tvStatus1, tvWeight, tvText;
+			tvStatus, tvNote1, tvWeight, tvText, tvDriver;
 	private int dealID;
 	private String dealStatus, routeID, goodsID, goodsCategory;
 	private double price;
@@ -67,9 +69,12 @@ public class DealDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_deal_detail);
-
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
+		actionBar.setTitle(this.getString(R.string.title_activity_deal_detail) + " - "
+				+ preferences.getString("email", ""));
 
 		dealID = getIntent().getIntExtra("dealID", 0);
 
@@ -82,8 +87,8 @@ public class DealDetailActivity extends Activity {
 		tvNote = (TextView) findViewById(R.id.textview_note);
 		tvStatus = (TextView) findViewById(R.id.textview_status);
 		tvNote1 = (TextView) findViewById(R.id.textview_note1);
-		tvStatus1 = (TextView) findViewById(R.id.textview_status1);
 		tvWeight = (TextView) findViewById(R.id.textview_weight);
+		tvDriver = (TextView) findViewById(R.id.textview_driver);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
 		btn_counter = (Button) findViewById(R.id.button_counter);
@@ -125,7 +130,7 @@ public class DealDetailActivity extends Activity {
 				wst2.addNameValuePair("createBy", "owner");
 				wst2.addNameValuePair("routeID", routeID + "");
 				wst2.addNameValuePair("goodsID", goodsID + "");
-				
+
 				wst2.addNameValuePair("active", "1");
 				String url = Common.IP_URL + Common.Service_Deal_Create;
 				// wst2.execute(new String[] { url });
@@ -185,7 +190,7 @@ public class DealDetailActivity extends Activity {
 			wst3.addNameValuePair("createBy", "owner");
 			wst3.addNameValuePair("routeID", routeID + "");
 			wst3.addNameValuePair("goodsID", goodsID + "");
-			
+
 			wst3.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Accept;
 			// wst3.execute(new String[] { url });
@@ -204,7 +209,7 @@ public class DealDetailActivity extends Activity {
 			wst4.addNameValuePair("createBy", "owner");
 			wst4.addNameValuePair("routeID", routeID + "");
 			wst4.addNameValuePair("goodsID", goodsID + "");
-			
+
 			wst4.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Decline;
 			// wst4.execute(new String[] { url });
@@ -223,7 +228,7 @@ public class DealDetailActivity extends Activity {
 			wst5.addNameValuePair("createBy", "owner");
 			wst5.addNameValuePair("routeID", routeID + "");
 			wst5.addNameValuePair("goodsID", goodsID + "");
-			
+
 			wst5.addNameValuePair("active", "1");
 			String url = Common.IP_URL + Common.Service_Deal_Cancel;
 			// wst5.execute(new String[] { url });
@@ -319,7 +324,7 @@ public class DealDetailActivity extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 
@@ -392,6 +397,10 @@ public class DealDetailActivity extends Activity {
 					} else {
 						category = "Không có";
 					}
+					JSONObject jsonObject2 = jsonObject.getJSONObject("driver");
+					String driver = jsonObject2.getString("lastName") + " " + jsonObject2.getString("firstName");
+					tvDriver.setText(driver);
+
 					route.setStartingAddress(jsonObject
 							.getString("startingAddress"));
 					route.setDestinationAddress(jsonObject
@@ -548,7 +557,7 @@ public class DealDetailActivity extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 
@@ -665,7 +674,7 @@ public class DealDetailActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 10000;
+		private static final int SOCKET_TIMEOUT = 100000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -713,7 +722,7 @@ public class DealDetailActivity extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 
@@ -738,6 +747,7 @@ public class DealDetailActivity extends Activity {
 		protected void onPostExecute(String response) {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
+			Log.i("response", response);
 			if (response.equals("1")) {
 				Toast.makeText(DealDetailActivity.this,
 						"Đề nghị đã được chấp nhận", Toast.LENGTH_LONG).show();
@@ -749,7 +759,7 @@ public class DealDetailActivity extends Activity {
 				Toast.makeText(DealDetailActivity.this,
 						"Đề nghị chưa được chấp nhận. Xin vui lòng thử lại",
 						Toast.LENGTH_LONG).show();
-			} else {
+			} else if (response.equals("-1")) {
 				Toast.makeText(DealDetailActivity.this,
 						"Đề nghị không còn tồn tại", Toast.LENGTH_LONG).show();
 			}
@@ -882,7 +892,7 @@ public class DealDetailActivity extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 
@@ -1051,7 +1061,7 @@ public class DealDetailActivity extends Activity {
 
 			HttpResponse response = doResponse(url);
 
-			if (response.getEntity() == null) {
+			if (response == null) {
 				return result;
 			} else {
 
@@ -1247,7 +1257,7 @@ public class DealDetailActivity extends Activity {
 			// handleResponse(response);
 			if (response != null) {
 				try {
-					JSONObject jsonObject = new JSONObject(response);					
+					JSONObject jsonObject = new JSONObject(response);
 					dealStatus = jsonObject.getString("dealStatusID");
 					routeID = jsonObject.getString("routeID");
 					goodsID = jsonObject.getString("goodsID");
@@ -1266,7 +1276,7 @@ public class DealDetailActivity extends Activity {
 						accept.setVisible(false);
 						decline.setVisible(false);
 						cancel.setVisible(true);
-
+						tvStatus.setText("Bạn đã gửi");
 					} else if (dealStatus.equals("1")
 							&& createBy.equals("driver")) {
 						btn_counter.setVisibility(View.VISIBLE);
@@ -1274,6 +1284,7 @@ public class DealDetailActivity extends Activity {
 						etNote.setVisibility(View.VISIBLE);
 						viewLine.setVisibility(View.VISIBLE);
 						tvText.setVisibility(View.VISIBLE);
+						tvStatus.setText("Tài xế đã gửi");
 					} else if (dealStatus.equals("2")) {
 						btn_counter.setVisibility(View.GONE);
 						etPrice.setVisibility(View.GONE);
@@ -1281,10 +1292,13 @@ public class DealDetailActivity extends Activity {
 						viewLine.setVisibility(View.GONE);
 						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
-						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
-						tvStatus1.setVisibility(View.VISIBLE);
-						tvStatus.setText("Đã chấp nhận");
+						if (createBy.equals("owner")) {
+							tvStatus.setText("Bạn đã chấp nhận");
+						} else {
+							tvStatus.setText("Tài xế đã chấp nhận");
+						}
+
 						accept.setVisible(false);
 						decline.setVisible(false);
 						cancel.setVisible(false);
@@ -1295,10 +1309,8 @@ public class DealDetailActivity extends Activity {
 						viewLine.setVisibility(View.GONE);
 						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
-						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
-						tvStatus1.setVisibility(View.VISIBLE);
-						tvStatus.setText("Đã bị hủy");
+						tvStatus.setText("Bạn đã hủy");
 						accept.setVisible(false);
 						decline.setVisible(false);
 						cancel.setVisible(false);
@@ -1310,10 +1322,8 @@ public class DealDetailActivity extends Activity {
 						viewLine.setVisibility(View.GONE);
 						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
-						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
-						tvStatus1.setVisibility(View.VISIBLE);
-						tvStatus.setText("Đã từ chối");
+						tvStatus.setText("Bạn đã từ chối");
 						accept.setVisible(false);
 						decline.setVisible(false);
 						cancel.setVisible(false);
@@ -1325,10 +1335,8 @@ public class DealDetailActivity extends Activity {
 						viewLine.setVisibility(View.GONE);
 						tvText.setVisibility(View.GONE);
 						tvNote.setVisibility(View.GONE);
-						tvStatus.setVisibility(View.VISIBLE);
 						tvNote1.setVisibility(View.GONE);
-						tvStatus1.setVisibility(View.VISIBLE);
-						tvStatus.setText("Đã bị từ chối");
+						tvStatus.setText("Tài xế đã từ chối");
 						accept.setVisible(false);
 						decline.setVisible(false);
 						cancel.setVisible(false);

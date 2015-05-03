@@ -31,8 +31,10 @@ public class SuggestModelAdapter extends ArrayAdapter<SuggestModel> {
 		View rowView = null;
 		rowView = inflater.inflate(R.layout.suggest_item, parent, false);
 		TextView name = (TextView) rowView.findViewById(R.id.txtName);
+		TextView driver = (TextView) rowView.findViewById(R.id.txtDriver);
 		TextView date = (TextView) rowView.findViewById(R.id.txtDate);
 		name.setText(suggestModels.get(position).getName());
+		driver.setText(suggestModels.get(position).getDriver());
 		date.setText(suggestModels.get(position).getDate());
 		return rowView;
 	}

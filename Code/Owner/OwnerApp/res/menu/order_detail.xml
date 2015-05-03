@@ -11,12 +11,21 @@
         android:id="@+id/action_pay"
         android:icon="@drawable/ic_action_black_white_metro_money_bag_icon"
         android:showAsAction="ifRoom"
-        android:title="@string/action_pay"/>
+        android:title="@string/action_pay"
+        android:visible="false"/>
     <item
         android:id="@+id/lost_order"
         android:icon="@drawable/ic_action_bad"
         android:orderInCategory="100"
         android:showAsAction="ifRoom"
-        android:title="@string/action_lost_order"/>
+        android:title="@string/action_lost_order"
+        android:visible="false"/>
+    <item
+        android:id="@+id/cancel_order"
+        android:icon="@drawable/ic_action_cancel"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_cancel_order"
+        android:visible="false"/>
 
 </menu>

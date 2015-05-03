@@ -100,7 +100,7 @@ public class TrackFragment extends Fragment {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 20000;
+		private static final int SOCKET_TIMEOUT = 30000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -147,7 +147,7 @@ public class TrackFragment extends Fragment {
 			String result = "";
 
 			HttpResponse response = doResponse(url);
-
+			
 			if (response == null) {
 				return result;
 			} else {
@@ -216,15 +216,31 @@ public class TrackFragment extends Fragment {
 							String date = Common.formatDateFromString(tmp1[0])
 									+ " - "
 									+ Common.formatDateFromString(tmp2[0]);
-							String count = jsonObject2
-									.getString("orderStatusID");
+							int count = Integer.parseInt(jsonObject2
+									.getString("orderStatusID"));
 							String status = "";
-							if (count.equals("1")) {
-								status = "Trạng thái: Hàng chưa giao";
-							} else if (count.equals("2")) {
-								status = "Trạng thái: Hàng đã nhận";
-							} else if (count.equals("3")) {
-								status = "Trạng thái: Hàng bị mất";
+							switch (count) {
+							case 1:
+								status = "Chưa trả tiền";
+								break;
+							case 2:
+								status = "Đã trả tiền";
+								break;
+							case 3:
+								status = "Đang chở hàng";
+								break;
+							case 4:
+								status = "Đã giao hàng";
+								break;
+							case 5:
+								status = "Đã bị hủy";
+								break;
+							case 6:
+								status = "Đã hoàn tiền";
+								break;
+							case 7:
+								status = "Đã giao hàng";
+								break;
 							}
 							OrderModel orderModel = new OrderModel(
 									categoryName, weight, date, price, status);
@@ -260,14 +276,31 @@ public class TrackFragment extends Fragment {
 						String[] tmp2 = deliverDate.split(" ");
 						String date = Common.formatDateFromString(tmp1[0])
 								+ " - " + Common.formatDateFromString(tmp2[0]);
-						String count = jsonObject2.getString("orderStatusID");
+						int count = Integer.parseInt(jsonObject2
+								.getString("orderStatusID"));
 						String status = "";
-						if (count.equals("1")) {
-							status = "Trạng thái: Hàng chưa giao";
-						} else if (count.equals("2")) {
-							status = "Trạng thái: Hàng đã nhận";
-						} else if (count.equals("3")) {
-							status = "Trạng thái: Hàng bị mất";
+						switch (count) {
+						case 1:
+							status = "Chưa trả tiền";
+							break;
+						case 2:
+							status = "Đã trả tiền";
+							break;
+						case 3:
+							status = "Đang chở hàng";
+							break;
+						case 4:
+							status = "Đã giao hàng";
+							break;
+						case 5:
+							status = "Đã bị hủy";
+							break;
+						case 6:
+							status = "Đã hoàn tiền";
+							break;
+						case 7:
+							status = "Đã giao hàng";
+							break;
 						}
 						OrderModel orderModel = new OrderModel(categoryName,
 								weight, date, price, status);

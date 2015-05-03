@@ -31,10 +31,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,14 +48,19 @@ public class OrderDetailActivity extends Activity {
 	private TextView tvStartAdd, tvDestAdd, tvStartTime, tvFinishTime, tvCate,
 			tvPrice, tvNote, tvPhone, tvStatus, tvWeight, tvOrderid;
 	private String orderID;
-	private MenuItem lost;
+	private MenuItem lost, pay, cancel;
 	private int price;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_order_detail);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
+		actionBar.setTitle(this.getString(R.string.title_activity_order_detail) + " - "
+				+ preferences.getString("email", ""));
 
 		orderID = getIntent().getStringExtra("orderID");
 		tvStartAdd = (TextView) findViewById(R.id.textview_startAddr);
@@ -77,7 +84,7 @@ public class OrderDetailActivity extends Activity {
 				new String[] { url });
 
 	}
-	
+
 	public void makePayment() {
 		Intent intent = new Intent(this, PaypalActivity.class);
 		intent.putExtra("orderID", orderID);
@@ -119,17 +126,15 @@ public class OrderDetailActivity extends Activity {
 		if (id == R.id.action_pay) {
 			makePayment();
 		}
-		// if (id == R.id.confirm_order) {
-		// WebServiceTask2 wst2 = new WebServiceTask2(
-		// WebServiceTask2.POST_TASK, OrderDetailActivity.this,
-		// "Đang xử lý...");
-		// wst2.addNameValuePair("orderID", orderID);
-		// // wst2.addNameValuePair("ownerConfirmDelivery", "true");
-		// String url = Common.IP_URL + Common.Service_Order_ConfirmDelivery;
-		// // wst2.execute(new String[] { url });
-		// wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-		// new String[] { url });
-		// }
+		if (id == R.id.cancel_order) {
+			WebServiceTask2 wst2 = new WebServiceTask2(
+					WebServiceTask2.POST_TASK, OrderDetailActivity.this,
+					"Đang xử lý...");
+			wst2.addNameValuePair("orderID", orderID);
+			String url = Common.IP_URL + Common.Service_Order_ownerCancelOrder;
+			wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					new String[] { url });
+		}
 		if (id == R.id.lost_order) {
 			WebServiceTask3 wst3 = new WebServiceTask3(
 					WebServiceTask3.POST_TASK, OrderDetailActivity.this,
@@ -150,8 +155,21 @@ public class OrderDetailActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onPrepareOptionsMenu(menu);
 		lost = menu.findItem(R.id.lost_order);
+		pay = menu.findItem(R.id.action_pay);
+		cancel = menu.findItem(R.id.cancel_order);
 		return true;
 	};
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		super.onKeyDown(keyCode, event);
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+			startActivity(intent);
+		}
+		return true;
+	}
 
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
 
@@ -255,8 +273,8 @@ public class OrderDetailActivity extends Activity {
 				tvFinishTime.setText(Common.formatDateFromString(tmp1[0]));
 				String test = jsonObject4.getString("name");
 				tvCate.setText(jsonObject4.getString("name"));
-				price = (int) Double.parseDouble(jsonObject2
-						.getString("price"));
+				price = (int) Double
+						.parseDouble(jsonObject2.getString("price"));
 				tvPrice.setText(price + " nghìn đồng");
 				tvWeight.setText(jsonObject3.getString("weight") + " kg");
 				String sNote = "";
@@ -268,25 +286,36 @@ public class OrderDetailActivity extends Activity {
 				tvNote.setText(sNote);
 				tvPhone.setText(jsonObject6.getString("phone"));
 				tvOrderid.setText("#OD" + orderID);
-				String count = jsonObject.getString("orderStatusID");
-				if (count.equals("2")) {
-					tvStatus.setText("Đã nhận hàng");
-
+				int count = Integer.parseInt(jsonObject
+						.getString("orderStatusID"));
+				switch (count) {
+				case 1:
+					tvStatus.setText("Chưa trả tiền");
+					pay.setVisible(true);
+					break;
+				case 2:
+					tvStatus.setText("Đã trả tiền");
+					break;
+				case 3:
+					tvStatus.setText("Đang chở hàng");
+					break;
+				case 4:
+					tvStatus.setText("Đã giao hàng");
 					lost.setVisible(true);
-				} else if (count.equals("1")) {
-					tvStatus.setText("Hàng chưa giao");
-
-					lost.setVisible(false);
-				} else if (count.equals("3")) {
-					tvStatus.setText("Hàng bị mất");
-					lost.setVisible(false);
-
+					break;
+				case 5:
+					tvStatus.setText("Đã bị hủy");
+					break;
+				case 6:
+					tvStatus.setText("Đã hoàn tiền");
+					break;
+				case 7:
+					tvStatus.setText("Đã giao hàng");
+					break;
 				}
-				if (Common.equalDate(tmp1[0])
-						&& count.equals("2")) {
-					lost.setVisible(true);
-				} else {
-					lost.setVisible(false);
+
+				if (!Common.expireDate(tmp[0]) && (count == 1 || count == 2)) {
+					cancel.setVisible(true);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -448,12 +477,17 @@ public class OrderDetailActivity extends Activity {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			if (response.equals("1")) {
+				Toast.makeText(OrderDetailActivity.this,
+						"Hủy đơn hàng thành công", Toast.LENGTH_LONG).show();
+				Intent intent = new Intent(OrderDetailActivity.this,
+						MainActivity.class);
+				startActivity(intent);
 				finish();
 				startActivity(getIntent());
 			} else {
 				Toast.makeText(OrderDetailActivity.this,
-						"Không thể xác nhận giao hàng", Toast.LENGTH_LONG)
-						.show();
+						"Hủy đơn hàng xảy ra lỗi. Xin vui lòng thử lại",
+						Toast.LENGTH_LONG).show();
 			}
 			pDlg.dismiss();
 		}
@@ -611,12 +645,12 @@ public class OrderDetailActivity extends Activity {
 			// handleResponse(response);
 			if (response.equals("1")) {
 				Toast.makeText(OrderDetailActivity.this,
-						"Phản hồi đơn hàng thành công",
-						Toast.LENGTH_LONG).show();
-				finish();
-				startActivity(getIntent());
+						"Phản hồi đơn hàng thành công", Toast.LENGTH_LONG)
+						.show();
+				lost.setVisible(false);
 			} else {
-				Toast.makeText(OrderDetailActivity.this,
+				Toast.makeText(
+						OrderDetailActivity.this,
 						"Phản hồi đơn hàng không thành công. Xin vui lòng thử lại",
 						Toast.LENGTH_LONG).show();
 			}

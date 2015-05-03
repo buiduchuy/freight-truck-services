@@ -80,7 +80,7 @@ import android.widget.Toast;
 
 public class CreateGoodsActivity extends FragmentActivity {
 
-	private Spinner spinner;
+	private Spinner spinner, unitSpinner;
 	private ArrayAdapter<String> dataAdapter;
 	private Calendar calendar1, calendar2, currentTime;
 	private DatePickerDialog.OnDateSetListener date1, date2;
@@ -94,13 +94,18 @@ public class CreateGoodsActivity extends FragmentActivity {
 			deliverLng = 0.0;
 	private String ownerid, errorMsg = "", selected;
 	private GoodsCategory category = new GoodsCategory();
+	private String[] unit = { "kg", "tấn" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_goods);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
+		actionBar.setTitle(this.getString(R.string.title_activity_create_goods) + " - "
+				+ preferences.getString("email", ""));
 
 		etNotes = (EditText) findViewById(R.id.edittext_note);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
@@ -113,6 +118,13 @@ public class CreateGoodsActivity extends FragmentActivity {
 		// task2.execute(new String[] { url });
 		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
 				new String[] { url });
+
+		unitSpinner = (Spinner) findViewById(R.id.unit);
+		ArrayAdapter<String> unitAA = new ArrayAdapter<String>(
+				CreateGoodsActivity.this, android.R.layout.simple_spinner_item,
+				unit);
+		unitAA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		unitSpinner.setAdapter(unitAA);
 
 		spinner = (Spinner) findViewById(R.id.spinner_goods_type);
 		dataAdapter = new ArrayAdapter<String>(this,
@@ -294,7 +306,6 @@ public class CreateGoodsActivity extends FragmentActivity {
 
 			}
 		});
-		
 
 		ibPickupMap = (ImageButton) findViewById(R.id.imagebtn_pickup_address);
 		ibPickupMap.setOnClickListener(new View.OnClickListener() {
@@ -351,7 +362,6 @@ public class CreateGoodsActivity extends FragmentActivity {
 				}
 			}
 		});
-		
 
 		ibDeliverMap = (ImageButton) findViewById(R.id.imagebtn_deliver_address);
 		ibDeliverMap.setOnClickListener(new View.OnClickListener() {
@@ -390,8 +400,14 @@ public class CreateGoodsActivity extends FragmentActivity {
 					goods.setPickupAddress(actPickupAddr.getText().toString());
 					goods.setDeliveryAddress(actDeliverAddr.getText()
 							.toString());
-					goods.setWeight(Integer.parseInt(etWeight.getText()
-							.toString()));
+					if (unitSpinner.getSelectedItemPosition() == 0) {
+						goods.setWeight(Integer.parseInt(etWeight.getText()
+								.toString()));
+					} else {
+						goods.setWeight(Integer.parseInt(etWeight.getText()
+								.toString() + "000"));
+					}
+
 					goods.setPrice(Double.parseDouble(etPrice.getText()
 							.toString()));
 					goods.setNotes(etNotes.getText().toString());
@@ -421,11 +437,9 @@ public class CreateGoodsActivity extends FragmentActivity {
 		}
 
 		// set owner id
-		SharedPreferences preferences = getSharedPreferences("MyPrefs",
-				Context.MODE_PRIVATE);
+
 		ownerid = preferences.getString("ownerID", "");
 
-		
 	}
 
 	@Override
@@ -643,14 +657,12 @@ public class CreateGoodsActivity extends FragmentActivity {
 			errorMsg = "Ngày nhận hàng không được trễ hơn ngày giao hàng";
 		}
 
-		
-
 		return check;
 	}
 
 	// ------------------------------------------------------------------------------
 
-	public void postData() {		
+	public void postData() {
 
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
@@ -676,7 +688,12 @@ public class CreateGoodsActivity extends FragmentActivity {
 				Double.toString(pickupLng));
 		wst.addNameValuePair("pickupTime", Common.formatDate(calendar1));
 		wst.addNameValuePair("price", etPrice.getText().toString());
-		wst.addNameValuePair("weight", etWeight.getText().toString());
+		if (unitSpinner.getSelectedItemPosition() == 0) {
+			wst.addNameValuePair("weight", etWeight.getText().toString());
+		} else {
+			wst.addNameValuePair("weight", etWeight.getText().toString()
+					+ "000");
+		}
 
 		// the passed String is the URL we will POST to
 		String url = Common.IP_URL + Common.Service_Goods_Create;
@@ -833,8 +850,14 @@ public class CreateGoodsActivity extends FragmentActivity {
 				Bundle bundle = new Bundle();
 				bundle.putString("price", etPrice.getText().toString()
 						+ " nghìn đồng");
-				bundle.putString("weight", etWeight.getText().toString()
-						+ " kg");
+				if (unitSpinner.getSelectedItemPosition() == 0) {
+					bundle.putString("weight", etWeight.getText().toString()
+							+ " kg");
+				} else {
+					bundle.putString("weight", etWeight.getText().toString()
+							+ " tấn");
+				}
+
 				bundle.putString("pickup", Common.formatLocation(actPickupAddr
 						.getText().toString()));
 				bundle.putString("deliver", Common
@@ -1427,8 +1450,15 @@ public class CreateGoodsActivity extends FragmentActivity {
 							.getJSONObject("distance").getString("text")
 							.replace(",", "").split(" ");
 					double distance = Double.parseDouble(tmp[0]);
-					int weight = Integer
-							.parseInt(etWeight.getText().toString());
+					int weight = 0;
+					if (unitSpinner.getSelectedItemPosition() == 0) {
+						weight = Integer
+								.parseInt(etWeight.getText().toString());
+					} else {
+						weight = Integer.parseInt(etWeight.getText().toString()
+								+ "000");
+					}
+
 					int price = Common.calculateGoodsPrice(weight, distance);
 					etPrice.setText(price + "");
 				}

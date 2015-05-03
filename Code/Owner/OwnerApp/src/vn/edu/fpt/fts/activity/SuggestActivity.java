@@ -36,6 +36,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,8 +63,13 @@ public class SuggestActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_suggest);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
+		actionBar.setTitle(this.getString(R.string.title_activity_suggest)
+				+ " - " + preferences.getString("email", ""));
+
 		tvInfo = (TextView) findViewById(R.id.tvInfo);
 		tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
 		goodsID = getIntent().getStringExtra("goodsID");
@@ -202,7 +208,7 @@ public class SuggestActivity extends Activity {
 		private static final int CONN_TIMEOUT = 3000;
 
 		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 20000;
+		private static final int SOCKET_TIMEOUT = 50000;
 
 		private int taskType = GET_TASK;
 		private Context mContext = null;
@@ -293,6 +299,7 @@ public class SuggestActivity extends Activity {
 						for (int i = 0; i < array.length(); i++) {
 							Route route = new Route();
 							JSONObject jsonObject2 = array.getJSONObject(i);
+							JSONObject jsonObject3 = jsonObject2.getJSONObject("driver");							
 							route.setRouteID(Integer.parseInt(jsonObject2
 									.getString("routeID")));
 							route.setStartingAddress(jsonObject2
@@ -314,14 +321,15 @@ public class SuggestActivity extends Activity {
 									.getString("createTime"));
 							route.setActive(Integer.parseInt(jsonObject2
 									.getString("active")));
-							route.setDriverID(Integer.parseInt(jsonObject2
-									.getString("driverID")));
+							String driver = jsonObject3.getString("lastName") + " " + jsonObject3.getString("firstName");
+							route.setDriverID(driver);
 							list.add(route);
 						}
 					} else if (object instanceof JSONObject) {
 						Route route = new Route();
 						JSONObject jsonObject2 = jsonObject
 								.getJSONObject("route");
+						JSONObject jsonObject3 = jsonObject2.getJSONObject("driver");
 						route.setRouteID(Integer.parseInt(jsonObject2
 								.getString("routeID")));
 						route.setStartingAddress(jsonObject2
@@ -339,9 +347,9 @@ public class SuggestActivity extends Activity {
 								.getString("weight")));
 						route.setCreateTime(jsonObject2.getString("createTime"));
 						route.setActive(Integer.parseInt(jsonObject2
-								.getString("active")));
-						route.setDriverID(Integer.parseInt(jsonObject2
-								.getString("driverID")));
+								.getString("active")));		
+						String driver = jsonObject3.getString("lastName") + " " + jsonObject3.getString("firstName");
+						route.setDriverID(driver);
 						list.add(route);
 					}
 
@@ -363,7 +371,7 @@ public class SuggestActivity extends Activity {
 					String tmp1[] = route.getFinishTime().split(" ");
 					models.add(new SuggestModel("Lộ trình: "
 							+ strings[strings.length - 1] + " - "
-							+ strings2[strings2.length - 1], Common
+							+ strings2[strings2.length - 1], "Tài xế: " + route.getDriverID() ,Common
 							.formatDateFromString(tmp[0])
 							+ " - "
 							+ Common.formatDateFromString(tmp1[0])));

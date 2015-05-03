@@ -47,8 +47,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public final class Common {
-//	 public static final String IP_URL = "http://192.168.1.200:8080/FTS/api/";
-	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
+	 public static final String IP_URL = "http://192.168.1.200:8080/FTS/api/";
+//	public static final String IP_URL = "http://huybd-capstone.cloudapp.net/FTS/api/";
 	public static final String Service_Goods_Create = "Goods/Create";
 	public static final String Service_Login = "Account/OwnerLogin";
 	public static final String Service_GoodsCategory_Get = "GoodsCategory/get";
@@ -64,7 +64,7 @@ public final class Common {
 	public static final String Service_Suggest_Route = "Route/getSuggestionRoute";
 	public static final String Service_Order_get = "Order/getOrderByOwnerID";
 	public static final String Service_Order_getOrderByID = "Order/getOrderByID";
-	public static final String Service_Order_ConfirmDelivery = "Order/ownerConfirmDelivery";
+	public static final String Service_Order_ownerCancelOrder = "Order/ownerCancelOrder";
 	public static final String Service_Goods_getGoodsByID = "Goods/getGoodsByID";
 	public static final String Service_Goods_Update = "Goods/Update";
 	public static final String Service_Goods_Delete = "Goods/Delete";
@@ -72,9 +72,10 @@ public final class Common {
 	public static final String Service_Deal_getDealByID = "Deal/getDealByID";
 	public static final String Service_Deal_getDealByOwnerID = "Deal/getDealByOwnerID";
 	public static final String Service_Order_getOrderByOwnerID = "Order/getOrderByOwnerID";
-	public static final String Service_Order_ownerNoticeLostGoods = "Order/ownerNoticeLostGoods";
+	public static final String Service_Order_ownerNoticeLostGoods = "Order/ownerReportOrder";
 	public static final String Service_Account_CreateOwnerAccount = "Account/CreateOwnerAccount";
-
+	public static final String Service_Order_PayOrder = "Order/ownerPayOrder";
+	
 	public static boolean expireDate(String date) {
 		Date todayDate = null;
 		Date inputDate = null;

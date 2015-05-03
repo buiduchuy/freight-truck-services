@@ -17,6 +17,7 @@
     <string name="action_cancel_deal">Hủy đề nghị</string>
     <string name="action_confirm_order">Xác nhận giao hàng</string>
     <string name="action_lost_order">Phản hồi đơn hàng</string>
+    <string name="action_cancel_order">Hủy đơn hàng</string>
     <string name="title_activity_create_good_fragment">Tạo hàng</string>
     <string name="title_activity_create_goods">Tạo hàng</string>
     <string name="title_activity_information_fragment">InformationFragment</string>
