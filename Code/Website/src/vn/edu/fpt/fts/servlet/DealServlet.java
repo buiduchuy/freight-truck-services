@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -85,8 +86,9 @@ public class DealServlet extends HttpServlet {
 				int goodsID = Integer.valueOf(request.getParameter("goodsID"));
 				int routeID = Integer.valueOf(request.getParameter("routeID"));
 
-				List<Deal> listCurrentDeal = dealDao.getListDealByGoodsIDAndRouteIDAndDealStatusID(goodsID, routeID, Common.deal_pending);
-						
+				List<Deal> listCurrentDeal = dealDao
+						.getListDealByGoodsIDAndRouteIDAndDealStatusID(goodsID,
+								routeID, Common.deal_pending);
 
 				if (listCurrentDeal.size() >= Common.maxCounterTime) {
 					request.setAttribute(
@@ -142,7 +144,7 @@ public class DealServlet extends HttpServlet {
 				}
 			} else if (action.equalsIgnoreCase("sendDeal")) {
 				String dealIDStr = request.getParameter("dealID");
-				
+
 				int dealID = Integer.valueOf(dealIDStr);
 
 				Deal deal = dealDao.getDealByID(dealID);
@@ -293,12 +295,41 @@ public class DealServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("viewDetailDeal")) {
 				int dealID = Integer.parseInt(request.getParameter("dealID"));
 				Deal deal = dealDao.getDealByID(dealID);
-				List<Deal> listDealByGoodsID = dealDao.getListDealByGoodsIDAndRouteID(deal.getGoodsID(), deal.getRouteID());
-				
+				List<Deal> listDealByGoodsID = dealDao
+						.getListDealByGoodsIDAndRouteID(deal.getGoodsID(),
+								deal.getRouteID());
+
 				request.setAttribute("dealID", dealID);
 				request.setAttribute("listDealDetail", listDealByGoodsID);
 				request.setAttribute("sizeHistory", listDealByGoodsID.size());
 				request.getRequestDispatcher("chi-tiet-de-nghi.jsp").forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("employeeManageDeal")) {
+				List<Deal> listDeal = dealDao.getTop10Deal();
+				request.setAttribute("listDeal", listDeal);
+				request.getRequestDispatcher("admin/manage-deal.jsp").forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("searchDealByOwnerEmail")) {
+				String email = request.getParameter("txtSearch");
+				List<Deal> listDeal = new ArrayList<Deal>();
+				if (!email.trim().isEmpty()) {
+					listDeal = dealDao.searchDealByOwnerEmail(email);
+				} else {
+					listDeal = dealDao.getTop10Deal();
+				}
+				request.setAttribute("listDeal", listDeal);
+				request.getRequestDispatcher("admin/manage-deal.jsp").forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("searchDealByDriverEmail")) {
+				String email = request.getParameter("txtSearch");
+				List<Deal> listDeal = new ArrayList<Deal>();
+				if (!email.trim().isEmpty()) {
+					listDeal = dealDao.searchDealByDriverEmail(email);
+				} else {
+					listDeal = dealDao.getTop10Deal();
+				}
+				request.setAttribute("listDeal", listDeal);
+				request.getRequestDispatcher("admin/manage-deal.jsp").forward(
 						request, response);
 			}
 		}

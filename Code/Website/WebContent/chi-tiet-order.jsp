@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<fmt:setLocale value="vi_VN"/>
 <title>Chi tiết hoá đơn</title>
 <jsp:include page="header.jsp" />
 
@@ -43,9 +44,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 					<div class="row">
 						<div class="large-12 columns">
 							<h2 class="page-title">
-								<font color="orange">Chi tiết hoá đơn <font
-									style="font-weight: 800;">#OD<c:out
-											value="${order.orderID}" /></font></font>
+								<font color="orange">Chi tiết hoá đơn</font>
 							</h2>
 							<c:set var="messageSuccess"
 								value="${requestScope.messageSuccess }" />
@@ -74,12 +73,18 @@ var Msg ='<%=request.getAttribute("message")%>';
 							</div>
 							<div class="row">
 								<div class="large-12 columns">
-									<div class="row">
-										<div class="small-2 columns">
+										<div class="large-2 columns">
+											<label for="right-label" class="right inline">Mã hóa đơn: </label>
+										</div>
+										<div class="large-10 columns">
+											<label for="right-label" class="left inline"><b style="font-weight:700">OD${order.orderID}</b></label>
+										</div>
+										</div>
+										<div class="large-12 columns">
+										<div class="large-2 columns">
 											<label for="right-label" class="right inline">Loại hàng: </label>
 										</div>
-
-										<div class="small-4 columns">
+										<div class="large-10 columns">
 											<c:set var="typeGoods" value="${sessionScope.typeGoods }" />
 											<c:forEach var="row" items="${typeGoods }">
 												<c:if
@@ -88,13 +93,14 @@ var Msg ='<%=request.getAttribute("message")%>';
 												</c:if>
 											</c:forEach>
 										</div>
-										<div class="small-2 columns">
+										<div class="large-12 columns">
+										<div class="large-2 columns">
 											<label for="right-label" class="right inline">Khối lượng: </label>
 										</div>
-										<div class="small-4 columns">
-											<label for="left-label" class="left inline">${order.deal.goods.weight} kg</label>
+										<div class="large-10 columns">
+											<label for="right-label" class="left inline">${order.deal.goods.weight} kg</label>
 										</div>
-									</div>
+										</div>
 								</div>
 							</div>
 							<div class="row">
@@ -107,7 +113,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 									<div class="small-8 columns">
 										<div class="small-3 columns">
 											<label class="right inline">
-												Giao hàng: </label>
+												Địa chỉ giao: </label>
 										</div>
 										<div class="small-9 columns">
 											<label for="right-label" class="left inline">${order.deal.goods.pickupAddress}</label>
@@ -131,7 +137,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 								<div class="row">
 									<div class="small-8 columns">
 										<div class="small-3 columns">
-											<label for="right-label" class="right inline"> Nhận hàng: </label>
+											<label for="right-label" class="right inline"> Địa chỉ nhận: </label>
 										</div>
 										<div class="small-9 columns">
 											<label for="right-label" class="left inline">${order.deal.goods.deliveryAddress}</label>
@@ -165,12 +171,15 @@ var Msg ='<%=request.getAttribute("message")%>';
 										<label class="right inline">Chi phí: </label>
 									</div>
 									<div class="small-4 columns left">
-										<label for="right-label" class="left inline">${order.price} nghìn đồng</label>
+										<label for="right-label" class="left inline">
+										<fmt:formatNumber type="currency" pattern="###,###,###,###,###"
+															 value="${order.price}" />
+										 nghìn đồng</label>
 									</div>
 								</div>
 							</div>
 
-							<div class="row">
+							<!--  <div class="row">
 								<div class="extra-title">
 									<h3>
 										<font color="blue">Thông tin tuyến đường</font>
@@ -223,7 +232,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 									<div class="small-2 columns left">
 										<label for="right-label" class="left inline">${order.deal.route.weight } kg</label>
 									</div>
-								</div>
+								</div> -->
 								<!--  <div class="row">
 									<div class="small-3 columns ">
 										<label class="right inline">Ghi chú:</label>
@@ -247,17 +256,33 @@ var Msg ='<%=request.getAttribute("message")%>';
 									</div>
 									<div class="small-4 columns left">
 										<c:if test="${order.orderStatusID ==1}">
-											<label for="right-label" class="left inline">Đang vận chuyển</label>
+											<label for="right-label" class="left inline">Chưa thanh toán</label>
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==2}">
-										<label for="right-label" class="left inline">Đã giao hàng</label>
+										<label for="right-label" class="left inline">Đã thanh toán</label>
 											
 										</c:if>
 
 										<c:if test="${order.orderStatusID ==3}">
-											<label for="right-label" class="left inline">Đã báo mất hàng</label>
+											<label for="right-label" class="left inline">Đang vận chuyển</label>
 										
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==4}">
+											<label for="right-label" class="left inline">Đã giao hàng</label>
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==5}">
+											<label for="right-label" class="left inline">Đã hủy</label>
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==6}">
+											<label for="right-label" class="left inline">Hoàn tiền</label>
+										</c:if>
+										
+										<c:if test="${order.orderStatusID ==7}">
+											<label for="right-label" class="left inline">Kết thúc</label>
 										</c:if>
 										
 									</div>
@@ -267,20 +292,37 @@ var Msg ='<%=request.getAttribute("message")%>';
 
 								<div class="large-12 columns">
 									<div class="submit-area">
-										<c:if test="${order.orderStatusID==2}">
-											<a class="button alert"
-												href="OrderServlet?btnAction=lostGoods&orderID=${order.orderID}"
-												onclick="return confirm('Bạn có muốn báo mất hàng không?')">Báo
-												mất hàng </a>
-										</c:if>
-
+									<c:if test="${order.orderStatusID==1 or order.orderStatusID==2}">
+									<c:set var="messageCancel" value="" />
+									
+									<c:if test="${order.orderStatusID==1}">
+									<c:set var="messageCancel" value="Bạn đã chắc chắn việc hủy hóa đơn này không?" />
+									</c:if>
+									
+									<c:if test="${order.orderStatusID==2}">
+									<c:set var="messageCancel" value="Hệ thống đã đặt tài xế đến vận chuyển hàng của bạn, nếu bạn hủy sẽ bị trừ khoản tiền nhất định. Bạn đã chắc chắn việc hủy hóa đơn này không?" />
+									</c:if>
+										<a class="button alert"
+												href="OrderServlet?btnAction=cancelOrder&orderID=${order.orderID}"
+												onclick="return confirm(${messageCancel})">Hủy hóa đơn </a>
+									</c:if>
+										<c:if test="${order.orderStatusID==1}">
 										<a class="button success"
 											href="PaypalServlet?btnAction=pay&orderID=${order.orderID}&amount=${order.price}">
 											<i class="icon-ok"></i> Thanh toán
-										</a> <a class="button success"
+										</a> 
+										</c:if>
+										<a class="button success"
 											href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
 											<i class="icon-print"></i> In hóa đơn
 										</a>
+										
+										<c:if test="${order.orderStatusID==4}">
+										<a class="button alert"
+											href="OrderServlet?btnAction=reportOrder&orderID=${order.orderID}">
+											Báo mất/ hỏng hàng
+										</a>
+										</c:if>
 									</div>
 								</div>
 							</div>
@@ -291,7 +333,7 @@ var Msg ='<%=request.getAttribute("message")%>';
 		</div>
 	</div>
 </div>
-<jsp:include page="footer.jsp" />
+<!--<jsp:include page="footer.jsp" />-->
 <script type="text/javascript">
 	window.onload = message;
 </script>

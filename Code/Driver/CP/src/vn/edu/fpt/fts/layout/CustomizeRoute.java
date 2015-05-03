@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
+import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,9 +37,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.ac;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.internal.pd;
 import com.google.android.gms.maps.CameraUpdate;
@@ -63,6 +68,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	GeocoderHelper helper = new GeocoderHelper();
 	Button button;
 	ProgressDialog pDlg;
+	AutoCompleteTextView textView;
 	boolean change = false;
 
 	@Override
@@ -76,11 +82,107 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Tùy chỉnh lộ trình");
-		View v = inflater.inflate(R.layout.map, container,
-				false);
+		View v = inflater.inflate(R.layout.map, container, false);
+
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM
+				| ActionBar.DISPLAY_USE_LOGO | ActionBar.DISPLAY_SHOW_HOME
+				| ActionBar.DISPLAY_HOME_AS_UP); 
+		
+		
+		View z = inflater.inflate(R.layout.actionbar_search, null);
+		
+		textView = (AutoCompleteTextView) z
+				.findViewById(R.id.search_box);
+
+		PlacesAutoCompleteAdapter searchAdapter = new PlacesAutoCompleteAdapter(
+				getActivity(), R.layout.autocomplete_item);
+
+		textView.setAdapter(searchAdapter);
+
+		textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// do something when the user clicks
+			}
+		});
+		
+		textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				String pos = textView.getText().toString();
+				LatLng arg0 = new LatLng(0, 0);
+				try {
+					arg0 = new GetLatLng().execute(pos).get();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				if (locations.size() >= 4) {
+					Toast.makeText(getActivity(),
+							"Chỉ thêm được tối đa 2 địa điểm đi qua.",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					change = true;
+					for (int i = 0; i < locations.size() - 1; i++) {
+						LatLng s = locations.get(i);
+						LatLng e = locations.get(i + 1);
+						if ((s.latitude > arg0.latitude && arg0.latitude > e.latitude)
+								|| (s.latitude < arg0.latitude && arg0.latitude < e.latitude)) {
+							locations.add(i + 1, arg0);
+						}
+					}
+					map.clear();
+					for (int i = 0; i < locations.size() - 1; i++) {
+						map.addMarker(new MarkerOptions()
+								.position(locations.get(i))
+								.icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.driver_marker_icon_small))
+								.draggable(true).snippet(String.valueOf(i + 1)));
+						if (i == locations.size() - 2) {
+							map.addMarker(new MarkerOptions()
+									.position(locations.get(i + 1))
+									.draggable(true)
+									.icon(BitmapDescriptorFactory
+											.fromResource(R.drawable.driver_marker_icon_small))
+									.snippet(String.valueOf(i + 2)));
+						}
+					}
+					String url = "";
+					if (locations.size() == 2) {
+						url = helper.makeURL(locations.get(0), null, null,
+								locations.get(1));
+					} else if (locations.size() == 3) {
+						url = helper.makeURL(locations.get(0),
+								locations.get(1), null, locations.get(2));
+					} else if (locations.size() == 4) {
+						url = helper.makeURL(locations.get(0),
+								locations.get(1), locations.get(2),
+								locations.get(3));
+					}
+					try {
+						new connectAsyncTask().execute(url);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			}	
+		});
+		
+		actionBar.setCustomView(z);
+
 		InputMethodManager imm = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(getActivity().getCurrentFocus()
@@ -225,13 +327,16 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 					map.clear();
 					for (int i = 0; i < locations.size() - 1; i++) {
 						map.addMarker(new MarkerOptions()
-								.position(locations.get(i)).draggable(true).icon(BitmapDescriptorFactory
+								.position(locations.get(i))
+								.draggable(true)
+								.icon(BitmapDescriptorFactory
 										.fromResource(R.drawable.driver_marker_icon_small))
 								.snippet(String.valueOf(i + 1)));
 						if (i == locations.size() - 2) {
 							map.addMarker(new MarkerOptions()
 									.position(locations.get(i + 1))
-									.draggable(true).icon(BitmapDescriptorFactory
+									.draggable(true)
+									.icon(BitmapDescriptorFactory
 											.fromResource(R.drawable.driver_marker_icon_small))
 									.snippet(String.valueOf(i + 2)));
 						}
@@ -350,8 +455,10 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			LatLng p2 = null;
 
 			LatLng start = new GetLatLng().execute(startPoint).get();
-			MarkerOptions startMarker = new MarkerOptions().draggable(true)
-					.snippet("1").icon(BitmapDescriptorFactory
+			MarkerOptions startMarker = new MarkerOptions()
+					.draggable(true)
+					.snippet("1")
+					.icon(BitmapDescriptorFactory
 							.fromResource(R.drawable.driver_marker_icon_small));
 			startMarker.position(start);
 			locations.add(start);
@@ -359,8 +466,10 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 
 			if (!point1.equals("")) {
 				p1 = new GetLatLng().execute(point1).get();
-				MarkerOptions p1Marker = new MarkerOptions().draggable(true)
-						.snippet("2").icon(BitmapDescriptorFactory
+				MarkerOptions p1Marker = new MarkerOptions()
+						.draggable(true)
+						.snippet("2")
+						.icon(BitmapDescriptorFactory
 								.fromResource(R.drawable.driver_marker_icon_small));
 				p1Marker.position(p1);
 				locations.add(p1);
@@ -368,8 +477,10 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			}
 			if (!point2.equals("")) {
 				p2 = new GetLatLng().execute(point2).get();
-				MarkerOptions p2Marker = new MarkerOptions().draggable(true)
-						.snippet("3").icon(BitmapDescriptorFactory
+				MarkerOptions p2Marker = new MarkerOptions()
+						.draggable(true)
+						.snippet("3")
+						.icon(BitmapDescriptorFactory
 								.fromResource(R.drawable.driver_marker_icon_small));
 				p2Marker.position(p2);
 				locations.add(p2);
@@ -377,8 +488,10 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			}
 
 			LatLng end = new GetLatLng().execute(endPoint).get();
-			MarkerOptions endMarker = new MarkerOptions().draggable(true)
-					.snippet("4").icon(BitmapDescriptorFactory
+			MarkerOptions endMarker = new MarkerOptions()
+					.draggable(true)
+					.snippet("4")
+					.icon(BitmapDescriptorFactory
 							.fromResource(R.drawable.driver_marker_icon_small));
 			endMarker.position(end);
 			locations.add(end);

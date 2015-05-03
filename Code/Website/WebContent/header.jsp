@@ -49,7 +49,7 @@
 	$(document).ready(function() {
 		$('#example1').dataTable();
 	});
-	
+
 	$(document).ready(function() {
 		$('#example2').dataTable();
 	});
@@ -70,19 +70,18 @@
 							<c:when test="${not empty account}">
 								<input type="hidden" id="email" value="${owner.email}" />
 								<ul class="inline-list top-links right">
-									<li><a href="#"><i class="icon-user"></i> Xin chào,
+									<li><a href="#"><font color="red"
+											id="notificationSize"></font> <i class="icon-bell-alt"></i></a>
+										<ul id="notificationList" class="sub-topbar"
+											style="width: 400px;">
+										</ul></li>
+									<li style="width: auto;"><a href="#">Xin chào,
 											${account}!</a>
 										<ul class="sub-topbar">
-											<li><a href="ProcessServlet?btnAction=manageGoods"><i
-													class="icon-desktop"></i>Quản lý hàng</a></li>
-											<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Cấu
-													hình tài khoản</a></li>
-
+											<li><a href="tai-khoan.jsp"><i class="icon-cog"></i>Tài
+													khoản</a></li>
 											<li><a href="ProcessServlet?btnAction=logout"><i
 													class="icon-off"></i>Đăng xuất</a></li>
-										</ul></li>
-										<li><a href="#"><i class="icon-notification"></i>Thông báo</a>
-										<ul id="notificationList" class="sub-topbar" style="width:400px;">
 										</ul></li>
 								</ul>
 							</c:when>
@@ -97,12 +96,9 @@
 	</div>
 	<div class="main-nav">
 		<div class="row">
-			<div class="large-2 columns top-logo">
-				<h1>
-					<a href="ProcessServlet">FTS</a>
-				</h1>
-			</div>
-			<!-- <div class="large-7 columns top-bar-section">
+			<img src="css/img/logo.png" width="200px" style="padding-top: 10px;" />
+		</div>
+		<!-- <div class="large-7 columns top-bar-section">
 				<nav class="">
 					<ul class="inline-list">
 						<c:choose>
@@ -146,5 +142,5 @@
 					</ul>
 				</nav>
 			</div> -->
-		</div>
+	</div>
 	</div>

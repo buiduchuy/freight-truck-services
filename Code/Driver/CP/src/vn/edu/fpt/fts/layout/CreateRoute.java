@@ -40,6 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.MyDatePickerDialog;
+import vn.edu.fpt.fts.drawer.MyTimePickerDialog;
 import vn.edu.fpt.fts.helper.Common;
 import vn.edu.fpt.fts.helper.GeocoderHelper;
 import vn.edu.fpt.fts.helper.JSONParser;
@@ -76,11 +78,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -100,6 +104,7 @@ public class CreateRoute extends Fragment {
 	PlacesAutoCompleteAdapter p1Adapter;
 	PlacesAutoCompleteAdapter p2Adapter;
 	PlacesAutoCompleteAdapter endAdapter;
+	Spinner spinner;
 	TextView show;
 	CheckBox check1;
 	CheckBox check2;
@@ -129,8 +134,10 @@ public class CreateRoute extends Fragment {
 		this.create = create;
 	}
 
-	DatePickerDialog dialog1 = null, dialog2 = null;
-	TimePickerDialog dialog3 = null;
+	MyDatePickerDialog dialog1 = null, dialog2 = null;
+	MyTimePickerDialog dialog3 = null;
+
+	String sp1, sp2;
 
 	@Override
 	public void onPause() {
@@ -241,7 +248,11 @@ public class CreateRoute extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setDisplayOptions(
+				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
+						| ActionBar.DISPLAY_HOME_AS_UP);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
 		getActivity().getActionBar().setTitle("Lộ trình mới");
 
@@ -257,6 +268,14 @@ public class CreateRoute extends Fragment {
 		startDate.setText(date);
 		endDate = (EditText) v.findViewById(R.id.editText4);
 		link = (TextView) v.findViewById(R.id.textView7);
+		spinner = (Spinner) v.findViewById(R.id.spinner);
+
+		List<String> list = new ArrayList<String>();
+		list.add("kg");
+		list.add("tấn");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+				getActivity(), android.R.layout.simple_spinner_item, list);
+		spinner.setAdapter(dataAdapter);
 
 		frozen = (CheckBox) v.findViewById(R.id.checkBox1);
 		broken = (CheckBox) v.findViewById(R.id.checkBox2);
@@ -294,11 +313,10 @@ public class CreateRoute extends Fragment {
 			@Override
 			public void onClick(View v) {
 				if (dialog1 == null) {
-					dialog1 = new DatePickerDialog(getActivity(),
+					dialog1 = new MyDatePickerDialog(getActivity(),
 							startListener, cal.get(Calendar.YEAR), cal
 									.get(Calendar.MONTH), cal
-									.get(Calendar.DATE));
-					dialog1.setTitle("Ngày bắt đầu");
+									.get(Calendar.DATE), "Ngày bắt đầu");
 					DatePicker picker = dialog1.getDatePicker();
 					Calendar calendar = Calendar.getInstance();
 					picker.setMinDate(calendar.getTimeInMillis() - 1000);
@@ -315,9 +333,9 @@ public class CreateRoute extends Fragment {
 				Calendar cal = Calendar.getInstance();
 				cal.add(Calendar.HOUR_OF_DAY, 6);
 				if (dialog3 == null) {
-					dialog3 = new TimePickerDialog(getActivity(),
+					dialog3 = new MyTimePickerDialog(getActivity(),
 							startHourListener, cal.get(Calendar.HOUR_OF_DAY),
-							cal.get(Calendar.MINUTE), true);
+							cal.get(Calendar.MINUTE), true, "Giờ bắt đầu");
 					dialog3.setTitle("Giờ bắt đầu");
 				}
 				dialog3.show();
@@ -328,10 +346,10 @@ public class CreateRoute extends Fragment {
 			@Override
 			public void onClick(View v) {
 				if (dialog2 == null) {
-					dialog2 = new DatePickerDialog(getActivity(), endListener,
-							cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-							cal.get(Calendar.DATE));
-					dialog2.setTitle("Ngày kết thúc");
+					dialog2 = new MyDatePickerDialog(getActivity(),
+							endListener, cal.get(Calendar.YEAR), cal
+									.get(Calendar.MONTH), cal
+									.get(Calendar.DATE), "Ngày kết thúc");
 					DatePicker picker = dialog2.getDatePicker();
 					Calendar calendar = Calendar.getInstance();
 					picker.setMinDate(calendar.getTimeInMillis() - 1000);
@@ -757,8 +775,9 @@ public class CreateRoute extends Fragment {
 				trs.addToBackStack(null);
 				trs.commit();
 			} else {
-				Toast.makeText(getActivity(), "Có lỗi xảy ra. Vui lòng thử lại.",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(),
+						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
 			}
 		}
 
@@ -1136,162 +1155,63 @@ public class CreateRoute extends Fragment {
 									ArrayList<String> list = helper
 											.getMiddlePoints(startPoint,
 													endPoint);
-									String sp1 = list.get(0);
-									String sp2 = list.get(1);
-									if (sp1.equals(sp2)) {
-										if (!sp1.equals(startPoint)
-												&& !sp1.equals(endPoint)) {
-											p1.setText(sp1);
-										}
+									sp1 = list.get(0);
+									sp2 = list.get(1);
+									ConnectivityManager cm = (ConnectivityManager) getActivity()
+											.getSystemService(
+													Context.CONNECTIVITY_SERVICE);
+									NetworkInfo ni = cm.getActiveNetworkInfo();
+									if (ni == null) {
+										Toast.makeText(
+												getActivity().getBaseContext(),
+												"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
+												Toast.LENGTH_SHORT).show();
 									} else {
-										if (!sp1.equals(startPoint)
-												&& !sp1.equals(endPoint)) {
-											p1.setText(sp1);
-										}
-										if (!sp2.equals(startPoint)
-												&& !sp2.equals(endPoint)) {
-											if (p1.getText().equals("")) {
-												p1.setText(sp2);
-											} else {
-												p2.setText(sp2);
+										if (sp1.equals(sp2)) {
+											if (!sp1.equals(startPoint)
+													&& !sp1.equals(endPoint)) {
+												p1.setText(sp1);
+											}
+										} else {
+											if (!sp1.equals(startPoint)
+													&& !sp1.equals(endPoint)) {
+												p1.setText(sp1);
+											}
+											if (!sp2.equals(startPoint)
+													&& !sp2.equals(endPoint)) {
+												if (p1.getText().equals("")) {
+													p1.setText(sp2);
+												} else {
+													p2.setText(sp2);
+												}
 											}
 										}
+										show.setVisibility(View.GONE);
+										p1.setVisibility(View.VISIBLE);
+										p2.setVisibility(View.VISIBLE);
+										Intent intent = getActivity()
+												.getIntent();
+
+										intent.putExtra("start", start
+												.getText().toString());
+										intent.putExtra("p1", p1.getText()
+												.toString());
+										intent.putExtra("p2", p2.getText()
+												.toString());
+										intent.putExtra("end", end.getText()
+												.toString());
+
+										intent.putExtra("sender", "createRoute");
+										FragmentManager mng = getActivity()
+												.getSupportFragmentManager();
+										FragmentTransaction trs = mng
+												.beginTransaction();
+										CustomizeRoute frag1 = new CustomizeRoute();
+										trs.replace(R.id.content_frame, frag1,
+												"customizeRoute");
+										trs.addToBackStack("customizeRoute");
+										trs.commit();
 									}
-									show.setVisibility(View.GONE);
-									p1.setVisibility(View.VISIBLE);
-									p2.setVisibility(View.VISIBLE);
-									String message;
-									if (!sp1.equals(sp2)) {
-										message = "Đã tìm được 2 điểm đi qua: \n"
-												+ sp1
-												+ "\n"
-												+ sp2
-												+ "\n"
-												+ "Bạn có muốn thêm 2 điểm này vào lộ trình không?";
-									} else {
-										message = "Đã tìm được 1 điểm đi qua: \n"
-												+ sp1
-												+ "\n"
-												+ "Bạn có muốn thêm điểm này vào lộ trình không?";
-									}
-									AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-											getActivity());
-									alertDialogBuilder
-											.setMessage(message)
-											.setCancelable(false)
-											.setPositiveButton(
-													"Đồng ý",
-													new DialogInterface.OnClickListener() {
-														public void onClick(
-																DialogInterface dialog,
-																int id) {
-															ConnectivityManager cm = (ConnectivityManager) getActivity()
-																	.getSystemService(
-																			Context.CONNECTIVITY_SERVICE);
-															NetworkInfo ni = cm
-																	.getActiveNetworkInfo();
-															if (ni == null) {
-																Toast.makeText(
-																		getActivity()
-																				.getBaseContext(),
-																		"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
-																		Toast.LENGTH_SHORT)
-																		.show();
-															} else {
-																Intent intent = getActivity()
-																		.getIntent();
-
-																intent.putExtra(
-																		"start",
-																		start.getText()
-																				.toString());
-																intent.putExtra(
-																		"p1",
-																		p1.getText()
-																				.toString());
-																intent.putExtra(
-																		"p2",
-																		p2.getText()
-																				.toString());
-																intent.putExtra(
-																		"end",
-																		end.getText()
-																				.toString());
-
-																intent.putExtra(
-																		"sender",
-																		"createRoute");
-																FragmentManager mng = getActivity()
-																		.getSupportFragmentManager();
-																FragmentTransaction trs = mng
-																		.beginTransaction();
-																CustomizeRoute frag1 = new CustomizeRoute();
-																trs.replace(
-																		R.id.content_frame,
-																		frag1,
-																		"customizeRoute");
-																trs.addToBackStack("customizeRoute");
-																trs.commit();
-															}
-														}
-													})
-											.setNegativeButton(
-													"Không",
-													new DialogInterface.OnClickListener() {
-														public void onClick(
-																DialogInterface dialog,
-																int id) {
-
-															ConnectivityManager cm = (ConnectivityManager) getActivity()
-																	.getSystemService(
-																			Context.CONNECTIVITY_SERVICE);
-															NetworkInfo ni = cm
-																	.getActiveNetworkInfo();
-															if (ni == null) {
-																Toast.makeText(
-																		getActivity()
-																				.getBaseContext(),
-																		"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
-																		Toast.LENGTH_SHORT)
-																		.show();
-															} else {
-																Intent intent = getActivity()
-																		.getIntent();
-
-																intent.putExtra(
-																		"start",
-																		start.getText()
-																				.toString());
-																intent.putExtra(
-																		"p1",
-																		"");
-																intent.putExtra(
-																		"p2",
-																		"");
-																intent.putExtra(
-																		"end",
-																		end.getText()
-																				.toString());
-																intent.putExtra(
-																		"sender",
-																		"createRoute");
-																FragmentManager mng = getActivity()
-																		.getSupportFragmentManager();
-																FragmentTransaction trs = mng
-																		.beginTransaction();
-																CustomizeRoute frag1 = new CustomizeRoute();
-																trs.replace(
-																		R.id.content_frame,
-																		frag1,
-																		"customizeRoute");
-																trs.addToBackStack("customizeRoute");
-																trs.commit();
-															}
-														}
-													});
-									AlertDialog alertDialog = alertDialogBuilder
-											.create();
-									alertDialog.show();
 								} else {
 									WebService ws = new WebService(
 											WebService.POST_TASK,
@@ -1307,7 +1227,14 @@ public class CreateRoute extends Fragment {
 									ws.addNameValuePair("startTime", startD);
 									ws.addNameValuePair("finishTime", endD);
 									ws.addNameValuePair("notes", null);
-									ws.addNameValuePair("weight", load);
+									if (spinner.getSelectedItem().toString()
+											.equals("kg")) {
+										ws.addNameValuePair("weight", load);
+									} else {
+										load = String.valueOf((Integer
+												.parseInt(load) * 1000));
+										ws.addNameValuePair("weight", load);
+									}
 									ws.addNameValuePair("createTime", current);
 									ws.addNameValuePair("active", "1");
 									ws.addNameValuePair("driverID",
@@ -1321,31 +1248,51 @@ public class CreateRoute extends Fragment {
 									create = "";
 								}
 							} else {
-								WebService ws = new WebService(
-										WebService.POST_TASK, getActivity(),
-										"Đang xử lý ...");
-								ws.addNameValuePair("startingAddress",
-										startPoint);
-								ws.addNameValuePair("destinationAddress",
-										endPoint);
-								ws.addNameValuePair("routeMarkerLocation1",
-										Point1);
-								ws.addNameValuePair("routeMarkerLocation2",
-										Point2);
-								ws.addNameValuePair("startTime", startD);
-								ws.addNameValuePair("finishTime", endD);
-								ws.addNameValuePair("notes", null);
-								ws.addNameValuePair("weight", load);
-								ws.addNameValuePair("createTime", current);
-								ws.addNameValuePair("active", "1");
-								ws.addNameValuePair("driverID", getActivity()
-										.getIntent().getStringExtra("driverID"));
-								ws.addNameValuePair("Food", fd);
-								ws.addNameValuePair("Freeze", frz);
-								ws.addNameValuePair("Broken", brk);
-								ws.addNameValuePair("Flame", flm);
-								ws.execute(new String[] { SERVICE_URL });
-								create = "";
+								if (Point1.equals("")) {
+									Toast.makeText(
+											getActivity(),
+											"Điểm đi qua 1 không được để trống.",
+											Toast.LENGTH_SHORT).show();
+								} else if (Point2.equals("")) {
+									Toast.makeText(
+											getActivity(),
+											"Điểm đi qua 2 không được để trống.",
+											Toast.LENGTH_SHORT).show();
+								}
+								else {
+									WebService ws = new WebService(
+											WebService.POST_TASK, getActivity(),
+											"Đang xử lý ...");
+									ws.addNameValuePair("startingAddress",
+											startPoint);
+									ws.addNameValuePair("destinationAddress",
+											endPoint);
+									ws.addNameValuePair("routeMarkerLocation1",
+											Point1);
+									ws.addNameValuePair("routeMarkerLocation2",
+											Point2);
+									ws.addNameValuePair("startTime", startD);
+									ws.addNameValuePair("finishTime", endD);
+									ws.addNameValuePair("notes", null);
+									if (spinner.getSelectedItem().toString()
+											.equals("kg")) {
+										ws.addNameValuePair("weight", load);
+									} else {
+										load = String.valueOf((Integer
+												.parseInt(load) * 1000));
+										ws.addNameValuePair("weight", load);
+									}
+									ws.addNameValuePair("createTime", current);
+									ws.addNameValuePair("active", "1");
+									ws.addNameValuePair("driverID", getActivity()
+											.getIntent().getStringExtra("driverID"));
+									ws.addNameValuePair("Food", fd);
+									ws.addNameValuePair("Freeze", frz);
+									ws.addNameValuePair("Broken", brk);
+									ws.addNameValuePair("Flame", flm);
+									ws.execute(new String[] { SERVICE_URL });
+									create = "";
+								}
 							}
 						}
 					} catch (NumberFormatException e) {

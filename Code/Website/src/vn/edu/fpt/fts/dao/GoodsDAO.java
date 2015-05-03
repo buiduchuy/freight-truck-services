@@ -22,6 +22,8 @@ import vn.edu.fpt.fts.process.LatLng;
 public class GoodsDAO {
 	private final static String TAG = "GoodsDAO";
 
+	OwnerDAO ownerDao = new OwnerDAO();
+
 	public int insertGoods(Goods bean) {
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -555,6 +557,7 @@ public class GoodsDAO {
 				goods.setCreateTime(rs.getTimestamp("CreateTime").toString());
 				goods.setActive(rs.getInt("Active"));
 				goods.setOwnerID(rs.getInt("OwnerID"));
+				goods.setOwner(ownerDao.getOwnerById(rs.getInt("OwnerID")));
 				goods.setGoodsCategoryID(rs.getInt("GoodsCategoryID"));
 
 				list.add(goods);

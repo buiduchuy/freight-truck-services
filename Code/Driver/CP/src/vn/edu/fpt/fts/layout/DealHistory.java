@@ -66,6 +66,8 @@ public class DealHistory extends android.support.v4.app.Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+				| ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
 		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
 		getActivity().getActionBar().setTitle("Lịch sử");
 		list = new ArrayList<ListItem>();

@@ -61,7 +61,6 @@ public class OrderProcess {
 						}
 					}
 				}
-
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -77,12 +76,12 @@ public class OrderProcess {
 		if (orderStatusID == Common.order_unpaid) {
 			// Update to cancelled and create notification
 			ret = orderDao.updateOrderStatusID(orderID, Common.order_cancelled);
-			notificationProcess.insertOwnerCancelOrderWhenUnpaid(order);
+			// notificationProcess.insertOwnerCancelOrderWhenUnpaid(order);
 			
 		} else if (orderStatusID == Common.order_paid) {
 			// Update to cancelled and create notification penalty
 			ret = orderDao.updateOrderStatusID(orderID, Common.order_cancelled);
-			notificationProcess.insertOwnerCancelOrderWhenPaid(order);
+			// notificationProcess.insertOwnerCancelOrderWhenPaid(order);
 		}
 		return ret;
 	}

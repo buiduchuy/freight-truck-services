@@ -23,7 +23,7 @@ public class Employee implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String phone;
-	private int sex;
+	private int gender;
 	private String image;
 	private int active;
 
@@ -32,14 +32,14 @@ public class Employee implements Serializable {
 	}
 
 	public Employee(int employeeID, String email, String firstName,
-			String lastName, String phone, int sex, String image, int active) {
+			String lastName, String phone, int gender, String image, int active) {
 		super();
 		this.employeeID = employeeID;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
-		this.sex = sex;
+		this.gender = gender;
 		this.image = image;
 		this.active = active;
 	}
@@ -84,12 +84,12 @@ public class Employee implements Serializable {
 		this.phone = phone;
 	}
 
-	public int getSex() {
-		return sex;
+	public int getGender() {
+		return gender;
 	}
 
-	public void setSex(int sex) {
-		this.sex = sex;
+	public void setGender(int gender) {
+		this.gender = gender;
 	}
 
 	public String getImage() {

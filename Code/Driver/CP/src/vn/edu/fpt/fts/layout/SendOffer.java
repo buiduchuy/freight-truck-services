@@ -318,7 +318,12 @@ public class SendOffer extends Fragment {
 		}
 
 		private void showProgressDialog() {
-
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 		}
 
 		@Override
@@ -354,6 +359,7 @@ public class SendOffer extends Fragment {
 
 		@Override
 		protected void onPostExecute(String response) {
+			pDlg.dismiss();
 			try {
 				JSONObject good = new JSONObject(response);
 				DecimalFormat formatter = new DecimalFormat();
@@ -502,7 +508,12 @@ public class SendOffer extends Fragment {
 		}
 
 		private void showProgressDialog() {
-
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 		}
 
 		@Override
@@ -538,6 +549,7 @@ public class SendOffer extends Fragment {
 
 		@Override
 		protected void onPostExecute(String response) {
+			pDlg.dismiss();
 			try {
 				DecimalFormat formatter = new DecimalFormat();
 				DecimalFormatSymbols symbol = new DecimalFormatSymbols();
@@ -555,9 +567,7 @@ public class SendOffer extends Fragment {
 				startTime.setText(format.format(start));
 				endTime.setText(format.format(end));
 				pr.setText(formatter.format(Double.parseDouble(obj.getString(
-						"price").replace(".0", "")
-						+ "000"))
-						+ " đồng");
+						"price"))) + " nghìn đồng");
 				weight.setText(good.getString("weight") + " kg");
 				if (obj.has("notes")) {
 					if (obj.getString("notes").equals("")
@@ -733,13 +743,12 @@ public class SendOffer extends Fragment {
 			// Xu li du lieu tra ve sau khi insert thanh cong
 			// handleResponse(response);
 			pDlg.dismiss();
-			if (Integer.parseInt(response) == 2) {
+			if (Integer.parseInt(response) == -1) {
 				Toast.makeText(
 						getActivity(),
 						"Hàng đã có hóa đơn liên quan. Bạn không thể chấp nhận hàng này.",
 						Toast.LENGTH_SHORT).show();
-			}
-			else if (Integer.parseInt(response) > 0) {
+			} else if (Integer.parseInt(response) > 0) {
 				Toast.makeText(getActivity(), "Hàng hóa đã được chấp nhận.",
 						Toast.LENGTH_SHORT).show();
 				FragmentManager mng = getActivity().getSupportFragmentManager();

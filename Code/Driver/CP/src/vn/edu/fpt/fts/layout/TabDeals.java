@@ -16,6 +16,8 @@ public class TabDeals extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
     	getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+    	getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+				| ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
     	getActivity().getActionBar().setTitle("Đề nghị");
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.layout.activity_main);

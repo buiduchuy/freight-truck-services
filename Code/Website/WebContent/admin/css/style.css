@@ -1,0 +1,32 @@
+.notify {
+	position: absolute;
+	top: 30px;
+	right: 15px;
+}
+
+.notify-item {
+	padding: 10px;
+	background-color: #efefef;
+	border: 2px solid #dfdfdf;
+	margin-top: 2px;
+}
+
+.notify-item-deal {
+	padding: 10px;
+	border: 1px solid #dfdfdf;
+	margin-top: 2px;
+	background-color: #BCE8F1;
+	color: #31708F;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.notify-item-order {
+	padding: 10px;
+	border: 1px solid #dfdfdf;
+	margin-top: 2px;
+	color: #3C763D;
+	background-color: #D6E9C6;
+	font-size: 14px;
+	font-weight: 500;
+}

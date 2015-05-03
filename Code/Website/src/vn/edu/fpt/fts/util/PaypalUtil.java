@@ -8,7 +8,7 @@ package vn.edu.fpt.fts.util;
  *
  */
 public class PaypalUtil {
-	private final static String TAG = "PaypalUtil";
+//	private final static String TAG = "PaypalUtil";
 	
 	
 

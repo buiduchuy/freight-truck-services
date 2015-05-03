@@ -11,6 +11,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -22,6 +23,10 @@ public final class Common {
 	public static final String CLASSSQLSERVERDRIVER = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 
 	public static final String CONNECTION = "jdbc:sqlserver://localhost:1433;databaseName=FTS";
+	
+//	 public static final String usernamedb = "duchuy";
+//	 public static final String passworddb = "huy2108.";
+	 
 	public static final String usernamedb = "sa";
 	public static final String passworddb = "123456";
 
@@ -52,13 +57,13 @@ public final class Common {
 	public static final int deal_cancel = 4;
 
 	// Status of Order
-	public static final int order_paid = 1;
-	public static final int order_unpaid = 2;
+	public static final int order_unpaid = 1;
+	public static final int order_paid = 2;
 	public static final int order_delivering = 3;
 	public static final int order_delivered = 4;
 	public static final int order_cancelled = 5;
 	public static final int order_refund = 6;
-	public static final int order_finish = 7;	
+	public static final int order_finish = 7;
 
 	// Max allow distance for matching goods and routes (km)
 	public static final int maxAllowDistance = 50;
@@ -152,6 +157,32 @@ public final class Common {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
 		return dateFormat.format(date);
+	}
+
+	public static final Date convertStringToDate(String dateInput,
+			String formatter) {
+		Date date = new Date();
+		try {
+			DateFormat format = new SimpleDateFormat(formatter, Locale.ENGLISH);
+			date = format.parse(dateInput);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
+	}
+
+	public static long getTimeDifference(Date d2, Date d1, String unit) {
+		long diff = d2.getTime() - d1.getTime();
+		if (unit.equalsIgnoreCase("second"))
+			return diff / 1000 % 60;
+		if (unit.equalsIgnoreCase("minute"))
+			return diff / (60 * 1000) % 60;
+		if (unit.equalsIgnoreCase("hour"))
+			return diff / (60 * 60 * 1000) % 24;
+		if (unit.equalsIgnoreCase("day"))
+			return diff / (24 * 60 * 60 * 1000);
+		return diff;
 	}
 
 }

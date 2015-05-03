@@ -93,12 +93,61 @@ public class PaymentDAO {
 				payment.setDescription(rs.getString("Description"));
 				payment.setCreateTime(rs.getString("CreateTime"));
 				payment.setOrderID(rs.getInt("OrderID"));
-				
+
 				return payment;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Can't load data from Owner table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return null;
+	}
+
+	public List<Payment> getListPaymentByOrderID(int orderID) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			con = DBAccess.makeConnection();
+
+			String sql = "SELECT * FROM [Payment] WHERE OrderID=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setInt(1, orderID);
+			rs = stmt.executeQuery();
+			Payment payment;
+			List<Payment> list = new ArrayList<Payment>();
+			while (rs.next()) {
+				payment = new Payment();
+
+				payment.setPaymentID(rs.getInt("PaymentID"));
+				payment.setPaypalID(rs.getString("PaypalID"));
+				payment.setPaypalAccount(rs.getString("PaypalAccount"));
+				payment.setDescription(rs.getString("Description"));
+				payment.setCreateTime(rs.getString("CreateTime"));
+				payment.setOrderID(rs.getInt("OrderID"));
+
+				list.add(payment);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Can't load data from Payment table");
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		} finally {
 			try {

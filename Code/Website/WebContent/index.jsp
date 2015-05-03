@@ -15,7 +15,7 @@
         <nav class="navbar navbar-default navbar-static-top" role="navigation">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="ProcessServlet"><img src="css/img/logo.png"></a>
+                    <a class="navbar-brand" href="ProcessServlet"><img width="250px" src="css/img/logo.png"></a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <c:set var="account" value="${sessionScope.account}"/>

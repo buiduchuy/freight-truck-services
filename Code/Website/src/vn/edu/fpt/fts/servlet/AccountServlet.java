@@ -77,6 +77,14 @@ public class AccountServlet extends HttpServlet {
 				String password = request.getParameter("txtPassword");
 
 				Account account = accountDao.checkLoginAccount(email, password);
+				
+				
+				String uri = request.getScheme() + "://" +
+			             request.getServerName() + 
+			             ("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443 ? "" : ":" + request.getServerPort() ) +
+			             request.getRequestURI();
+				
+				System.out.println(uri);
 
 				if (account != null) {
 					if (account.getRoleID() == Common.role_owner) {
@@ -88,7 +96,7 @@ public class AccountServlet extends HttpServlet {
 
 						session.setAttribute("typeGoods", l_goodsCategory);
 						session.setAttribute("owner", owner);
-						session.setAttribute("account", owner.getLastName());
+						session.setAttribute("account", owner.getLastName() + " " + owner.getFirstName());
 
 						List<Goods> listGoodsByOwner = goodsDao
 								.getListGoodsByOwnerID(owner.getOwnerID());
@@ -115,7 +123,7 @@ public class AccountServlet extends HttpServlet {
 						String returnUrl = request.getParameter("ReturnUrl");
 
 						if (!returnUrl.isEmpty()) {
-							if (returnUrl.contains("loginPage")) {
+							if (returnUrl.contains("loginPage") || returnUrl.contains("AccountServlet")) {
 								response.sendRedirect("ProcessServlet");
 							} else {
 								response.sendRedirect(returnUrl);

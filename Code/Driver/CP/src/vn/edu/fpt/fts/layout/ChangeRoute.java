@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -64,13 +65,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.TimePicker.OnTimeChangedListener;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -88,6 +92,7 @@ public class ChangeRoute extends Fragment {
 	PlacesAutoCompleteAdapter p1Adapter;
 	PlacesAutoCompleteAdapter p2Adapter;
 	PlacesAutoCompleteAdapter endAdapter;
+	Spinner spinner;
 	TextView show;
 	CheckBox check1;
 	CheckBox check2;
@@ -260,6 +265,15 @@ public class ChangeRoute extends Fragment {
 		p1.setAdapter(p1Adapter);
 		p2.setAdapter(p2Adapter);
 		end.setAdapter(endAdapter);
+		
+		spinner = (Spinner) v.findViewById(R.id.spinner);
+
+		List<String> list = new ArrayList<String>();
+		list.add("kg");
+		list.add("tấn");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+				getActivity(), android.R.layout.simple_spinner_item, list);
+		spinner.setAdapter(dataAdapter);
 
 		show.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -1137,7 +1151,13 @@ public class ChangeRoute extends Fragment {
 							ws.addNameValuePair("startTime", startD);
 							ws.addNameValuePair("finishTime", endD);
 							ws.addNameValuePair("notes", null);
-							ws.addNameValuePair("weight", load);
+							if(spinner.getSelectedItem().toString().equals("kg")) {
+								ws.addNameValuePair("weight", load);
+							}
+							else {
+								load = String.valueOf((Integer.parseInt(load)*1000));
+								ws.addNameValuePair("weight", load);
+							}
 							ws.addNameValuePair("createTime", current);
 							ws.addNameValuePair("active", "1");
 							ws.addNameValuePair("driverID", getActivity()

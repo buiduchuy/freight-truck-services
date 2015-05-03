@@ -333,6 +333,7 @@ public class RouteDAO {
 				route.setCreateTime(rs.getString("CreateTime"));
 				route.setActive(rs.getInt("Active"));
 				route.setDriverID(rs.getInt("DriverID"));
+				route.setDriver(driverDao.getDriverById(rs.getInt("DriverID")));
 
 				route.setRouteMarkers(routeMarkerDao
 						.getAllRouteMarkerByRouteID(route.getRouteID()));
