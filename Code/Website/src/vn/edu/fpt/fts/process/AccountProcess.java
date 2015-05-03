@@ -5,6 +5,8 @@ package vn.edu.fpt.fts.process;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +16,7 @@ import vn.edu.fpt.fts.dao.AccountDAO;
 import vn.edu.fpt.fts.dao.DriverDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.AccountTemp;
 import vn.edu.fpt.fts.pojo.Driver;
 import vn.edu.fpt.fts.pojo.Owner;
 
@@ -113,7 +116,7 @@ public class AccountProcess {
 			owner.setUpdateBy(createBy);
 			owner.setUpdateTime(createTime);
 			ret = ownerDao.insertOwner(owner, con);
-			
+
 			con.commit();
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -136,6 +139,53 @@ public class AccountProcess {
 			}
 		}
 
+		return ret;
+	}
+
+	public List<AccountTemp> getListAccount() {
+		List<AccountTemp> list = new ArrayList<AccountTemp>();
+		List<Account> listAccount = accountDao.getAll();
+		for (Account account : listAccount) {
+			
+			if (account.getRoleID() == Common.role_driver) {
+				Driver driver = driverDao.getDriverByEmail(account.getEmail());
+				if (driver.getActive() == Common.deactivate) {
+					AccountTemp accountTemp = new AccountTemp();
+					accountTemp.setEmail(driver.getEmail());
+					accountTemp.setAddress("");
+					accountTemp.setContact(driver.getPhone());
+					accountTemp.setCreateTime(driver.getCreateTime());
+					accountTemp.setType("driver");
+					list.add(accountTemp);
+				}
+			} else if (account.getRoleID() == Common.role_owner) {
+				Owner owner = ownerDao.getOwnerByEmail(account.getEmail());
+				if (owner.getActive() == Common.deactivate) {
+					AccountTemp accountTemp = new AccountTemp();
+					accountTemp.setEmail(owner.getEmail());
+					accountTemp.setAddress(owner.getAddress());
+					accountTemp.setContact(owner.getPhone());
+					accountTemp.setCreateTime(owner.getCreateTime());
+					accountTemp.setType("owner");
+					list.add(accountTemp);
+				}
+			}
+		}
+		return list;
+	}
+
+	public int activateAccount(String email) {
+		int ret = 0;
+		Account account = accountDao.getAccountByEmail(email);
+		if (account != null) {
+			if (account.getRoleID() == Common.role_driver) {
+				ret = driverDao.updateDriverStatus(email, Common.activate);
+			} else if (account.getRoleID() == Common.role_owner) {
+				ret = ownerDao.updateOwnerStatus(email, Common.activate);
+			}
+		} else {
+			ret = -1;
+		}
 		return ret;
 	}
 }

@@ -23,6 +23,7 @@ import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.Payment;
 import vn.edu.fpt.fts.process.NotificationProcess;
 import vn.edu.fpt.fts.process.OrderProcess;
+import vn.edu.fpt.fts.util.PaypalUtil;
 
 /**
  * @author Huy
@@ -176,7 +177,12 @@ public class OrderAPI {
 
 			Payment payment = new Payment();
 
-			payment.setPaypalID(paypalID);
+			String transactionID = "";
+
+			PaypalUtil paypalUtil = new PaypalUtil();
+			transactionID = paypalUtil.returnTransactionID(paypalID);
+			
+			payment.setPaypalID(transactionID);
 			payment.setPaypalAccount(paypalAccount);
 			payment.setDescription(description);
 			payment.setCreateTime(Common.getCreateTime());

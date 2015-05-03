@@ -101,7 +101,7 @@
 				<li><a href="#">Alert Name <span class="label label-danger">Alert
 							Badge</span></a></li>
 				<li class="divider"></li> -->
-				<li><a href="#">View All</a></li>
+				<li><a href="ProcessServlet?btnAction=employeeViewNotification">View All</a></li>
 			</ul></li>
 
 		<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -122,8 +122,8 @@
 		<ul class="nav navbar-nav side-nav">
 			<li class="active"><a href="ProcessServlet?btnAction=aIndex"><i
 					class="fa fa-fw fa-dashboard"></i> Tổng quan</a></li>
-			<li><a href="ProcessServlet?btnAction=employeManageAccount"><i
-					class="fa fa-fw fa-users"></i> Quản lý tài khoản</a></li>
+			<li><a href="ProcessServlet?btnAction=employeeManageAccount"><i
+					class="fa fa-fw fa-users"></i> Kích hoạt tài khoản</a></li>
 			<li><a href="ProcessServlet?btnAction=employeeManageDeal"><i
 					class="fa fa-fw fa-exchange"></i> Quản lý thương lượng</a></li>
 			<li><a href="ProcessServlet?btnAction=employeeManageOrder"><i

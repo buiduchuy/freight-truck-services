@@ -35,134 +35,6 @@ public class DealProcess {
 		// TODO Auto-generated constructor stub
 	}
 
-	// public String acceptDeal(int dealID) {
-	//
-	// Deal deal = dealDao.getDealByID(dealID);
-	// if (deal != null) {
-	// List<Deal> l_deal = new ArrayList<Deal>();
-	// List<Deal> l_declineDeal = new ArrayList<Deal>();
-	//
-	// // Update deal with accept status 3
-	// deal.setDealStatusID(Common.deal_accept);
-	// int s_update = dealDao.updateDeal(deal);
-	//
-	// if (s_update != 0) {
-	//
-	// // Get list parent deals with condition:
-	// // Get list deal with same GoodsID
-	// l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
-	// for (int i = 0; i < l_deal.size(); i++) {
-	// System.out.println(l_deal.get(i).getRefDealID() + " "
-	// + l_deal.get(i).getRouteID());
-	// // RefDealID is NULL AND RouteID not match with others
-	// if (l_deal.get(i).getRefDealID() == 0
-	// && l_deal.get(i).getRouteID() != deal.getRouteID()) {
-	// l_declineDeal.add(l_deal.get(i));
-	// }
-	// }
-	//
-	// // Change list parent deal to decline 4
-	// if (l_declineDeal.size() > 0) {
-	// for (int j = 0; j < l_declineDeal.size(); j++) {
-	// l_declineDeal.get(j).setDealStatusID(
-	// Common.deal_decline);
-	// dealDao.updateDeal(l_declineDeal.get(j));
-	// }
-	// }
-	//
-	// // Insert order when accept finish
-	// Order order = new Order();
-	// order.setPrice(deal.getPrice());
-	// order.setCreateTime(deal.getCreateTime());
-	// order.setOrderStatusID(1);
-	// int newOrderID = orderDao.insertOrder(order);
-	//
-	// // Insert into DealOrder Table
-	// DealOrder dealOrder = new DealOrder();
-	// dealOrder.setOrderID(newOrderID);
-	// dealOrder.setDealID(dealID);
-	//
-	// int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
-	//
-	// if (newDealOrderID == 0) {
-	// System.out.println("Deal nay da xuat ra Order roi!!");
-	// }
-	//
-	// // Change goods of this order to deactivate
-	// goodsDao.updateGoodsStatus(deal.getGoodsID(), Common.deactivate);
-	//
-	// System.out
-	// .println("Accept - Number of deals will be change to decline: "
-	// + l_declineDeal.size());
-	// return "Accept deal SUCCESS";
-	// }
-	// return "Accept deal FAIL";
-	// }
-	// return "Wrong dealID";
-	// }
-
-	// public String declineDeal(int dealID) {
-	//
-	// Deal deal = dealDao.getDealByID(dealID);
-	// if (deal != null) {
-	// List<Deal> l_deal = new ArrayList<Deal>();
-	//
-	// // Update deal with decline status 4
-	// deal.setDealStatusID(Common.deal_decline);
-	// int s_update = dealDao.updateDeal(deal);
-	//
-	// if (s_update != 0) {
-	// // Get list parent deals with condition:
-	// // Get list deal with same GoodsID
-	// l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
-	//
-	// for (int i = 0; i < l_deal.size(); i++) {
-	//
-	// if (l_deal.get(i).getDealID() == 9) {
-	// l_deal.get(i).setDealStatusID(Common.deal_decline);
-	// dealDao.updateDeal(l_deal.get(i));
-	// }
-	// }
-	// System.out
-	// .println("Decline - Number of deals will be change to decline: "
-	// + l_deal.size());
-	// return "Decline deal SUCCESS";
-	// }
-	// return "Decline deal FAIL";
-	// }
-	// return "Wrong dealID";
-	//
-	// }
-
-	// public String cancelDeal(int dealID) {
-	//
-	// Deal deal = dealDao.getDealByID(dealID);
-	// if (deal != null) {
-	// List<Deal> l_deal = new ArrayList<Deal>();
-	//
-	// // Update deal with decline status 4
-	// deal.setDealStatusID(Common.deal_cancel);
-	// int s_update = dealDao.updateDeal(deal);
-	//
-	// if (s_update != 0) {
-	// // Get list parent deals with condition:
-	// // First get list deal with same GoodsID
-	// l_deal = dealDao.getDealByGoodsID(deal.getGoodsID());
-	//
-	// for (int i = 0; i < l_deal.size(); i++) {
-	// if (l_deal.get(i).getDealID() == 9) {
-	// l_deal.get(i).setDealStatusID(Common.deal_cancel);
-	// dealDao.updateDeal(l_deal.get(i));
-	// }
-	// }
-	// return "Cancel deal SUCCESS";
-	// }
-	// return "Cancel deal FAIL";
-	// }
-	// return "Wrong dealID";
-	//
-	// }
-
 	public int acceptDealFirst(Deal deal) {
 		int ret = 0;
 		try {
@@ -180,11 +52,11 @@ public class DealProcess {
 					for (int i = 0; i < listDealCheckForOwner.size(); i++) {
 						Deal item = listDealCheckForOwner.get(i);
 						if (item.getDealStatusID() == Common.deal_pending) {
-							if (listDealCheckForOwner.get(i).getCreateBy()
-									.equalsIgnoreCase(deal.getCreateBy())) {
-								cancelDeal1(listDealCheckForOwner.get(i));
+							if (item.getCreateBy().equalsIgnoreCase("owner")) {
+								cancelDeal1(item);
 							} else {
-								declineDeal1(listDealCheckForOwner.get(i));
+								item.setCreateBy("owner");
+								declineDealForOther(item);
 							}
 						}
 					}
@@ -209,14 +81,16 @@ public class DealProcess {
 					for (int i = 0; i < listDealCheckForDriver.size(); i++) {
 						Deal item = listDealCheckForDriver.get(i);
 						if (item.getDealStatusID() == Common.deal_pending) {
-							// Tải trọng hoặc Loại hàng
+							// Tải trọng hoặc Loại hàng, kiểm tra lại chỗ này,
+							// nếu cancel hoặc decline thì thuộc về driver?
 							if (item.getGoods().getWeight() >= remainPayloads
 									|| item.getGoods().getGoodsCategoryID() != goodsCategoryIDOfDealAccept) {
-								if (listDealCheckForDriver.get(i).getCreateBy()
-										.equalsIgnoreCase(deal.getCreateBy())) {
-									cancelDeal1(listDealCheckForDriver.get(i));
+								if (item.getCreateBy().equalsIgnoreCase(
+										deal.getCreateBy())) {
+									cancelDeal1(item);
 								} else {
-									declineDeal1(listDealCheckForDriver.get(i));
+									item.setCreateBy("driver");
+									declineDealForOther(item);
 								}
 							}
 						}
@@ -283,11 +157,13 @@ public class DealProcess {
 					for (int i = 0; i < listDealCheckForOwner.size(); i++) {
 						Deal item = listDealCheckForOwner.get(i);
 						if (item.getDealStatusID() == Common.deal_pending) {
-							if (listDealCheckForOwner.get(i).getCreateBy()
-									.equalsIgnoreCase(deal.getCreateBy())) {
-								cancelDeal1(listDealCheckForOwner.get(i));
+							// Kiểm tra lại chỗ này, nếu cancel hoặc decline thì
+							// thuộc về owner?
+							if (item.getCreateBy().equalsIgnoreCase("owner")) {
+								cancelDeal1(item);
 							} else {
-								declineDeal1(listDealCheckForOwner.get(i));
+								item.setCreateBy("owner");
+								declineDealForOther(item);
 							}
 						}
 					}
@@ -311,14 +187,16 @@ public class DealProcess {
 					for (int i = 0; i < listDealCheckForDriver.size(); i++) {
 						Deal item = listDealCheckForDriver.get(i);
 						if (item.getDealStatusID() == Common.deal_pending) {
-							// Tải trọng hoặc Loại hàng
+							// Tải trọng hoặc Loại hàng, kiểm tra lại chỗ này,
+							// nếu cancel hoặc decline thì thuộc về driver?
 							if (item.getGoods().getWeight() >= remainPayloads
 									|| item.getGoods().getGoodsCategoryID() != goodsCategoryIDOfDealAccept) {
-								if (listDealCheckForDriver.get(i).getCreateBy()
-										.equalsIgnoreCase(deal.getCreateBy())) {
-									cancelDeal1(listDealCheckForDriver.get(i));
+								if (item.getCreateBy().equalsIgnoreCase(
+										deal.getCreateBy())) {
+									cancelDeal1(item);
 								} else {
-									declineDeal1(listDealCheckForDriver.get(i));
+									item.setCreateBy("driver");
+									declineDealForOther(item);
 								}
 							}
 						}
@@ -471,4 +349,32 @@ public class DealProcess {
 		}
 		return ret;
 	}
+
+	public int declineDealForOther(Deal deal) {
+		int ret = 0;
+		try {
+			Deal db_deal = dealDao.getDealByID(deal.getDealID());
+			// Current deal must have pending status
+			if (db_deal.getDealStatusID() == Common.deal_pending) {
+				// Update current deal
+				// dealDao.updateDealStatus(deal.getDealID(),
+				// Common.deal_decline);
+				deal.setDealStatusID(Common.deal_decline);
+
+				ret = dealDao.updateDeal(deal);
+
+				// Insert new deal with decline status
+				notiProcess.insertDealDeclineNotification(deal);
+			} else {
+				ret = -1;
+				System.out.println("Current Status of deal isn't Pending");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		}
+		return ret;
+	}
+
 }

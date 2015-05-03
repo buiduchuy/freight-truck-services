@@ -18,10 +18,12 @@ import vn.edu.fpt.fts.dao.GoodsCategoryDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OwnerDAO;
 import vn.edu.fpt.fts.pojo.Account;
+import vn.edu.fpt.fts.pojo.AccountTemp;
 import vn.edu.fpt.fts.pojo.Employee;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.GoodsCategory;
 import vn.edu.fpt.fts.pojo.Owner;
+import vn.edu.fpt.fts.process.AccountProcess;
 
 /**
  * Servlet implementation class AccountServlet
@@ -37,6 +39,7 @@ public class AccountServlet extends HttpServlet {
 	GoodsDAO goodsDao = new GoodsDAO();
 	OwnerDAO ownerDao = new OwnerDAO();
 	EmployeeDAO employeeDao = new EmployeeDAO();
+	AccountProcess accountProcess = new AccountProcess();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -71,19 +74,23 @@ public class AccountServlet extends HttpServlet {
 			request.setCharacterEncoding("UTF-8");
 			String action = request.getParameter("btnAction");
 			HttpSession session = request.getSession(true);
-			
+
 			if (action.equalsIgnoreCase("login")) {
 				String email = request.getParameter("txtEmail");
 				String password = request.getParameter("txtPassword");
 
 				Account account = accountDao.checkLoginAccount(email, password);
-				
-				
-				String uri = request.getScheme() + "://" +
-			             request.getServerName() + 
-			             ("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443 ? "" : ":" + request.getServerPort() ) +
-			             request.getRequestURI();
-				
+
+				String uri = request.getScheme()
+						+ "://"
+						+ request.getServerName()
+						+ ("http".equals(request.getScheme())
+								&& request.getServerPort() == 80
+								|| "https".equals(request.getScheme())
+								&& request.getServerPort() == 443 ? "" : ":"
+								+ request.getServerPort())
+						+ request.getRequestURI();
+
 				System.out.println(uri);
 
 				if (account != null) {
@@ -96,7 +103,8 @@ public class AccountServlet extends HttpServlet {
 
 						session.setAttribute("typeGoods", l_goodsCategory);
 						session.setAttribute("owner", owner);
-						session.setAttribute("account", owner.getLastName() + " " + owner.getFirstName());
+						session.setAttribute("account", owner.getLastName()
+								+ " " + owner.getFirstName());
 
 						List<Goods> listGoodsByOwner = goodsDao
 								.getListGoodsByOwnerID(owner.getOwnerID());
@@ -123,7 +131,8 @@ public class AccountServlet extends HttpServlet {
 						String returnUrl = request.getParameter("ReturnUrl");
 
 						if (!returnUrl.isEmpty()) {
-							if (returnUrl.contains("loginPage") || returnUrl.contains("AccountServlet")) {
+							if (returnUrl.contains("loginPage")
+									|| returnUrl.contains("AccountServlet")) {
 								response.sendRedirect("ProcessServlet");
 							} else {
 								response.sendRedirect(returnUrl);
@@ -163,6 +172,21 @@ public class AccountServlet extends HttpServlet {
 			} else if (action.equalsIgnoreCase("registerPage")) {
 				request.getRequestDispatcher("dang-ky.jsp").forward(request,
 						response);
+			} else if (action.equalsIgnoreCase("employeeManageAccount")) {
+				List<AccountTemp> list = accountProcess.getListAccount();
+				request.setAttribute("listAccount", list);
+
+				request.getRequestDispatcher("admin/manage-account.jsp").forward(
+						request, response);
+			} else if (action.equalsIgnoreCase("employeeActivateAccount")) {
+				String email = request.getParameter("email");
+
+				int ret = accountProcess.activateAccount(email);
+				if (ret != -1) {
+					request.getRequestDispatcher(
+							"ProcessServlet?btnAction=employeeManageAccount").forward(
+							request, response);
+				}
 			}
 		}
 	}

@@ -18,6 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.PaymentDAO;
 import vn.edu.fpt.fts.pojo.Payment;
+import vn.edu.fpt.fts.util.PaypalUtil;
 
 /**
  * @author Duc Huy
@@ -48,8 +49,13 @@ public class PaymentAPI {
 			int orderID = Integer.valueOf(params.getFirst("orderID"));
 
 			Payment payment = new Payment();
+			String transactionID = "";
 
-			payment.setPaypalID(paypalID);
+			PaypalUtil paypalUtil = new PaypalUtil();
+			transactionID = paypalUtil.returnTransactionID(paypalID);
+			System.out.println(paypalID + "-----------");
+			System.out.println(transactionID);
+			payment.setPaypalID(transactionID);
 			payment.setPaypalAccount(paypalAccount);
 			payment.setDescription(description);
 			payment.setCreateTime(Common.getCreateTime());

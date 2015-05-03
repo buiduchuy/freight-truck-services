@@ -148,4 +148,39 @@ public class OwnerDAO {
 		}
 		return null;
 	}
+
+	public int updateOwnerStatus(String email, int status) {
+		Connection con = null;
+		PreparedStatement stmt = null;
+		int ret = 0;
+		try {
+			con = DBAccess.makeConnection();
+			String sql = "UPDATE [Owner] SET " + " Active = ?"
+					+ " WHERE Email = '" + email + "' ";
+			stmt = con.prepareStatement(sql);
+			int i = 1;
+			stmt.setInt(i++, status); // Active
+
+			ret = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			System.out.println("Can't update data from Owner table");
+			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				Logger.getLogger(TAG).log(Level.SEVERE, null, e);
+			}
+		}
+		return ret;
+	}
 }
