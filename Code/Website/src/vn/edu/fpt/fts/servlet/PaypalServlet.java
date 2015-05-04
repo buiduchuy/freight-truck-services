@@ -341,7 +341,7 @@ public class PaypalServlet extends HttpServlet {
 				try {
 					PayResponse payResponse = adaptivePaymentsService
 							.pay(payRequest);
-					HttpSession session = request.getSession(true);
+					HttpSession session = request.getSession();
 					session.setAttribute("paykey", payResponse.getPayKey());
 					response.sendRedirect("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey="
 							+ payResponse.getPayKey());
