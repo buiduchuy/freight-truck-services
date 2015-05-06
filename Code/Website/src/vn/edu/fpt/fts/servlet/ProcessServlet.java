@@ -111,8 +111,8 @@ public class ProcessServlet extends HttpServlet {
 				} else if (action.equalsIgnoreCase("employeeManageOrder")) {
 					request.getRequestDispatcher(orderServlet).forward(request,
 							response);
-				} else if (action.equalsIgnoreCase("employeManageAccount")) {
-					request.getRequestDispatcher("admin/manage-account.jsp")
+				} else if (action.equalsIgnoreCase("employeeManageAccount")) {
+					request.getRequestDispatcher(accountServlet)
 							.forward(request, response);
 				} else if (action.equalsIgnoreCase("employeeManageDeal")) {
 					request.getRequestDispatcher(dealServlet).forward(request,
@@ -122,6 +122,9 @@ public class ProcessServlet extends HttpServlet {
 							request, response);
 				} else if (action.equalsIgnoreCase("employeeViewDetailOrder")) {
 					request.getRequestDispatcher(orderServlet).forward(request,
+							response);
+				} else if (action.equalsIgnoreCase("employeeViewNotification")) {
+					request.getRequestDispatcher("admin/notification.jsp").forward(request,
 							response);
 				}
 

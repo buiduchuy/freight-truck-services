@@ -24,9 +24,9 @@ public class MatchingUtil {
 	}
 
 	// convert from radian to degree
-	// private Double rad2deg(Double rad) {
-	// return (rad / Math.PI * 180.0);
-	// }
+	private Double rad2deg(Double rad) {
+		return (rad / Math.PI * 180.0);
+	}
 
 	// change coordinate of gmaps to 3D
 	public List<Double> ChangeCoordinateMapToCoordinate3D(Double latitude,
@@ -49,23 +49,23 @@ public class MatchingUtil {
 	}
 
 	// change coordinate 3D to gmaps - not using now but reserve for future
-	// public List<Double> ChangeCoordinate3DToCoordinateMap(Double x, Double y,
-	// Double z) {
-	//
-	// // change to longitude and latitude
-	// Double longitude = Math.atan(y / x);
-	// if (longitude < 0)
-	// longitude += Math.PI;
-	// Double latitude = Math.asin(z / earthRadius);
-	//
-	// // change from radian to degree
-	// longitude = rad2deg(longitude);
-	// latitude = rad2deg(latitude);
-	// List<Double> result = new ArrayList<Double>();
-	// result.add(latitude);
-	// result.add(longitude);
-	// return result;
-	// }
+	public List<Double> ChangeCoordinate3DToCoordinateMap(Double x, Double y,
+			Double z) {
+
+		// change to longitude and latitude
+		Double longitude = Math.atan(y / x);
+		if (longitude < 0)
+			longitude += Math.PI;
+		Double latitude = Math.asin(z / earthRadius);
+
+		// change from radian to degree
+		longitude = rad2deg(longitude);
+		latitude = rad2deg(latitude);
+		List<Double> result = new ArrayList<Double>();
+		result.add(latitude);
+		result.add(longitude);
+		return result;
+	}
 
 	// / Check whether the distance from the goods position to the stage connect
 	// two point on path is not exceed the max allowed distance or not
@@ -183,8 +183,8 @@ public class MatchingUtil {
 				* vectorOfRoute.get(1) + vectorOfRoute.get(2)
 				* vectorOfRoute.get(2));
 		Double theta = (vectorOfGoods.get(0) * vectorOfRoute.get(0)
-				+ vectorOfGoods.get(1) * vectorOfRoute.get(1) + 
-				vectorOfGoods.get(2) * vectorOfRoute.get(2))
+				+ vectorOfGoods.get(1) * vectorOfRoute.get(1) + vectorOfGoods
+				.get(2) * vectorOfRoute.get(2))
 				/ (lengthOfGoods * lengthOfRoute);
 
 		Double angleInDegrees = Math.acos(theta) * 180.0 / Math.PI;

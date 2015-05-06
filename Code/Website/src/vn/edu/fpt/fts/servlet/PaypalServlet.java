@@ -2,6 +2,7 @@ package vn.edu.fpt.fts.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -100,7 +101,8 @@ public class PaypalServlet extends HttpServlet {
 				amount.setCurrency("USD");
 				double price = Double.parseDouble(request
 						.getParameter("amount")) / 21;
-				DecimalFormat df = new DecimalFormat("#.##");
+				DecimalFormat df = new DecimalFormat("#.00");
+				df.setRoundingMode(RoundingMode.DOWN);
 				price = Double.valueOf(df.format(price));
 				amount.setTotal(String.valueOf(price));
 
@@ -187,8 +189,8 @@ public class PaypalServlet extends HttpServlet {
 					String createTime = format.format(Calendar.getInstance()
 							.getTime());
 					vn.edu.fpt.fts.pojo.Payment pmnt = new vn.edu.fpt.fts.pojo.Payment(
-							0, saleID, createdPayment.getPayer()
-									.getPayerInfo().getEmail(), "", createTime,
+							0, saleID, createdPayment.getPayer().getPayerInfo()
+									.getEmail(), "", createTime,
 							Integer.parseInt(orderID));
 					paymentDao.insertPayment(pmnt);
 					orderDao.updateOrderStatusID(Integer.parseInt(orderID),
@@ -202,40 +204,49 @@ public class PaypalServlet extends HttpServlet {
 					response.sendRedirect(paymentURL + "&message=fail");
 				}
 			} else if (action.equalsIgnoreCase("payReturn")) {
-				
+
 				HttpSession session = request.getSession();
 				String paykey = session.getAttribute("paykey").toString();
 				session.removeAttribute("paykey");
-				
+
 				RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
-				PaymentDetailsRequest paymentDetailsRequest = new PaymentDetailsRequest(requestEnvelope);
+				PaymentDetailsRequest paymentDetailsRequest = new PaymentDetailsRequest(
+						requestEnvelope);
 				paymentDetailsRequest.setPayKey(paykey);
-				
+
 				sdkConfig.put("acct1.UserName", "ftswebsite_api1.gmail.com");
 				sdkConfig.put("acct1.Password", "WNGDNTT5TMD52VZR");
-				sdkConfig.put("acct1.Signature", "AFcWxV21C7fd0v3bYYYRCpSSRl31AOr-ik0fJN5Px8srU-8l3lY4lKA5");
-				sdkConfig.put("acct1.AppId","APP-80W284485P519543T");
-				
-				AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(sdkConfig);
+				sdkConfig
+						.put("acct1.Signature",
+								"AFcWxV21C7fd0v3bYYYRCpSSRl31AOr-ik0fJN5Px8srU-8l3lY4lKA5");
+				sdkConfig.put("acct1.AppId", "APP-80W284485P519543T");
+
+				AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(
+						sdkConfig);
 				PaymentDetailsResponse paymentDetailsResponse;
 				try {
-					paymentDetailsResponse = adaptivePaymentsService.paymentDetails(paymentDetailsRequest);
-					if(paymentDetailsResponse.getStatus().equalsIgnoreCase("COMPLETED")) {
-						int orderID = Integer.parseInt(request.getParameter("orderID"));
-						
+					paymentDetailsResponse = adaptivePaymentsService
+							.paymentDetails(paymentDetailsRequest);
+					if (paymentDetailsResponse.getStatus().equalsIgnoreCase(
+							"COMPLETED")) {
+						int orderID = Integer.parseInt(request
+								.getParameter("orderID"));
+
 						OrderDAO orderDao = new OrderDAO();
-						orderDao.updateOrderStatusID(orderID, Common.order_finish);
-						
+						orderDao.updateOrderStatusID(orderID,
+								Common.order_finish);
+
 						String url = request.getScheme()
 								+ "://"
 								+ request.getServerName()
 								+ ("http".equals(request.getScheme())
 										&& request.getServerPort() == 80
 										|| "https".equals(request.getScheme())
-										&& request.getServerPort() == 443 ? "" : ":"
-										+ request.getServerPort())
-								+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&orderID=" + orderID;
-						
+										&& request.getServerPort() == 443 ? ""
+										: ":" + request.getServerPort())
+								+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&orderID="
+								+ orderID;
+
 						response.sendRedirect(url);
 					}
 				} catch (SSLConfigurationException e) {
@@ -264,18 +275,20 @@ public class PaypalServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 			} else if (action.equalsIgnoreCase("employeePay")) {
-				
-				int orderID = Integer.parseInt(request.getParameter("txtOrderID"));
+
+				int orderID = Integer.parseInt(request
+						.getParameter("txtOrderID"));
 				Amount amount = new Amount();
 				amount.setCurrency("USD");
 				double price = Double.parseDouble(request
 						.getParameter("txtPrice")) / 21;
-				DecimalFormat df = new DecimalFormat("#.##");
+				DecimalFormat df = new DecimalFormat("#.00");
+				df.setRoundingMode(RoundingMode.DOWN);
 				price = Double.valueOf(df.format(price));
 				amount.setTotal(String.valueOf(price));
-				
+
 				PayRequest payRequest = new PayRequest();
-   			  
+
 				List<Receiver> receivers = new ArrayList<Receiver>();
 				Receiver receiver = new Receiver();
 				receiver.setAmount(price);
@@ -286,9 +299,9 @@ public class PaypalServlet extends HttpServlet {
 				payRequest.setReceiverList(receiverList);
 
 				RequestEnvelope requestEnvelope = new RequestEnvelope("en_US");
-				payRequest.setRequestEnvelope(requestEnvelope); 
+				payRequest.setRequestEnvelope(requestEnvelope);
 				payRequest.setActionType("PAY");
-				
+
 				String uri = request.getScheme()
 						+ "://"
 						+ request.getServerName()
@@ -298,7 +311,7 @@ public class PaypalServlet extends HttpServlet {
 								&& request.getServerPort() == 443 ? "" : ":"
 								+ request.getServerPort())
 						+ request.getRequestURI();
-				
+
 				String url = request.getScheme()
 						+ "://"
 						+ request.getServerName()
@@ -307,24 +320,31 @@ public class PaypalServlet extends HttpServlet {
 								|| "https".equals(request.getScheme())
 								&& request.getServerPort() == 443 ? "" : ":"
 								+ request.getServerPort())
-						+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&orderID=" + orderID;
-				
+						+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&orderID="
+						+ orderID;
+
 				payRequest.setCancelUrl(url);
-				payRequest.setReturnUrl(uri + "?btnAction=payReturn&orderID=" + orderID);
+				payRequest.setReturnUrl(uri + "?btnAction=payReturn&orderID="
+						+ orderID);
 				payRequest.setCurrencyCode("USD");
 
 				sdkConfig.put("acct1.UserName", "ftswebsite_api1.gmail.com");
 				sdkConfig.put("acct1.Password", "WNGDNTT5TMD52VZR");
-				sdkConfig.put("acct1.Signature", "AFcWxV21C7fd0v3bYYYRCpSSRl31AOr-ik0fJN5Px8srU-8l3lY4lKA5");
-				sdkConfig.put("acct1.AppId","APP-80W284485P519543T");
+				sdkConfig
+						.put("acct1.Signature",
+								"AFcWxV21C7fd0v3bYYYRCpSSRl31AOr-ik0fJN5Px8srU-8l3lY4lKA5");
+				sdkConfig.put("acct1.AppId", "APP-80W284485P519543T");
 
-				AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(sdkConfig);
-				
+				AdaptivePaymentsService adaptivePaymentsService = new AdaptivePaymentsService(
+						sdkConfig);
+
 				try {
-					PayResponse payResponse = adaptivePaymentsService.pay(payRequest);
-					HttpSession session = request.getSession(true);
+					PayResponse payResponse = adaptivePaymentsService
+							.pay(payRequest);
+					HttpSession session = request.getSession();
 					session.setAttribute("paykey", payResponse.getPayKey());
-					response.sendRedirect("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey=" + payResponse.getPayKey());
+					response.sendRedirect("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey="
+							+ payResponse.getPayKey());
 				} catch (SSLConfigurationException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -352,27 +372,31 @@ public class PaypalServlet extends HttpServlet {
 				}
 
 			} else if (action.equalsIgnoreCase("employeeRefund")) {
-				int orderID = Integer.parseInt(request.getParameter("txtOrderID"));
+				int orderID = Integer.parseInt(request
+						.getParameter("txtOrderID"));
 				PaymentDAO paymentDao = new PaymentDAO();
 				OrderDAO orderDao = new OrderDAO();
-				String transactionID = paymentDao.getListPaymentByOrderID(orderID).get(0).getPaypalID();
-				
+				String transactionID = paymentDao
+						.getListPaymentByOrderID(orderID).get(0).getPaypalID();
+
 				Sale sale = Sale.get(accessToken, transactionID);
-				
+
 				Amount amount = new Amount();
 				amount.setCurrency("USD");
-				double price = Double.parseDouble(request
-						.getParameter("txtPrice")) / 21;
-				DecimalFormat df = new DecimalFormat("#.##");
+				double price = orderDao.getOrderByID(orderID).getPrice() / 21;
+				DecimalFormat df = new DecimalFormat("#.00");
+				df.setRoundingMode(RoundingMode.DOWN);
 				price = Double.valueOf(df.format(price));
+				System.out.println(df.format(price));
 				amount.setTotal(String.valueOf(price));
-				
+
 				Refund refund = new Refund();
 				refund.setAmount(amount);
 				refund.setDescription("Hoàn tiền");
-
+				System.out.println(refund.getAmount().getTotal() + " " + refund.getAmount().getCurrency());
+				
 				Refund newRefund = sale.refund(accessToken, refund);
-				if(newRefund.getState().equals("completed")) {
+				if (newRefund.getState().equals("completed")) {
 					orderDao.updateOrderStatusID(orderID, Common.order_refund);
 					response.sendRedirect(request.getHeader("referer"));
 				}

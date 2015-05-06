@@ -5,7 +5,6 @@ package vn.edu.fpt.fts.process;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
@@ -46,16 +45,12 @@ public class Scheduler {
 	DealDAO dealDao = new DealDAO();
 	NotificationProcess notificationProcess = new NotificationProcess();
 
-	Logger logger = Logger.getLogger("CHECK ORDER STATUS AFTER "
-			+ Common.periodDay + " DAY(s)" + " --- TIME: "
-			+ new Date().toString());
-
 	public void orderScheduler() {
 		List<Order> listOrder = orderDao.getAllOrder();
 		Date currentDate = Common.convertStringToDate(Common.getCreateTime(),
 				"yyyy/MM/dd HH:mm:ss");
 
-		// System.out.println("---- Order Scheduler " + currentDate + "----");
+		System.out.println("---- Order Scheduler " + currentDate + "----");
 
 		for (int i = 0; i < listOrder.size(); i++) {
 			Order orderItem = listOrder.get(i);
