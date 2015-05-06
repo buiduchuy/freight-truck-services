@@ -22,12 +22,9 @@ import org.codehaus.jettison.json.JSONObject;
 import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.PaymentDAO;
-import vn.edu.fpt.fts.pojo.Employee;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.process.NotificationProcess;
 
-import com.google.gson.JsonObject;
-import com.paypal.api.openidconnect.Session;
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Item;
 import com.paypal.api.payments.ItemList;
@@ -237,7 +234,7 @@ public class PaypalServlet extends HttpServlet {
 										|| "https".equals(request.getScheme())
 										&& request.getServerPort() == 443 ? "" : ":"
 										+ request.getServerPort())
-								+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&txtOrderID=" + orderID;
+								+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&orderID=" + orderID;
 						
 						response.sendRedirect(url);
 					}
@@ -277,9 +274,6 @@ public class PaypalServlet extends HttpServlet {
 				price = Double.valueOf(df.format(price));
 				amount.setTotal(String.valueOf(price));
 				
-				OrderDAO orderDao = new OrderDAO();
-				Order order = orderDao.getOrderByID(orderID);
-				
 				PayRequest payRequest = new PayRequest();
    			  
 				List<Receiver> receivers = new ArrayList<Receiver>();
@@ -313,7 +307,7 @@ public class PaypalServlet extends HttpServlet {
 								|| "https".equals(request.getScheme())
 								&& request.getServerPort() == 443 ? "" : ":"
 								+ request.getServerPort())
-						+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&txtOrderID=" + orderID;
+						+ "/FTS/OrderServlet?btnAction=employeeViewDetailOrder&orderID=" + orderID;
 				
 				payRequest.setCancelUrl(url);
 				payRequest.setReturnUrl(uri + "?btnAction=payReturn&orderID=" + orderID);

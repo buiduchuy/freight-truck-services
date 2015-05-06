@@ -16,6 +16,7 @@ import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.Goods;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.Route;
+import vn.edu.fpt.fts.util.MapsUtil;
 
 /**
  * @author Duc Huy
@@ -27,7 +28,7 @@ public class Scheduler {
 		Date currentDate = Common.convertStringToDate(
 				"2015/04/22 00:00:00.000", "yyyy/MM/dd HH:mm:ss");
 
-		Date checkDate = Common.convertStringToDate("2015-04-21 00:00:00.000",
+		Date checkDate = Common.convertStringToDate("2015-04-25 00:00:00.000",
 				"yyyy-MM-dd HH:mm:ss.SSS");
 		System.out.println(currentDate);
 		System.out.println(checkDate);
@@ -44,7 +45,7 @@ public class Scheduler {
 	OrderDAO orderDao = new OrderDAO();
 	DealDAO dealDao = new DealDAO();
 	NotificationProcess notificationProcess = new NotificationProcess();
-	
+
 	Logger logger = Logger.getLogger("CHECK ORDER STATUS AFTER "
 			+ Common.periodDay + " DAY(s)" + " --- TIME: "
 			+ new Date().toString());
@@ -64,7 +65,7 @@ public class Scheduler {
 			// Check timeout paid of owner
 			long dateDifferencePaid = Common.getTimeDifference(currentDate,
 					orderDate, "day");
-			if (dateDifferencePaid > 1) {
+			if (dateDifferencePaid >= 1) {
 				if (orderItem.getOrderStatusID() == Common.order_unpaid) {
 					orderDao.updateOrderStatusID(orderItem.getOrderID(),
 							Common.order_cancelled);
@@ -79,6 +80,7 @@ public class Scheduler {
 					"yyyy-MM-dd HH:mm:ss.SSS");
 			long dateDifferenceDelivering = Common.getTimeDifference(
 					currentDate, goodsPickupDate, "day");
+			// Cung voi ngay pickup
 			if (dateDifferenceDelivering >= 0) {
 				if (orderItem.getOrderStatusID() == Common.order_paid) {
 					// Change order status and create notification
@@ -95,6 +97,7 @@ public class Scheduler {
 					"yyyy-MM-dd HH:mm:ss.SSS");
 			long dateDifferenceDelivered = Common.getTimeDifference(
 					currentDate, goodsDeliveryDate, "day");
+			// Sau delivered 1 ngày
 			if (dateDifferenceDelivered >= 1) {
 				if (orderItem.getOrderStatusID() == Common.order_delivering) {
 					// Change order status and create notification
@@ -114,15 +117,18 @@ public class Scheduler {
 
 		for (int i = 0; i < listDeal.size(); i++) {
 			Deal dealItem = listDeal.get(i);
-			Date dealDate = Common.convertStringToDate(
-					dealItem.getCreateTime(), "yyyy-MM-dd HH:mm:ss.SSS");
-			
-			Date goodsDeliveryDate = Common.convertStringToDate(dealItem.getGoods().getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS");
-			
-			long differenceDate = Common.getTimeDifference(currentDate,
-					dealDate, "day");
 
-			if (differenceDate >= 1) {
+			Date goodsDeliveryDate = Common.convertStringToDate(dealItem
+					.getGoods().getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS");
+
+			MapsUtil mapsUtil = new MapsUtil();
+			int averageDate = mapsUtil.getAverageTime(dealItem.getGoods().getPickupAddress(),
+					dealItem.getGoods().getDeliveryAddress(), 50);
+
+			long differenceDate = Common.getTimeDifference(currentDate,
+					goodsDeliveryDate, "day");
+
+			if (differenceDate > -(averageDate + 1)) {
 				if (dealItem.getDealStatusID() == Common.deal_pending) {
 					dealDao.updateDealStatus(dealItem.getDealID(),
 							Common.deal_cancel);
@@ -131,39 +137,41 @@ public class Scheduler {
 			}
 		}
 	}
-	
+
 	public void itemsScheduler() {
 		Date currentDate = Common.convertStringToDate(Common.getCreateTime(),
 				"yyyy/MM/dd HH:mm:ss");
-		
+
 		// Deactivate Goods
 		List<Goods> listGoods = goodsDao.getListActiveGoods();
 		for (int i = 0; i < listGoods.size(); i++) {
 			Goods goodsItem = listGoods.get(i);
-			Date goodsDeliveryDate = Common.convertStringToDate(goodsItem.getDeliveryTime(),
-					"yyyy-MM-dd HH:mm:ss.SSS");
-			
+			Date goodsDeliveryDate = Common.convertStringToDate(
+					goodsItem.getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS");
+
 			long differenceDateGoods = Common.getTimeDifference(currentDate,
 					goodsDeliveryDate, "day");
 			if (differenceDateGoods >= 1) {
-				goodsDao.updateGoodsStatus(goodsItem.getGoodsID(), Common.deactivate);
+				goodsDao.updateGoodsStatus(goodsItem.getGoodsID(),
+						Common.deactivate);
 				notificationProcess.insertSystemDeactiveGoods(goodsItem);
 			}
 		}
-		
+
 		// Deactivate Route
 		List<Route> listRoute = routeDao.getListActiveRoute();
-		
+
 		for (int i = 0; i < listRoute.size(); i++) {
 			Route routeItem = listRoute.get(i);
-			Date routeFinishDate = Common.convertStringToDate(routeItem.getFinishTime(),
-					"yyyy-MM-dd HH:mm:ss.SSS");
-			
+			Date routeFinishDate = Common.convertStringToDate(
+					routeItem.getFinishTime(), "yyyy-MM-dd HH:mm:ss.SSS");
+
 			long differenceDateRoute = Common.getTimeDifference(currentDate,
 					routeFinishDate, "day");
-			
+
 			if (differenceDateRoute >= 1) {
-				routeDao.updateRouteStatus(routeItem.getRouteID(), Common.deactivate);
+				routeDao.updateRouteStatus(routeItem.getRouteID(),
+						Common.deactivate);
 				notificationProcess.insertSystemDeactiveRoute(routeItem);
 			}
 		}

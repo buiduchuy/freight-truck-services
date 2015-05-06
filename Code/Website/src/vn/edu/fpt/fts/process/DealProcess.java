@@ -207,7 +207,7 @@ public class DealProcess {
 								deal.getGoodsID(), deal.getRouteID());
 				if (listDealCheckForDriver != null) {
 					for (int i = 0; i < listDealCheckForDriver.size(); i++) {
-						Deal item = listDealCheckForOwner.get(i);
+						Deal item = listDealCheckForDriver.get(i);
 						if (item.getDealStatusID() == Common.deal_pending) {
 							// Tải trọng hoặc Loại hàng
 							if (item.getGoods().getWeight() >= remainPayloads
@@ -245,20 +245,20 @@ public class DealProcess {
 				// Insert Notification
 				notiProcess.insertDealAcceptNotification(deal, ret);
 			} else {
-				ret = 2;
+				ret = -1;
 			}
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			ret = 0;
 			e.printStackTrace();
 			Logger.getLogger(TAG).log(Level.SEVERE, null, e);
 		}
-
 		return ret;
 	}
 
 	public int acceptDeal1(Deal deal) {
-		int ret = 0;
+		int ret = 1;
 		try {
 			Deal db_deal = dealDao.getDealByID(deal.getDealID());
 			// Current deal must have pending status
@@ -309,7 +309,7 @@ public class DealProcess {
 								db_deal.getGoodsID(), db_deal.getRouteID());
 				if (listDealCheckForDriver != null) {
 					for (int i = 0; i < listDealCheckForDriver.size(); i++) {
-						Deal item = listDealCheckForOwner.get(i);
+						Deal item = listDealCheckForDriver.get(i);
 						if (item.getDealStatusID() == Common.deal_pending) {
 							// Tải trọng hoặc Loại hàng
 							if (item.getGoods().getWeight() >= remainPayloads
@@ -341,7 +341,6 @@ public class DealProcess {
 				// dealOrder.setDealID(newDealID);
 				dealOrder.setDealID(deal.getDealID());
 				int newDealOrderID = dealOrderDao.insertDealOrder(dealOrder);
-				ret = 1;
 				if (newDealOrderID == 0) {
 					System.out.println("Deal nay da xuat Order roi!!");
 					ret = 0;
@@ -350,7 +349,7 @@ public class DealProcess {
 				// Insert Notification
 				notiProcess.insertDealAcceptNotification(deal, newOrderID);
 			} else {
-				ret = 2;
+				ret = -1;
 				System.out.println("Current Status of deal isn't Pending");
 			}
 
@@ -384,7 +383,7 @@ public class DealProcess {
 				// Insert new deal with decline status
 				notiProcess.insertDealDeclineNotification(deal);
 			} else {
-				ret = 2;
+				ret = -1;
 				System.out.println("Current Status of deal isn't Pending");
 			}
 		} catch (Exception e) {
@@ -409,7 +408,7 @@ public class DealProcess {
 				// Insert Notification
 				notiProcess.insertDealCancelNotification(deal);
 			} else {
-				ret = 2;
+				ret = -1;
 				System.out
 						.println("Current status of deal isn't pending or same with createBy");
 			}
