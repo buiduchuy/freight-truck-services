@@ -86,8 +86,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 	private DatePickerDialog.OnDateSetListener date1, date2;
 	private EditText etPickupDate, etDeliverDate, etNotes, etPrice, etWeight;
 	private AutoCompleteTextView actPickupAddr, actDeliverAddr;
-	private ImageButton ibPickupMap, ibDeliverMap;
-	private Button btnPost;
+	private ImageButton ibPickupMap, ibDeliverMap;	
 	private List<String> cateList = new ArrayList<String>();
 	private int cateId, spinnerPos;
 	private Double pickupLat = 0.0, deliverLat = 0.0, pickupLng = 0.0,
@@ -95,6 +94,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 	private String ownerid, errorMsg = "", selected;
 	private GoodsCategory category = new GoodsCategory();
 	private String[] unit = { "kg", "tấn" };
+	private MenuItem create;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +105,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setTitle(this.getString(R.string.title_activity_create_goods) + " - "
-				+ preferences.getString("email", ""));
+				+ preferences.getString("ownerName", ""));
 
 		etNotes = (EditText) findViewById(R.id.edittext_note);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
@@ -383,45 +383,7 @@ public class CreateGoodsActivity extends FragmentActivity {
 		actPickupAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
 				R.layout.list_item_pickup));
 		actDeliverAddr.setAdapter(new PlacesAutoCompleteAdapter(this,
-				R.layout.list_item_deliver));
-
-		// button
-		btnPost = (Button) findViewById(R.id.btn_post);
-		btnPost.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// Chi viec goi ham postData
-				if (validate()) {
-					Goods goods = new Goods();
-					goods.setGoodsCategory(selected);
-					goods.setPickupTime(etPickupDate.getText().toString());
-					goods.setDeliveryTime(etDeliverDate.getText().toString());
-					goods.setPickupAddress(actPickupAddr.getText().toString());
-					goods.setDeliveryAddress(actDeliverAddr.getText()
-							.toString());
-					if (unitSpinner.getSelectedItemPosition() == 0) {
-						goods.setWeight(Integer.parseInt(etWeight.getText()
-								.toString()));
-					} else {
-						goods.setWeight(Integer.parseInt(etWeight.getText()
-								.toString() + "000"));
-					}
-
-					goods.setPrice(Double.parseDouble(etPrice.getText()
-							.toString()));
-					goods.setNotes(etNotes.getText().toString());
-					DialogFragment dialog = ConfirmCreateDialog
-							.newInstance(goods);
-					dialog.show(getSupportFragmentManager(), "");
-
-					// postData();
-				} else {
-					Toast.makeText(CreateGoodsActivity.this, errorMsg,
-							Toast.LENGTH_LONG).show();
-				}
-			}
-		});
+				R.layout.list_item_deliver));		
 
 		// lay longitude va latitude
 		Bundle bundle = getIntent().getBundleExtra("info");
@@ -557,6 +519,14 @@ public class CreateGoodsActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.create_goods, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		super.onPrepareOptionsMenu(menu);
+		create = menu.findItem(R.id.create);
+		return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -577,6 +547,36 @@ public class CreateGoodsActivity extends FragmentActivity {
 					MainActivity.class);
 			startActivity(intent);
 			return true;
+		}
+		if (id == R.id.create) {
+			if (validate()) {
+				Goods goods = new Goods();
+				goods.setGoodsCategory(selected);
+				goods.setPickupTime(etPickupDate.getText().toString());
+				goods.setDeliveryTime(etDeliverDate.getText().toString());
+				goods.setPickupAddress(actPickupAddr.getText().toString());
+				goods.setDeliveryAddress(actDeliverAddr.getText()
+						.toString());
+				if (unitSpinner.getSelectedItemPosition() == 0) {
+					goods.setWeight(Integer.parseInt(etWeight.getText()
+							.toString()));
+				} else {
+					goods.setWeight(Integer.parseInt(etWeight.getText()
+							.toString() + "000"));
+				}
+
+				goods.setPrice(Double.parseDouble(etPrice.getText()
+						.toString()));
+				goods.setNotes(etNotes.getText().toString());
+				DialogFragment dialog = ConfirmCreateDialog
+						.newInstance(goods);
+				dialog.show(getSupportFragmentManager(), "");
+
+				// postData();
+			} else {
+				Toast.makeText(CreateGoodsActivity.this, errorMsg,
+						Toast.LENGTH_LONG).show();
+			}
 		}
 		return super.onOptionsItemSelected(item);
 	}

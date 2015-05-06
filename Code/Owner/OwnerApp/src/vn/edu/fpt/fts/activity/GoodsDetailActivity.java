@@ -51,7 +51,7 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
 		this.getActionBar().setTitle(
-				categoryName + " - " + preferences.getString("email", ""));
+				categoryName + " - " + preferences.getString("ownerName", ""));
 
 		viewPager = (ViewPager) findViewById(R.id.pager_goods);
 		actionBar = getActionBar();

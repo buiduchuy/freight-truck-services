@@ -38,8 +38,10 @@ import vn.edu.fpt.fts.fragment.R;
 import vn.edu.fpt.fts.fragment.RouteMapActivity;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Paint;
@@ -61,7 +63,6 @@ public class SuggestDetailActivity extends Activity {
 	private TextView startAddr, destAddr, startTime, finishTime, category,
 			weight, tvMap, driver;
 	private EditText etPrice, etNote;
-	private Button btnSend;
 	private String goodsID, ownerID, categoryID;
 	private LatLng startAdd, mark1, mark2, endAdd, pickup, deliver;
 	private Bundle extra = new Bundle();
@@ -77,7 +78,7 @@ public class SuggestDetailActivity extends Activity {
 		actionBar.setTitle(this
 				.getString(R.string.title_activity_suggest_detail)
 				+ " - "
-				+ preferences.getString("email", ""));
+				+ preferences.getString("ownerName", ""));
 
 		routeid = getIntent().getIntExtra("route", 0);
 		goodsID = getIntent().getStringExtra("goodsID");
@@ -102,7 +103,6 @@ public class SuggestDetailActivity extends Activity {
 		driver = (TextView) this.findViewById(R.id.textview_driverName);
 		etPrice = (EditText) findViewById(R.id.edittext_price);
 		etNote = (EditText) findViewById(R.id.edittext_note);
-		btnSend = (Button) findViewById(R.id.button_send);
 
 		// etPrice.setText(price);
 		// etNote.setText(notes);
@@ -111,30 +111,6 @@ public class SuggestDetailActivity extends Activity {
 		String urlString = Common.IP_URL + Common.Service_Goods_getGoodsByID;
 		wst3.addNameValuePair("goodsID", goodsID);
 		wst3.execute(new String[] { urlString });
-
-		btnSend.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Calendar calendar = Calendar.getInstance();
-				WebServiceTask2 wst2 = new WebServiceTask2(
-						WebServiceTask2.POST_TASK, SuggestDetailActivity.this,
-						"Đang xử lý...");
-				wst2.addNameValuePair("dealID", "0");
-				wst2.addNameValuePair("price", etPrice.getText().toString());
-				wst2.addNameValuePair("notes", etNote.getText().toString());
-				wst2.addNameValuePair("createTime", Common.formatDate(calendar));
-				wst2.addNameValuePair("createBy", "owner");
-				wst2.addNameValuePair("routeID", routeid + "");
-				wst2.addNameValuePair("goodsID", goodsID + "");
-				wst2.addNameValuePair("active", "1");
-				String url = Common.IP_URL + Common.Service_Deal_Create;
-				// wst2.execute(new String[] { url });
-				wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						new String[] { url });
-			}
-		});
 
 		tvMap = (TextView) findViewById(R.id.tvMap);
 		tvMap.setPaintFlags(tvMap.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -188,22 +164,46 @@ public class SuggestDetailActivity extends Activity {
 			startActivity(intent);
 		}
 		if (id == R.id.send_deal) {
-			Calendar calendar = Calendar.getInstance();
-			WebServiceTask2 wst2 = new WebServiceTask2(
-					WebServiceTask2.POST_TASK, SuggestDetailActivity.this,
-					"Đang xử lý...");
-			wst2.addNameValuePair("dealID", "0");
-			wst2.addNameValuePair("price", etPrice.getText().toString());
-			wst2.addNameValuePair("notes", etNote.getText().toString());
-			wst2.addNameValuePair("createTime", Common.formatDate(calendar));
-			wst2.addNameValuePair("createBy", "owner");
-			wst2.addNameValuePair("routeID", routeid + "");
-			wst2.addNameValuePair("goodsID", goodsID + "");
-			wst2.addNameValuePair("active", "1");
-			String url = Common.IP_URL + Common.Service_Deal_Create;
-			// wst2.execute(new String[] { url });
-			wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					new String[] { url });
+			DialogInterface.OnClickListener sendListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch (which) {
+					case DialogInterface.BUTTON_POSITIVE:
+						Calendar calendar = Calendar.getInstance();
+						WebServiceTask2 wst2 = new WebServiceTask2(
+								WebServiceTask2.POST_TASK,
+								SuggestDetailActivity.this, "Đang xử lý...");
+						wst2.addNameValuePair("dealID", "0");
+						wst2.addNameValuePair("price", etPrice.getText()
+								.toString());
+						wst2.addNameValuePair("notes", etNote.getText()
+								.toString());
+						wst2.addNameValuePair("createTime",
+								Common.formatDate(calendar));
+						wst2.addNameValuePair("createBy", "owner");
+						wst2.addNameValuePair("routeID", routeid + "");
+						wst2.addNameValuePair("goodsID", goodsID + "");
+						wst2.addNameValuePair("active", "1");
+						String url = Common.IP_URL + Common.Service_Deal_Create;
+						// wst2.execute(new String[] { url });
+						wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+								new String[] { url });
+						break;
+					case DialogInterface.BUTTON_NEGATIVE:
+						break;
+					}
+				}
+			};
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					SuggestDetailActivity.this);
+			builder.setMessage(
+					"Bạn có muốn gửi đề nghị cho tài xế với giá "
+							+ etPrice.getText().toString()
+							+ " nghìn đồng không?")
+					.setPositiveButton("Đồng ý", sendListener)
+					.setNegativeButton("Hủy", sendListener).show();
 		}
 		return super.onOptionsItemSelected(item);
 	}

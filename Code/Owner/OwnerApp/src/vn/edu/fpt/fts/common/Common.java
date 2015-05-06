@@ -75,6 +75,7 @@ public final class Common {
 	public static final String Service_Order_ownerNoticeLostGoods = "Order/ownerReportOrder";
 	public static final String Service_Account_CreateOwnerAccount = "Account/CreateOwnerAccount";
 	public static final String Service_Order_PayOrder = "Order/ownerPayOrder";
+	public static final String Service_Owner_getName = "Owner/getOwnerByEmail";
 	
 	public static boolean expireDate(String date) {
 		Date todayDate = null;

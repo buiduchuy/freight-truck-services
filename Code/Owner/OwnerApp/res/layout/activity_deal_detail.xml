@@ -263,17 +263,6 @@
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:visibility="gone" />
-
-        <Button
-            android:id="@+id/button_counter"
-            android:layout_width="150dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:background="@color/button_color"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:text="Trả giá đề nghị"
-            android:visibility="gone" />
     </LinearLayout>
 
 </ScrollView>

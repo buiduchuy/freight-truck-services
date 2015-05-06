@@ -12,6 +12,7 @@
     <string name="action_pay">Thanh toán</string>
     <string name="action_suggest_driver">Gợi ý lộ trình</string>
     <string name="action_send_deal">Gửi đề nghị</string>
+    <string name="action_counter_deal">Trả giá đề nghị</string>
     <string name="action_accept_deal">Chấp nhận</string>
     <string name="action_decline_deal">Từ chối</string>
     <string name="action_cancel_deal">Hủy đề nghị</string>

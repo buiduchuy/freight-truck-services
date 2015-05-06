@@ -28,8 +28,10 @@ import vn.edu.fpt.fts.fragment.PaypalActivity;
 import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -59,8 +61,8 @@ public class OrderDetailActivity extends Activity {
 				Context.MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
-		actionBar.setTitle(this.getString(R.string.title_activity_order_detail) + " - "
-				+ preferences.getString("email", ""));
+		actionBar.setTitle(this.getString(R.string.title_activity_order_detail)
+				+ " - " + preferences.getString("ownerName", ""));
 
 		orderID = getIntent().getStringExtra("orderID");
 		tvStartAdd = (TextView) findViewById(R.id.textview_startAddr);
@@ -127,25 +129,64 @@ public class OrderDetailActivity extends Activity {
 			makePayment();
 		}
 		if (id == R.id.cancel_order) {
-			WebServiceTask2 wst2 = new WebServiceTask2(
-					WebServiceTask2.POST_TASK, OrderDetailActivity.this,
-					"Đang xử lý...");
-			wst2.addNameValuePair("orderID", orderID);
-			String url = Common.IP_URL + Common.Service_Order_ownerCancelOrder;
-			wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					new String[] { url });
+			DialogInterface.OnClickListener cancelListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch (which) {
+					case DialogInterface.BUTTON_POSITIVE:
+						WebServiceTask2 wst2 = new WebServiceTask2(
+								WebServiceTask2.POST_TASK,
+								OrderDetailActivity.this, "Đang xử lý...");
+						wst2.addNameValuePair("orderID", orderID);
+						String url = Common.IP_URL
+								+ Common.Service_Order_ownerCancelOrder;
+						wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+								new String[] { url });
+						break;
+					case DialogInterface.BUTTON_NEGATIVE:
+						break;
+					}
+				}
+			};
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					OrderDetailActivity.this);
+			builder.setMessage("Bạn có muốn hủy đơn hàng không?")
+					.setPositiveButton("Đồng ý", cancelListener)
+					.setNegativeButton("Hủy", cancelListener).show();
 		}
 		if (id == R.id.lost_order) {
-			WebServiceTask3 wst3 = new WebServiceTask3(
-					WebServiceTask3.POST_TASK, OrderDetailActivity.this,
-					"Đang xử lý...");
-			wst3.addNameValuePair("orderID", orderID);
-			// wst2.addNameValuePair("ownerConfirmDelivery", "true");
-			String url = Common.IP_URL
-					+ Common.Service_Order_ownerNoticeLostGoods;
-			// wst2.execute(new String[] { url });
-			wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					new String[] { url });
+			DialogInterface.OnClickListener lostListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch (which) {
+					case DialogInterface.BUTTON_POSITIVE:
+						WebServiceTask3 wst3 = new WebServiceTask3(
+								WebServiceTask3.POST_TASK,
+								OrderDetailActivity.this, "Đang xử lý...");
+						wst3.addNameValuePair("orderID", orderID);
+						// wst2.addNameValuePair("ownerConfirmDelivery",
+						// "true");
+						String url = Common.IP_URL
+								+ Common.Service_Order_ownerNoticeLostGoods;
+						// wst2.execute(new String[] { url });
+						wst3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+								new String[] { url });
+						break;
+					case DialogInterface.BUTTON_NEGATIVE:
+						break;
+					}
+				}
+			};
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					OrderDetailActivity.this);
+			builder.setMessage("Bạn có muốn phản hồi đơn hàng không?")
+					.setPositiveButton("Đồng ý", lostListener)
+					.setNegativeButton("Hủy", lostListener).show();
+
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -159,13 +200,14 @@ public class OrderDetailActivity extends Activity {
 		cancel = menu.findItem(R.id.cancel_order);
 		return true;
 	};
-	
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
 		super.onKeyDown(keyCode, event);
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(OrderDetailActivity.this, MainActivity.class);
+			Intent intent = new Intent(OrderDetailActivity.this,
+					MainActivity.class);
 			startActivity(intent);
 		}
 		return true;

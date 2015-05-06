@@ -66,7 +66,7 @@ public class HistoryActivity extends Activity {
 		listView = (ListView) findViewById(R.id.listview_deal_list);
 		SharedPreferences preferences = getSharedPreferences("MyPrefs",
 				Context.MODE_PRIVATE);
-		ownerID = preferences.getString("ownerID", "");
+		ownerID = preferences.getString("ownerName", "");
 		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
 				"Đang xử lý...");
 		wst.addNameValuePair("ownerID", ownerID);

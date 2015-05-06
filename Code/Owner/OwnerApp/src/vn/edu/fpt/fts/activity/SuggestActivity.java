@@ -68,7 +68,7 @@ public class SuggestActivity extends Activity {
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setTitle(this.getString(R.string.title_activity_suggest)
-				+ " - " + preferences.getString("email", ""));
+				+ " - " + preferences.getString("ownerName", ""));
 
 		tvInfo = (TextView) findViewById(R.id.tvInfo);
 		tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
