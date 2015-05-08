@@ -230,8 +230,8 @@
 <XPD:REF name="Incomings[0]">iM6rb+6cHEOIrEzFk2X6LAAA</XPD:REF>
 <XPD:REF name="Incomings[1]">nks6lQA4eECF0iXp2Me/uAAA</XPD:REF>
 <XPD:REF name="Incomings[2]">dGhGw43BV0Gyly6LpcnvtwAA</XPD:REF>
-<XPD:REF name="Incomings[3]">FOIRY1cQ00ip3CLBzmWdcAAA</XPD:REF>
-<XPD:REF name="Incomings[4]">HsM8UeaF5UqoqFgisoX3lgAA</XPD:REF>
+<XPD:REF name="Incomings[3]">HsM8UeaF5UqoqFgisoX3lgAA</XPD:REF>
+<XPD:REF name="Incomings[4]">FOIRY1cQ00ip3CLBzmWdcAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Subvertices[11]" type="UMLPseudostate" guid="e7lbD+SjMEaV7rc/ebEzZgAA">
 <XPD:ATTR name="Name" type="string">Choice1</XPD:ATTR>
@@ -342,7 +342,7 @@
 <XPD:REF name="Model">kOXy5EkHjEOP48orNyco1wAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="ho5zuLHOKkSw/uB4fKcE3wAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="9hMNem0xvUKajNn3G85pWQAA">
-<XPD:ATTR name="Text" type="string">unconfirmed</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">unpaid</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="x1TQ96CldkGlMYn559AoEAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -392,7 +392,7 @@
 <XPD:REF name="Model">hX4LbD83p0qTW5We1ovbIAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="jFSKgNhrZEql3ZS0AOwL3gAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="fxrxw8JldkSBJbRJJqmMsQAA">
-<XPD:ATTR name="Text" type="string">confirmed</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">paid</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="Z1nbVSnnS0u8xjYbwNn3kAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -451,7 +451,7 @@
 <XPD:REF name="Model">8xxVqr+iKUiqDtr6dE0u9QAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="daheS+sDUEKxO6CHTjHIPwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="TeIDR4P/S0izI85p+aZJsgAA">
-<XPD:ATTR name="Text" type="string">delivery</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">delivering</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="Q2EzuwYu80q7spnx6mYNvAAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -501,7 +501,7 @@
 <XPD:REF name="Model">i7xBCpIHYEW7PbJrLNc1nAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="fd1lXTkiREysX4mi5K+A8AAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="ek4Re4fwakSorJaJxjXnZgAA">
-<XPD:ATTR name="Text" type="string">paid</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">finish</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="MWHiIoeUVkGoOLb2l0A84gAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -524,7 +524,7 @@
 <XPD:REF name="Model">dwGro4GTGUai3Ym2e6vn3wAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="HJHgv9LQQkG/VQ76O/HmYQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="nqUobrmbK0O3U2D5cwaUhAAA">
-<XPD:ATTR name="Text" type="string">verify</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">delivered</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="/fU5LCVEfUmgl7yZlbPvUQAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -969,7 +969,7 @@
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">296</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">744</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">664</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">26</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">26</XPD:ATTR>
 <XPD:REF name="Model">VX71+BeuUUm3EsH7842gAQAA</XPD:REF>
@@ -1074,14 +1074,14 @@
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">308,615;308,744</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">308,615;308,664</XPD:ATTR>
 <XPD:REF name="Model">r0IcNMQRLEStysp/MkftJgAA</XPD:REF>
 <XPD:REF name="Head">xEcAEuVqjk6gGs/qdRV2mAAA</XPD:REF>
 <XPD:REF name="Tail">Sgois7OQw0Osqb0a3VK2iAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="dqPLb0b4o0Sb62oIH6RyRQAA">
-<XPD:ATTR name="Alpha" type="real">1.06248560867611</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">80.1311425102625</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">System paid for Truck Driver</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">1.5904012538089</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">51.0098029794274</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">Paid for truck Driver</XPD:ATTR>
 <XPD:REF name="Model">r0IcNMQRLEStysp/MkftJgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="EdgeLabelView" guid="5yGWhWWnU0mguFxmIrtFrgAA">
@@ -1124,14 +1124,14 @@
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">468,615;468,756;321,756</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">468,615;468,676;321,676</XPD:ATTR>
 <XPD:REF name="Model">d+uH9k/3W0yJNqrOfOMKywAA</XPD:REF>
 <XPD:REF name="Head">xEcAEuVqjk6gGs/qdRV2mAAA</XPD:REF>
 <XPD:REF name="Tail">0NRf+Jd7lEOpeKxugWI0RQAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="i6Zab5XRl0GurK0ma5UEZQAA">
-<XPD:ATTR name="Alpha" type="real">0.173671228201238</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">57.8705451849211</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">System refund to Goods Owner</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">0.308052846689832</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">46.1735855224608</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">Return money back for goods Owner</XPD:ATTR>
 <XPD:REF name="Model">d+uH9k/3W0yJNqrOfOMKywAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="EdgeLabelView" guid="wNtWi3XY+U2LRHpc7wHQMwAA">
@@ -1183,8 +1183,8 @@
 <XPD:REF name="Head">XkJLgTh14Uu8HwLTNMJBVgAA</XPD:REF>
 <XPD:REF name="Tail">f6MmWwY2Jkm5LGcqGrD9YQAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="xCTzRcvbRkOi2k8Tnp74+gAA">
-<XPD:ATTR name="Alpha" type="real">1.5756152071713</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">148.121571690284</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">1.64012909854086</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">144.346804606129</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">System auto change status based on goods delivery date</XPD:ATTR>
 <XPD:REF name="Model">L0yFj47N9U6kBtDNR/LmUAAA</XPD:REF>
 </XPD:OBJ>
@@ -1260,9 +1260,9 @@
 <XPD:REF name="Head">0NRf+Jd7lEOpeKxugWI0RQAA</XPD:REF>
 <XPD:REF name="Tail">XkJLgTh14Uu8HwLTNMJBVgAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="FMIEn5iQ906O5foptV+3zwAA">
-<XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
-<XPD:ATTR name="Alpha" type="real">1.5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-1.77211294656376</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">50.0099990001999</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">lost or damage goods</XPD:ATTR>
 <XPD:REF name="Model">Jt271xuK00+MrmdCYisvZQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="EdgeLabelView" guid="04aCTXBcL0aU7QsF+MoOcwAA">
@@ -1282,7 +1282,7 @@
 <XPD:ATTR name="LineColor" type="string">clMaroon</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
 <XPD:ATTR name="LineStyle" type="LineStyleKind">lsRectilinear</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">152,615;152,756;296,756</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">152,615;152,676;296,676</XPD:ATTR>
 <XPD:REF name="Model">bNDz4uBqiES3i1y8jW0gQwAA</XPD:REF>
 <XPD:REF name="Head">xEcAEuVqjk6gGs/qdRV2mAAA</XPD:REF>
 <XPD:REF name="Tail">gCicjh3PeEC5DYX8huCQjQAA</XPD:REF>
@@ -1412,7 +1412,7 @@
 <XPD:REF name="Target">tFqWfN+soUu2w0EXgEqhFAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Transitions[6]" type="UMLTransition" guid="r0IcNMQRLEStysp/MkftJgAA">
-<XPD:ATTR name="Name" type="string">System paid for Truck Driver</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">Paid for truck Driver</XPD:ATTR>
 <XPD:REF name="StateMachine">EVIF9/zaBUezcaRTaks7dAAA</XPD:REF>
 <XPD:REF name="Source">i7xBCpIHYEW7PbJrLNc1nAAA</XPD:REF>
 <XPD:REF name="Target">VX71+BeuUUm3EsH7842gAQAA</XPD:REF>
@@ -1486,7 +1486,7 @@
 <XPD:REF name="Target">VX71+BeuUUm3EsH7842gAQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Transitions[15]" type="UMLTransition" guid="d+uH9k/3W0yJNqrOfOMKywAA">
-<XPD:ATTR name="Name" type="string">System refund to Goods Owner</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">Return money back for goods Owner</XPD:ATTR>
 <XPD:REF name="StateMachine">EVIF9/zaBUezcaRTaks7dAAA</XPD:REF>
 <XPD:REF name="Source">yy1x46hz+EOX6/n6T1TstwAA</XPD:REF>
 <XPD:REF name="Target">VX71+BeuUUm3EsH7842gAQAA</XPD:REF>
@@ -1573,6 +1573,7 @@
 <XPD:REF name="Views[3]">+CPqQwwxuk2tfIn4Qm/W3wAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Transitions[24]" type="UMLTransition" guid="Jt271xuK00+MrmdCYisvZQAA">
+<XPD:ATTR name="Name" type="string">lost or damage goods</XPD:ATTR>
 <XPD:REF name="StateMachine">EVIF9/zaBUezcaRTaks7dAAA</XPD:REF>
 <XPD:REF name="Source">dwGro4GTGUai3Ym2e6vn3wAA</XPD:REF>
 <XPD:REF name="Target">yy1x46hz+EOX6/n6T1TstwAA</XPD:REF>

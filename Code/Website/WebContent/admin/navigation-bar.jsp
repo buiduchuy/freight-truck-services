@@ -128,8 +128,8 @@
 					class="fa fa-fw fa-exchange"></i> Quản lý thương lượng</a></li>
 			<li><a href="ProcessServlet?btnAction=employeeManageOrder"><i
 					class="fa fa-fw fa-table"></i> Quản lý hóa đơn</a></li>
-			<li><a href="ProcessServlet?btnAction=employeeConfiguration"><i
-					class="fa fa-fw fa-gears"></i> Cấu hình thông số</a></li>
+			<!--  <li><a href="ProcessServlet?btnAction=employeeConfiguration"><i
+					class="fa fa-fw fa-gears"></i> Cấu hình thông số</a></li>-->
 		</ul>
 	</div>
 	<!-- /.navbar-collapse -->

@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.pojo.Goods;
@@ -23,6 +24,7 @@ public class MatchingProcess {
 	MapsProcess mapProcess = new MapsProcess();
 	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
+	DealDAO dealDao = new DealDAO();
 
 	public boolean checkTimeOverlaps(Date startDate1, Date endDate1,
 			Date startDate2, Date endDate2) {
@@ -115,6 +117,16 @@ public class MatchingProcess {
 					l_routeFilter2.add(route);
 				}
 			}
+			
+			// Remove list route have other category if route have deal accept
+//			for (int i = 0; i < l_routeFilter2.size(); i++) {
+//				List<Deal> listDealAcceptByRouteID = dealDao.getListDealAcceptByRouteID(l_routeFilter2.get(i).getRouteID());
+//				if (listDealAcceptByRouteID != null) {
+//					if (listDealAcceptByRouteID.get(0).getDealStatusID() != goods.getGoodsCategoryID()) {
+//						l_routeFilter2.remove(i);
+//					}
+//				}
+//			}
 
 			// Condition route
 			if (l_routeFilter2.size() != 0) {
@@ -194,6 +206,19 @@ public class MatchingProcess {
 					l_goodsFilter2.add(goods);
 				}
 			}
+
+			// Remove list goods have other category if route have deal accept
+//			List<Goods> listGoodsInDealAccept = goodsDao
+//					.getListGoodsInDealAcceptByRouteID(routeID);
+//			if (listGoodsInDealAccept != null) {
+//				int goodsCategoryID = listGoodsInDealAccept.get(0)
+//						.getGoodsCategoryID();
+//				for (int i = 0; i < l_goodsFilter2.size(); i++) {
+//					if (l_goodsFilter2.get(i).getGoodsCategoryID() != goodsCategoryID) {
+//						l_goodsFilter2.remove(i);
+//					}
+//				}
+//			}
 
 			// Condition route
 			if (l_goodsFilter2.size() != 0) {

@@ -153,25 +153,6 @@ public class NotificationProcess {
 		return ret;
 	}
 
-	public int insertAcceptOrderNotification(Order order) {
-		int ret = 0;
-
-		Notification notification = new Notification();
-
-		notification.setActive(Common.activate);
-		notification.setCreateTime(Common.getCreateTime());
-		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Hệ thống đã đổi trạng thái đơn hàng #OD"
-				+ order.getOrderID() + " chấp nhận.");
-		notification.setStatusOfType(Common.order_unpaid);
-		notification.setIdOfType(order.getOrderID());
-		notification.setType("order");
-
-		ret = notificationDao.insertNotification(notification);
-
-		return ret;
-	}
-	
 	public int insertOwnerPayOrder(Order order) {
 		int ret = 0;
 
@@ -179,8 +160,10 @@ public class NotificationProcess {
 
 		notification.setActive(Common.activate);
 		notification.setCreateTime(Common.getCreateTime());
-		notification.setEmail(order.getDeal().getRoute().getDriver().getEmail());
-		notification.setMessage("Chủ hàng đã thanh toán cho chúng tôi.<br/>Tài xế có thể tiến hành vận chuyển hàng.");
+		notification
+				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
+		notification
+				.setMessage("Chủ hàng đã thanh toán cho hệ thống.<br/>Tài xế có thể tiến hành vận chuyển hàng.");
 		notification.setStatusOfType(Common.order_paid);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
@@ -190,35 +173,18 @@ public class NotificationProcess {
 		return ret;
 	}
 
-	public int insertOwnerCancelOrderWhenPaid(Order order) {
+	public int insertOwnerCancelOrder(Order order) {
 		int ret = 0;
 
 		Notification notification = new Notification();
 
 		notification.setActive(Common.activate);
 		notification.setCreateTime(Common.getCreateTime());
-		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Đơn hàng #OD" + order.getOrderID()
-				+ " đã hủy. Bạn phải chịu một khoản tiền phạt nhất định.");
-		notification.setStatusOfType(Common.order_cancelled);
-		notification.setIdOfType(order.getOrderID());
-		notification.setType("order");
-
-		ret = notificationDao.insertNotification(notification);
-
-		return ret;
-	}
-
-	public int insertOwnerCancelOrderWhenUnpaid(Order order) {
-		int ret = 0;
-
-		Notification notification = new Notification();
-
-		notification.setActive(Common.activate);
-		notification.setCreateTime(Common.getCreateTime());
-		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
-		notification.setMessage("Đơn hàng #OD" + order.getOrderID()
-				+ " đã hủy!");
+		notification
+				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
+		notification.setMessage("Chủ hàng "
+				+ order.getDeal().getGoods().getOwner().getFirstName()
+				+ " đã hủy đơn hàng vận chuyển #OD" + order.getOrderID());
 		notification.setStatusOfType(Common.order_cancelled);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
@@ -240,6 +206,45 @@ public class NotificationProcess {
 				+ order.getDeal().getGoods().getOwner().getEmail()
 				+ " báo mất hàng. Mã hóa đơn: " + order.getOrderID() + ".");
 		notification.setStatusOfType(Common.order_delivered);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertStaffPayOrderForDriver(Order order) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(Common.getCreateTime());
+		notification
+				.setEmail(order.getDeal().getRoute().getDriver().getEmail());
+		notification.setMessage("Hệ thống đã chuyển tiền " + Common.formatNumber(order.getPrice())
+				+ " VNĐ cho quý khách.");
+		notification.setStatusOfType(Common.order_finish);
+		notification.setIdOfType(order.getOrderID());
+		notification.setType("order");
+
+		ret = notificationDao.insertNotification(notification);
+
+		return ret;
+	}
+
+	public int insertStaffRefundForOwner(Order order, double refundPrice) {
+		int ret = 0;
+
+		Notification notification = new Notification();
+
+		notification.setActive(Common.activate);
+		notification.setCreateTime(Common.getCreateTime());
+		notification.setEmail(order.getDeal().getGoods().getOwner().getEmail());
+		notification.setMessage("Hệ thống đã hoàn trả tiền " + Common.formatNumber(refundPrice)
+				+ " VNĐ cho quý khách.");
+		notification.setStatusOfType(Common.order_finish);
 		notification.setIdOfType(order.getOrderID());
 		notification.setType("order");
 
@@ -308,7 +313,7 @@ public class NotificationProcess {
 
 		return ret;
 	}
-
+	
 	public int insertSystemCancelDeal(Deal deal) {
 		int ret = 0;
 
@@ -352,12 +357,14 @@ public class NotificationProcess {
 		notification.setActive(Common.activate);
 		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(goods.getOwner().getEmail());
-		String pickupDate = Common.changeFormatDate(goods.getPickupTime(), "yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
-		String deliveryDate = Common.changeFormatDate(goods.getDeliveryTime(), "yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
+		String pickupDate = Common.changeFormatDate(goods.getPickupTime(),
+				"yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
+		String deliveryDate = Common.changeFormatDate(goods.getDeliveryTime(),
+				"yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
 		notification
-				.setMessage("Hệ thống đã tự động xóa hàng. Thời gian: " + pickupDate + " đến " + deliveryDate + ".<br/>Lộ trình: "
-						+ goods.getPickupAddress()
-						+ " - "
+				.setMessage("Hệ thống đã tự động xóa hàng. Thời gian: "
+						+ pickupDate + " đến " + deliveryDate
+						+ ".<br/>Lộ trình: " + goods.getPickupAddress() + " - "
 						+ goods.getDeliveryAddress());
 		notification.setStatusOfType(Common.deactivate);
 		notification.setIdOfType(goods.getGoodsID());
@@ -376,10 +383,16 @@ public class NotificationProcess {
 		notification.setActive(Common.activate);
 		notification.setCreateTime(Common.getCreateTime());
 		notification.setEmail(route.getDriver().getEmail());
-		String startDate = Common.changeFormatDate(route.getStartTime(), "yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
-		String finishDate = Common.changeFormatDate(route.getFinishTime(), "yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
+		String startDate = Common.changeFormatDate(route.getStartTime(),
+				"yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
+		String finishDate = Common.changeFormatDate(route.getFinishTime(),
+				"yyyy-MM-dd HH:mm:ss.SSS", "dd/MM/yyyy");
 		notification
-				.setMessage("Hệ thống đã tự động xóa tuyến đường vì quá hạn. Thời gian: " + startDate + " đến " + finishDate + ".<br/>Lộ trình: "
+				.setMessage("Hệ thống đã tự động xóa tuyến đường vì quá hạn. Thời gian: "
+						+ startDate
+						+ " đến "
+						+ finishDate
+						+ ".<br/>Lộ trình: "
 						+ route.getStartingAddress()
 						+ " - "
 						+ route.getDestinationAddress());
