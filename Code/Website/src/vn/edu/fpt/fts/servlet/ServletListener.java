@@ -17,12 +17,13 @@ import vn.edu.fpt.fts.process.Scheduler;
  */
 public class ServletListener implements ServletContextListener {
 	Scheduler scheduler = new Scheduler();
-
+	TimerTask ftsTimer = new FTSTimerTask();
+	Timer timer = new Timer();
+	
 	public void contextInitialized(ServletContextEvent arg0) {
 
 		System.out.println("Servlet Context is started....");
-		TimerTask ftsTimer = new FTSTimerTask();
-		Timer timer = new Timer();
+		
 		try {
 			// Each 15s run task
 			timer.schedule(ftsTimer, 1000, (15 * 1000));
@@ -37,6 +38,7 @@ public class ServletListener implements ServletContextListener {
 
 	public void contextDestroyed(ServletContextEvent arg0) {
 		System.out.println("Servlet Context is destroyed....");
+		timer.cancel();
 	}
 
 	class FTSTimerTask extends TimerTask {

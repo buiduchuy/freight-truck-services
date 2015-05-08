@@ -153,6 +153,8 @@ public class OrderAPI {
 			Order db_order = orderDao.getOrderByID(orderID);
 			if (db_order != null) {
 				ret = orderProcess.cancelOrder(orderID);
+				// Insert notification for Driver
+				notificationProcess.insertOwnerCancelOrder(db_order);
 			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
@@ -181,7 +183,7 @@ public class OrderAPI {
 
 			PaypalUtil paypalUtil = new PaypalUtil();
 			transactionID = paypalUtil.returnTransactionID(paypalID);
-			
+
 			payment.setPaypalID(transactionID);
 			payment.setPaypalAccount(paypalAccount);
 			payment.setDescription(description);
@@ -190,6 +192,9 @@ public class OrderAPI {
 
 			ret = orderDao.updateOrderStatusID(orderID, Common.order_paid);
 			paymentDao.insertPayment(payment);
+			// Insert notification for Driver
+			notificationProcess.insertOwnerPayOrder(orderDao
+					.getOrderByID(orderID));
 
 		} catch (Exception e) {
 			// TODO: handle exception

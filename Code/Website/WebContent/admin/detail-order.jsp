@@ -16,7 +16,7 @@
 <title>Chi tiết hóa đơn</title>
 <jsp:include page="header.jsp"></jsp:include>
 </head>
-<body onload="getLastID();getListNotification();">
+<body onload="getLastID();getListNotification();refundCalculation();">
 	<div id="wrapper">
 		<!-- Navigation -->
 		<jsp:include page="navigation-bar.jsp"></jsp:include>
@@ -33,9 +33,9 @@
 						<ol class="breadcrumb">
 							<li><i class="fa fa-dashboard"></i><a
 								href="ProcessServlet?btnAction=aIndex"> Dashboard</a></li>
-							<li class="active"><i class="fa fa-exchange"></i><a
+							<li class="active"><i class="fa fa-table"></i><a
 								href="ProcessServlet?btnAction=employeeManageOrder"> Quản lý
-									giao dịch</a></li>
+									hóa đơn</a></li>
 							<li>Chi tiết hóa đơn</li>
 						</ol>
 					</div>
@@ -139,10 +139,13 @@
 									<br />
 									<c:if test="${order.orderStatusID==4}">
 										<button class="btn btn-success" type="submit"
-											value="employeePay" name="btnAction"><i class="fa fa-paypal"></i> Thanh toán</button>
-										<button class="btn btn-warning" type="submit"
-											value="employeeRefund" name="btnAction"><i class="fa fa-undo"></i> Hoàn trả
-											tiền</button>
+											value="employeePay" name="btnAction">
+											<i class="fa fa-paypal"></i> Thanh toán
+										</button>
+										<button type="button" class="btn btn-warning"
+											data-toggle="modal" data-target="#myModal">
+											<i class="fa fa-undo"></i> Hoàn trả tiền
+										</button>
 									</c:if>
 									<a class="btn btn-primary"
 										href="ExportServlet?btnAction=exportOrder&orderID=${order.orderID}">
@@ -156,14 +159,75 @@
 				<!-- /.container-fluid -->
 			</div>
 			<!-- /#page-wrapper -->
-		</div>
-		<!-- /#wrapper -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+				aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="modal-title" id="myModalLabel">Hoàn trả tiền</h4>
+						</div>
+						<form id="integerForm" class="form-horizontal"
+							action="PaypalServlet" method="GET" accept-charset="UTF-8">
+							<div class="modal-body">
+								<div class="form-group">
+									<div class="col-sm-12">
+										<label class="col-sm-3">Giá trị ban đầu: </label>
+										<div class="col-sm-5">
+											<span class="form-control-static" id="originPrice" ><fmt:formatNumber
+												type="currency" pattern="###,###,###,###,###"
+												value="${order.price}" /> </span>nghìn đồng
+										</div>
+										<!-- <label class="col-sm-3 control-label">Khối lượng: </label>
+										<div class="col-sm-2">
+											<p class="form-control-static">${order.deal.goods.weight}
+												kg</p>
+										</div> -->
+										<input type="hidden" name="txtOrderID"
+											value="${order.orderID }" />
+									</div>
+									<div class="col-sm-12">
+									<label class="col-sm-3">Chi phí đền bù: </label>
+									<div class="col-sm-5">
+											<span class="form-control-static" id="compensation"></span> nghìn đồng
+										</div>
+									</div>
+									<div class="col-sm-12">
+									<label class="col-sm-3">Tổng cộng: </label>
+									<b class="col-sm-5"><span class="form-control-static" id="total"></span> nghìn đồng</b>
+									</div>
+									
+									<div class="col-sm-12">
+									<hr>
+										<label class="col-sm-4 control-label">Tỉ lệ hoàn trả (%)</label>
+										<div class="col-sm-3">
+											<input type="number" class="form-control"
+												name="txtRefundPercentage" id="refundPercentage"
+												placeholder="Phần trăm (%)" value="150">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Đóng</button>
+								<button type="submit" class="btn btn-primary"
+									value="employeeRefund" name="btnAction">Thực hiện</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- /#wrapper -->
 
-		<!-- jQuery -->
-		<script src="admin/js/jquery.js"></script>
+			<!-- jQuery -->
+			<script src="admin/js/jquery.js"></script>
 
-		<!-- Bootstrap Core JavaScript -->
-		<script src="admin/js/bootstrap.min.js"></script>
+			<!-- Bootstrap Core JavaScript -->
+			<script src="admin/js/bootstrap.min.js"></script>
 </body>
 
 </html>

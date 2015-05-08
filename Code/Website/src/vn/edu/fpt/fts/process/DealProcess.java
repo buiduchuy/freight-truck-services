@@ -13,6 +13,7 @@ import vn.edu.fpt.fts.dao.DealOrderDAO;
 import vn.edu.fpt.fts.dao.GoodsDAO;
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
+import vn.edu.fpt.fts.dao.RouteGoodsCategoryDAO;
 import vn.edu.fpt.fts.pojo.Deal;
 import vn.edu.fpt.fts.pojo.DealOrder;
 import vn.edu.fpt.fts.pojo.Order;
@@ -29,6 +30,7 @@ public class DealProcess {
 	GoodsDAO goodsDao = new GoodsDAO();
 	RouteDAO routeDao = new RouteDAO();
 	DealOrderDAO dealOrderDao = new DealOrderDAO();
+	RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
 	NotificationProcess notiProcess = new NotificationProcess();
 
 	public DealProcess() {
@@ -40,7 +42,8 @@ public class DealProcess {
 		try {
 			int goodsID = deal.getGoodsID();
 			int routeID = deal.getRouteID();
-			if (dealDao.getLastDealByGoodsAndRouteID(routeID, goodsID) == null) {
+			if (dealDao.getLastDealByGoodsAndRouteID(routeID, goodsID)
+					.getDealStatusID() != Common.deal_pending) {
 				// Insert new deal with accept status and CreateTime
 				int newDealID = dealDao.insertDeal(deal);
 
@@ -86,7 +89,7 @@ public class DealProcess {
 							if (item.getGoods().getWeight() >= remainPayloads
 									|| item.getGoods().getGoodsCategoryID() != goodsCategoryIDOfDealAccept) {
 								if (item.getCreateBy().equalsIgnoreCase(
-										deal.getCreateBy())) {
+										"driver")) {
 									cancelDeal1(item);
 								} else {
 									item.setCreateBy("driver");
@@ -192,7 +195,7 @@ public class DealProcess {
 							if (item.getGoods().getWeight() >= remainPayloads
 									|| item.getGoods().getGoodsCategoryID() != goodsCategoryIDOfDealAccept) {
 								if (item.getCreateBy().equalsIgnoreCase(
-										deal.getCreateBy())) {
+										"driver")) {
 									cancelDeal1(item);
 								} else {
 									item.setCreateBy("driver");
