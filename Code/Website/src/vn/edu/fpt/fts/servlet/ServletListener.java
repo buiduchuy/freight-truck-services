@@ -43,7 +43,7 @@ public class ServletListener implements ServletContextListener {
 
 		@Override
 		public void run() {
-			scheduler.orderScheduler();
+//			/                                                                                                                                                                                  
 			// scheduler.dealScheduler();
 			// scheduler.itemsScheduler();
 		}

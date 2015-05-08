@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
 import java.net.SocketImpl;
 import java.net.SocketTimeoutException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -382,23 +384,41 @@ public class CreateRoute extends Fragment {
 							getActivity().getBaseContext(),
 							"Vui lòng nhập đia điểm đi qua 1 trước khi nhập địa điểm đi qua 2",
 							Toast.LENGTH_SHORT).show();
-				} else {
-					Intent intent = getActivity().getIntent();
+				} else
+					try {
+						if (new GetTravelTime().execute(
+								start.getText().toString(),
+								end.getText().toString(),
+								p1.getText().toString(),
+								p2.getText().toString()).get() < 10) {
+							Toast.makeText(getActivity().getBaseContext(),
+									"Độ dài lộ trình phải lớn hơn 10 km.",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Intent intent = getActivity().getIntent();
 
-					intent.putExtra("start", start.getText().toString());
-					intent.putExtra("p1", p1.getText().toString());
-					intent.putExtra("p2", p2.getText().toString());
-					intent.putExtra("end", end.getText().toString());
+							intent.putExtra("start", start.getText().toString());
+							intent.putExtra("p1", p1.getText().toString());
+							intent.putExtra("p2", p2.getText().toString());
+							intent.putExtra("end", end.getText().toString());
 
-					intent.putExtra("sender", "createRoute");
-					FragmentManager mng = getActivity()
-							.getSupportFragmentManager();
-					FragmentTransaction trs = mng.beginTransaction();
-					CustomizeRoute frag1 = new CustomizeRoute();
-					trs.replace(R.id.content_frame, frag1);
-					trs.addToBackStack(null);
-					trs.commit();
-				}
+							intent.putExtra("sender", "createRoute");
+							FragmentManager mng = getActivity()
+									.getSupportFragmentManager();
+							FragmentTransaction trs = mng.beginTransaction();
+							CustomizeRoute frag1 = new CustomizeRoute();
+
+							trs.replace(R.id.content_frame, frag1);
+							trs.addToBackStack(null);
+							trs.commit();
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 		});
 		return v;
@@ -571,6 +591,63 @@ public class CreateRoute extends Fragment {
 
 		@Override
 		protected void onPostExecute(LatLng result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
+		}
+	}
+
+	private class GetTravelTime extends AsyncTask<String, Void, Integer> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetLatLng.class.getName());
+
+		@Override
+		protected Integer doInBackground(String... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
+					+ locations[0]
+					+ ", Vietnam"
+					+ "&destination="
+					+ locations[1] + ", Vietnam" + "&sensor=false";
+
+			if (!locations[2].equals("") || !locations[3].equals("")) {
+				googleMapUrl += "&waypoints=";
+				String waypoints = "";
+				if (p1 != null) {
+					waypoints += locations[2];
+				}
+				if (p2 != null) {
+					waypoints += "|";
+					waypoints += "|" + locations[3];
+				}
+				try {
+					waypoints = URLEncoder.encode(waypoints, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				googleMapUrl += waypoints;
+			}
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(
+								new HttpGet(googleMapUrl.replace(" ", "%20")),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse.get("routes");
+				JSONObject result = results.getJSONObject(0);
+				JSONObject distanceJSON = result.getJSONArray("legs")
+						.getJSONObject(0).getJSONObject("distance");
+				int distance = distanceJSON.getInt("value") / 1000;
+				ANDROID_HTTP_CLIENT.close();
+				return distance;
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return 0;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			ANDROID_HTTP_CLIENT.close();
@@ -774,6 +851,9 @@ public class CreateRoute extends Fragment {
 				trs.replace(R.id.content_frame, frag);
 				trs.addToBackStack(null);
 				trs.commit();
+			} else if (Integer.parseInt(response) == -1) {
+				Toast.makeText(getActivity(), "Đã có một lộ trình trong khoảng thời gian này. Vui lòng thay đổi thời gian chạy.",
+						Toast.LENGTH_SHORT).show();
 			} else {
 				Toast.makeText(getActivity(),
 						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
@@ -1117,188 +1197,257 @@ public class CreateRoute extends Fragment {
 							getActivity(),
 							"Điểm kết thúc chỉ dài tối đa 100 ký tự. Vui lòng nhập lại.",
 							Toast.LENGTH_SHORT).show();
-				} else if (startD.equals("")) {
-					Toast.makeText(getActivity(),
-							"Ngày bắt đầu không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else if (startHour.getText().toString().equals("")) {
-					Toast.makeText(getActivity(),
-							"Giờ bắt đầu không được để trống.",
-							Toast.LENGTH_SHORT).show();
-				} else if (endD.equals("")) {
-					Toast.makeText(getActivity(),
-							"Ngày kết thúc không được để trống.",
-							Toast.LENGTH_SHORT).show();
 				} else
 					try {
-						if (formatter.parse(startDate.getText().toString())
-								.compareTo(
-										formatter.parse(endDate.getText()
-												.toString())) > 0) {
-							Toast.makeText(
-									getActivity(),
-									"Ngày kết thúc không được sớm hơn ngày bắt đầu",
-									Toast.LENGTH_SHORT).show();
-						} else if (load.equals("")) {
+						if (new GetTravelTime().execute(startPoint, endPoint,
+								Point1, Point2).get() <= 10) {
 							Toast.makeText(getActivity(),
-									"Khối lượng chở không được để trống.",
+									"Độ dài lộ trình phải lớn hơn 10 km.",
 									Toast.LENGTH_SHORT).show();
-						} else if (Integer.parseInt(load) > 20000) {
+						} else if (startD.equals("")) {
 							Toast.makeText(getActivity(),
-									"Khối lượng chở không vượt quá 20 tấn",
+									"Ngày bắt đầu không được để trống.",
 									Toast.LENGTH_SHORT).show();
-						} else {
-							if (create.equals("")) {
-								if (Point1.equals("") && Point2.equals("")) {
-									GeocoderHelper helper = new GeocoderHelper(
-											getActivity());
-									ArrayList<String> list = helper
-											.getMiddlePoints(startPoint,
-													endPoint);
-									sp1 = list.get(0);
-									sp2 = list.get(1);
-									ConnectivityManager cm = (ConnectivityManager) getActivity()
-											.getSystemService(
-													Context.CONNECTIVITY_SERVICE);
-									NetworkInfo ni = cm.getActiveNetworkInfo();
-									if (ni == null) {
-										Toast.makeText(
-												getActivity().getBaseContext(),
-												"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
-												Toast.LENGTH_SHORT).show();
-									} else {
-										if (sp1.equals(sp2)) {
-											if (!sp1.equals(startPoint)
-													&& !sp1.equals(endPoint)) {
-												p1.setText(sp1);
+						} else if (startHour.getText().toString().equals("")) {
+							Toast.makeText(getActivity(),
+									"Giờ bắt đầu không được để trống.",
+									Toast.LENGTH_SHORT).show();
+						} else if (endD.equals("")) {
+							Toast.makeText(getActivity(),
+									"Ngày kết thúc không được để trống.",
+									Toast.LENGTH_SHORT).show();
+						} else
+							try {
+								if (formatter.parse(
+										startDate.getText().toString())
+										.compareTo(
+												formatter.parse(endDate
+														.getText().toString())) > 0) {
+									Toast.makeText(
+											getActivity(),
+											"Ngày kết thúc không được sớm hơn ngày bắt đầu",
+											Toast.LENGTH_SHORT).show();
+								} else if (load.equals("")) {
+									Toast.makeText(
+											getActivity(),
+											"Khối lượng chở không được để trống.",
+											Toast.LENGTH_SHORT).show();
+								} else if (Integer.parseInt(load) > 20000) {
+									Toast.makeText(
+											getActivity(),
+											"Khối lượng chở không vượt quá 20 tấn",
+											Toast.LENGTH_SHORT).show();
+								} else {
+									if (create.equals("")) {
+										if (Point1.equals("")
+												&& Point2.equals("")) {
+											GeocoderHelper helper = new GeocoderHelper(
+													getActivity());
+											ArrayList<String> list = helper
+													.getMiddlePoints(
+															startPoint,
+															endPoint);
+											sp1 = list.get(0);
+											sp2 = list.get(1);
+											ConnectivityManager cm = (ConnectivityManager) getActivity()
+													.getSystemService(
+															Context.CONNECTIVITY_SERVICE);
+											NetworkInfo ni = cm
+													.getActiveNetworkInfo();
+											if (ni == null) {
+												Toast.makeText(
+														getActivity()
+																.getBaseContext(),
+														"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
+														Toast.LENGTH_SHORT)
+														.show();
+											} else {
+												if (sp1.equals(sp2)) {
+													if (!sp1.equals(startPoint)
+															&& !sp1.equals(endPoint)) {
+														p1.setText(sp1);
+													}
+												} else {
+													if (!sp1.equals(startPoint)
+															&& !sp1.equals(endPoint)) {
+														p1.setText(sp1);
+													}
+													if (!sp2.equals(startPoint)
+															&& !sp2.equals(endPoint)) {
+														if (p1.getText()
+																.equals("")) {
+															p1.setText(sp2);
+														} else {
+															p2.setText(sp2);
+														}
+													}
+												}
+												show.setVisibility(View.GONE);
+												p1.setVisibility(View.VISIBLE);
+												p2.setVisibility(View.VISIBLE);
+												Intent intent = getActivity()
+														.getIntent();
+
+												intent.putExtra("start", start
+														.getText().toString());
+												intent.putExtra("p1", p1
+														.getText().toString());
+												intent.putExtra("p2", p2
+														.getText().toString());
+												intent.putExtra("end", end
+														.getText().toString());
+
+												intent.putExtra("sender",
+														"createRoute");
+												FragmentManager mng = getActivity()
+														.getSupportFragmentManager();
+												FragmentTransaction trs = mng
+														.beginTransaction();
+												CustomizeRoute frag1 = new CustomizeRoute();
+												trs.replace(R.id.content_frame,
+														frag1, "customizeRoute");
+												trs.addToBackStack("customizeRoute");
+												trs.commit();
 											}
 										} else {
-											if (!sp1.equals(startPoint)
-													&& !sp1.equals(endPoint)) {
-												p1.setText(sp1);
-											}
-											if (!sp2.equals(startPoint)
-													&& !sp2.equals(endPoint)) {
-												if (p1.getText().equals("")) {
-													p1.setText(sp2);
+											if (Point1.equals("")) {
+												Toast.makeText(
+														getActivity(),
+														"Địa điểm đi qua 1 không được để trống",
+														Toast.LENGTH_SHORT)
+														.show();
+											} else if (Point2.equals("")) {
+												Toast.makeText(
+														getActivity(),
+														"Địa điểm đi qua 2 không được để trống",
+														Toast.LENGTH_SHORT)
+														.show();
+											} else {
+												WebService ws = new WebService(
+														WebService.POST_TASK,
+														getActivity(),
+														"Đang xử lý ...");
+												ws.addNameValuePair(
+														"startingAddress",
+														startPoint);
+												ws.addNameValuePair(
+														"destinationAddress",
+														endPoint);
+												ws.addNameValuePair(
+														"routeMarkerLocation1",
+														Point1);
+												ws.addNameValuePair(
+														"routeMarkerLocation2",
+														Point2);
+												ws.addNameValuePair(
+														"startTime", startD);
+												ws.addNameValuePair(
+														"finishTime", endD);
+												ws.addNameValuePair("notes",
+														null);
+												if (spinner.getSelectedItem()
+														.toString()
+														.equals("kg")) {
+													ws.addNameValuePair(
+															"weight", load);
 												} else {
-													p2.setText(sp2);
+													load = String.valueOf((Integer
+															.parseInt(load) * 1000));
+													ws.addNameValuePair(
+															"weight", load);
 												}
+												ws.addNameValuePair(
+														"createTime", current);
+												ws.addNameValuePair("active",
+														"1");
+												ws.addNameValuePair(
+														"driverID",
+														getActivity()
+																.getIntent()
+																.getStringExtra(
+																		"driverID"));
+												ws.addNameValuePair("Food", fd);
+												ws.addNameValuePair("Freeze",
+														frz);
+												ws.addNameValuePair("Broken",
+														brk);
+												ws.addNameValuePair("Flame",
+														flm);
+												ws.execute(new String[] { SERVICE_URL });
+												create = "";
 											}
 										}
-										show.setVisibility(View.GONE);
-										p1.setVisibility(View.VISIBLE);
-										p2.setVisibility(View.VISIBLE);
-										Intent intent = getActivity()
-												.getIntent();
-
-										intent.putExtra("start", start
-												.getText().toString());
-										intent.putExtra("p1", p1.getText()
-												.toString());
-										intent.putExtra("p2", p2.getText()
-												.toString());
-										intent.putExtra("end", end.getText()
-												.toString());
-
-										intent.putExtra("sender", "createRoute");
-										FragmentManager mng = getActivity()
-												.getSupportFragmentManager();
-										FragmentTransaction trs = mng
-												.beginTransaction();
-										CustomizeRoute frag1 = new CustomizeRoute();
-										trs.replace(R.id.content_frame, frag1,
-												"customizeRoute");
-										trs.addToBackStack("customizeRoute");
-										trs.commit();
-									}
-								} else {
-									WebService ws = new WebService(
-											WebService.POST_TASK,
-											getActivity(), "Đang xử lý ...");
-									ws.addNameValuePair("startingAddress",
-											startPoint);
-									ws.addNameValuePair("destinationAddress",
-											endPoint);
-									ws.addNameValuePair("routeMarkerLocation1",
-											Point1);
-									ws.addNameValuePair("routeMarkerLocation2",
-											Point2);
-									ws.addNameValuePair("startTime", startD);
-									ws.addNameValuePair("finishTime", endD);
-									ws.addNameValuePair("notes", null);
-									if (spinner.getSelectedItem().toString()
-											.equals("kg")) {
-										ws.addNameValuePair("weight", load);
 									} else {
-										load = String.valueOf((Integer
-												.parseInt(load) * 1000));
-										ws.addNameValuePair("weight", load);
+										if (Point1.equals("")) {
+											Toast.makeText(
+													getActivity(),
+													"Địa điểm đi qua 1 không được để trống",
+													Toast.LENGTH_SHORT).show();
+										} else if (Point2.equals("")) {
+											Toast.makeText(
+													getActivity(),
+													"Địa điểm đi qua 2 không được để trống",
+													Toast.LENGTH_SHORT).show();
+										} else {
+											WebService ws = new WebService(
+													WebService.POST_TASK,
+													getActivity(),
+													"Đang xử lý ...");
+											ws.addNameValuePair(
+													"startingAddress",
+													startPoint);
+											ws.addNameValuePair(
+													"destinationAddress",
+													endPoint);
+											ws.addNameValuePair(
+													"routeMarkerLocation1",
+													Point1);
+											ws.addNameValuePair(
+													"routeMarkerLocation2",
+													Point2);
+											ws.addNameValuePair("startTime",
+													startD);
+											ws.addNameValuePair("finishTime",
+													endD);
+											ws.addNameValuePair("notes", null);
+											if (spinner.getSelectedItem()
+													.toString().equals("kg")) {
+												ws.addNameValuePair("weight",
+														load);
+											} else {
+												load = String.valueOf((Integer
+														.parseInt(load) * 1000));
+												ws.addNameValuePair("weight",
+														load);
+											}
+											ws.addNameValuePair("createTime",
+													current);
+											ws.addNameValuePair("active", "1");
+											ws.addNameValuePair(
+													"driverID",
+													getActivity().getIntent()
+															.getStringExtra(
+																	"driverID"));
+											ws.addNameValuePair("Food", fd);
+											ws.addNameValuePair("Freeze", frz);
+											ws.addNameValuePair("Broken", brk);
+											ws.addNameValuePair("Flame", flm);
+											ws.execute(new String[] { SERVICE_URL });
+											create = "";
+										}
 									}
-									ws.addNameValuePair("createTime", current);
-									ws.addNameValuePair("active", "1");
-									ws.addNameValuePair("driverID",
-											getActivity().getIntent()
-													.getStringExtra("driverID"));
-									ws.addNameValuePair("Food", fd);
-									ws.addNameValuePair("Freeze", frz);
-									ws.addNameValuePair("Broken", brk);
-									ws.addNameValuePair("Flame", flm);
-									ws.execute(new String[] { SERVICE_URL });
-									create = "";
 								}
-							} else {
-								if (Point1.equals("")) {
-									Toast.makeText(
-											getActivity(),
-											"Điểm đi qua 1 không được để trống.",
-											Toast.LENGTH_SHORT).show();
-								} else if (Point2.equals("")) {
-									Toast.makeText(
-											getActivity(),
-											"Điểm đi qua 2 không được để trống.",
-											Toast.LENGTH_SHORT).show();
-								}
-								else {
-									WebService ws = new WebService(
-											WebService.POST_TASK, getActivity(),
-											"Đang xử lý ...");
-									ws.addNameValuePair("startingAddress",
-											startPoint);
-									ws.addNameValuePair("destinationAddress",
-											endPoint);
-									ws.addNameValuePair("routeMarkerLocation1",
-											Point1);
-									ws.addNameValuePair("routeMarkerLocation2",
-											Point2);
-									ws.addNameValuePair("startTime", startD);
-									ws.addNameValuePair("finishTime", endD);
-									ws.addNameValuePair("notes", null);
-									if (spinner.getSelectedItem().toString()
-											.equals("kg")) {
-										ws.addNameValuePair("weight", load);
-									} else {
-										load = String.valueOf((Integer
-												.parseInt(load) * 1000));
-										ws.addNameValuePair("weight", load);
-									}
-									ws.addNameValuePair("createTime", current);
-									ws.addNameValuePair("active", "1");
-									ws.addNameValuePair("driverID", getActivity()
-											.getIntent().getStringExtra("driverID"));
-									ws.addNameValuePair("Food", fd);
-									ws.addNameValuePair("Freeze", frz);
-									ws.addNameValuePair("Broken", brk);
-									ws.addNameValuePair("Flame", flm);
-									ws.execute(new String[] { SERVICE_URL });
-									create = "";
-								}
+							} catch (NumberFormatException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-						}
-					} catch (NumberFormatException e) {
+					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (ParseException e) {
+					} catch (ExecutionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
