@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import vn.edu.fpt.fts.dao.OrderDAO;
 import vn.edu.fpt.fts.dao.OrderStatusDAO;
-import vn.edu.fpt.fts.pojo.Employee;
 import vn.edu.fpt.fts.pojo.Order;
 import vn.edu.fpt.fts.pojo.OrderStatus;
 import vn.edu.fpt.fts.pojo.Owner;
@@ -87,8 +86,6 @@ public class OrderServlet extends HttpServlet {
 				request.getRequestDispatcher("chi-tiet-order.jsp").forward(
 						request, response);
 			} else if (action.equalsIgnoreCase("employeeManageOrder")) {
-				Employee employee = (Employee) session.getAttribute("employee");
-				if (employee != null) {
 					List<Order> listOrder = orderDao.getTop10Order();
 					List<OrderStatus> listOrderStatus = orderStatusDao
 							.getAllOrderStatus();
@@ -98,10 +95,6 @@ public class OrderServlet extends HttpServlet {
 
 					request.getRequestDispatcher("admin/manage-order.jsp")
 							.forward(request, response);
-				} else {
-					request.getRequestDispatcher("login.jsp").forward(request,
-							response);
-				}
 			} else if (action.equalsIgnoreCase("searchOrderByID")) {
 				String orderIDStr = request.getParameter("txtSearch");
 				List<Order> list = new ArrayList<Order>();

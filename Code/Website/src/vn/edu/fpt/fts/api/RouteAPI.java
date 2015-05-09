@@ -64,61 +64,68 @@ public class RouteAPI {
 			route.setCreateTime(Common.getCreateTime());
 			route.setActive(Integer.valueOf(params.getFirst("active")));
 			route.setDriverID(Integer.valueOf(params.getFirst("driverID")));
+			System.out.println(route.getStartTime());
+			System.out.println(route.getFinishTime());
+			Route routeDB = routeDao.getLastActiveRouteByDriverID(route.getDriverID());
+			
+//			if (!routeProcess.checkTimeRouteOverlaps(route.getStartTime(), route.getFinishTime(), routeDB.getStartTime(), routeDB.getFinishTime())) {
 
-			ret = routeDao.insertRoute(route);
+				ret = routeDao.insertRoute(route);
 
-			// ------------------------------------------------------------------
-			RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
-			RouteMarker routeMarker = new RouteMarker();
-			routeMarker.setRouteID(ret);
+				// ------------------------------------------------------------------
+				RouteMarkerDAO routeMarkerDao = new RouteMarkerDAO();
+				RouteMarker routeMarker = new RouteMarker();
+				routeMarker.setRouteID(ret);
 
-			String marker1 = params.getFirst("routeMarkerLocation1");
-			String marker2 = params.getFirst("routeMarkerLocation2");
+				String marker1 = params.getFirst("routeMarkerLocation1");
+				String marker2 = params.getFirst("routeMarkerLocation2");
 
-			if (!marker1.isEmpty()) {
-				routeMarker.setNumbering(1);
-				routeMarker.setRouteMarkerLocation(marker1);
+				if (!marker1.isEmpty()) {
+					routeMarker.setNumbering(1);
+					routeMarker.setRouteMarkerLocation(marker1);
 
-				routeMarkerDao.insertRouteMarker(routeMarker);
-			}
-			if (!marker2.isEmpty()) {
-				routeMarker.setNumbering(2);
-				routeMarker.setRouteMarkerLocation(marker2);
+					routeMarkerDao.insertRouteMarker(routeMarker);
+				}
+				if (!marker2.isEmpty()) {
+					routeMarker.setNumbering(2);
+					routeMarker.setRouteMarkerLocation(marker2);
 
-				routeMarkerDao.insertRouteMarker(routeMarker);
-			}
-			// ------------------------------------------------------------------
+					routeMarkerDao.insertRouteMarker(routeMarker);
+				}
+				// ------------------------------------------------------------------
 
-			RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
-			RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
+				RouteGoodsCategoryDAO routeGoodsCategoryDao = new RouteGoodsCategoryDAO();
+				RouteGoodsCategory routeGoodsCategory = new RouteGoodsCategory();
 
-			routeGoodsCategory.setRouteID(ret);
+				routeGoodsCategory.setRouteID(ret);
 
-			// Get params category true/false
-			String goodsCategoryName = "";
-			if (Boolean.parseBoolean(params.getFirst("Food"))) {
-				goodsCategoryName = "Hàng thực phẩm";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
+				// Get params category true/false
+				String goodsCategoryName = "";
+				if (Boolean.parseBoolean(params.getFirst("Food"))) {
+					goodsCategoryName = "Hàng thực phẩm";
+					routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+							goodsCategoryName);
 
-			}
-			if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
-				goodsCategoryName = "Hàng đông lạnh";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
+				}
+				if (Boolean.parseBoolean(params.getFirst("Freeze"))) {
+					goodsCategoryName = "Hàng đông lạnh";
+					routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+							goodsCategoryName);
 
-			}
-			if (Boolean.parseBoolean(params.getFirst("Broken"))) {
-				goodsCategoryName = "Hàng dễ vỡ";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
-			}
-			if (Boolean.parseBoolean(params.getFirst("Flame"))) {
-				goodsCategoryName = "Hàng dễ cháy nổ";
-				routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
-						goodsCategoryName);
-			}
-
+				}
+				if (Boolean.parseBoolean(params.getFirst("Broken"))) {
+					goodsCategoryName = "Hàng dễ vỡ";
+					routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+							goodsCategoryName);
+				}
+				if (Boolean.parseBoolean(params.getFirst("Flame"))) {
+					goodsCategoryName = "Hàng dễ cháy nổ";
+					routeGoodsCategoryDao.insertRouteGoodsCategory(ret,
+							goodsCategoryName);
+				}
+//			} else {
+//				ret = -1;
+//			}
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			e.printStackTrace();

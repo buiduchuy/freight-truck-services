@@ -103,15 +103,6 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 				getActivity(), R.layout.autocomplete_item);
 
 		textView.setAdapter(searchAdapter);
-
-		textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// do something when the user clicks
-			}
-		});
 		
 		textView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

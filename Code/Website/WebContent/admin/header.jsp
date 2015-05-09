@@ -20,3 +20,4 @@
     <![endif]-->
     <script src="admin/js/jquery.js"></script>
 	<script src="admin/js/notify.js"></script>
+	<script src="admin/js/refundCalculation.js"></script>

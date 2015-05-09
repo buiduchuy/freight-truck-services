@@ -3,11 +3,13 @@
  */
 package vn.edu.fpt.fts.process;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import vn.edu.fpt.fts.common.Common;
 import vn.edu.fpt.fts.dao.DealDAO;
 import vn.edu.fpt.fts.dao.RouteDAO;
 import vn.edu.fpt.fts.dao.RouteGoodsCategoryDAO;
@@ -21,6 +23,13 @@ import vn.edu.fpt.fts.pojo.RouteMarker;
  */
 public class RouteProcess {
 	private final static String TAG = "RouteProcess";
+	
+	public static void main(String args[]) {
+		RouteProcess routeProcess = new RouteProcess();
+		RouteDAO routeD = new RouteDAO();
+		Route routeDB = routeD.getLastActiveRouteByDriverID(13);
+		System.out.println(routeProcess.checkTimeRouteOverlaps("05-06-2015 01:07", "05-08-2015", routeDB.getStartTime(), routeDB.getFinishTime()));
+	}
 
 	DealDAO dealDao = new DealDAO();
 	RouteDAO routeDao = new RouteDAO();
@@ -90,5 +99,27 @@ public class RouteProcess {
 			}
 		}
 		return ret;
+	}
+
+	public boolean checkTimeRouteOverlaps(String startDateClientString,
+			String finishDateClientString, String startDateDBString,
+			String finishDateDBString) {
+		
+		Date startDateClient = Common.convertStringToDate(Common
+				.changeFormatDate(startDateClientString, "MM-dd-yyyy HH:mm",
+						"MM-dd-yyyy"), "MM-dd-yyyy");
+		Date finishDateClient = Common.convertStringToDate(Common
+				.changeFormatDate(finishDateClientString, "MM-dd-yyyy",
+						"MM-dd-yyyy"), "MM-dd-yyyy");
+
+		Date startDateDB = Common.convertStringToDate(Common.changeFormatDate(
+				startDateDBString, "yyyy-MM-dd HH:mm:ss.SSS", "MM-dd-yyyy"),
+				"MM-dd-yyyy");
+		Date finishDateDB = Common.convertStringToDate(Common.changeFormatDate(
+				finishDateDBString, "yyyy-MM-dd HH:mm:ss.SSS", "MM-dd-yyyy"), "MM-dd-yyyy");
+
+		MatchingProcess matchingProcess = new MatchingProcess();
+		
+		return matchingProcess.checkTimeOverlaps(startDateClient, finishDateClient, startDateDB, finishDateDB);
 	}
 }
