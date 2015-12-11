@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -26,11 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.activity.GoodsDetailActivity;
-import vn.edu.fpt.fts.adapter.GoodsModelAdapter;
-import vn.edu.fpt.fts.classes.Goods;
-import vn.edu.fpt.fts.classes.GoodsModel;
-import vn.edu.fpt.fts.common.Common;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -45,83 +37,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import vn.edu.fpt.fts.activity.GoodsDetailActivity;
+import vn.edu.fpt.fts.adapter.GoodsModelAdapter;
+import vn.edu.fpt.fts.classes.GoodsModel;
+import vn.edu.fpt.fts.common.Common;
 
 public class GoodsFragment extends Fragment {
-	private ListView listView;
-	// private ArrayAdapter<String> adapter;
-	private GoodsModelAdapter adapter;
-	private String ownerid;
-	private List<String> goodsID, goodsCategoryID;
-	private TextView tvGone;
-
-	@Override
-	public View onCreateView(LayoutInflater inflater,
-			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		View rootView = inflater.inflate(R.layout.fragment_goods, container,
-				false);
-
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
-				getActivity(), "Đang xử lý...");
-		String url = Common.IP_URL + Common.Service_Goods_Get;
-		SharedPreferences preferences = getActivity().getSharedPreferences(
-				"MyPrefs", Context.MODE_PRIVATE);
-		ownerid = preferences.getString("ownerID", "");
-		wst.addNameValuePair("ownerID", ownerid);
-		// wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-				new String[] { url });
-
-		goodsID = new ArrayList<String>();
-		goodsCategoryID = new ArrayList<String>();
-
-		listView = (ListView) rootView.findViewById(R.id.listview_goods);
-
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				int pos = listView.getPositionForView(view);
-
-				Intent intent = new Intent(view.getContext(),
-						GoodsDetailActivity.class);
-				String tmp = goodsCategoryID.get(pos);
-				String tmp2 = goodsID.get(pos);
-
-				intent.putExtra("goodsID", goodsID.get(pos));
-				intent.putExtra("goodsCategoryID", goodsCategoryID.get(pos));
-
-				startActivity(intent);
-			}
-		});
-
-		return rootView;
-	}
-
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 10000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebServiceTask(int taskType, Context mContext,
 				String processMessage) {
@@ -136,24 +79,7 @@ public class GoodsFragment extends Fragment {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 
 			String url = urls[0];
@@ -180,6 +106,71 @@ public class GoodsFragment extends Fragment {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -308,70 +299,75 @@ public class GoodsFragment extends Fragment {
 
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
 
-			HttpParams htpp = new BasicHttpParams();
+			showProgressDialog();
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 
-			HttpResponse response = null;
+		}
 
-			try {
-				switch (taskType) {
+	}
+	// private ArrayAdapter<String> adapter;
+	private GoodsModelAdapter adapter;
+	private List<String> goodsID, goodsCategoryID;
+	private ListView listView;
+	private String ownerid;
 
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
+	private TextView tvGone;
 
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
+	@Override
+	public View onCreateView(LayoutInflater inflater,
+			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		View rootView = inflater.inflate(R.layout.fragment_goods, container,
+				false);
 
-				Log.e(TAG, e.getLocalizedMessage(), e);
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
+				getActivity(), "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_Goods_Get;
+		SharedPreferences preferences = getActivity().getSharedPreferences(
+				"MyPrefs", Context.MODE_PRIVATE);
+		ownerid = preferences.getString("ownerID", "");
+		wst.addNameValuePair("ownerID", ownerid);
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
+		goodsID = new ArrayList<String>();
+		goodsCategoryID = new ArrayList<String>();
+
+		listView = (ListView) rootView.findViewById(R.id.listview_goods);
+
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				int pos = listView.getPositionForView(view);
+
+				Intent intent = new Intent(view.getContext(),
+						GoodsDetailActivity.class);
+				String tmp = goodsCategoryID.get(pos);
+				String tmp2 = goodsID.get(pos);
+
+				intent.putExtra("goodsID", goodsID.get(pos));
+				intent.putExtra("goodsCategoryID", goodsCategoryID.get(pos));
+
+				startActivity(intent);
 			}
+		});
 
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
-		}
-
+		return rootView;
 	}
 }

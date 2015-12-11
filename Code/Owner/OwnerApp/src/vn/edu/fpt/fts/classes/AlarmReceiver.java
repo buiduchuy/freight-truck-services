@@ -22,11 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.activity.DealDetailActivity;
-import vn.edu.fpt.fts.activity.MainActivity;
-import vn.edu.fpt.fts.activity.OrderDetailActivity;
-import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.fragment.R;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -37,52 +32,33 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import vn.edu.fpt.fts.activity.DealDetailActivity;
+import vn.edu.fpt.fts.activity.MainActivity;
+import vn.edu.fpt.fts.activity.OrderDetailActivity;
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.fragment.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
-	Context con;
-	private static int oldSize, newSize;
-	String email, ownerID;
-	private static ArrayList<ListItem> list = new ArrayList<ListItem>();
-	
-
-	private static final String SERVICE_URL = Common.IP_URL
-			+ Common.Service_Notification_getNotificationByEmail;
-
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		con = context;
-		WebService ws = new WebService(WebService.POST_TASK, context,
-				"Đang lấy dữ liệu ...");
-		SharedPreferences preferences = context.getSharedPreferences("MyPrefs",
-				Context.MODE_PRIVATE);
-		email = preferences.getString("email", "");
-		ownerID = preferences.getString("ownerID", "");
-		ws.addNameValuePair("email", email);
-		ws.execute(new String[] { SERVICE_URL });
-
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 100000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -96,16 +72,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String result = "";
 			String url = urls[0];
@@ -127,6 +94,69 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 			}
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -202,71 +232,25 @@ public class AlarmReceiver extends BroadcastReceiver {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-
-			}
-
-			// Return full string
-			return total.toString();
 		}
 	}
-
+	private static ArrayList<ListItem> list = new ArrayList<ListItem>();
+	private static int oldSize, newSize;
+	private static final String SERVICE_URL = Common.IP_URL
+			+ Common.Service_Notification_getNotificationByEmail;
 	
+
+	Context con;
+
+	String email, ownerID;
 
 	public void displayNotification() {
 		String contentText = list.get(0).getMessage();
@@ -301,6 +285,23 @@ public class AlarmReceiver extends BroadcastReceiver {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		mNotificationManager.notify(id, mBuilder.build());
+	}
+
+	
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		// TODO Auto-generated method stub
+		con = context;
+		WebService ws = new WebService(WebService.POST_TASK, context,
+				"Đang lấy dữ liệu ...");
+		SharedPreferences preferences = context.getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		email = preferences.getString("email", "");
+		ownerID = preferences.getString("ownerID", "");
+		ws.addNameValuePair("email", email);
+		ws.execute(new String[] { SERVICE_URL });
+
 	}
 
 	

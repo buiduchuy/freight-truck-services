@@ -3,23 +3,23 @@ package vn.edu.fpt.fts.classes;
 import java.io.Serializable;
 
 public class Goods implements Serializable{
-	private int GoodsID;
-	private int Weight;
-	private double Price;
-	private String PickupTime;
-	private String PickupAddress;
-	private String DeliveryTime;
-	private String DeliveryAddress;
-	private float PickupMarkerLongtitude;
-	private float PickupMarkerLatidute;
-	private float DeliveryMarkerLongtitude;
-	private float DeliveryMarkerLatidute;
-	private String Notes;
-	private String CreateTime;
 	private int Active;
-	private int OwnerID;
-	private int GoodsCategoryID;
+	private String CreateTime;
+	private String DeliveryAddress;
+	private float DeliveryMarkerLatidute;
+	private float DeliveryMarkerLongtitude;
+	private String DeliveryTime;
 	private String GoodsCategory;
+	private int GoodsCategoryID;
+	private int GoodsID;
+	private String Notes;
+	private int OwnerID;
+	private String PickupAddress;
+	private float PickupMarkerLatidute;
+	private float PickupMarkerLongtitude;
+	private String PickupTime;
+	private double Price;
+	private int Weight;
 	
 	public Goods() {
 		// TODO Auto-generated constructor stub
@@ -51,140 +51,140 @@ public class Goods implements Serializable{
 		this.GoodsCategory = GoodsCategory;
 	}
 
-	public int getGoodsID() {
-		return GoodsID;
-	}
-
-	public void setGoodsID(int goodsID) {
-		GoodsID = goodsID;
-	}
-
-	public int getWeight() {
-		return Weight;
-	}
-
-	public void setWeight(int weight) {
-		Weight = weight;
-	}
-
-	public double getPrice() {
-		return Price;
-	}
-
-	public void setPrice(double price) {
-		Price = price;
-	}
-
-	public String getPickupTime() {
-		return PickupTime;
-	}
-
-	public void setPickupTime(String pickupTime) {
-		PickupTime = pickupTime;
-	}
-
-	public String getPickupAddress() {
-		return PickupAddress;
-	}
-
-	public void setPickupAddress(String pickupAddress) {
-		PickupAddress = pickupAddress;
-	}
-
-	public String getDeliveryTime() {
-		return DeliveryTime;
-	}
-
-	public void setDeliveryTime(String deliveryTime) {
-		DeliveryTime = deliveryTime;
-	}
-
-	public String getDeliveryAddress() {
-		return DeliveryAddress;
-	}
-
-	public void setDeliveryAddress(String deliveryAddress) {
-		DeliveryAddress = deliveryAddress;
-	}
-
-	public float getPickupMarkerLongtitude() {
-		return PickupMarkerLongtitude;
-	}
-
-	public void setPickupMarkerLongtitude(float pickupMarkerLongtitude) {
-		PickupMarkerLongtitude = pickupMarkerLongtitude;
-	}
-
-	public float getPickupMarkerLatidute() {
-		return PickupMarkerLatidute;
-	}
-
-	public void setPickupMarkerLatidute(float pickupMarkerLatidute) {
-		PickupMarkerLatidute = pickupMarkerLatidute;
-	}
-
-	public float getDeliveryMarkerLongtitude() {
-		return DeliveryMarkerLongtitude;
-	}
-
-	public void setDeliveryMarkerLongtitude(float deliveryMarkerLongtitude) {
-		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
-	}
-
-	public float getDeliveryMarkerLatidute() {
-		return DeliveryMarkerLatidute;
-	}
-
-	public void setDeliveryMarkerLatidute(float deliveryMarkerLatidute) {
-		DeliveryMarkerLatidute = deliveryMarkerLatidute;
-	}
-
-	public String getNotes() {
-		return Notes;
-	}
-
-	public void setNotes(String notes) {
-		Notes = notes;
+	public int getActive() {
+		return Active;
 	}
 
 	public String getCreateTime() {
 		return CreateTime;
 	}
 
-	public void setCreateTime(String createTime) {
-		CreateTime = createTime;
+	public String getDeliveryAddress() {
+		return DeliveryAddress;
 	}
 
-	public int getActive() {
-		return Active;
+	public float getDeliveryMarkerLatidute() {
+		return DeliveryMarkerLatidute;
 	}
 
-	public void setActive(int active) {
-		Active = active;
+	public float getDeliveryMarkerLongtitude() {
+		return DeliveryMarkerLongtitude;
 	}
 
-	public int getOwnerID() {
-		return OwnerID;
-	}
-
-	public void setOwnerID(int ownerID) {
-		OwnerID = ownerID;
-	}
-
-	public int getGoodsCategoryID() {
-		return GoodsCategoryID;
-	}
-
-	public void setGoodsCategoryID(int goodsCategoryID) {
-		GoodsCategoryID = goodsCategoryID;
+	public String getDeliveryTime() {
+		return DeliveryTime;
 	}
 
 	public String getGoodsCategory() {
 		return GoodsCategory;
 	}
 
+	public int getGoodsCategoryID() {
+		return GoodsCategoryID;
+	}
+
+	public int getGoodsID() {
+		return GoodsID;
+	}
+
+	public String getNotes() {
+		return Notes;
+	}
+
+	public int getOwnerID() {
+		return OwnerID;
+	}
+
+	public String getPickupAddress() {
+		return PickupAddress;
+	}
+
+	public float getPickupMarkerLatidute() {
+		return PickupMarkerLatidute;
+	}
+
+	public float getPickupMarkerLongtitude() {
+		return PickupMarkerLongtitude;
+	}
+
+	public String getPickupTime() {
+		return PickupTime;
+	}
+
+	public double getPrice() {
+		return Price;
+	}
+
+	public int getWeight() {
+		return Weight;
+	}
+
+	public void setActive(int active) {
+		Active = active;
+	}
+
+	public void setCreateTime(String createTime) {
+		CreateTime = createTime;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		DeliveryAddress = deliveryAddress;
+	}
+
+	public void setDeliveryMarkerLatidute(float deliveryMarkerLatidute) {
+		DeliveryMarkerLatidute = deliveryMarkerLatidute;
+	}
+
+	public void setDeliveryMarkerLongtitude(float deliveryMarkerLongtitude) {
+		DeliveryMarkerLongtitude = deliveryMarkerLongtitude;
+	}
+
+	public void setDeliveryTime(String deliveryTime) {
+		DeliveryTime = deliveryTime;
+	}
+
 	public void setGoodsCategory(String goodsCategory) {
 		GoodsCategory = goodsCategory;
+	}
+
+	public void setGoodsCategoryID(int goodsCategoryID) {
+		GoodsCategoryID = goodsCategoryID;
+	}
+
+	public void setGoodsID(int goodsID) {
+		GoodsID = goodsID;
+	}
+
+	public void setNotes(String notes) {
+		Notes = notes;
+	}
+
+	public void setOwnerID(int ownerID) {
+		OwnerID = ownerID;
+	}
+
+	public void setPickupAddress(String pickupAddress) {
+		PickupAddress = pickupAddress;
+	}
+
+	public void setPickupMarkerLatidute(float pickupMarkerLatidute) {
+		PickupMarkerLatidute = pickupMarkerLatidute;
+	}
+
+	public void setPickupMarkerLongtitude(float pickupMarkerLongtitude) {
+		PickupMarkerLongtitude = pickupMarkerLongtitude;
+	}
+
+	public void setPickupTime(String pickupTime) {
+		PickupTime = pickupTime;
+	}
+
+	public void setPrice(double price) {
+		Price = price;
+	}
+
+	public void setWeight(int weight) {
+		Weight = weight;
 	}
 	
 	

@@ -14,17 +14,17 @@ public class ListItem {
 	public String getIdOfType() {
 		return idOfType;
 	}
-	public void setIdOfType(String idOfType) {
-		this.idOfType = idOfType;
-	}
 	public String getMessage() {
 		return message;
 	}
-	public void setMessage(String message) {
-		this.message = message;
-	}
 	public String getType() {
 		return type;
+	}
+	public void setIdOfType(String idOfType) {
+		this.idOfType = idOfType;
+	}
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	public void setType(String type) {
 		this.type = type;

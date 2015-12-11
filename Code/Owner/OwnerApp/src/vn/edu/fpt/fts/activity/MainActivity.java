@@ -20,11 +20,6 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
-import vn.edu.fpt.fts.classes.AlarmReceiver;
-import vn.edu.fpt.fts.classes.OrderAlarmReceiver;
-import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -42,22 +37,182 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
+import vn.edu.fpt.fts.adapter.TabsPagerAdapter;
+import vn.edu.fpt.fts.classes.AlarmReceiver;
+import vn.edu.fpt.fts.classes.OrderAlarmReceiver;
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.fragment.R;
 
 public class MainActivity extends FragmentActivity implements TabListener {
 
-	private ViewPager viewPager;
-	private TabsPagerAdapter mAdapter;
-	ColorDrawable colorDrawable;
+	private class WebServiceTask extends AsyncTask<String, Integer, String> {
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 10000;
+
+		private static final String TAG = "WebServiceTask";
+
+		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
+		private String processMessage = "Processing...";
+
+		private int taskType = GET_TASK;
+
+		public WebServiceTask(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			if (response.contains("firstName")) {
+				try {
+					JSONObject jsonObject = new JSONObject(response);
+					String ownerName = jsonObject.getString("firstName");
+					actionBar.setTitle("FTS Owner - " + ownerName);
+					SharedPreferences preferences = getSharedPreferences("MyPrefs",
+							Context.MODE_PRIVATE);
+					SharedPreferences.Editor editor = preferences.edit();
+					editor.putString("ownerName", ownerName);					
+					editor.commit();
+				} catch (JSONException e) {
+					// TODO: handle exception
+				}							
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		private void showProgressDialog() {
+
+		}
+	}
 	private ActionBar actionBar;
-	private String[] tabs = { "Hàng hóa", "Đơn hàng" };
 	private AlarmManager alarmManager, alarmManager2;
+	ColorDrawable colorDrawable;
+	private TabsPagerAdapter mAdapter;
 	private PendingIntent pendingIntent, pendingIntent2;
+	private String[] tabs = { "Hàng hóa", "Đơn hàng" };
+
+	private ViewPager viewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +249,6 @@ public class MainActivity extends FragmentActivity implements TabListener {
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			@Override
-			public void onPageSelected(int position) {
-				// TODO Auto-generated method stub
-				actionBar.setSelectedNavigationItem(position);
-			}
-
-			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				// TODO Auto-generated method stub
 
@@ -109,6 +258,12 @@ public class MainActivity extends FragmentActivity implements TabListener {
 			public void onPageScrollStateChanged(int arg0) {
 				// TODO Auto-generated method stub
 
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+				// TODO Auto-generated method stub
+				actionBar.setSelectedNavigationItem(position);
 			}
 		});
 
@@ -147,6 +302,15 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	}
 
 	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -179,12 +343,9 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
+
 	}
 
 	@Override
@@ -198,169 +359,5 @@ public class MainActivity extends FragmentActivity implements TabListener {
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private class WebServiceTask extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
-
-		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
-
-		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 10000;
-
-		private int taskType = GET_TASK;
-		private Context mContext = null;
-		private String processMessage = "Processing...";
-
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
-
-		public WebServiceTask(int taskType, Context mContext,
-				String processMessage) {
-
-			this.taskType = taskType;
-			this.mContext = mContext;
-			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
-		}
-
-		private void showProgressDialog() {
-
-		}
-
-		@Override
-		protected void onPreExecute() {
-
-			showProgressDialog();
-
-		}
-
-		protected String doInBackground(String... urls) {
-
-			String url = urls[0];
-			String result = "";
-
-			HttpResponse response = doResponse(url);
-
-			if (response == null) {
-				return result;
-			} else {
-
-				try {
-
-					result = inputStreamToString(response.getEntity()
-							.getContent());
-
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-				}
-
-			}
-
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String response) {
-			// Xu li du lieu tra ve sau khi insert thanh cong
-			// handleResponse(response);
-			if (response.contains("firstName")) {
-				try {
-					JSONObject jsonObject = new JSONObject(response);
-					String ownerName = jsonObject.getString("firstName");
-					actionBar.setTitle("FTS Owner - " + ownerName);
-					SharedPreferences preferences = getSharedPreferences("MyPrefs",
-							Context.MODE_PRIVATE);
-					SharedPreferences.Editor editor = preferences.edit();
-					editor.putString("ownerName", ownerName);					
-					editor.commit();
-				} catch (JSONException e) {
-					// TODO: handle exception
-				}							
-			}
-		}
-
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
-
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
-		}
-
-		private HttpResponse doResponse(String url) {
-
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
-
-				Log.e(TAG, e.getLocalizedMessage(), e);
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
-		}
 	}
 }

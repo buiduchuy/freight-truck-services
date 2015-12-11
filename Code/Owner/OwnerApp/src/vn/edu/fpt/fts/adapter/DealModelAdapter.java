@@ -2,14 +2,14 @@ package vn.edu.fpt.fts.adapter;
 
 import java.util.ArrayList;
 
-import vn.edu.fpt.fts.classes.DealModel;
-import vn.edu.fpt.fts.fragment.R;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import vn.edu.fpt.fts.classes.DealModel;
+import vn.edu.fpt.fts.fragment.R;
 
 public class DealModelAdapter extends ArrayAdapter<DealModel> {
 	private final Context context;

@@ -1,9 +1,6 @@
 package vn.edu.fpt.fts.classes;
 
 
-import vn.edu.fpt.fts.activity.CreateGoodsActivity;
-import vn.edu.fpt.fts.fragment.R;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -13,10 +10,10 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import vn.edu.fpt.fts.activity.CreateGoodsActivity;
+import vn.edu.fpt.fts.fragment.R;
 
 public class ConfirmCreateDialog extends DialogFragment {
-	private Goods goods;
-
 	public static ConfirmCreateDialog newInstance(Goods goods) {
 		ConfirmCreateDialog dialog = new ConfirmCreateDialog();
 		Bundle args = new Bundle();
@@ -31,6 +28,8 @@ public class ConfirmCreateDialog extends DialogFragment {
 		dialog.setArguments(args);
 		return dialog;
 	}
+
+	private Goods goods;
 
 	@Override
 	@NonNull

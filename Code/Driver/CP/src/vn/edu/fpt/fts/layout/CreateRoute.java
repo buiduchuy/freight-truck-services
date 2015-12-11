@@ -5,21 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.SocketException;
-import java.net.SocketImpl;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -38,24 +30,15 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.drawer.MyDatePickerDialog;
-import vn.edu.fpt.fts.drawer.MyTimePickerDialog;
-import vn.edu.fpt.fts.helper.Common;
-import vn.edu.fpt.fts.helper.GeocoderHelper;
-import vn.edu.fpt.fts.helper.JSONParser;
-import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -63,7 +46,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -72,7 +54,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,7 +63,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -90,474 +70,252 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
+import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.MyDatePickerDialog;
+import vn.edu.fpt.fts.drawer.MyTimePickerDialog;
+import vn.edu.fpt.fts.helper.Common;
+import vn.edu.fpt.fts.helper.GeocoderHelper;
+import vn.edu.fpt.fts.helper.JSONParser;
+import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
 public class CreateRoute extends Fragment {
 
-	EditText startDate;
-	EditText startHour;
-	EditText endDate;
-	AutoCompleteTextView start;
-	AutoCompleteTextView p1;
-	AutoCompleteTextView p2;
-	AutoCompleteTextView end;
-	PlacesAutoCompleteAdapter startAdapter;
-	PlacesAutoCompleteAdapter p1Adapter;
-	PlacesAutoCompleteAdapter p2Adapter;
-	PlacesAutoCompleteAdapter endAdapter;
-	Spinner spinner;
-	TextView show;
-	CheckBox check1;
-	CheckBox check2;
-	CheckBox check3;
-	TextView link;
-	CheckBox frozen;
-	CheckBox broken;
-	CheckBox flammable;
-	CheckBox food;
-	EditText payload;
-	View v;
-	ArrayList<LatLng> locations;
-	String startString = "";
-	String p1String = "";
-	String p2String = "";
-	String endString = "";
-	String startPoint, endPoint, Point1, Point2, startD, endD, brk, flm, frz,
-			fd, load, current;
-	ArrayList<String> pos = new ArrayList<String>();
-	Calendar cal = Calendar.getInstance();
-	LocationManager locationManager;
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Route/Create";
-	String create = "";
+	private class CalculateMiddlePoints extends
+			AsyncTask<String, String, String> {
 
-	public void setString(String create) {
-		this.create = create;
-	}
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
 
-	MyDatePickerDialog dialog1 = null, dialog2 = null;
-	MyTimePickerDialog dialog3 = null;
+		public static final int POST_TASK = 1;
 
-	String sp1, sp2;
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 30000;
 
-	@Override
-	public void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		Fragment fragment = getActivity().getSupportFragmentManager()
-				.findFragmentByTag("createRoute");
-		if (fragment != null) {
-			getActivity().getSupportFragmentManager()
-					.findFragmentByTag("createRoute").setRetainInstance(true);
+		private static final String TAG = "WebServiceTask";
+
+		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
+		private String processMessage = "Processing...";
+
+		private int taskType = GET_TASK;
+
+		public CalculateMiddlePoints(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
 		}
-	}
 
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		Intent intent = getActivity().getIntent();
-		locations = (ArrayList<LatLng>) intent
-				.getSerializableExtra("markerList");
-		if (locations == null || locations.size() == 0) {
-			getActivity().getSupportFragmentManager()
-					.findFragmentByTag("createRoute").getRetainInstance();
-		} else {
-			for (LatLng p : locations) {
-				try {
-					String address = new GetAddress().execute(p.latitude,
-							p.longitude).get();
-					pos.add(address);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			if (pos.size() == 3) {
-				if (intent.getBooleanExtra("change", false) == true) {
-					p1.setText(pos.get(1));
-				}
-				show.setVisibility(View.GONE);
-				p1.setVisibility(View.VISIBLE);
-				p2.setVisibility(View.VISIBLE);
-			} else if (pos.size() == 4) {
-				boolean change = getActivity().getIntent().getBooleanExtra(
-						"change", false);
-				if (change) {
-					p1.setText(pos.get(1));
-					p2.setText(pos.get(2));
-				}
-				show.setVisibility(View.GONE);
-				p1.setVisibility(View.VISIBLE);
-				p2.setVisibility(View.VISIBLE);
-			}
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
 		}
-		intent.removeExtra("markerList");
-		intent.removeExtra("change");
-		pos.clear();
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
-	}
-
-	@Override
-	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onViewCreated(view, savedInstanceState);
-		locationManager = (LocationManager) getActivity().getSystemService(
-				Context.LOCATION_SERVICE);
-		LocationListener locationListener = new LocationListener() {
-			public void onLocationChanged(Location location) {
-				String current;
-				try {
-					current = new GetAddress().execute(location.getLatitude(),
-							location.getLongitude()).get();
-					if (start.getText().toString().equals("")) {
-						start.setText(current);
-					}
-					locationManager.removeUpdates(this);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-			}
-
-			public void onProviderEnabled(String provider) {
-			}
-
-			public void onProviderDisabled(String provider) {
-			}
-		};
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				0, locationListener);
-	}
-
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		getActivity().getActionBar().setNavigationMode(
-				ActionBar.NAVIGATION_MODE_STANDARD);
-		getActivity().getActionBar().setDisplayOptions(
-				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
-						| ActionBar.DISPLAY_HOME_AS_UP);
-		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
-		getActivity().getActionBar().setTitle("Lộ trình mới");
-
-		v = inflater.inflate(R.layout.activity_create_route, container, false);
-		show = (TextView) v.findViewById(R.id.textView2);
-		startDate = (EditText) v.findViewById(R.id.editText2);
-		startHour = (EditText) v.findViewById(R.id.editText3);
-		payload = (EditText) v.findViewById(R.id.editText8);
-		cal = Calendar.getInstance();
-		String date = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) + "/"
-				+ String.valueOf(cal.get(Calendar.MONTH) + 1) + "/"
-				+ String.valueOf(cal.get(Calendar.YEAR)));
-		startDate.setText(date);
-		endDate = (EditText) v.findViewById(R.id.editText4);
-		link = (TextView) v.findViewById(R.id.textView7);
-		spinner = (Spinner) v.findViewById(R.id.spinner);
-
-		List<String> list = new ArrayList<String>();
-		list.add("kg");
-		list.add("tấn");
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
-				getActivity(), android.R.layout.simple_spinner_item, list);
-		spinner.setAdapter(dataAdapter);
-
-		frozen = (CheckBox) v.findViewById(R.id.checkBox1);
-		broken = (CheckBox) v.findViewById(R.id.checkBox2);
-		flammable = (CheckBox) v.findViewById(R.id.checkBox3);
-		food = (CheckBox) v.findViewById(R.id.checkBox4);
-
-		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.autocomplete_item);
-		p1Adapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.autocomplete_item);
-		p2Adapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.autocomplete_item);
-		endAdapter = new PlacesAutoCompleteAdapter(getActivity(),
-				R.layout.autocomplete_item);
-		start = (AutoCompleteTextView) v.findViewById(R.id.start);
-		p1 = (AutoCompleteTextView) v.findViewById(R.id.point1);
-		p2 = (AutoCompleteTextView) v.findViewById(R.id.point2);
-		end = (AutoCompleteTextView) v.findViewById(R.id.end);
-
-		start.setAdapter(startAdapter);
-		p1.setAdapter(p1Adapter);
-		p2.setAdapter(p2Adapter);
-		end.setAdapter(endAdapter);
-
-		show.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				show.setVisibility(View.GONE);
-				p1.setVisibility(View.VISIBLE);
-				p2.setVisibility(View.VISIBLE);
-			}
-		});
-
-		startDate.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (dialog1 == null) {
-					dialog1 = new MyDatePickerDialog(getActivity(),
-							startListener, cal.get(Calendar.YEAR), cal
-									.get(Calendar.MONTH), cal
-									.get(Calendar.DATE), "Ngày bắt đầu");
-					DatePicker picker = dialog1.getDatePicker();
-					Calendar calendar = Calendar.getInstance();
-					picker.setMinDate(calendar.getTimeInMillis() - 1000);
-					calendar.add(Calendar.MONTH, 1);
-					picker.setMaxDate(calendar.getTimeInMillis());
-				}
-				dialog1.show();
-			}
-		});
-
-		startHour.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.HOUR_OF_DAY, 6);
-				if (dialog3 == null) {
-					dialog3 = new MyTimePickerDialog(getActivity(),
-							startHourListener, cal.get(Calendar.HOUR_OF_DAY),
-							cal.get(Calendar.MINUTE), true, "Giờ bắt đầu");
-					dialog3.setTitle("Giờ bắt đầu");
-				}
-				dialog3.show();
-			}
-		});
-
-		endDate.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (dialog2 == null) {
-					dialog2 = new MyDatePickerDialog(getActivity(),
-							endListener, cal.get(Calendar.YEAR), cal
-									.get(Calendar.MONTH), cal
-									.get(Calendar.DATE), "Ngày kết thúc");
-					DatePicker picker = dialog2.getDatePicker();
-					Calendar calendar = Calendar.getInstance();
-					picker.setMinDate(calendar.getTimeInMillis() - 1000);
-					calendar.add(Calendar.MONTH, 1);
-					picker.setMaxDate(calendar.getTimeInMillis());
-				}
-				dialog2.show();
-			}
-		});
-		link.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				ConnectivityManager cm = (ConnectivityManager) getActivity()
-						.getSystemService(Context.CONNECTIVITY_SERVICE);
-				NetworkInfo ni = cm.getActiveNetworkInfo();
-				if (ni == null) {
-					Toast.makeText(getActivity().getBaseContext(),
-							"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
-							Toast.LENGTH_SHORT).show();
-				} else if (start.getText().toString().equals("")
-						|| end.getText().toString().equals("")) {
-					Toast.makeText(
-							getActivity().getBaseContext(),
-							"Vui lòng nhập địa điểm bắt đầu và kết thúc trước khi tùy chỉnh",
-							Toast.LENGTH_SHORT).show();
-				} else if (p1.getText().toString().equals("")
-						&& !p2.getText().toString().equals("")) {
-					Toast.makeText(
-							getActivity().getBaseContext(),
-							"Vui lòng nhập đia điểm đi qua 1 trước khi nhập địa điểm đi qua 2",
-							Toast.LENGTH_SHORT).show();
-				} else
-					try {
-						if (new GetTravelTime().execute(
-								start.getText().toString(),
-								end.getText().toString(),
-								p1.getText().toString(),
-								p2.getText().toString()).get() < 10) {
-							Toast.makeText(getActivity().getBaseContext(),
-									"Độ dài lộ trình phải lớn hơn 10 km.",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Intent intent = getActivity().getIntent();
-
-							intent.putExtra("start", start.getText().toString());
-							intent.putExtra("p1", p1.getText().toString());
-							intent.putExtra("p2", p2.getText().toString());
-							intent.putExtra("end", end.getText().toString());
-
-							intent.putExtra("sender", "createRoute");
-							FragmentManager mng = getActivity()
-									.getSupportFragmentManager();
-							FragmentTransaction trs = mng.beginTransaction();
-							CustomizeRoute frag1 = new CustomizeRoute();
-
-							trs.replace(R.id.content_frame, frag1);
-							trs.addToBackStack(null);
-							trs.commit();
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			}
-		});
-		return v;
-	}
-
-	private DatePickerDialog.OnDateSetListener startListener = new DatePickerDialog.OnDateSetListener() {
 
 		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth) {
-			startDate
-					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-			if (dialog2 != null) {
-				dialog2.updateDate(dialog1.getDatePicker().getYear(), dialog1
-						.getDatePicker().getMonth(), dialog1.getDatePicker()
-						.getDayOfMonth());
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
 			}
+
+			return result;
 		}
-	};
 
-	private TimePickerDialog.OnTimeSetListener startHourListener = new TimePickerDialog.OnTimeSetListener() {
+		private HttpResponse doResponse(String url) {
 
-		@Override
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-			String hr = String.valueOf(hourOfDay);
-			String min = String.valueOf(minute);
-			if (hr.length() == 1) {
-				hr = "0" + hr;
-			}
-			if (min.length() == 1) {
-				min = "0" + min;
-			}
-			String sd = startDate.getText().toString() + " " + hr + ":" + min;
-			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
-			Date sdd = new Date();
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
 			try {
-				sdd = format.parse(sd);
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (Exception e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
 			}
-			startHour.setText(hr + ":" + min);
-		}
-	};
 
-	private DatePickerDialog.OnDateSetListener endListener = new DatePickerDialog.OnDateSetListener() {
-
-		@Override
-		public void onDateSet(DatePicker view, int year, int monthOfYear,
-				int dayOfMonth) {
-			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
-		}
-	};
-
-	TextWatcher watcher = new TextWatcher() {
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			startAdapter.getFilter().filter(s);
+			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
+		}
+
 		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			pDlg.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+	}
+	private class GetAddress extends AsyncTask<Double, Void, String> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetAddress.class.getName());
+
+		@Override
+		protected String doInBackground(Double... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
+					+ locations[0]
+					+ ","
+					+ locations[1]
+					+ "&sensor=false&language=vi";
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(new HttpGet(googleMapUrl),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse
+						.get("results");
+				JSONObject result = results.getJSONObject(0);
+				String address = result.getString("formatted_address");
+				ANDROID_HTTP_CLIENT.close();
+				return address;
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
+		}
+	}
+	private class GetFullAddress extends AsyncTask<String, Void, String> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetAddress.class.getName());
 
+		@Override
+		protected String doInBackground(String... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?address="
+					+ locations[0].replace(" ", "%20")
+					+ "&sensor=false&language=vi";
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(new HttpGet(googleMapUrl),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse
+						.get("results");
+				JSONObject result = results.getJSONObject(0);
+				String address = result.getString("formatted_address");
+				ANDROID_HTTP_CLIENT.close();
+				return address;
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return null;
 		}
 
 		@Override
-		public void afterTextChanged(Editable s) {
+		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
 		}
-	};
-
-	TextWatcher watcher2 = new TextWatcher() {
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			endAdapter.getFilter().filter(s);
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			// TODO Auto-generated method stub
-		}
-	};
-
-	TextWatcher watcher3 = new TextWatcher() {
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			p1Adapter.getFilter().filter(s);
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			// TODO Auto-generated method stub
-		}
-	};
-
-	TextWatcher watcher4 = new TextWatcher() {
-
-		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
-			p2Adapter.getFilter().filter(s);
-		}
-
-		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void afterTextChanged(Editable s) {
-			// TODO Auto-generated method stub
-		}
-	};
-
+	}
 	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
 		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
 				.newInstance(GetLatLng.class.getName());
@@ -596,7 +354,29 @@ public class CreateRoute extends Fragment {
 			ANDROID_HTTP_CLIENT.close();
 		}
 	}
+	private class GetPoints extends AsyncTask<String, Void, List<LatLng>> {
+		long startTime;
 
+		@Override
+		protected List<LatLng> doInBackground(String... params) {
+			JSONParser jParser = new JSONParser();
+			String json = jParser.getJSONFromUrl(params[0]);
+			GeocoderHelper helper = new GeocoderHelper();
+			return helper.getPoints(json);
+		}
+
+		@Override
+		protected void onPostExecute(List<LatLng> result) {
+			super.onPostExecute(result);
+		}
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			startTime = System.nanoTime();
+		}
+	}
 	private class GetTravelTime extends AsyncTask<String, Void, Integer> {
 		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
 				.newInstance(GetLatLng.class.getName());
@@ -653,121 +433,26 @@ public class CreateRoute extends Fragment {
 			ANDROID_HTTP_CLIENT.close();
 		}
 	}
-
-	private class GetAddress extends AsyncTask<Double, Void, String> {
-		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
-				.newInstance(GetAddress.class.getName());
-
-		@Override
-		protected String doInBackground(Double... locations) {
-			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng="
-					+ locations[0]
-					+ ","
-					+ locations[1]
-					+ "&sensor=false&language=vi";
-
-			try {
-				JSONObject googleMapResponse = new JSONObject(
-						ANDROID_HTTP_CLIENT.execute(new HttpGet(googleMapUrl),
-								new BasicResponseHandler()));
-				JSONArray results = (JSONArray) googleMapResponse
-						.get("results");
-				JSONObject result = results.getJSONObject(0);
-				String address = result.getString("formatted_address");
-				ANDROID_HTTP_CLIENT.close();
-				return address;
-			} catch (Exception ignored) {
-				ignored.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			ANDROID_HTTP_CLIENT.close();
-		}
-	}
-
-	private class GetFullAddress extends AsyncTask<String, Void, String> {
-		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
-				.newInstance(GetAddress.class.getName());
-
-		@Override
-		protected String doInBackground(String... locations) {
-			String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?address="
-					+ locations[0].replace(" ", "%20")
-					+ "&sensor=false&language=vi";
-
-			try {
-				JSONObject googleMapResponse = new JSONObject(
-						ANDROID_HTTP_CLIENT.execute(new HttpGet(googleMapUrl),
-								new BasicResponseHandler()));
-				JSONArray results = (JSONArray) googleMapResponse
-						.get("results");
-				JSONObject result = results.getJSONObject(0);
-				String address = result.getString("formatted_address");
-				ANDROID_HTTP_CLIENT.close();
-				return address;
-			} catch (Exception ignored) {
-				ignored.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			ANDROID_HTTP_CLIENT.close();
-		}
-	}
-
-	private class GetPoints extends AsyncTask<String, Void, List<LatLng>> {
-		long startTime;
-
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			startTime = System.nanoTime();
-		}
-
-		@Override
-		protected List<LatLng> doInBackground(String... params) {
-			JSONParser jParser = new JSONParser();
-			String json = jParser.getJSONFromUrl(params[0]);
-			GeocoderHelper helper = new GeocoderHelper();
-			return helper.getPoints(json);
-		}
-
-		@Override
-		protected void onPostExecute(List<LatLng> result) {
-			super.onPostExecute(result);
-		}
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 30000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -781,23 +466,7 @@ public class CreateRoute extends Fragment {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String url = urls[0];
 			String result = "";
@@ -821,6 +490,88 @@ public class CreateRoute extends Fragment {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (Exception e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -861,123 +612,10 @@ public class CreateRoute extends Fragment {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
-		}
-
-		private HttpResponse doResponse(String url) {
-
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (SocketTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (ConnectTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (Exception e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
-		}
-
-	}
-
-	private class CalculateMiddlePoints extends
-			AsyncTask<String, String, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
-
-		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 30000;
-
-		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 30000;
-
-		private int taskType = GET_TASK;
-		private Context mContext = null;
-		private String processMessage = "Processing...";
-
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
-
-		public CalculateMiddlePoints(int taskType, Context mContext,
-				String processMessage) {
-
-			this.taskType = taskType;
-			this.mContext = mContext;
-			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
 		}
 
 		private void showProgressDialog() {
@@ -991,126 +629,195 @@ public class CreateRoute extends Fragment {
 
 		}
 
-		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
-		protected String doInBackground(String... urls) {
-			String url = urls[0];
-			String result = "";
-
-			HttpResponse response = doResponse(url);
-
-			if (response == null) {
-				return result;
-			} else {
-				try {
-					result = inputStreamToString(response.getEntity()
-							.getContent());
-
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-				}
-
-			}
-
-			return result;
-		}
+	}
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Route/Create";
+	CheckBox broken;
+	Calendar cal = Calendar.getInstance();
+	CheckBox check1;
+	CheckBox check2;
+	CheckBox check3;
+	String create = "";
+	MyDatePickerDialog dialog1 = null, dialog2 = null;
+	MyTimePickerDialog dialog3 = null;
+	AutoCompleteTextView end;
+	PlacesAutoCompleteAdapter endAdapter;
+	EditText endDate;
+	private DatePickerDialog.OnDateSetListener endListener = new DatePickerDialog.OnDateSetListener() {
 
 		@Override
-		protected void onPostExecute(String response) {
-			// Xu li du lieu tra ve sau khi insert thanh cong
-			// handleResponse(response);
-			pDlg.dismiss();
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
 		}
+	};
+	String endString = "";
+	CheckBox flammable;
+	CheckBox food;
+	CheckBox frozen;
+	TextView link;
+	LocationManager locationManager;
+	ArrayList<LatLng> locations;
+	AutoCompleteTextView p1;
+	PlacesAutoCompleteAdapter p1Adapter;
+	String p1String = "";
+	AutoCompleteTextView p2;
+	PlacesAutoCompleteAdapter p2Adapter;
+	String p2String = "";
+	EditText payload;
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+	ArrayList<String> pos = new ArrayList<String>();
 
-			HttpParams htpp = new BasicHttpParams();
+	TextView show;
+	String sp1, sp2;
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+	Spinner spinner;
 
-			return htpp;
-		}
+	AutoCompleteTextView start;
 
-		private HttpResponse doResponse(String url) {
+	PlacesAutoCompleteAdapter startAdapter;
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+	EditText startDate;
 
-			HttpResponse response = null;
+	EditText startHour;
 
-			try {
-				switch (taskType) {
+	private TimePickerDialog.OnTimeSetListener startHourListener = new TimePickerDialog.OnTimeSetListener() {
 
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (SocketTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (ConnectTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (Exception e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			String hr = String.valueOf(hourOfDay);
+			String min = String.valueOf(minute);
+			if (hr.length() == 1) {
+				hr = "0" + hr;
 			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
+			if (min.length() == 1) {
+				min = "0" + min;
 			}
+			String sd = startDate.getText().toString() + " " + hr + ":" + min;
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+			Date sdd = new Date();
+			try {
+				sdd = format.parse(sd);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			startHour.setText(hr + ":" + min);
+		}
+	};
 
-			// Return full string
-			return total.toString();
+	private DatePickerDialog.OnDateSetListener startListener = new DatePickerDialog.OnDateSetListener() {
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			startDate
+					.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+			endDate.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+			if (dialog2 != null) {
+				dialog2.updateDate(dialog1.getDatePicker().getYear(), dialog1
+						.getDatePicker().getMonth(), dialog1.getDatePicker()
+						.getDayOfMonth());
+			}
+		}
+	};
+
+	String startPoint, endPoint, Point1, Point2, startD, endD, brk, flm, frz,
+			fd, load, current;
+
+	String startString = "";
+
+	View v;
+
+	TextWatcher watcher = new TextWatcher() {
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
 		}
 
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			startAdapter.getFilter().filter(s);
+		}
+	};
+
+	TextWatcher watcher2 = new TextWatcher() {
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			endAdapter.getFilter().filter(s);
+		}
+	};
+
+	TextWatcher watcher3 = new TextWatcher() {
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			p1Adapter.getFilter().filter(s);
+		}
+	};
+
+	TextWatcher watcher4 = new TextWatcher() {
+
+		@Override
+		public void afterTextChanged(Editable s) {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			p2Adapter.getFilter().filter(s);
+		}
+	};
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -1457,5 +1164,290 @@ public class CreateRoute extends Fragment {
 				| MenuItem.SHOW_AS_ACTION_ALWAYS);
 		item.setIcon(R.drawable.ic_action_accept);
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setDisplayOptions(
+				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
+						| ActionBar.DISPLAY_HOME_AS_UP);
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Lộ trình mới");
+
+		v = inflater.inflate(R.layout.activity_create_route, container, false);
+		show = (TextView) v.findViewById(R.id.textView2);
+		startDate = (EditText) v.findViewById(R.id.editText2);
+		startHour = (EditText) v.findViewById(R.id.editText3);
+		payload = (EditText) v.findViewById(R.id.editText8);
+		cal = Calendar.getInstance();
+		String date = String.valueOf(cal.get(Calendar.DAY_OF_MONTH) + "/"
+				+ String.valueOf(cal.get(Calendar.MONTH) + 1) + "/"
+				+ String.valueOf(cal.get(Calendar.YEAR)));
+		startDate.setText(date);
+		endDate = (EditText) v.findViewById(R.id.editText4);
+		link = (TextView) v.findViewById(R.id.textView7);
+		spinner = (Spinner) v.findViewById(R.id.spinner);
+
+		List<String> list = new ArrayList<String>();
+		list.add("kg");
+		list.add("tấn");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+				getActivity(), android.R.layout.simple_spinner_item, list);
+		spinner.setAdapter(dataAdapter);
+
+		frozen = (CheckBox) v.findViewById(R.id.checkBox1);
+		broken = (CheckBox) v.findViewById(R.id.checkBox2);
+		flammable = (CheckBox) v.findViewById(R.id.checkBox3);
+		food = (CheckBox) v.findViewById(R.id.checkBox4);
+
+		startAdapter = new PlacesAutoCompleteAdapter(getActivity(),
+				R.layout.autocomplete_item);
+		p1Adapter = new PlacesAutoCompleteAdapter(getActivity(),
+				R.layout.autocomplete_item);
+		p2Adapter = new PlacesAutoCompleteAdapter(getActivity(),
+				R.layout.autocomplete_item);
+		endAdapter = new PlacesAutoCompleteAdapter(getActivity(),
+				R.layout.autocomplete_item);
+		start = (AutoCompleteTextView) v.findViewById(R.id.start);
+		p1 = (AutoCompleteTextView) v.findViewById(R.id.point1);
+		p2 = (AutoCompleteTextView) v.findViewById(R.id.point2);
+		end = (AutoCompleteTextView) v.findViewById(R.id.end);
+
+		start.setAdapter(startAdapter);
+		p1.setAdapter(p1Adapter);
+		p2.setAdapter(p2Adapter);
+		end.setAdapter(endAdapter);
+
+		show.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
+			}
+		});
+
+		startDate.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (dialog1 == null) {
+					dialog1 = new MyDatePickerDialog(getActivity(),
+							startListener, cal.get(Calendar.YEAR), cal
+									.get(Calendar.MONTH), cal
+									.get(Calendar.DATE), "Ngày bắt đầu");
+					DatePicker picker = dialog1.getDatePicker();
+					Calendar calendar = Calendar.getInstance();
+					picker.setMinDate(calendar.getTimeInMillis() - 1000);
+					calendar.add(Calendar.MONTH, 1);
+					picker.setMaxDate(calendar.getTimeInMillis());
+				}
+				dialog1.show();
+			}
+		});
+
+		startHour.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.HOUR_OF_DAY, 6);
+				if (dialog3 == null) {
+					dialog3 = new MyTimePickerDialog(getActivity(),
+							startHourListener, cal.get(Calendar.HOUR_OF_DAY),
+							cal.get(Calendar.MINUTE), true, "Giờ bắt đầu");
+					dialog3.setTitle("Giờ bắt đầu");
+				}
+				dialog3.show();
+			}
+		});
+
+		endDate.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (dialog2 == null) {
+					dialog2 = new MyDatePickerDialog(getActivity(),
+							endListener, cal.get(Calendar.YEAR), cal
+									.get(Calendar.MONTH), cal
+									.get(Calendar.DATE), "Ngày kết thúc");
+					DatePicker picker = dialog2.getDatePicker();
+					Calendar calendar = Calendar.getInstance();
+					picker.setMinDate(calendar.getTimeInMillis() - 1000);
+					calendar.add(Calendar.MONTH, 1);
+					picker.setMaxDate(calendar.getTimeInMillis());
+				}
+				dialog2.show();
+			}
+		});
+		link.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				ConnectivityManager cm = (ConnectivityManager) getActivity()
+						.getSystemService(Context.CONNECTIVITY_SERVICE);
+				NetworkInfo ni = cm.getActiveNetworkInfo();
+				if (ni == null) {
+					Toast.makeText(getActivity().getBaseContext(),
+							"Để tùy chỉnh bằng bản đồ vui lòng bật internet",
+							Toast.LENGTH_SHORT).show();
+				} else if (start.getText().toString().equals("")
+						|| end.getText().toString().equals("")) {
+					Toast.makeText(
+							getActivity().getBaseContext(),
+							"Vui lòng nhập địa điểm bắt đầu và kết thúc trước khi tùy chỉnh",
+							Toast.LENGTH_SHORT).show();
+				} else if (p1.getText().toString().equals("")
+						&& !p2.getText().toString().equals("")) {
+					Toast.makeText(
+							getActivity().getBaseContext(),
+							"Vui lòng nhập đia điểm đi qua 1 trước khi nhập địa điểm đi qua 2",
+							Toast.LENGTH_SHORT).show();
+				} else
+					try {
+						if (new GetTravelTime().execute(
+								start.getText().toString(),
+								end.getText().toString(),
+								p1.getText().toString(),
+								p2.getText().toString()).get() < 10) {
+							Toast.makeText(getActivity().getBaseContext(),
+									"Độ dài lộ trình phải lớn hơn 10 km.",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							Intent intent = getActivity().getIntent();
+
+							intent.putExtra("start", start.getText().toString());
+							intent.putExtra("p1", p1.getText().toString());
+							intent.putExtra("p2", p2.getText().toString());
+							intent.putExtra("end", end.getText().toString());
+
+							intent.putExtra("sender", "createRoute");
+							FragmentManager mng = getActivity()
+									.getSupportFragmentManager();
+							FragmentTransaction trs = mng.beginTransaction();
+							CustomizeRoute frag1 = new CustomizeRoute();
+
+							trs.replace(R.id.content_frame, frag1);
+							trs.addToBackStack(null);
+							trs.commit();
+						}
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ExecutionException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		});
+		return v;
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		Fragment fragment = getActivity().getSupportFragmentManager()
+				.findFragmentByTag("createRoute");
+		if (fragment != null) {
+			getActivity().getSupportFragmentManager()
+					.findFragmentByTag("createRoute").setRetainInstance(true);
+		}
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Intent intent = getActivity().getIntent();
+		locations = (ArrayList<LatLng>) intent
+				.getSerializableExtra("markerList");
+		if (locations == null || locations.size() == 0) {
+			getActivity().getSupportFragmentManager()
+					.findFragmentByTag("createRoute").getRetainInstance();
+		} else {
+			for (LatLng p : locations) {
+				try {
+					String address = new GetAddress().execute(p.latitude,
+							p.longitude).get();
+					pos.add(address);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (pos.size() == 3) {
+				if (intent.getBooleanExtra("change", false) == true) {
+					p1.setText(pos.get(1));
+				}
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
+			} else if (pos.size() == 4) {
+				boolean change = getActivity().getIntent().getBooleanExtra(
+						"change", false);
+				if (change) {
+					p1.setText(pos.get(1));
+					p2.setText(pos.get(2));
+				}
+				show.setVisibility(View.GONE);
+				p1.setVisibility(View.VISIBLE);
+				p2.setVisibility(View.VISIBLE);
+			}
+		}
+		intent.removeExtra("markerList");
+		intent.removeExtra("change");
+		pos.clear();
+	}
+
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
+		locationManager = (LocationManager) getActivity().getSystemService(
+				Context.LOCATION_SERVICE);
+		LocationListener locationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				String current;
+				try {
+					current = new GetAddress().execute(location.getLatitude(),
+							location.getLongitude()).get();
+					if (start.getText().toString().equals("")) {
+						start.setText(current);
+					}
+					locationManager.removeUpdates(this);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+			}
+		};
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				0, locationListener);
+	}
+
+	public void setString(String create) {
+		this.create = create;
 	}
 }

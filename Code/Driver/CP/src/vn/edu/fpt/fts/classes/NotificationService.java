@@ -22,11 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.drawer.ListItem;
-import vn.edu.fpt.fts.helper.ConnectivityHelper;
-import vn.edu.fpt.fts.layout.Login;
-import vn.edu.fpt.fts.layout.MainActivity;
-import vn.edu.fpt.fts.layout.R;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -41,70 +36,39 @@ import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.helper.ConnectivityHelper;
+import vn.edu.fpt.fts.layout.Login;
+import vn.edu.fpt.fts.layout.R;
 
 public class NotificationService extends Service {
-	private WakeLock mWakeLock;
-	ArrayList<ListItem> list = new ArrayList<ListItem>();
-	int oldSize, newSize;
-	
-	private String SERVICE_URL = Constant.SERVICE_URL
-			+ "DealNotification/getDealNotificationByDriverID";
-
-	@Override
-	public IBinder onBind(Intent intent) {
-		return null;
-	}
-
-	private void handleIntent(Intent intent) {
-		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-		mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FLAG");
-		mWakeLock.acquire();
-
-		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-		if (!cm.getBackgroundDataSetting()) {
-			stopSelf();
-			return;
-		}
-
-		new WebService().execute(SERVICE_URL);
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 100000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public void addNameValuePair(String name, String value) {
 
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String result = "";
 			if (ConnectivityHelper.CheckConnectivity(getBaseContext())) {
@@ -128,6 +92,69 @@ public class NotificationService extends Service {
 				}
 			}
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -196,100 +223,24 @@ public class NotificationService extends Service {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-
-			}
-
-			// Return full string
-			return total.toString();
 		}
 	}
-
-	/**
-	 * This is deprecated, but you have to implement it if you're planning on
-	 * supporting devices with an API level lower than 5 (Android 2.0).
-	 */
-	@Override
-	public void onStart(Intent intent, int startId) {
-		handleIntent(intent);
-	}
-
-	/**
-	 * This is called on 2.0+ (API level 5 or higher). Returning
-	 * START_NOT_STICKY tells the system to not restart the service if it is
-	 * killed because of poor resource (memory/cpu) conditions.
-	 */
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		handleIntent(intent);
-		return START_NOT_STICKY;
-	}
-
-	/**
-	 * In onDestroy() we release our wake lock. This ensures that whenever the
-	 * Service stops (killed for resources, stopSelf() called, etc.), the wake
-	 * lock will be released.
-	 */
-	public void onDestroy() {
-		super.onDestroy();
-		mWakeLock.release();
-	}
+	ArrayList<ListItem> list = new ArrayList<ListItem>();
+	private WakeLock mWakeLock;
 	
+	int oldSize, newSize;
+
+	private String SERVICE_URL = Constant.SERVICE_URL
+			+ "DealNotification/getDealNotificationByDriverID";
+
 	public void displayNotification() {
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setTicker("Alert!")
@@ -310,5 +261,55 @@ public class NotificationService extends Service {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
 		mNotificationManager.notify(0, mBuilder.build());
+	}
+
+	private void handleIntent(Intent intent) {
+		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+		mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "FLAG");
+		mWakeLock.acquire();
+
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		if (!cm.getBackgroundDataSetting()) {
+			stopSelf();
+			return;
+		}
+
+		new WebService().execute(SERVICE_URL);
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
+	}
+
+	/**
+	 * In onDestroy() we release our wake lock. This ensures that whenever the
+	 * Service stops (killed for resources, stopSelf() called, etc.), the wake
+	 * lock will be released.
+	 */
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mWakeLock.release();
+	}
+
+	/**
+	 * This is deprecated, but you have to implement it if you're planning on
+	 * supporting devices with an API level lower than 5 (Android 2.0).
+	 */
+	@Override
+	public void onStart(Intent intent, int startId) {
+		handleIntent(intent);
+	}
+	
+	/**
+	 * This is called on 2.0+ (API level 5 or higher). Returning
+	 * START_NOT_STICKY tells the system to not restart the service if it is
+	 * killed because of poor resource (memory/cpu) conditions.
+	 */
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		handleIntent(intent);
+		return START_NOT_STICKY;
 	}
 }

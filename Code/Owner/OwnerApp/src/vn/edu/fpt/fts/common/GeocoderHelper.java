@@ -18,40 +18,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.graphics.Color;
-import android.os.AsyncTask;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import android.graphics.Color;
+
 public class GeocoderHelper {
 	List<Polyline> polylines = new ArrayList<Polyline>();
-
-	public void RemovePolylines() {
-		for (Polyline line : polylines) {
-			line.remove();
-		}
-		polylines.clear();
-	}
-
-	public String makeURL(LatLng org, LatLng des) {
-		StringBuilder urlString = new StringBuilder();
-		urlString
-				.append("https://maps.googleapis.com/maps/api/directions/json");
-		urlString.append("?origin=");
-		urlString.append(Double.toString(org.latitude));
-		urlString.append(",");
-		urlString.append(Double.toString(org.longitude));
-		urlString.append("&destination=");
-		urlString.append(Double.toString(des.latitude));
-		urlString.append(",");
-		urlString.append(Double.toString(des.longitude));
-		urlString
-				.append("&mode=driving&region=vi");
-		return urlString.toString();
-	}
 
 	public boolean checkPath(String result) {
 		try {
@@ -68,30 +43,6 @@ public class GeocoderHelper {
 			return false;
 		}
 
-	}
-
-	public void drawPath(String result, GoogleMap map) {
-		try {
-			final JSONObject json = new JSONObject(result);
-			JSONArray routeArray = json.getJSONArray("routes");
-			JSONObject routes = routeArray.getJSONObject(0);
-			JSONObject overviewPolylines = routes
-					.getJSONObject("overview_polyline");
-			String encodedString = overviewPolylines.getString("points");
-			List<LatLng> list = decodePoly(encodedString);
-
-			for (int z = 0; z < list.size() - 1; z++) {
-				LatLng src = list.get(z);
-				LatLng dest = list.get(z + 1);
-				polylines.add(map.addPolyline(new PolylineOptions()
-						.add(new LatLng(src.latitude, src.longitude),
-								new LatLng(dest.latitude, dest.longitude))
-						.width(6).color(Color.BLUE).geodesic(true)));
-			}
-
-		} catch (JSONException e) {
-
-		}
 	}
 
 	private List<LatLng> decodePoly(String encoded) {
@@ -120,12 +71,56 @@ public class GeocoderHelper {
 			int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
 			lng += dlng;
 
-			LatLng p = new LatLng((((double) lat / 1E5)),
-					(((double) lng / 1E5)));
+			LatLng p = new LatLng(((lat / 1E5)),
+					((lng / 1E5)));
 			poly.add(p);
 		}
 
 		return poly;
+	}
+
+	public void drawPath(String result, GoogleMap map) {
+		try {
+			final JSONObject json = new JSONObject(result);
+			JSONArray routeArray = json.getJSONArray("routes");
+			JSONObject routes = routeArray.getJSONObject(0);
+			JSONObject overviewPolylines = routes
+					.getJSONObject("overview_polyline");
+			String encodedString = overviewPolylines.getString("points");
+			List<LatLng> list = decodePoly(encodedString);
+
+			for (int z = 0; z < list.size() - 1; z++) {
+				LatLng src = list.get(z);
+				LatLng dest = list.get(z + 1);
+				polylines.add(map.addPolyline(new PolylineOptions()
+						.add(new LatLng(src.latitude, src.longitude),
+								new LatLng(dest.latitude, dest.longitude))
+						.width(6).color(Color.BLUE).geodesic(true)));
+			}
+
+		} catch (JSONException e) {
+
+		}
+	}
+
+	public LatLng getLatLong(JSONObject jsonObject) {
+		LatLng result;
+		try {
+
+			double longitute = ((JSONArray) jsonObject.get("results"))
+					.getJSONObject(0).getJSONObject("geometry")
+					.getJSONObject("location").getDouble("lng");
+
+			double latitude = ((JSONArray) jsonObject.get("results"))
+					.getJSONObject(0).getJSONObject("geometry")
+					.getJSONObject("location").getDouble("lat");
+			result = new LatLng(latitude, longitute);
+		} catch (JSONException e) {
+			return null;
+
+		}
+
+		return result;
 	}
 
 	public JSONObject getLocationInfo(String address) {
@@ -166,24 +161,21 @@ public class GeocoderHelper {
 		return jsonObject;
 	}
 
-	public LatLng getLatLong(JSONObject jsonObject) {
-		LatLng result;
-		try {
-
-			double longitute = ((JSONArray) jsonObject.get("results"))
-					.getJSONObject(0).getJSONObject("geometry")
-					.getJSONObject("location").getDouble("lng");
-
-			double latitude = ((JSONArray) jsonObject.get("results"))
-					.getJSONObject(0).getJSONObject("geometry")
-					.getJSONObject("location").getDouble("lat");
-			result = new LatLng(latitude, longitute);
-		} catch (JSONException e) {
-			return null;
-
-		}
-
-		return result;
+	public String makeURL(LatLng org, LatLng des) {
+		StringBuilder urlString = new StringBuilder();
+		urlString
+				.append("https://maps.googleapis.com/maps/api/directions/json");
+		urlString.append("?origin=");
+		urlString.append(Double.toString(org.latitude));
+		urlString.append(",");
+		urlString.append(Double.toString(org.longitude));
+		urlString.append("&destination=");
+		urlString.append(Double.toString(des.latitude));
+		urlString.append(",");
+		urlString.append(Double.toString(des.longitude));
+		urlString
+				.append("&mode=driving&region=vi");
+		return urlString.toString();
 	}
 
 	public String makeURL2(LatLng org, LatLng p1, LatLng p2, LatLng des) {
@@ -250,9 +242,9 @@ public class GeocoderHelper {
 						for (int l = 0; l < list.size(); l++) {
 							HashMap<String, String> hm = new HashMap<String, String>();
 							hm.put("lat",
-									Double.toString(((LatLng) list.get(l)).latitude));
+									Double.toString(list.get(l).latitude));
 							hm.put("lng",
-									Double.toString(((LatLng) list.get(l)).longitude));
+									Double.toString(list.get(l).longitude));
 							path.add(hm);
 						}
 					}
@@ -265,5 +257,12 @@ public class GeocoderHelper {
 		} catch (Exception e) {
 		}
 		return routes;
+	}
+
+	public void RemovePolylines() {
+		for (Polyline line : polylines) {
+			line.remove();
+		}
+		polylines.clear();
 	}
 }

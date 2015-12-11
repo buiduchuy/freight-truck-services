@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 public class Settings extends Fragment {
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

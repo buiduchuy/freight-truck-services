@@ -1,11 +1,6 @@
 package vn.edu.fpt.fts.layout;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.methods.HttpGet;
@@ -14,22 +9,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.helper.Common;
-import vn.edu.fpt.fts.helper.GeocoderHelper;
-import vn.edu.fpt.fts.helper.JSONParser;
-import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,42 +40,155 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
-
-import com.google.android.gms.analytics.ac;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.internal.pd;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
+import vn.edu.fpt.fts.helper.GeocoderHelper;
+import vn.edu.fpt.fts.helper.JSONParser;
+import vn.edu.fpt.fts.helper.PlacesAutoCompleteAdapter;
 
 public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
-	ArrayList<LatLng> locations = new ArrayList<LatLng>();
+	private class connectAsyncTask extends AsyncTask<String, Void, String> {
+		long startTime;
+
+		@Override
+		protected String doInBackground(String... params) {
+			JSONParser jParser = new JSONParser();
+			String json = jParser.getJSONFromUrl(params[0]);
+			return json;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			JSONObject obj;
+			try {
+				obj = new JSONObject(result);
+				if (obj.getString("status").equals("ZERO_RESULTS")) {
+					Toast.makeText(getActivity(),
+							"Không có lộ trình qua các điểm này.",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					helper.drawPath(result, map);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			pDlg.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			pDlg = new ProgressDialog(getActivity());
+			pDlg.setMessage("Đang vẽ lộ trình ...");
+			pDlg.setProgressDrawable(getActivity().getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+			startTime = System.nanoTime();
+		}
+	}
+	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetLatLng.class.getName());
+
+		@Override
+		protected LatLng doInBackground(String... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
+					+ locations[0]
+					+ "&destination="
+					+ locations[0]
+					+ "&sensor=false";
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(
+								new HttpGet(googleMapUrl.replace(" ", "%20")),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse.get("routes");
+				JSONObject result = results.getJSONObject(0);
+				JSONObject location = result.getJSONObject("bounds")
+						.getJSONObject("northeast");
+				double latitude = location.getDouble("lat");
+				double longitude = location.getDouble("lng");
+				ANDROID_HTTP_CLIENT.close();
+				return new LatLng(latitude, longitude);
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(LatLng result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
+		}
+	}
 	LatLngBounds.Builder b = new LatLngBounds.Builder();
-	GoogleMap map;
-	GeocoderHelper helper = new GeocoderHelper();
 	Button button;
-	ProgressDialog pDlg;
-	AutoCompleteTextView textView;
 	boolean change = false;
+	GeocoderHelper helper = new GeocoderHelper();
+	ArrayList<LatLng> locations = new ArrayList<LatLng>();
+	GoogleMap map;
+
+	ProgressDialog pDlg;
+
+	AutoCompleteTextView textView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		menu.findItem(R.id.action_create).setVisible(false);
+		MenuItem item = menu.add(Menu.NONE, R.id.action_updateRoute, 99,
+				R.string.change);
+		item.setActionView(R.layout.actionbar_update_route);
+		item.getActionView().setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = getActivity().getIntent();
+
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				if (intent.getStringExtra("sender").equalsIgnoreCase(
+						"createRoute")) {
+					CreateRoute fragment = new CreateRoute();
+					fragment = (CreateRoute) getActivity()
+							.getSupportFragmentManager().findFragmentByTag(
+									"createRoute");
+					intent.putExtra("markerList", locations);
+					intent.putExtra("change", change);
+					fragment.setString("create");
+					trs.replace(R.id.content_frame, fragment);
+					trs.addToBackStack(null);
+					trs.commit();
+				} else {
+					ChangeRoute fragment = new ChangeRoute();
+					fragment = (ChangeRoute) getActivity()
+							.getSupportFragmentManager().findFragmentByTag(
+									"changeRoute");
+					intent.putExtra("markerList2", locations);
+					intent.putExtra("change", change);
+					trs.replace(R.id.content_frame, fragment);
+					trs.addToBackStack(null);
+					trs.commit();
+				}
+			}
+		});
+		item.setIcon(R.drawable.ic_action_accept);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT
+				| MenuItem.SHOW_AS_ACTION_ALWAYS);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
@@ -186,7 +299,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
 			@Override
-			public void onMarkerDragStart(Marker arg0) {
+			public void onMarkerDrag(Marker arg0) {
 				// TODO Auto-generated method stub
 
 			}
@@ -237,7 +350,7 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			}
 
 			@Override
-			public void onMarkerDrag(Marker arg0) {
+			public void onMarkerDragStart(Marker arg0) {
 				// TODO Auto-generated method stub
 
 			}
@@ -348,87 +461,14 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 		return v;
 	}
 
-	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
-		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
-				.newInstance(GetLatLng.class.getName());
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
 
-		@Override
-		protected LatLng doInBackground(String... locations) {
-			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
-					+ locations[0]
-					+ "&destination="
-					+ locations[0]
-					+ "&sensor=false";
-
-			try {
-				JSONObject googleMapResponse = new JSONObject(
-						ANDROID_HTTP_CLIENT.execute(
-								new HttpGet(googleMapUrl.replace(" ", "%20")),
-								new BasicResponseHandler()));
-				JSONArray results = (JSONArray) googleMapResponse.get("routes");
-				JSONObject result = results.getJSONObject(0);
-				JSONObject location = result.getJSONObject("bounds")
-						.getJSONObject("northeast");
-				double latitude = location.getDouble("lat");
-				double longitude = location.getDouble("lng");
-				ANDROID_HTTP_CLIENT.close();
-				return new LatLng(latitude, longitude);
-			} catch (Exception ignored) {
-				ignored.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(LatLng result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			ANDROID_HTTP_CLIENT.close();
-		}
-	}
-
-	private class connectAsyncTask extends AsyncTask<String, Void, String> {
-		long startTime;
-
-		@Override
-		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			pDlg = new ProgressDialog(getActivity());
-			pDlg.setMessage("Đang vẽ lộ trình ...");
-			pDlg.setProgressDrawable(getActivity().getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-			startTime = System.nanoTime();
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			JSONParser jParser = new JSONParser();
-			String json = jParser.getJSONFromUrl(params[0]);
-			return json;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			JSONObject obj;
-			try {
-				obj = new JSONObject(result);
-				if (obj.getString("status").equals("ZERO_RESULTS")) {
-					Toast.makeText(getActivity(),
-							"Không có lộ trình qua các điểm này.",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					helper.drawPath(result, map);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			pDlg.dismiss();
-		}
+		Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+		if (f != null)
+			getChildFragmentManager().beginTransaction().remove(f)
+					.commitAllowingStateLoss();
 	}
 
 	@Override
@@ -508,60 +548,5 @@ public class CustomizeRoute extends Fragment implements OnMapReadyCallback {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// TODO Auto-generated method stub
-		menu.findItem(R.id.action_create).setVisible(false);
-		MenuItem item = menu.add(Menu.NONE, R.id.action_updateRoute, 99,
-				R.string.change);
-		item.setActionView(R.layout.actionbar_update_route);
-		item.getActionView().setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = getActivity().getIntent();
-
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				if (intent.getStringExtra("sender").equalsIgnoreCase(
-						"createRoute")) {
-					CreateRoute fragment = new CreateRoute();
-					fragment = (CreateRoute) getActivity()
-							.getSupportFragmentManager().findFragmentByTag(
-									"createRoute");
-					intent.putExtra("markerList", locations);
-					intent.putExtra("change", change);
-					fragment.setString("create");
-					trs.replace(R.id.content_frame, fragment);
-					trs.addToBackStack(null);
-					trs.commit();
-				} else {
-					ChangeRoute fragment = new ChangeRoute();
-					fragment = (ChangeRoute) getActivity()
-							.getSupportFragmentManager().findFragmentByTag(
-									"changeRoute");
-					intent.putExtra("markerList2", locations);
-					intent.putExtra("change", change);
-					trs.replace(R.id.content_frame, fragment);
-					trs.addToBackStack(null);
-					trs.commit();
-				}
-			}
-		});
-		item.setIcon(R.drawable.ic_action_accept);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT
-				| MenuItem.SHOW_AS_ACTION_ALWAYS);
-		super.onCreateOptionsMenu(menu, inflater);
-	}
-
-	public void onDestroyView() {
-		super.onDestroyView();
-
-		Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
-		if (f != null)
-			getChildFragmentManager().beginTransaction().remove(f)
-					.commitAllowingStateLoss();
 	}
 }

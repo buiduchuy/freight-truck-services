@@ -4,13 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -18,7 +12,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -29,11 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.drawer.ListItem;
-import vn.edu.fpt.fts.helper.ConnectivityHelper;
-import vn.edu.fpt.fts.layout.Login;
-import vn.edu.fpt.fts.layout.MainActivity;
-import vn.edu.fpt.fts.layout.R;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -44,55 +32,32 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
-import android.widget.Toast;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.helper.ConnectivityHelper;
+import vn.edu.fpt.fts.layout.MainActivity;
+import vn.edu.fpt.fts.layout.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
-	Context con;
-	Intent resultIntent;
-	private static int oldSize, newSize;
-	String email, id;
-	public static ArrayList<ListItem> list = new ArrayList<ListItem>();
-
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Notification/getNotificationByEmail";
-
-	@Override
-	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
-		con = context;
-		if (ConnectivityHelper.CheckConnectivity(context)) {
-			WebService ws = new WebService(WebService.POST_TASK, context,
-					"Đang lấy dữ liệu ...");
-			id = intent.getExtras().getString("driverID");
-			SharedPreferences share = context.getSharedPreferences("driver",
-					Context.MODE_PRIVATE);
-			email = share.getString("email", "");
-			ws.addNameValuePair("email", email);
-			ws.execute(new String[] { SERVICE_URL });
-		}
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 30000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -106,16 +71,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String result = "";
 			String url = urls[0];
@@ -138,6 +94,69 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 			}
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -220,69 +239,25 @@ public class AlarmReceiver extends BroadcastReceiver {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-
-			}
-
-			// Return full string
-			return total.toString();
 		}
 	}
+	public static ArrayList<ListItem> list = new ArrayList<ListItem>();
+	private static int oldSize, newSize;
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Notification/getNotificationByEmail";
+	Context con;
+
+	String email, id;
+
+	Intent resultIntent;
 
 	public void displayNotification(String message, String dealID,
 			String status, String type) {
@@ -310,5 +285,21 @@ public class AlarmReceiver extends BroadcastReceiver {
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		mNotificationManager.notify(Integer.parseInt(dealID), mBuilder.build());
+	}
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		// TODO Auto-generated method stub
+		con = context;
+		if (ConnectivityHelper.CheckConnectivity(context)) {
+			WebService ws = new WebService(WebService.POST_TASK, context,
+					"Đang lấy dữ liệu ...");
+			id = intent.getExtras().getString("driverID");
+			SharedPreferences share = context.getSharedPreferences("driver",
+					Context.MODE_PRIVATE);
+			email = share.getString("email", "");
+			ws.addNameValuePair("email", email);
+			ws.execute(new String[] { SERVICE_URL });
+		}
 	}
 }

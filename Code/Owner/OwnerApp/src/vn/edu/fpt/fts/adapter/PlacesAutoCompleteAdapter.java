@@ -12,71 +12,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.common.Common;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import vn.edu.fpt.fts.common.Common;
 
 public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements
 		Filterable {
-	private ArrayList<String> resultList;
+	private static final String API_KEY = "AIzaSyAcObAu-_7zMxyYMnTc8KhwnRC1--yYe-o";
 	private static final String LOG_TAG = "ExampleApp";
 
+	private static final String OUT_JSON = "/json";
 	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 	private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
-	private static final String OUT_JSON = "/json";
 
-	private static final String API_KEY = "AIzaSyAcObAu-_7zMxyYMnTc8KhwnRC1--yYe-o";
+	private ArrayList<String> resultList;
 
 	public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
 		// TODO Auto-generated constructor stub
 		super(context, textViewResourceId);
-	}
-	
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return resultList.size();
-	}
-	
-	@Override
-	public String getItem(int position) {
-		// TODO Auto-generated method stub
-		return resultList.get(position);
-	}
-	
-	@Override
-	public Filter getFilter() {
-		// TODO Auto-generated method stub
-		Filter filter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults filterResults = new FilterResults();
-                if (constraint != null) {
-                    // Retrieve the autocomplete results.
-                    resultList = autocomplete(constraint.toString());
-
-                    // Assign the data to the FilterResults
-                    filterResults.values = resultList;
-                    filterResults.count = resultList.size();
-                }
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    notifyDataSetChanged();
-                }
-                else {
-                    notifyDataSetInvalidated();
-                }
-            }};
-        return filter;
-
 	}
 	
 	private ArrayList<String> autocomplete(String input) {
@@ -128,5 +84,48 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements
 	    }
 
 	    return resultList;
+	}
+	
+	@Override
+	public int getCount() {
+		// TODO Auto-generated method stub
+		return resultList.size();
+	}
+	
+	@Override
+	public Filter getFilter() {
+		// TODO Auto-generated method stub
+		Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint != null) {
+                    // Retrieve the autocomplete results.
+                    resultList = autocomplete(constraint.toString());
+
+                    // Assign the data to the FilterResults
+                    filterResults.values = resultList;
+                    filterResults.count = resultList.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.count > 0) {
+                    notifyDataSetChanged();
+                }
+                else {
+                    notifyDataSetInvalidated();
+                }
+            }};
+        return filter;
+
+	}
+	
+	@Override
+	public String getItem(int position) {
+		// TODO Auto-generated method stub
+		return resultList.get(position);
 	}
 }

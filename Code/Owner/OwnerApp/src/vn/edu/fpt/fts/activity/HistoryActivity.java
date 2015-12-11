@@ -23,12 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Deal;
-import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.fragment.R;
-import vn.edu.fpt.fts.fragment.R.id;
-import vn.edu.fpt.fts.fragment.R.layout;
-import vn.edu.fpt.fts.fragment.R.menu;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -43,119 +37,36 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+import vn.edu.fpt.fts.classes.Deal;
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.fragment.R;
 
 public class HistoryActivity extends Activity {
-	private ArrayAdapter<String> adapter;
-	private List<Deal> list;
-	private ListView listView;
-	private TextView tvGone;
-	private String ownerID;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_history);
-		ActionBar actionBar = getActionBar();
-		actionBar.setHomeButtonEnabled(true);
-
-		listView = (ListView) findViewById(R.id.listview_deal_list);
-		SharedPreferences preferences = getSharedPreferences("MyPrefs",
-				Context.MODE_PRIVATE);
-		ownerID = preferences.getString("ownerName", "");
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
-				"Đang xử lý...");
-		wst.addNameValuePair("ownerID", ownerID);
-		String url = Common.IP_URL + Common.Service_Deal_getDealByOwnerID;
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-				new String[] { url });
-
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				int pos = listView.getPositionForView(view);
-				int dealID = list.get(pos).getDealID();			
-				int dealStatus = list.get(pos).getDealStatusID();
-				String createBy = list.get(pos).getCreateBy();
-				int routeID = list.get(pos).getRouteID();
-				int goodsID = list.get(pos).getGoodsID();
-				double price = list.get(pos).getPrice();
-				String note = list.get(pos).getNotes();
-				Intent intent = new Intent(HistoryActivity.this,
-						DealDetailActivity.class);
-				intent.putExtra("dealID", dealID);				
-				intent.putExtra("dealStatus", dealStatus);
-				intent.putExtra("createBy", createBy);
-				intent.putExtra("routeID", routeID);
-				intent.putExtra("goodsID", goodsID);
-				intent.putExtra("price", price);
-				intent.putExtra("note", note);
-				startActivity(intent);
-			}
-		});
-
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.history, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		if (id == android.R.id.home) {
-			Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
-			startActivity(intent);
-		}		
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
-			startActivity(intent);
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 50000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebServiceTask(int taskType, Context mContext,
 				String processMessage) {
@@ -170,24 +81,7 @@ public class HistoryActivity extends Activity {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 
 			String url = urls[0];
@@ -214,6 +108,71 @@ public class HistoryActivity extends Activity {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -338,70 +297,109 @@ public class HistoryActivity extends Activity {
 
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
 
-			HttpParams htpp = new BasicHttpParams();
+			showProgressDialog();
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 
-			HttpResponse response = null;
+		}
 
-			try {
-				switch (taskType) {
+	}
+	private ArrayAdapter<String> adapter;
+	private List<Deal> list;
+	private ListView listView;
+	private String ownerID;
 
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
+	private TextView tvGone;
 
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_history);
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
 
-				Log.e(TAG, e.getLocalizedMessage(), e);
+		listView = (ListView) findViewById(R.id.listview_deal_list);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		ownerID = preferences.getString("ownerName", "");
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK, this,
+				"Đang xử lý...");
+		wst.addNameValuePair("ownerID", ownerID);
+		String url = Common.IP_URL + Common.Service_Deal_getDealByOwnerID;
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
 
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				int pos = listView.getPositionForView(view);
+				int dealID = list.get(pos).getDealID();			
+				int dealStatus = list.get(pos).getDealStatusID();
+				String createBy = list.get(pos).getCreateBy();
+				int routeID = list.get(pos).getRouteID();
+				int goodsID = list.get(pos).getGoodsID();
+				double price = list.get(pos).getPrice();
+				String note = list.get(pos).getNotes();
+				Intent intent = new Intent(HistoryActivity.this,
+						DealDetailActivity.class);
+				intent.putExtra("dealID", dealID);				
+				intent.putExtra("dealStatus", dealStatus);
+				intent.putExtra("createBy", createBy);
+				intent.putExtra("routeID", routeID);
+				intent.putExtra("goodsID", goodsID);
+				intent.putExtra("price", price);
+				intent.putExtra("note", note);
+				startActivity(intent);
 			}
+		});
 
-			return response;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.history, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
+			startActivity(intent);
+			return true;
 		}
+		return super.onKeyDown(keyCode, event);
+	}
 
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
 		}
-
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(HistoryActivity.this, MainActivity.class);
+			startActivity(intent);
+		}		
+		return super.onOptionsItemSelected(item);
 	}
 }

@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -31,11 +30,6 @@ import org.json.JSONObject;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import vn.edu.fpt.fts.classes.Route;
-import vn.edu.fpt.fts.common.Common;
-import vn.edu.fpt.fts.common.GeocoderHelper;
-import vn.edu.fpt.fts.fragment.R;
-import vn.edu.fpt.fts.fragment.RouteMapActivity;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -53,195 +47,66 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import vn.edu.fpt.fts.classes.Route;
+import vn.edu.fpt.fts.common.Common;
+import vn.edu.fpt.fts.common.GeocoderHelper;
+import vn.edu.fpt.fts.fragment.R;
+import vn.edu.fpt.fts.fragment.RouteMapActivity;
 
 public class SuggestDetailActivity extends Activity {
-	private int routeid;
-	private TextView startAddr, destAddr, startTime, finishTime, category,
-			weight, tvMap, driver;
-	private EditText etPrice, etNote;
-	private String goodsID, ownerID, categoryID;
-	private LatLng startAdd, mark1, mark2, endAdd, pickup, deliver;
-	private Bundle extra = new Bundle();
+	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
+		private final AndroidHttpClient androidHttpClient = AndroidHttpClient
+				.newInstance(GetLatLng.class.getName());
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_suggest_detail);
-		SharedPreferences preferences = getSharedPreferences("MyPrefs",
-				Context.MODE_PRIVATE);
-		ActionBar actionBar = getActionBar();
-		actionBar.setHomeButtonEnabled(true);
-		actionBar.setTitle(this
-				.getString(R.string.title_activity_suggest_detail)
-				+ " - "
-				+ preferences.getString("ownerName", ""));
-
-		routeid = getIntent().getIntExtra("route", 0);
-		goodsID = getIntent().getStringExtra("goodsID");
-		extra = getIntent().getBundleExtra("extra");
-
-		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
-				SuggestDetailActivity.this, "Đang xử lý...");
-		String url = Common.IP_URL + Common.Service_Route_GetByID;
-		wst.addNameValuePair("routeID", routeid + "");
-		// wst.execute(new String[] { url });
-		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-				new String[] { url });
-
-		ownerID = preferences.getString("ownerID", "");
-
-		startAddr = (TextView) this.findViewById(R.id.textview_startAddr);
-		destAddr = (TextView) this.findViewById(R.id.textview_destAddr);
-		startTime = (TextView) this.findViewById(R.id.textview_startTime);
-		finishTime = (TextView) this.findViewById(R.id.textview_finishTime);
-		category = (TextView) this.findViewById(R.id.textview_category);
-		weight = (TextView) this.findViewById(R.id.textview_weight);
-		driver = (TextView) this.findViewById(R.id.textview_driverName);
-		etPrice = (EditText) findViewById(R.id.edittext_price);
-		etNote = (EditText) findViewById(R.id.edittext_note);
-
-		// etPrice.setText(price);
-		// etNote.setText(notes);
-		WebServiceTask3 wst3 = new WebServiceTask3(WebServiceTask3.POST_TASK,
-				this, "Đang xử lý");
-		String urlString = Common.IP_URL + Common.Service_Goods_getGoodsByID;
-		wst3.addNameValuePair("goodsID", goodsID);
-		wst3.execute(new String[] { urlString });
-
-		tvMap = (TextView) findViewById(R.id.tvMap);
-		tvMap.setPaintFlags(tvMap.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-		tvMap.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(SuggestDetailActivity.this,
-						RouteMapActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelable("start", startAdd);
-				if (mark1 != null) {
-					bundle.putParcelable("m1", mark1);
-				}
-				if (mark2 != null) {
-					bundle.putParcelable("m2", mark2);
-				}
-				bundle.putParcelable("end", endAdd);
-				intent.putExtra("bundle", bundle);
-				intent.putExtra("extra", extra);
-				startActivity(intent);
+		@Override
+		protected LatLng doInBackground(String... address) {
+			// TODO Auto-generated method stub
+			String url = "http://maps.google.com/maps/api/geocode/json?address="
+					+ address[0].replace(" ", "%20") + "&sensor=false";
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						androidHttpClient.execute(
+								new HttpGet(url.replace(" ", "%20")),
+								new BasicResponseHandler()));
+				GeocoderHelper geocoderHelper = new GeocoderHelper();
+				LatLng result = geocoderHelper.getLatLong(googleMapResponse);
+				return result;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		});
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(LatLng result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			androidHttpClient.close();
+		};
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.suggest_detail, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		if (id == R.id.action_history) {
-			Intent intent = new Intent(SuggestDetailActivity.this,
-					HistoryActivity.class);
-			startActivity(intent);
-		}
-		if (id == android.R.id.home) {
-			Intent intent = new Intent(SuggestDetailActivity.this,
-					MainActivity.class);
-			startActivity(intent);
-		}
-		if (id == R.id.send_deal) {
-			DialogInterface.OnClickListener sendListener = new DialogInterface.OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					switch (which) {
-					case DialogInterface.BUTTON_POSITIVE:
-						Calendar calendar = Calendar.getInstance();
-						WebServiceTask2 wst2 = new WebServiceTask2(
-								WebServiceTask2.POST_TASK,
-								SuggestDetailActivity.this, "Đang xử lý...");
-						wst2.addNameValuePair("dealID", "0");
-						wst2.addNameValuePair("price", etPrice.getText()
-								.toString());
-						wst2.addNameValuePair("notes", etNote.getText()
-								.toString());
-						wst2.addNameValuePair("createTime",
-								Common.formatDate(calendar));
-						wst2.addNameValuePair("createBy", "owner");
-						wst2.addNameValuePair("routeID", routeid + "");
-						wst2.addNameValuePair("goodsID", goodsID + "");
-						wst2.addNameValuePair("active", "1");
-						String url = Common.IP_URL + Common.Service_Deal_Create;
-						// wst2.execute(new String[] { url });
-						wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-								new String[] { url });
-						break;
-					case DialogInterface.BUTTON_NEGATIVE:
-						break;
-					}
-				}
-			};
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					SuggestDetailActivity.this);
-			builder.setMessage(
-					"Bạn có muốn gửi đề nghị cho tài xế với giá "
-							+ etPrice.getText().toString()
-							+ " nghìn đồng không?")
-					.setPositiveButton("Đồng ý", sendListener)
-					.setNegativeButton("Hủy", sendListener).show();
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(SuggestDetailActivity.this,
-					SuggestActivity.class);
-			intent.putExtra("goodsID", goodsID);
-			intent.putExtra("cate", categoryID);
-			startActivity(intent);
-			return true;
-		}
-		return super.onKeyDown(keyCode, event);
-	}
-
 	private class WebServiceTask extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 20000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebServiceTask(int taskType, Context mContext,
 				String processMessage) {
@@ -256,24 +121,7 @@ public class SuggestDetailActivity extends Activity {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 
 			String url = urls[0];
@@ -300,6 +148,71 @@ public class SuggestDetailActivity extends Activity {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -476,15 +389,86 @@ public class SuggestDetailActivity extends Activity {
 			pDlg.dismiss();
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
 
-			HttpParams htpp = new BasicHttpParams();
+			showProgressDialog();
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+		}
 
-			return htpp;
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+	}
+	private class WebServiceTask2 extends AsyncTask<String, Integer, String> {
+
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 5000;
+
+		private static final String TAG = "WebServiceTask";
+
+		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
+		private String processMessage = "Processing...";
+
+		private int taskType = GET_TASK;
+
+		public WebServiceTask2(int taskType, Context mContext,
+				String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+
+				try {
+
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
 		}
 
 		private HttpResponse doResponse(String url) {
@@ -520,6 +504,17 @@ public class SuggestDetailActivity extends Activity {
 			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
 		private String inputStreamToString(InputStream is) {
 
 			String line = "";
@@ -539,88 +534,6 @@ public class SuggestDetailActivity extends Activity {
 
 			// Return full string
 			return total.toString();
-		}
-
-	}
-
-	private class WebServiceTask2 extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
-
-		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 3000;
-
-		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 5000;
-
-		private int taskType = GET_TASK;
-		private Context mContext = null;
-		private String processMessage = "Processing...";
-
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
-
-		public WebServiceTask2(int taskType, Context mContext,
-				String processMessage) {
-
-			this.taskType = taskType;
-			this.mContext = mContext;
-			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
-		}
-
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
-		@Override
-		protected void onPreExecute() {
-
-			showProgressDialog();
-
-		}
-
-		protected String doInBackground(String... urls) {
-
-			String url = urls[0];
-			String result = "";
-
-			HttpResponse response = doResponse(url);
-
-			if (response == null) {
-				return result;
-			} else {
-
-				try {
-
-					result = inputStreamToString(response.getEntity()
-							.getContent());
-
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-				}
-
-			}
-
-			return result;
 		}
 
 		@Override
@@ -642,93 +555,45 @@ public class SuggestDetailActivity extends Activity {
 			pDlg.dismiss();
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
 
-			HttpParams htpp = new BasicHttpParams();
+			showProgressDialog();
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (Exception e) {
-
-				Log.e(TAG, e.getLocalizedMessage(), e);
-
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
 		}
 
 	}
-
 	private class WebServiceTask3 extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask2";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 3000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 5000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask2";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebServiceTask3(int taskType, Context mContext,
 				String processMessage) {
@@ -743,24 +608,7 @@ public class SuggestDetailActivity extends Activity {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 
 			String url = urls[0];
@@ -787,36 +635,6 @@ public class SuggestDetailActivity extends Activity {
 			}
 
 			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String response) {
-			// Xu li du lieu tra ve sau khi insert thanh cong
-			// handleResponse(response);
-			try {
-				JSONObject jsonObject = new JSONObject(response);
-				categoryID = jsonObject.getString("goodsCategoryID");
-				String price = jsonObject.getString("price");
-				String notes = jsonObject.getString("notes");
-				etPrice.setText(price.replace(".0", ""));
-				etNote.setText(notes);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				Log.e(TAG, e.getLocalizedMessage());
-			}
-			pDlg.dismiss();
-
-		}
-
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
-
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
 		private HttpResponse doResponse(String url) {
@@ -851,6 +669,17 @@ public class SuggestDetailActivity extends Activity {
 			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
 		private String inputStreamToString(InputStream is) {
 
 			String line = "";
@@ -872,36 +701,208 @@ public class SuggestDetailActivity extends Activity {
 			return total.toString();
 		}
 
-	}
-
-	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
-		private final AndroidHttpClient androidHttpClient = AndroidHttpClient
-				.newInstance(GetLatLng.class.getName());
-
 		@Override
-		protected LatLng doInBackground(String... address) {
-			// TODO Auto-generated method stub
-			String url = "http://maps.google.com/maps/api/geocode/json?address="
-					+ address[0].replace(" ", "%20") + "&sensor=false";
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
 			try {
-				JSONObject googleMapResponse = new JSONObject(
-						androidHttpClient.execute(
-								new HttpGet(url.replace(" ", "%20")),
-								new BasicResponseHandler()));
-				GeocoderHelper geocoderHelper = new GeocoderHelper();
-				LatLng result = geocoderHelper.getLatLong(googleMapResponse);
-				return result;
-			} catch (Exception e) {
-				e.printStackTrace();
+				JSONObject jsonObject = new JSONObject(response);
+				categoryID = jsonObject.getString("goodsCategoryID");
+				String price = jsonObject.getString("price");
+				String notes = jsonObject.getString("notes");
+				etPrice.setText(price.replace(".0", ""));
+				etNote.setText(notes);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				Log.e(TAG, e.getLocalizedMessage());
 			}
-			return null;
+			pDlg.dismiss();
+
 		}
 
 		@Override
-		protected void onPostExecute(LatLng result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			androidHttpClient.close();
-		};
+		protected void onPreExecute() {
+
+			showProgressDialog();
+
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
+	}
+	private EditText etPrice, etNote;
+	private Bundle extra = new Bundle();
+
+	private String goodsID, ownerID, categoryID;
+
+	private int routeid;
+
+	private LatLng startAdd, mark1, mark2, endAdd, pickup, deliver;
+
+	private TextView startAddr, destAddr, startTime, finishTime, category,
+			weight, tvMap, driver;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_suggest_detail);
+		SharedPreferences preferences = getSharedPreferences("MyPrefs",
+				Context.MODE_PRIVATE);
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(true);
+		actionBar.setTitle(this
+				.getString(R.string.title_activity_suggest_detail)
+				+ " - "
+				+ preferences.getString("ownerName", ""));
+
+		routeid = getIntent().getIntExtra("route", 0);
+		goodsID = getIntent().getStringExtra("goodsID");
+		extra = getIntent().getBundleExtra("extra");
+
+		WebServiceTask wst = new WebServiceTask(WebServiceTask.POST_TASK,
+				SuggestDetailActivity.this, "Đang xử lý...");
+		String url = Common.IP_URL + Common.Service_Route_GetByID;
+		wst.addNameValuePair("routeID", routeid + "");
+		// wst.execute(new String[] { url });
+		wst.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				new String[] { url });
+
+		ownerID = preferences.getString("ownerID", "");
+
+		startAddr = (TextView) this.findViewById(R.id.textview_startAddr);
+		destAddr = (TextView) this.findViewById(R.id.textview_destAddr);
+		startTime = (TextView) this.findViewById(R.id.textview_startTime);
+		finishTime = (TextView) this.findViewById(R.id.textview_finishTime);
+		category = (TextView) this.findViewById(R.id.textview_category);
+		weight = (TextView) this.findViewById(R.id.textview_weight);
+		driver = (TextView) this.findViewById(R.id.textview_driverName);
+		etPrice = (EditText) findViewById(R.id.edittext_price);
+		etNote = (EditText) findViewById(R.id.edittext_note);
+
+		// etPrice.setText(price);
+		// etNote.setText(notes);
+		WebServiceTask3 wst3 = new WebServiceTask3(WebServiceTask3.POST_TASK,
+				this, "Đang xử lý");
+		String urlString = Common.IP_URL + Common.Service_Goods_getGoodsByID;
+		wst3.addNameValuePair("goodsID", goodsID);
+		wst3.execute(new String[] { urlString });
+
+		tvMap = (TextView) findViewById(R.id.tvMap);
+		tvMap.setPaintFlags(tvMap.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+		tvMap.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(SuggestDetailActivity.this,
+						RouteMapActivity.class);
+				Bundle bundle = new Bundle();
+				bundle.putParcelable("start", startAdd);
+				if (mark1 != null) {
+					bundle.putParcelable("m1", mark1);
+				}
+				if (mark2 != null) {
+					bundle.putParcelable("m2", mark2);
+				}
+				bundle.putParcelable("end", endAdd);
+				intent.putExtra("bundle", bundle);
+				intent.putExtra("extra", extra);
+				startActivity(intent);
+			}
+		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.suggest_detail, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(SuggestDetailActivity.this,
+					SuggestActivity.class);
+			intent.putExtra("goodsID", goodsID);
+			intent.putExtra("cate", categoryID);
+			startActivity(intent);
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		if (id == R.id.action_history) {
+			Intent intent = new Intent(SuggestDetailActivity.this,
+					HistoryActivity.class);
+			startActivity(intent);
+		}
+		if (id == android.R.id.home) {
+			Intent intent = new Intent(SuggestDetailActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+		}
+		if (id == R.id.send_deal) {
+			DialogInterface.OnClickListener sendListener = new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// TODO Auto-generated method stub
+					switch (which) {
+					case DialogInterface.BUTTON_POSITIVE:
+						Calendar calendar = Calendar.getInstance();
+						WebServiceTask2 wst2 = new WebServiceTask2(
+								WebServiceTask2.POST_TASK,
+								SuggestDetailActivity.this, "Đang xử lý...");
+						wst2.addNameValuePair("dealID", "0");
+						wst2.addNameValuePair("price", etPrice.getText()
+								.toString());
+						wst2.addNameValuePair("notes", etNote.getText()
+								.toString());
+						wst2.addNameValuePair("createTime",
+								Common.formatDate(calendar));
+						wst2.addNameValuePair("createBy", "owner");
+						wst2.addNameValuePair("routeID", routeid + "");
+						wst2.addNameValuePair("goodsID", goodsID + "");
+						wst2.addNameValuePair("active", "1");
+						String url = Common.IP_URL + Common.Service_Deal_Create;
+						// wst2.execute(new String[] { url });
+						wst2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+								new String[] { url });
+						break;
+					case DialogInterface.BUTTON_NEGATIVE:
+						break;
+					}
+				}
+			};
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					SuggestDetailActivity.this);
+			builder.setMessage(
+					"Bạn có muốn gửi đề nghị cho tài xế với giá "
+							+ etPrice.getText().toString()
+							+ " nghìn đồng không?")
+					.setPositiveButton("Đồng ý", sendListener)
+					.setNegativeButton("Hủy", sendListener).show();
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

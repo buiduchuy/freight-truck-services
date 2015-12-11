@@ -28,14 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.drawer.ListItem;
-import vn.edu.fpt.fts.drawer.ListItemAdapter;
-import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -44,80 +38,37 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListItemAdapter3;
 
 public class DealHistory extends android.support.v4.app.Fragment {
 
-	@SuppressLint("UseSparseArrays")
-	ArrayList<String> map = new ArrayList<String>();
-	ArrayList<ListItem> list;
-	ListItemAdapter3 adapter;
-	ListView list1;
-	View myFragmentView;
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Deal/getDealByDriverID";
-
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
-				| ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
-		getActivity().getActionBar().setTitle("Lịch sử");
-		list = new ArrayList<ListItem>();
-		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
-				"Đang xử lý ...");
-		ws.addNameValuePair("driverID", getActivity().getIntent()
-				.getStringExtra("driverID"));
-		ws.execute(new String[] { SERVICE_URL });
-		myFragmentView = inflater.inflate(R.layout.activity_deal_history,
-				container, false);
-		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
-		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				int id = Integer.parseInt(map.get((int) arg3));
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				DealHistoryDetail frag = new DealHistoryDetail();
-				Bundle bundle = new Bundle();
-				bundle.putString("dealID", String.valueOf(id));
-				frag.setArguments(bundle);
-				trs.replace(R.id.content_frame, frag);
-				trs.addToBackStack(null);
-				trs.commit();
-			}
-		}));
-		return myFragmentView;
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 60000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 60000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -131,23 +82,7 @@ public class DealHistory extends android.support.v4.app.Fragment {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String url = urls[0];
 			String result = "";
@@ -171,6 +106,87 @@ public class DealHistory extends android.support.v4.app.Fragment {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (SocketTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (Exception e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -338,85 +354,66 @@ public class DealHistory extends android.support.v4.app.Fragment {
 			pDlg.dismiss();
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 
-			HttpResponse response = null;
+		}
+	}
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Deal/getDealByDriverID";
+	ListItemAdapter3 adapter;
+	ArrayList<ListItem> list;
+	ListView list1;
+	@SuppressLint("UseSparseArrays")
+	ArrayList<String> map = new ArrayList<String>();
 
-			try {
-				switch (taskType) {
+	View myFragmentView;
 
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (SocketTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (ConnectTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (Exception e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE
+				| ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_event_white);
+		getActivity().getActionBar().setTitle("Lịch sử");
+		list = new ArrayList<ListItem>();
+		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
+				"Đang xử lý ...");
+		ws.addNameValuePair("driverID", getActivity().getIntent()
+				.getStringExtra("driverID"));
+		ws.execute(new String[] { SERVICE_URL });
+		myFragmentView = inflater.inflate(R.layout.activity_deal_history,
+				container, false);
+		list1 = (ListView) myFragmentView.findViewById(R.id.listView1);
+		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				int id = Integer.parseInt(map.get((int) arg3));
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				DealHistoryDetail frag = new DealHistoryDetail();
+				Bundle bundle = new Bundle();
+				bundle.putString("dealID", String.valueOf(id));
+				frag.setArguments(bundle);
+				trs.replace(R.id.content_frame, frag);
+				trs.addToBackStack(null);
+				trs.commit();
 			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
-		}
+		}));
+		return myFragmentView;
 	}
 }

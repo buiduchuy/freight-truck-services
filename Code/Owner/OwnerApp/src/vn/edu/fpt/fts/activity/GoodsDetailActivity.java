@@ -1,7 +1,5 @@
 package vn.edu.fpt.fts.activity;
 
-import vn.edu.fpt.fts.adapter.GoodsDetailPagerAdapter;
-import vn.edu.fpt.fts.fragment.R;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
@@ -15,14 +13,16 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import vn.edu.fpt.fts.adapter.GoodsDetailPagerAdapter;
+import vn.edu.fpt.fts.fragment.R;
 
 public class GoodsDetailActivity extends FragmentActivity implements
 		TabListener {
-	private ViewPager viewPager;
-	private GoodsDetailPagerAdapter mAdapter;
 	private ActionBar actionBar;
-	private String[] tabs = { "Giao dịch", "Thông tin" };
 	private String goodsCategoryID, goodsID;
+	private GoodsDetailPagerAdapter mAdapter;
+	private String[] tabs = { "Giao dịch", "Thông tin" };
+	private ViewPager viewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +69,6 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
 			@Override
-			public void onPageSelected(int position) {
-				// TODO Auto-generated method stub
-				actionBar.setSelectedNavigationItem(position);
-			}
-
-			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				// TODO Auto-generated method stub
 
@@ -84,6 +78,12 @@ public class GoodsDetailActivity extends FragmentActivity implements
 			public void onPageScrollStateChanged(int arg0) {
 				// TODO Auto-generated method stub
 
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+				// TODO Auto-generated method stub
+				actionBar.setSelectedNavigationItem(position);
 			}
 		});
 
@@ -99,6 +99,17 @@ public class GoodsDetailActivity extends FragmentActivity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.goods_detail, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			Intent intent = new Intent(GoodsDetailActivity.this,
+					MainActivity.class);
+			startActivity(intent);
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -130,14 +141,9 @@ public class GoodsDetailActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			Intent intent = new Intent(GoodsDetailActivity.this,
-					MainActivity.class);
-			startActivity(intent);
-		}
-		return super.onKeyDown(keyCode, event);
+
 	}
 
 	@Override
@@ -149,12 +155,6 @@ public class GoodsDetailActivity extends FragmentActivity implements
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onTabReselected(Tab tab, FragmentTransaction ft) {
 		// TODO Auto-generated method stub
 
 	}

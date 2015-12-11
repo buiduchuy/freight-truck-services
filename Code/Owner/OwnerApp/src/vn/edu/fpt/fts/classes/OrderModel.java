@@ -1,27 +1,11 @@
 package vn.edu.fpt.fts.classes;
 
 public class OrderModel {
-	private String name;
-	private String weight;
 	private String date;
+	private String name;
 	private String price;
 	private String status;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getWeight() {
-		return weight;
-	}
-
-	public void setWeight(String weight) {
-		this.weight = weight;
-	}
+	private String weight;
 
 	public OrderModel(String name, String weight, String date, String price,
 			String status) {
@@ -37,23 +21,39 @@ public class OrderModel {
 		return date;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public String getName() {
+		return name;
 	}
 
 	public String getPrice() {
 		return price;
 	}
 
-	public void setPrice(String price) {
-		this.price = price;
-	}
-
 	public String getStatus() {
 		return status;
 	}
 
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
 	}
 }

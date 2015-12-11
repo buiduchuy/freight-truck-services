@@ -14,8 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class EditGoodsMapActivity extends Activity {	
-	private LatLng point;
-	private GoogleMap map;	
+	private GoogleMap map;
+	private LatLng point;	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

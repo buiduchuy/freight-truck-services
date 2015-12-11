@@ -3,25 +3,17 @@ package vn.edu.fpt.fts.classes;
 import java.io.Serializable;
 
 public class Route implements Serializable {
-	private int RouteID;
-	private String startingAddress;
+	private int active;
+	private String category;
+	private String createTime;
 	private String destinationAddress;
-	private String startTime;
+	private String driverID;
 	private String finishTime;
 	private String notes;
+	private int RouteID;
+	private String startingAddress;
+	private String startTime;
 	private int weight;
-	private String createTime;
-	private int active;
-	private String driverID;
-	private String category;
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
 
 	public Route() {
 		// TODO Auto-generated constructor stub
@@ -54,84 +46,92 @@ public class Route implements Serializable {
 		this.category = category;
 	}
 
-	public int getRouteID() {
-		return RouteID;
+	public int getActive() {
+		return active;
 	}
 
-	public void setRouteID(int routeID) {
-		RouteID = routeID;
-	}
-
-	public String getStartingAddress() {
-		return startingAddress;
-	}
-
-	public void setStartingAddress(String startingAddress) {
-		this.startingAddress = startingAddress;
-	}
-
-	public String getDestinationAddress() {
-		return destinationAddress;
-	}
-
-	public void setDestinationAddress(String destinationAddress) {
-		this.destinationAddress = destinationAddress;
-	}
-
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-
-	public String getFinishTime() {
-		return finishTime;
-	}
-
-	public void setFinishTime(String finishTime) {
-		this.finishTime = finishTime;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	public int getWeight() {
-		return weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
+	public String getCategory() {
+		return category;
 	}
 
 	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
-	}
-
-	public int getActive() {
-		return active;
-	}
-
-	public void setActive(int active) {
-		this.active = active;
+	public String getDestinationAddress() {
+		return destinationAddress;
 	}
 
 	public String getDriverID() {
 		return driverID;
 	}
 
+	public String getFinishTime() {
+		return finishTime;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public int getRouteID() {
+		return RouteID;
+	}
+
+	public String getStartingAddress() {
+		return startingAddress;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setActive(int active) {
+		this.active = active;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public void setDestinationAddress(String destinationAddress) {
+		this.destinationAddress = destinationAddress;
+	}
+
 	public void setDriverID(String driverID) {
 		this.driverID = driverID;
+	}
+
+	public void setFinishTime(String finishTime) {
+		this.finishTime = finishTime;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public void setRouteID(int routeID) {
+		RouteID = routeID;
+	}
+
+	public void setStartingAddress(String startingAddress) {
+		this.startingAddress = startingAddress;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 }

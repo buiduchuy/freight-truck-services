@@ -5,11 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -28,85 +24,45 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.drawer.ListItem;
-import vn.edu.fpt.fts.drawer.ListItemAdapter2;
-import vn.edu.fpt.fts.drawer.ListNotiAdapter;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListNotiAdapter;
 
 public class Notification extends Fragment {
 
-	ArrayList<ListItem> list;
-	ArrayList<String> map;
-	ListNotiAdapter adapter;
-	ListView list1;
-	View myFragmentView;
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "DealNotification/getDealNotificationByDriverID";
-
-	@SuppressLint("UseSparseArrays")
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		list = new ArrayList<ListItem>();
-		map = new ArrayList<String>();
-		getActivity().getActionBar().setTitle("Thông báo");
-		myFragmentView = inflater.inflate(R.layout.activity_notification,
-				container, false);
-		list1 = (ListView) myFragmentView.findViewById(R.id.ListNotification);
-		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				
-			}
-		}));
-		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
-				"Đang lấy dữ liệu ...");
-		ws.addNameValuePair("driverID", getActivity().getIntent()
-				.getStringExtra("driverID"));
-		ws.execute(new String[] { SERVICE_URL });
-		return myFragmentView;
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 30000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -120,21 +76,7 @@ public class Notification extends Fragment {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String url = urls[0];
 			String result = "";
@@ -158,46 +100,6 @@ public class Notification extends Fragment {
 			}
 
 			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String response) {
-			// Xu li du lieu tra ve sau khi insert thanh cong
-			// handleResponse(response);
-			try {
-				list = new ArrayList<ListItem>();
-				JSONObject obj = new JSONObject(response);
-				Object intervent = obj.get("dealNotification");
-				if (intervent instanceof JSONArray) {
-					JSONArray array = obj.getJSONArray("dealNotification");
-					for (int i = array.length() - 1; i >= 0; i--) {
-						JSONObject item = array.getJSONObject(i);
-						list.add(new ListItem(item.getString("message"), "", ""));
-					}
-				} else if (intervent instanceof JSONObject) {
-					JSONObject item = obj.getJSONObject("dealNotification");
-					list.add(new ListItem(item.getString("message"), "", ""));
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			adapter = new ListNotiAdapter(getActivity(), list);
-			String res = response;
-			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
-			list1.setAdapter(adapter);
-			pDlg.dismiss();
-		}
-
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
-
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
 		private HttpResponse doResponse(String url) {
@@ -251,6 +153,17 @@ public class Notification extends Fragment {
 			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
 		private String inputStreamToString(InputStream is) {
 
 			String line = "";
@@ -271,5 +184,82 @@ public class Notification extends Fragment {
 			// Return full string
 			return total.toString();
 		}
+
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			try {
+				list = new ArrayList<ListItem>();
+				JSONObject obj = new JSONObject(response);
+				Object intervent = obj.get("dealNotification");
+				if (intervent instanceof JSONArray) {
+					JSONArray array = obj.getJSONArray("dealNotification");
+					for (int i = array.length() - 1; i >= 0; i--) {
+						JSONObject item = array.getJSONObject(i);
+						list.add(new ListItem(item.getString("message"), "", ""));
+					}
+				} else if (intervent instanceof JSONObject) {
+					JSONObject item = obj.getJSONObject("dealNotification");
+					list.add(new ListItem(item.getString("message"), "", ""));
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			adapter = new ListNotiAdapter(getActivity(), list);
+			String res = response;
+			list1.setEmptyView(myFragmentView.findViewById(R.id.emptyElement));
+			list1.setAdapter(adapter);
+			pDlg.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		private void showProgressDialog() {
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+		}
+	}
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "DealNotification/getDealNotificationByDriverID";
+	ListNotiAdapter adapter;
+	ArrayList<ListItem> list;
+	ListView list1;
+	ArrayList<String> map;
+
+	View myFragmentView;
+
+	@Override
+	@SuppressLint("UseSparseArrays")
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		list = new ArrayList<ListItem>();
+		map = new ArrayList<String>();
+		getActivity().getActionBar().setTitle("Thông báo");
+		myFragmentView = inflater.inflate(R.layout.activity_notification,
+				container, false);
+		list1 = (ListView) myFragmentView.findViewById(R.id.ListNotification);
+		list1.setOnItemClickListener((new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				
+			}
+		}));
+		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
+				"Đang lấy dữ liệu ...");
+		ws.addNameValuePair("driverID", getActivity().getIntent()
+				.getStringExtra("driverID"));
+		ws.execute(new String[] { SERVICE_URL });
+		return myFragmentView;
 	}
 }

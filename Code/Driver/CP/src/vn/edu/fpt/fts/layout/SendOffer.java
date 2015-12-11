@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -29,9 +28,6 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.helper.Common;
-
 import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -47,89 +43,33 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import vn.edu.fpt.fts.classes.Constant;
 
 public class SendOffer extends Fragment {
 
-	EditText price;
-	EditText note;
-	TextView startPlace, endPlace, startTime, endTime, pr, nte, weight;
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Deal/Create";
-	private static final String SERVICE_URL2 = Constant.SERVICE_URL
-			+ "Goods/getGoodsByID";
-	private static final String SERVICE_URL3 = Constant.SERVICE_URL
-			+ "Deal/getDealByID";
-	private static final String SERVICE_URL4 = Constant.SERVICE_URL
-			+ "Deal/acceptFirst";
-	String prc = "";
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
-	}
-
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		getActivity().getActionBar().setNavigationMode(
-				ActionBar.NAVIGATION_MODE_STANDARD);
-		getActivity().getActionBar().setTitle("Gửi đề nghị");
-		getActivity().getActionBar().setIcon(
-				R.drawable.ic_action_sort_by_size_white);
-		View v = inflater.inflate(R.layout.activity_send_offer, container,
-				false);
-
-		price = (EditText) v.findViewById(R.id.editText1);
-		note = (EditText) v.findViewById(R.id.editText2);
-		startPlace = (TextView) v.findViewById(R.id.textView2);
-		endPlace = (TextView) v.findViewById(R.id.textView4);
-		startTime = (TextView) v.findViewById(R.id.textView6);
-		endTime = (TextView) v.findViewById(R.id.textView8);
-		pr = (TextView) v.findViewById(R.id.textView10);
-		nte = (TextView) v.findViewById(R.id.textView12);
-		weight = (TextView) v.findViewById(R.id.textView14);
-
-		if (getArguments().getString("dealID") == null) {
-			WebService2 ws2 = new WebService2(WebService2.POST_TASK,
-					getActivity(), "");
-			ws2.addNameValuePair("goodsID", getArguments().getString("goodID"));
-			ws2.execute(SERVICE_URL2);
-		} else {
-			WebService3 ws3 = new WebService3(WebService3.POST_TASK,
-					getActivity(), "");
-			ws3.addNameValuePair("dealID", getArguments().getString("dealID"));
-			ws3.execute(SERVICE_URL3);
-		}
-
-		return v;
-	}
-
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 30000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -143,23 +83,7 @@ public class SendOffer extends Fragment {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String url = urls[0];
 			String result = "";
@@ -181,42 +105,6 @@ public class SendOffer extends Fragment {
 				}
 			}
 			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String response) {
-			// Xu li du lieu tra ve sau khi insert thanh cong
-			// handleResponse(response);
-			pDlg.dismiss();
-			if (Integer.parseInt(response) == 0) {
-				Toast.makeText(getActivity(),
-						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
-						.show();
-			} else if (Integer.parseInt(response) == 2) {
-				Toast.makeText(getActivity(),
-						"Đề nghị đã bị hủy. Gửi đề nghị thất bại.",
-						Toast.LENGTH_SHORT).show();
-			} else if (Integer.parseInt(response) > 0) {
-				Toast.makeText(getActivity(), "Gửi đề nghị thành công",
-						Toast.LENGTH_SHORT).show();
-				FragmentManager mng = getActivity().getSupportFragmentManager();
-				FragmentTransaction trs = mng.beginTransaction();
-				Fragment fragment = new TabDeals();
-				trs.replace(R.id.content_frame, fragment);
-				trs.addToBackStack(null);
-				trs.commit();
-			}
-		}
-
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
-
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
 		private HttpResponse doResponse(String url) {
@@ -261,6 +149,17 @@ public class SendOffer extends Fragment {
 			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
 		private String inputStreamToString(InputStream is) {
 
 			String line = "";
@@ -282,28 +181,69 @@ public class SendOffer extends Fragment {
 			return total.toString();
 		}
 
+		@Override
+		protected void onPostExecute(String response) {
+			// Xu li du lieu tra ve sau khi insert thanh cong
+			// handleResponse(response);
+			pDlg.dismiss();
+			if (Integer.parseInt(response) == 0) {
+				Toast.makeText(getActivity(),
+						"Có lỗi xảy ra. Vui lòng thử lại.", Toast.LENGTH_SHORT)
+						.show();
+			} else if (Integer.parseInt(response) == 2) {
+				Toast.makeText(getActivity(),
+						"Đề nghị đã bị hủy. Gửi đề nghị thất bại.",
+						Toast.LENGTH_SHORT).show();
+			} else if (Integer.parseInt(response) > 0) {
+				Toast.makeText(getActivity(), "Gửi đề nghị thành công",
+						Toast.LENGTH_SHORT).show();
+				FragmentManager mng = getActivity().getSupportFragmentManager();
+				FragmentTransaction trs = mng.beginTransaction();
+				Fragment fragment = new TabDeals();
+				trs.replace(R.id.content_frame, fragment);
+				trs.addToBackStack(null);
+				trs.commit();
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
+
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+
+		}
+
 	}
-
 	private class WebService2 extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 30000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService2(int taskType, Context mContext, String processMessage) {
 
@@ -317,21 +257,7 @@ public class SendOffer extends Fragment {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String url = urls[0];
 			String result = "";
@@ -355,6 +281,80 @@ public class SendOffer extends Fragment {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (Exception e) {
+
+				Log.e(TAG, e.getLocalizedMessage(), e);
+
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -399,15 +399,78 @@ public class SendOffer extends Fragment {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
+		}
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+		private void showProgressDialog() {
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+		}
+	}
+	private class WebService3 extends AsyncTask<String, Integer, String> {
 
-			return htpp;
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 30000;
+
+		private static final String TAG = "WebServiceTask";
+
+		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
+		private String processMessage = "Processing...";
+
+		private int taskType = GET_TASK;
+
+		public WebService3(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
 		}
 
 		private HttpResponse doResponse(String url) {
@@ -452,6 +515,17 @@ public class SendOffer extends Fragment {
 			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
 		private String inputStreamToString(InputStream is) {
 
 			String line = "";
@@ -471,80 +545,6 @@ public class SendOffer extends Fragment {
 
 			// Return full string
 			return total.toString();
-		}
-	}
-
-	private class WebService3 extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
-
-		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 30000;
-
-		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 30000;
-
-		private int taskType = GET_TASK;
-		private Context mContext = null;
-		private String processMessage = "Processing...";
-
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
-
-		public WebService3(int taskType, Context mContext, String processMessage) {
-
-			this.taskType = taskType;
-			this.mContext = mContext;
-			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
-		}
-
-		private void showProgressDialog() {
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-		}
-
-		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
-		protected String doInBackground(String... urls) {
-			String url = urls[0];
-			String result = "";
-
-			HttpResponse response = doResponse(url);
-
-			if (response == null) {
-				return result;
-			} else {
-				try {
-					result = inputStreamToString(response.getEntity()
-							.getContent());
-
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-				}
-
-			}
-
-			return result;
 		}
 
 		@Override
@@ -588,15 +588,78 @@ public class SendOffer extends Fragment {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
+		}
 
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+		private void showProgressDialog() {
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+		}
+	}
+	private class WebService4 extends AsyncTask<String, Integer, String> {
 
-			return htpp;
+		// connection timeout, in milliseconds (waiting to connect)
+		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
+
+		// socket timeout, in milliseconds (waiting for data)
+		private static final int SOCKET_TIMEOUT = 30000;
+
+		private static final String TAG = "WebServiceTask";
+
+		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
+		private String processMessage = "Processing...";
+
+		private int taskType = GET_TASK;
+
+		public WebService4(int taskType, Context mContext, String processMessage) {
+
+			this.taskType = taskType;
+			this.mContext = mContext;
+			this.processMessage = processMessage;
+		}
+
+		public void addNameValuePair(String name, String value) {
+
+			params.add(new BasicNameValuePair(name, value));
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String url = urls[0];
+			String result = "";
+
+			HttpResponse response = doResponse(url);
+
+			if (response == null) {
+				return result;
+			} else {
+				try {
+					result = inputStreamToString(response.getEntity()
+							.getContent());
+
+				} catch (IllegalStateException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+
+				} catch (IOException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
+
+			}
+
+			return result;
 		}
 
 		private HttpResponse doResponse(String url) {
@@ -641,6 +704,17 @@ public class SendOffer extends Fragment {
 			return response;
 		}
 
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
 		private String inputStreamToString(InputStream is) {
 
 			String line = "";
@@ -660,82 +734,6 @@ public class SendOffer extends Fragment {
 
 			// Return full string
 			return total.toString();
-		}
-	}
-
-	private class WebService4 extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
-
-		// connection timeout, in milliseconds (waiting to connect)
-		private static final int CONN_TIMEOUT = 30000;
-
-		// socket timeout, in milliseconds (waiting for data)
-		private static final int SOCKET_TIMEOUT = 30000;
-
-		private int taskType = GET_TASK;
-		private Context mContext = null;
-		private String processMessage = "Processing...";
-
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
-
-		public WebService4(int taskType, Context mContext, String processMessage) {
-
-			this.taskType = taskType;
-			this.mContext = mContext;
-			this.processMessage = processMessage;
-		}
-
-		public void addNameValuePair(String name, String value) {
-
-			params.add(new BasicNameValuePair(name, value));
-		}
-
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
-		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
-		protected String doInBackground(String... urls) {
-			String url = urls[0];
-			String result = "";
-
-			HttpResponse response = doResponse(url);
-
-			if (response == null) {
-				return result;
-			} else {
-				try {
-					result = inputStreamToString(response.getEntity()
-							.getContent());
-
-				} catch (IllegalStateException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-
-				} catch (IOException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
-				}
-
-			}
-
-			return result;
 		}
 
 		@Override
@@ -767,79 +765,45 @@ public class SendOffer extends Fragment {
 			}
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
+		@Override
+		protected void onPreExecute() {
+			showProgressDialog();
 
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
 		}
 
-		private HttpResponse doResponse(String url) {
+		private void showProgressDialog() {
 
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
 
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (ConnectTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (Exception e) {
-
-				Log.e(TAG, e.getLocalizedMessage(), e);
-
-			}
-
-			return response;
 		}
+	}
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Deal/Create";
+	private static final String SERVICE_URL2 = Constant.SERVICE_URL
+			+ "Goods/getGoodsByID";
+	private static final String SERVICE_URL3 = Constant.SERVICE_URL
+			+ "Deal/getDealByID";
+	private static final String SERVICE_URL4 = Constant.SERVICE_URL
+			+ "Deal/acceptFirst";
 
-		private String inputStreamToString(InputStream is) {
+	EditText note;
 
-			String line = "";
-			StringBuilder total = new StringBuilder();
+	String prc = "";
 
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+	EditText price;
 
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
+	TextView startPlace, endPlace, startTime, endTime, pr, nte, weight;
 
-			// Return full string
-			return total.toString();
-		}
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 	}
 
 	@Override
@@ -905,6 +869,43 @@ public class SendOffer extends Fragment {
 			item.setIcon(R.drawable.ic_action_email);
 		}
 		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(
+				ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setTitle("Gửi đề nghị");
+		getActivity().getActionBar().setIcon(
+				R.drawable.ic_action_sort_by_size_white);
+		View v = inflater.inflate(R.layout.activity_send_offer, container,
+				false);
+
+		price = (EditText) v.findViewById(R.id.editText1);
+		note = (EditText) v.findViewById(R.id.editText2);
+		startPlace = (TextView) v.findViewById(R.id.textView2);
+		endPlace = (TextView) v.findViewById(R.id.textView4);
+		startTime = (TextView) v.findViewById(R.id.textView6);
+		endTime = (TextView) v.findViewById(R.id.textView8);
+		pr = (TextView) v.findViewById(R.id.textView10);
+		nte = (TextView) v.findViewById(R.id.textView12);
+		weight = (TextView) v.findViewById(R.id.textView14);
+
+		if (getArguments().getString("dealID") == null) {
+			WebService2 ws2 = new WebService2(WebService2.POST_TASK,
+					getActivity(), "");
+			ws2.addNameValuePair("goodsID", getArguments().getString("goodID"));
+			ws2.execute(SERVICE_URL2);
+		} else {
+			WebService3 ws3 = new WebService3(WebService3.POST_TASK,
+					getActivity(), "");
+			ws3.addNameValuePair("dealID", getArguments().getString("dealID"));
+			ws3.execute(SERVICE_URL3);
+		}
+
+		return v;
 	}
 
 	@Override

@@ -3,10 +3,10 @@ package vn.edu.fpt.fts.classes;
 import java.io.Serializable;
 
 public class Order implements Serializable{
-	private String orderID;
 	private String category;
-	private String weight;
+	private String orderID;
 	private String price;
+	private String weight;
 	
 	public Order() {
 	
@@ -18,29 +18,29 @@ public class Order implements Serializable{
 		this.weight = weight;
 		this.price = price;
 	}
-	public String getOrderID() {
-		return orderID;
-	}
-	public void setOrderID(String orderID) {
-		this.orderID = orderID;
-	}
 	public String getCategory() {
 		return category;
 	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public String getWeight() {
-		return weight;
-	}
-	public void setWeight(String weight) {
-		this.weight = weight;
+	public String getOrderID() {
+		return orderID;
 	}
 	public String getPrice() {
 		return price;
 	}
+	public String getWeight() {
+		return weight;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public void setOrderID(String orderID) {
+		this.orderID = orderID;
+	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	public void setWeight(String weight) {
+		this.weight = weight;
 	}
 	
 }

@@ -1,7 +1,6 @@
 package vn.edu.fpt.fts.drawer;
 import java.util.ArrayList;
 
-import vn.edu.fpt.fts.layout.R;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import vn.edu.fpt.fts.layout.R;
 
 
 public class NavDrawerAdapter extends BaseAdapter {
@@ -22,6 +22,7 @@ public class NavDrawerAdapter extends BaseAdapter {
 		this.navDrawerItems = navDrawerItems;
 	}
 	
+	@Override
 	public int getCount() {
 		return navDrawerItems.size();
 	}
@@ -40,7 +41,7 @@ public class NavDrawerAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
-                    context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                    context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = mInflater.inflate(R.layout.list_item, null);
         }
          

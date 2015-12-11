@@ -19,57 +19,21 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements Filterable {
-    private ArrayList<String> resultList;
+    private static final String API_KEY = "AIzaSyBNUIX7BTt5ibvMPFY5AsPW4Va0XcQckqg";
 
-    public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }
-
-    @Override
-    public int getCount() {
-        return resultList.size();
-    }
-
-    @Override
-    public String getItem(int index) {
-        return resultList.get(index);
-    }
-
-    @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults filterResults = new FilterResults();
-                if (constraint != null) {
-                    resultList = autocomplete(constraint.toString());
-
-                    filterResults.values = resultList;
-                    filterResults.count = resultList.size();
-                }
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence constraint, FilterResults results) {
-                if (results != null && results.count > 0) {
-                    notifyDataSetChanged();
-                }
-                else {
-                    notifyDataSetInvalidated();
-                }
-            }};
-        return filter;
-    }
-    
     private static final String LOG_TAG = "GecocoderHelper";
 
-	private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
-	private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
-	private static final String OUT_JSON = "/json";
+    private static final String OUT_JSON = "/json";
 
-	private static final String API_KEY = "AIzaSyBNUIX7BTt5ibvMPFY5AsPW4Va0XcQckqg";
+    private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
 
+    private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
+    
+    private ArrayList<String> resultList;
+
+	public PlacesAutoCompleteAdapter(Context context, int textViewResourceId) {
+        super(context, textViewResourceId);
+    }
 	public ArrayList<String> autocomplete(String input) {
 	    ArrayList<String> resultList = null;
 
@@ -118,4 +82,40 @@ public class PlacesAutoCompleteAdapter extends ArrayAdapter<String> implements F
 
 	    return resultList;
 	}
+	@Override
+    public int getCount() {
+        return resultList.size();
+    }
+
+	@Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults filterResults = new FilterResults();
+                if (constraint != null) {
+                    resultList = autocomplete(constraint.toString());
+
+                    filterResults.values = resultList;
+                    filterResults.count = resultList.size();
+                }
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (results != null && results.count > 0) {
+                    notifyDataSetChanged();
+                }
+                else {
+                    notifyDataSetInvalidated();
+                }
+            }};
+        return filter;
+    }
+
+	@Override
+    public String getItem(int index) {
+        return resultList.get(index);
+    }
 }

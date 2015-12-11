@@ -1,96 +1,136 @@
 package vn.edu.fpt.fts.layout;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.android.gms.internal.hi;
-import com.google.android.gms.maps.MapView;
-
-import vn.edu.fpt.fts.classes.AlarmReceiver;
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.classes.OrderAlarmReceiver;
-import vn.edu.fpt.fts.drawer.ListItem;
-import vn.edu.fpt.fts.drawer.ListNotiAdapter;
-import vn.edu.fpt.fts.drawer.NavDrawerAdapter;
-import vn.edu.fpt.fts.drawer.NavDrawerItem;
-import vn.edu.fpt.fts.helper.ConnectivityHelper;
 import android.app.ActionBar;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.StrictMode;
-import android.os.PowerManager.WakeLock;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+import vn.edu.fpt.fts.classes.AlarmReceiver;
+import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.drawer.ListItem;
+import vn.edu.fpt.fts.drawer.ListNotiAdapter;
+import vn.edu.fpt.fts.drawer.NavDrawerAdapter;
+import vn.edu.fpt.fts.drawer.NavDrawerItem;
 
 public class MainActivity extends FragmentActivity {
 
-	private String[] mNavigationDrawerItemTitles;
-	private TypedArray mNavigationImage;
+	private class DrawerItemClickListener implements
+			ListView.OnItemClickListener {
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			selectItem(position);
+		}
+
+		private void selectItem(int position) {
+			Fragment fragment = null;
+			switch (position) {
+			case 0:
+				fragment = new RouteList();
+				break;
+			case 1:
+				fragment = new TabDeals();
+				break;
+			case 2:
+				fragment = new DealHistory();
+				break;
+			case 3:
+				fragment = new History();
+				break;
+			case 4:
+				SharedPreferences share = getSharedPreferences("driver",
+						Context.MODE_PRIVATE);
+				Editor editor = share.edit();
+				editor.remove("driverID");
+				editor.remove("email");
+				editor.remove("driverName");
+				editor.remove("remember");
+				editor.commit();
+
+				AlarmReceiver.list = new ArrayList<ListItem>();
+
+				NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				nMgr.cancelAll();
+
+				Intent intentstop = new Intent(MainActivity.this,
+						AlarmReceiver.class);
+				PendingIntent senderstop = PendingIntent.getBroadcast(
+						MainActivity.this, 0, intentstop, 0);
+				AlarmManager alarmManagerstop = (AlarmManager) getSystemService(ALARM_SERVICE);
+				alarmManagerstop.cancel(senderstop);
+
+				Intent intent = new Intent(getApplicationContext(), Login.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+						| Intent.FLAG_ACTIVITY_CLEAR_TASK
+						| Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				break;
+			default:
+				break;
+			}
+
+			if (fragment != null) {
+				FragmentManager fragmentManager = getSupportFragmentManager();
+				FragmentTransaction transaction = fragmentManager
+						.beginTransaction();
+				transaction.replace(R.id.content_frame, fragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				mDrawerList.setItemChecked(position, true);
+				mDrawerList.setSelection(position);
+				setTitle(mNavigationDrawerItemTitles[position]);
+				mDrawerLayout.closeDrawer(mDrawerList);
+			}
+		}
+	}
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "DealNotification/getDealNotificationByDriverID";
+	private NavDrawerAdapter adapter;
+	Intent alarmIntent;
+	Intent alarmIntent2;
+	private ArrayList<NavDrawerItem> array = new ArrayList<NavDrawerItem>();
+	Handler handler;
+	ArrayList<ListItem> list = new ArrayList<ListItem>();
+	ArrayList<String> map;
 	protected DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
-	private NavDrawerAdapter adapter;
-	private ArrayList<NavDrawerItem> array = new ArrayList<NavDrawerItem>();
-	Handler handler;
-	Runnable r;
-	ArrayList<ListItem> list = new ArrayList<ListItem>();
-	ArrayList<String> map;
+	private String[] mNavigationDrawerItemTitles;
+
+	private TypedArray mNavigationImage;
 	ListNotiAdapter notiAdapter;
+	int oldSize, newSize;
 	private PendingIntent pendingIntent, pendingIntent2;
 
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "DealNotification/getDealNotificationByDriverID";
-	int oldSize, newSize;
-	Intent alarmIntent;
-	Intent alarmIntent2;
+	Runnable r;
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -140,11 +180,13 @@ public class MainActivity extends FragmentActivity {
 				R.string.hello_world) {
 
 			/** Called when a drawer has settled in a completely closed state. */
+			@Override
 			public void onDrawerClosed(View view) {
 				super.onDrawerClosed(view);
 			}
 
 			/** Called when a drawer has settled in a completely open state. */
+			@Override
 			public void onDrawerOpened(View drawerView) {
 				super.onDrawerOpened(drawerView);
 			}
@@ -240,76 +282,6 @@ public class MainActivity extends FragmentActivity {
 		getIntent().removeExtra("type");
 	}
 
-	private class DrawerItemClickListener implements
-			ListView.OnItemClickListener {
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position,
-				long id) {
-			selectItem(position);
-		}
-
-		private void selectItem(int position) {
-			Fragment fragment = null;
-			switch (position) {
-			case 0:
-				fragment = new RouteList();
-				break;
-			case 1:
-				fragment = new TabDeals();
-				break;
-			case 2:
-				fragment = new DealHistory();
-				break;
-			case 3:
-				fragment = new History();
-				break;
-			case 4:
-				SharedPreferences share = getSharedPreferences("driver",
-						Context.MODE_PRIVATE);
-				Editor editor = share.edit();
-				editor.remove("driverID");
-				editor.remove("email");
-				editor.remove("driverName");
-				editor.remove("remember");
-				editor.commit();
-
-				AlarmReceiver.list = new ArrayList<ListItem>();
-
-				NotificationManager nMgr = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				nMgr.cancelAll();
-
-				Intent intentstop = new Intent(MainActivity.this,
-						AlarmReceiver.class);
-				PendingIntent senderstop = PendingIntent.getBroadcast(
-						MainActivity.this, 0, intentstop, 0);
-				AlarmManager alarmManagerstop = (AlarmManager) getSystemService(ALARM_SERVICE);
-				alarmManagerstop.cancel(senderstop);
-
-				Intent intent = new Intent(getApplicationContext(), Login.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-						| Intent.FLAG_ACTIVITY_CLEAR_TASK
-						| Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
-				break;
-			default:
-				break;
-			}
-
-			if (fragment != null) {
-				FragmentManager fragmentManager = getSupportFragmentManager();
-				FragmentTransaction transaction = fragmentManager
-						.beginTransaction();
-				transaction.replace(R.id.content_frame, fragment);
-				transaction.addToBackStack(null);
-				transaction.commit();
-				mDrawerList.setItemChecked(position, true);
-				mDrawerList.setSelection(position);
-				setTitle(mNavigationDrawerItemTitles[position]);
-				mDrawerLayout.closeDrawer(mDrawerList);
-			}
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -343,15 +315,10 @@ public class MainActivity extends FragmentActivity {
 		return false;
 	}
 
+	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
-	}
-
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 }

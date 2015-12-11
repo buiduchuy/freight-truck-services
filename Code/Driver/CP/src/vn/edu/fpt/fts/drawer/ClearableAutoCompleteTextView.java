@@ -1,15 +1,17 @@
 package vn.edu.fpt.fts.drawer;
 
-import vn.edu.fpt.fts.layout.R;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
+import vn.edu.fpt.fts.layout.R;
 
 public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
-	boolean justCleared = false;
+	public interface OnClearListener {
+		void onClear();
+	}
  
 	private OnClearListener defaultClearListener = new OnClearListener() {
  
@@ -20,17 +22,21 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
 		}
 	};
  
-	private OnClearListener onClearListener = defaultClearListener;
- 
 	public Drawable imgClearButton = getResources().getDrawable(
 			R.drawable.ic_action_cancel);
  
-	public interface OnClearListener {
-		void onClear();
-	}
+	boolean justCleared = false;
+ 
+	private OnClearListener onClearListener = defaultClearListener;
  
 	public ClearableAutoCompleteTextView(Context context) {
 		super(context);
+		init();
+	}
+ 
+	/* Required methods, not used in this implementation */
+	public ClearableAutoCompleteTextView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 		init();
 	}
  
@@ -40,10 +46,8 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
 		init();
 	}
  
-	/* Required methods, not used in this implementation */
-	public ClearableAutoCompleteTextView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		init();
+	public void hideClearButton() {
+		this.setCompoundDrawables(null, null, null, null);
 	}
  
 	void init() {
@@ -79,10 +83,6 @@ public class ClearableAutoCompleteTextView extends AutoCompleteTextView {
  
 	public void setOnClearListener(final OnClearListener clearListener) {
 		this.onClearListener = clearListener;
-	}
- 
-	public void hideClearButton() {
-		this.setCompoundDrawables(null, null, null, null);
 	}
  
 	public void showClearButton() {

@@ -1,15 +1,15 @@
 package vn.edu.fpt.fts.classes;
 
 public class Deal {
-	private int dealID;
-	private double price;
-	private String notes;
-	private String createTime;
-	private String createBy;
-	private int routeID;
-	private int goodsID;
-	private int dealStatusID;	
 	private int active;
+	private String createBy;
+	private String createTime;
+	private int dealID;
+	private int dealStatusID;
+	private int goodsID;
+	private String notes;
+	private double price;	
+	private int routeID;
 	
 	public Deal() {
 		// TODO Auto-generated constructor stub
@@ -29,77 +29,77 @@ public class Deal {
 		}
 
 		
-	public int getDealID() {
-		return dealID;
-	}
-
-	public void setDealID(int dealID) {
-		this.dealID = dealID;
-	}
-
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	public String getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
+	public int getActive() {
+		return active;
 	}
 
 	public String getCreateBy() {
 		return createBy;
 	}
 
-	public void setCreateBy(String createBy) {
-		this.createBy = createBy;
+	public String getCreateTime() {
+		return createTime;
 	}
 
-	public int getRouteID() {
-		return routeID;
-	}
-
-	public void setRouteID(int routeID) {
-		this.routeID = routeID;
-	}
-
-	public int getGoodsID() {
-		return goodsID;
-	}
-
-	public void setGoodsID(int goodsID) {
-		this.goodsID = goodsID;
+	public int getDealID() {
+		return dealID;
 	}
 
 	public int getDealStatusID() {
 		return dealStatusID;
 	}
 
-	public void setDealStatusID(int dealStatusID) {
-		this.dealStatusID = dealStatusID;
+	public int getGoodsID() {
+		return goodsID;
 	}
 
+	public String getNotes() {
+		return notes;
+	}
 
-	public int getActive() {
-		return active;
+	public double getPrice() {
+		return price;
+	}
+
+	public int getRouteID() {
+		return routeID;
 	}
 
 	public void setActive(int active) {
 		this.active = active;
+	}
+
+	public void setCreateBy(String createBy) {
+		this.createBy = createBy;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public void setDealID(int dealID) {
+		this.dealID = dealID;
+	}
+
+	public void setDealStatusID(int dealStatusID) {
+		this.dealStatusID = dealStatusID;
+	}
+
+	public void setGoodsID(int goodsID) {
+		this.goodsID = goodsID;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public void setRouteID(int routeID) {
+		this.routeID = routeID;
 	}
 	
 	

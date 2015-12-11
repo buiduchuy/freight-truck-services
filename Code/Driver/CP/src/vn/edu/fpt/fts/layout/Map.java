@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpResponse;
@@ -28,10 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.edu.fpt.fts.classes.Constant;
-import vn.edu.fpt.fts.helper.GeocoderHelper;
-import vn.edu.fpt.fts.helper.JSONParser;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,73 +33,134 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+import vn.edu.fpt.fts.classes.Constant;
+import vn.edu.fpt.fts.helper.GeocoderHelper;
+import vn.edu.fpt.fts.helper.JSONParser;
 
 public class Map extends Fragment implements OnMapReadyCallback {
-	GoogleMap map;
-	GeocoderHelper helper = new GeocoderHelper();
-	private static final String SERVICE_URL = Constant.SERVICE_URL
-			+ "Route/getRouteByID";
-	LatLngBounds.Builder b = new LatLngBounds.Builder();
+	private class connectAsyncTask extends AsyncTask<String, Void, String> {
+		ProgressDialog pDlg;
+		long startTime;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
-		getActivity().getActionBar().setTitle("Xem lộ trình");
-		View v = inflater.inflate(R.layout.map, container, false);
-		InputMethodManager imm = (InputMethodManager) getActivity()
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(getActivity().getCurrentFocus()
-				.getWindowToken(), 0);
-		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-				.findFragmentById(R.id.map);
-		mapFragment.getMapAsync(this);
-		map = mapFragment.getMap();
-		return v;
+		@Override
+		protected String doInBackground(String... params) {
+			JSONParser jParser = new JSONParser();
+			String json = jParser.getJSONFromUrl(params[0]);
+			return json;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			JSONObject obj;
+			try {
+				obj = new JSONObject(result);
+				if (obj.getString("status").equals("ZERO_RESULTS")) {
+					Toast.makeText(getActivity(),
+							"Không có lộ trình qua các điểm này",
+							Toast.LENGTH_SHORT).show();
+				} else {
+					helper.drawPath(result, map);
+					map.setMyLocationEnabled(true);
+					map.getUiSettings().setMyLocationButtonEnabled(true);
+					LatLngBounds bounds = b.build();
+					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
+							bounds, 20);
+					map.animateCamera(cu);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			pDlg.dismiss();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			super.onPreExecute();
+			pDlg = new ProgressDialog(getActivity());
+			pDlg.setMessage("Đang vẽ lộ trình ...");
+			pDlg.setProgressDrawable(getActivity().getWallpaper());
+			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			pDlg.setCancelable(false);
+			pDlg.show();
+			startTime = System.nanoTime();
+		}
 	}
+	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
+		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
+				.newInstance(GetLatLng.class.getName());
 
+		@Override
+		protected LatLng doInBackground(String... locations) {
+			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
+					+ locations[0]
+					+ "&destination="
+					+ locations[0]
+					+ "&sensor=false";
+
+			try {
+				JSONObject googleMapResponse = new JSONObject(
+						ANDROID_HTTP_CLIENT.execute(
+								new HttpGet(googleMapUrl.replace(" ", "%20")),
+								new BasicResponseHandler()));
+				JSONArray results = (JSONArray) googleMapResponse.get("routes");
+				JSONObject result = results.getJSONObject(0);
+				JSONObject location = result.getJSONObject("bounds")
+						.getJSONObject("northeast");
+				double latitude = location.getDouble("lat");
+				double longitude = location.getDouble("lng");
+				ANDROID_HTTP_CLIENT.close();
+				return new LatLng(latitude, longitude);
+			} catch (Exception ignored) {
+				ignored.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(LatLng result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			ANDROID_HTTP_CLIENT.close();
+		}
+	}
 	private class WebService extends AsyncTask<String, Integer, String> {
-
-		public static final int POST_TASK = 1;
-		public static final int GET_TASK = 2;
-
-		private static final String TAG = "WebServiceTask";
 
 		// connection timeout, in milliseconds (waiting to connect)
 		private static final int CONN_TIMEOUT = 30000;
+		public static final int GET_TASK = 2;
+
+		public static final int POST_TASK = 1;
 
 		// socket timeout, in milliseconds (waiting for data)
 		private static final int SOCKET_TIMEOUT = 30000;
 
-		private int taskType = GET_TASK;
+		private static final String TAG = "WebServiceTask";
+
 		private Context mContext = null;
+		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		private ProgressDialog pDlg = null;
+
 		private String processMessage = "Processing...";
 
-		private ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-
-		private ProgressDialog pDlg = null;
+		private int taskType = GET_TASK;
 
 		public WebService(int taskType, Context mContext, String processMessage) {
 
@@ -120,23 +174,7 @@ public class Map extends Fragment implements OnMapReadyCallback {
 			params.add(new BasicNameValuePair(name, value));
 		}
 
-		private void showProgressDialog() {
-
-			pDlg = new ProgressDialog(mContext);
-			pDlg.setMessage(processMessage);
-			pDlg.setProgressDrawable(mContext.getWallpaper());
-			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pDlg.setCancelable(false);
-			pDlg.show();
-
-		}
-
 		@Override
-		protected void onPreExecute() {
-			showProgressDialog();
-
-		}
-
 		protected String doInBackground(String... urls) {
 			String url = urls[0];
 			String result = "";
@@ -160,6 +198,78 @@ public class Map extends Fragment implements OnMapReadyCallback {
 			}
 
 			return result;
+		}
+
+		private HttpResponse doResponse(String url) {
+
+			// Use our connection and data timeouts as parameters for our
+			// DefaultHttpClient
+			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
+
+			HttpResponse response = null;
+
+			try {
+				switch (taskType) {
+
+				case POST_TASK:
+					HttpPost httppost = new HttpPost(url);
+					// Add parameters
+					httppost.setEntity(new UrlEncodedFormEntity(params,
+							HTTP.UTF_8));
+
+					response = httpclient.execute(httppost);
+					break;
+				case GET_TASK:
+					HttpGet httpget = new HttpGet(url);
+					response = httpclient.execute(httpget);
+					break;
+				}
+			} catch (ConnectTimeoutException e) {
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getActivity(),
+								"Không thể kết nối tới máy chủ",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
+			} catch (Exception e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			return response;
+		}
+
+		// Establish connection and socket (data retrieval) timeouts
+		private HttpParams getHttpParams() {
+
+			HttpParams htpp = new BasicHttpParams();
+
+			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
+			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
+
+			return htpp;
+		}
+
+		private String inputStreamToString(InputStream is) {
+
+			String line = "";
+			StringBuilder total = new StringBuilder();
+
+			// Wrap a BufferedReader around the InputStream
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+
+			try {
+				// Read response until the end
+				while ((line = rd.readLine()) != null) {
+					total.append(line);
+				}
+			} catch (IOException e) {
+				Log.e(TAG, e.getLocalizedMessage(), e);
+			}
+
+			// Return full string
+			return total.toString();
 		}
 
 		@Override
@@ -240,169 +350,52 @@ public class Map extends Fragment implements OnMapReadyCallback {
 			pDlg.dismiss();
 		}
 
-		// Establish connection and socket (data retrieval) timeouts
-		private HttpParams getHttpParams() {
-
-			HttpParams htpp = new BasicHttpParams();
-
-			HttpConnectionParams.setConnectionTimeout(htpp, CONN_TIMEOUT);
-			HttpConnectionParams.setSoTimeout(htpp, SOCKET_TIMEOUT);
-
-			return htpp;
-		}
-
-		private HttpResponse doResponse(String url) {
-
-			// Use our connection and data timeouts as parameters for our
-			// DefaultHttpClient
-			HttpClient httpclient = new DefaultHttpClient(getHttpParams());
-
-			HttpResponse response = null;
-
-			try {
-				switch (taskType) {
-
-				case POST_TASK:
-					HttpPost httppost = new HttpPost(url);
-					// Add parameters
-					httppost.setEntity(new UrlEncodedFormEntity(params,
-							HTTP.UTF_8));
-
-					response = httpclient.execute(httppost);
-					break;
-				case GET_TASK:
-					HttpGet httpget = new HttpGet(url);
-					response = httpclient.execute(httpget);
-					break;
-				}
-			} catch (ConnectTimeoutException e) {
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(getActivity(),
-								"Không thể kết nối tới máy chủ",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			} catch (Exception e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			return response;
-		}
-
-		private String inputStreamToString(InputStream is) {
-
-			String line = "";
-			StringBuilder total = new StringBuilder();
-
-			// Wrap a BufferedReader around the InputStream
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-
-			try {
-				// Read response until the end
-				while ((line = rd.readLine()) != null) {
-					total.append(line);
-				}
-			} catch (IOException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
-			}
-
-			// Return full string
-			return total.toString();
-		}
-	}
-
-	private class GetLatLng extends AsyncTask<String, Void, LatLng> {
-		private final AndroidHttpClient ANDROID_HTTP_CLIENT = AndroidHttpClient
-				.newInstance(GetLatLng.class.getName());
-
-		@Override
-		protected LatLng doInBackground(String... locations) {
-			String googleMapUrl = "http://maps.googleapis.com/maps/api/directions/json?origin="
-					+ locations[0]
-					+ "&destination="
-					+ locations[0]
-					+ "&sensor=false";
-
-			try {
-				JSONObject googleMapResponse = new JSONObject(
-						ANDROID_HTTP_CLIENT.execute(
-								new HttpGet(googleMapUrl.replace(" ", "%20")),
-								new BasicResponseHandler()));
-				JSONArray results = (JSONArray) googleMapResponse.get("routes");
-				JSONObject result = results.getJSONObject(0);
-				JSONObject location = result.getJSONObject("bounds")
-						.getJSONObject("northeast");
-				double latitude = location.getDouble("lat");
-				double longitude = location.getDouble("lng");
-				ANDROID_HTTP_CLIENT.close();
-				return new LatLng(latitude, longitude);
-			} catch (Exception ignored) {
-				ignored.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(LatLng result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			ANDROID_HTTP_CLIENT.close();
-		}
-	}
-
-	private class connectAsyncTask extends AsyncTask<String, Void, String> {
-		long startTime;
-		ProgressDialog pDlg;
-
 		@Override
 		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-			super.onPreExecute();
-			pDlg = new ProgressDialog(getActivity());
-			pDlg.setMessage("Đang vẽ lộ trình ...");
-			pDlg.setProgressDrawable(getActivity().getWallpaper());
+			showProgressDialog();
+
+		}
+
+		private void showProgressDialog() {
+
+			pDlg = new ProgressDialog(mContext);
+			pDlg.setMessage(processMessage);
+			pDlg.setProgressDrawable(mContext.getWallpaper());
 			pDlg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			pDlg.setCancelable(false);
 			pDlg.show();
-			startTime = System.nanoTime();
-		}
 
-		@Override
-		protected String doInBackground(String... params) {
-			JSONParser jParser = new JSONParser();
-			String json = jParser.getJSONFromUrl(params[0]);
-			return json;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			JSONObject obj;
-			try {
-				obj = new JSONObject(result);
-				if (obj.getString("status").equals("ZERO_RESULTS")) {
-					Toast.makeText(getActivity(),
-							"Không có lộ trình qua các điểm này",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					helper.drawPath(result, map);
-					map.setMyLocationEnabled(true);
-					map.getUiSettings().setMyLocationButtonEnabled(true);
-					LatLngBounds bounds = b.build();
-					CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(
-							bounds, 20);
-					map.animateCamera(cu);
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			pDlg.dismiss();
 		}
 	}
+	private static final String SERVICE_URL = Constant.SERVICE_URL
+			+ "Route/getRouteByID";
 
+	LatLngBounds.Builder b = new LatLngBounds.Builder();
+
+	GeocoderHelper helper = new GeocoderHelper();
+
+	GoogleMap map;
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		getActivity().getActionBar().setIcon(R.drawable.ic_action_place_white);
+		getActivity().getActionBar().setTitle("Xem lộ trình");
+		View v = inflater.inflate(R.layout.map, container, false);
+		InputMethodManager imm = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(getActivity().getCurrentFocus()
+				.getWindowToken(), 0);
+		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+				.findFragmentById(R.id.map);
+		mapFragment.getMapAsync(this);
+		map = mapFragment.getMap();
+		return v;
+	}
+
+	@Override
 	public void onMapReady(GoogleMap map) {
 		WebService ws = new WebService(WebService.POST_TASK, getActivity(),
 				"Đang lấy dữ liệu ...");
